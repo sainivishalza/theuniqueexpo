@@ -13,4 +13,4 @@ export function promoteToAdmin(): void {
   // For mock purposes, we store admin IDs
 }
 
-export const ADMIN_EMAILS = ["admin@expobridge.com", "staff@expobridge.com"];
+export const ADMIN_EMAILS = ["admin@theuniqueexpo.com", "staff@theuniqueexpo.com"];

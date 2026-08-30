@@ -16,7 +16,7 @@ export default function AdminPage() {
           <div className="text-6xl mb-4">🔒</div>
           <h1 className="text-2xl font-bold text-gray-900">Access Denied</h1>
           <p className="mt-2 text-gray-500">Admin privileges required.</p>
-          <p className="mt-1 text-xs text-gray-400">Tip: login with admin@expobridge.com</p>
+          <p className="mt-1 text-xs text-gray-400">Tip: login with admin@theuniqueexpo.com</p>
           <Link href="/" className="mt-4 inline-block text-blue-600 hover:underline text-sm font-semibold">Go home →</Link>
         </div>
       </div>

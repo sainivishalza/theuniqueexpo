@@ -7,7 +7,7 @@ import { subsidies } from "@/lib/subsidies";
 
 export default function AdminServicesPage() {
   const { user } = useAuth();
-  if (!user || user.role !== "admin") return <div className="min-h-[60vh] flex items-center justify-center"><div className="text-center"><div className="text-6xl mb-4">🔒</div><h1 className="text-2xl font-bold">Access Denied</h1><p className="text-gray-500 mt-2">Admin privileges required.</p><p className="text-xs text-gray-400 mt-1">Tip: login with admin@expobridge.com</p></div></div>;
+  if (!user || user.role !== "admin") return <div className="min-h-[60vh] flex items-center justify-center"><div className="text-center"><div className="text-6xl mb-4">🔒</div><h1 className="text-2xl font-bold">Access Denied</h1><p className="text-gray-500 mt-2">Admin privileges required.</p><p className="text-xs text-gray-400 mt-1">Tip: login with admin@theuniqueexpo.com</p></div></div>;
 
   const tourApps = getTourApplications();
   const visaApps = getVisaApplications();

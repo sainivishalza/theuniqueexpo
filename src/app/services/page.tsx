@@ -49,7 +49,7 @@ export default function ServicesPage() {
 
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-6 text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">Why Choose ExpoBridge Services?</h2>
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">Why Choose The Unique Expo Services?</h2>
           <p className="text-gray-500 max-w-2xl mx-auto mb-12">We handle the logistics so you can focus on growing your business.</p>
           <div className="grid gap-8 md:grid-cols-4">
             {[{icon:"🎯",title:"End-to-End",desc:"From visa to factory visit, we handle everything"},{icon:"🌍",title:"15+ Years",desc:"Deep expertise in China trade and exhibitions"},{icon:"🤝",title:"Trusted Network",desc:"500+ verified partners across China"},{icon:"💬",title:"24/7 Support",desc:"Multilingual support throughout your journey"}].map((b) => (

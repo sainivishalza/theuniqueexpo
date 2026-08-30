@@ -3,9 +3,9 @@ import "./globals.css";
 import ClientShell from "@/components/ClientShell";
 
 export const metadata: Metadata = {
-  title: "ExpoBridge — Global B2B Exhibition & Trade Platform",
+  title: "The Unique Expo — Discover Something Unique Together",
   description:
-    "Discover exhibitions, connect with buyers & exhibitors, and grow your business on the world's leading B2B trade platform.",
+    "Discover Something Unique Together — The world's leading B2B exhibition, trade-fair & sourcing platform connecting buyers with exhibitors worldwide.",
 };
 
 export default function RootLayout({

@@ -113,7 +113,7 @@ export default function PartnerDashboard() {
           {/* Marketing Kit */}
           <div className="mt-8 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
             <h2 className="text-xl font-bold text-gray-900 mb-2">Marketing Kit</h2>
-            <p className="text-sm text-gray-500 mb-5">Download materials to promote ExpoBridge in your region.</p>
+            <p className="text-sm text-gray-500 mb-5">Download materials to promote The Unique Expo in your region.</p>
             <div className="flex flex-wrap gap-3">
               {[
                 { icon: "📄", label: "Pitch Deck (PDF)" },

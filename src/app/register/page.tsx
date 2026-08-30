@@ -49,7 +49,7 @@ export default function RegisterPage() {
         <div className="relative z-10 text-white max-w-md">
           <div className="flex items-center gap-2.5 mb-8">
             <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white text-lg font-bold">E</div>
-            <span className="text-2xl font-extrabold">ExpoBridge</span>
+            <span className="text-2xl font-extrabold">The Unique Expo</span>
           </div>
           <h2 className="text-4xl font-extrabold leading-tight mb-4">
             Join the global trade community
@@ -76,7 +76,7 @@ export default function RegisterPage() {
         <div className="w-full max-w-md">
           <div className="lg:hidden flex items-center gap-2.5 mb-8">
             <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center text-white text-sm font-bold">E</div>
-            <span className="text-xl font-extrabold text-gray-900">Expo<span className="text-blue-600">Bridge</span></span>
+            <span className="text-xl font-extrabold text-gray-900"><span className="text-blue-600">The Unique</span> Expo</span>
           </div>
 
           <h1 className="text-3xl font-extrabold text-gray-900">Create your account</h1>

@@ -29,7 +29,7 @@ const testimonials = [
   {
     name: "Sarah Chen",
     role: "Import Director, Global Foods Inc.",
-    text: "ExpoBridge transformed how we discover suppliers. We closed 3 deals at the Food Expo that are now worth $2M+ annually.",
+    text: "The Unique Expo transformed how we discover suppliers. We closed 3 deals at the Food Expo that are now worth $2M+ annually.",
     avatar: "👩‍💼",
   },
   {
@@ -227,7 +227,7 @@ export default function Home() {
               Simple Process
             </span>
             <h2 className="text-4xl font-extrabold text-gray-900">
-              How ExpoBridge Works
+              How The Unique Expo Works
             </h2>
           </div>
 
@@ -309,7 +309,7 @@ export default function Home() {
             Ready to Grow Your Business?
           </h2>
           <p className="text-lg text-blue-100/80 max-w-2xl mx-auto mb-10">
-            Join thousands of exhibitors and buyers who use ExpoBridge to discover
+            Join thousands of exhibitors and buyers who use The Unique Expo to discover
             opportunities, book booths, and close deals at world-class trade events.
           </p>
           <div className="flex flex-wrap justify-center gap-4">

@@ -1,5 +1,7 @@
 "use client";
 
+import Logo from "@/components/Logo";
+
 import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
@@ -12,13 +14,8 @@ export default function NavBar() {
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-gray-200/60">
       <div className="mx-auto max-w-7xl px-6 flex items-center justify-between h-16">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center text-white text-sm font-bold shadow-sm">
-            E
-          </div>
-          <span className="text-xl font-extrabold tracking-tight text-gray-900">
-            Expo<span className="text-blue-600">Bridge</span>
-          </span>
+        <Link href="/" className="group">
+          <Logo />
         </Link>
 
         {/* Desktop nav */}
@@ -103,7 +100,6 @@ export default function NavBar() {
         <div className="md:hidden border-t border-gray-200/60 bg-white/95 backdrop-blur-xl px-6 py-4 space-y-2">
           <Link href="/exhibitions" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Exhibitions</Link>
           <Link href="/directory" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Directory</Link>
-          <Link href="/services" className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors">Services</Link>
           <Link href="/services" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Services</Link>
           <Link href="/marketplace" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Marketplace</Link>
           {user ? (

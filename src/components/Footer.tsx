@@ -1,3 +1,4 @@
+import Logo from "@/components/Logo";
 import Link from "next/link";
 
 const footerLinks = {
@@ -51,11 +52,8 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
         {/* Brand */}
         <div className="lg:col-span-2">
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center text-white text-sm font-bold">E</div>
-            <span className="text-xl font-extrabold text-white">
-              Expo<span className="text-blue-400">Bridge</span>
-            </span>
+          <div className="mb-4">
+            <Logo size="default" />
           </div>
           <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
             The global B2B exhibition, trade-fair &amp; sourcing platform connecting buyers
@@ -63,7 +61,7 @@ export default function Footer() {
           </p>
           {/* Social icons */}
           <div className="flex gap-3 mt-5">
-            {["𝕏", "in", "f", "▶"].map((icon, i) => (
+            {["X", "in", "f", "▶"].map((icon, i) => (
               <a
                 key={i}
                 href="#"
@@ -95,7 +93,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-gray-800">
         <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
-          <span>© {new Date().getFullYear()} ExpoBridge. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} The Unique Expo. All rights reserved.</span>
           <div className="flex gap-4">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-white transition-colors">Terms of Service</a>

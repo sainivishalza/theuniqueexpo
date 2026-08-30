@@ -13,6 +13,9 @@ export default function NavBar() {
       </Link>
 
       <div className="flex items-center gap-4">
+        <Link href="/exhibitions" className="text-sm text-gray-700 hover:text-black">
+          Exhibitions
+        </Link>
         {user ? (
           <>
             <Link href="/dashboard" className="text-sm text-gray-700 hover:text-black">

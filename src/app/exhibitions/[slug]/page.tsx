@@ -76,6 +76,12 @@ export default function ExhibitionDetailPage() {
           View Floor Plan & Book Booth
         </Link>
         <Link
+          href={`/exhibitions/${slug}/hotels`}
+          className="rounded border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+        >
+          Hotel Reservation
+        </Link>
+        <Link
           href="/register"
           className="rounded border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >

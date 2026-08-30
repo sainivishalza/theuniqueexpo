@@ -14,8 +14,9 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!value) return;
-    login(value, "buyer");
-    router.push("/dashboard");
+    const isAdmin = value.toLowerCase() === "admin@expobridge.com";
+    login(value, isAdmin ? "admin" : "buyer");
+    router.push(isAdmin ? "/admin" : "/dashboard");
   };
 
   return (

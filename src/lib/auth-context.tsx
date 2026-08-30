@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
-export type UserRole = "buyer" | "exhibitor" | "visitor" | "partner";
+export type UserRole = "buyer" | "exhibitor" | "visitor" | "partner" | "admin";
 
 export interface MockUser {
   id: string;

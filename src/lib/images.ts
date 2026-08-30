@@ -97,7 +97,7 @@ export const exhibitionHeroImages: Record<string, string> = {
   "hk-electronics-fair-autumn-2026":
     "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1400&h=700&fit=crop&q=80",
   "guzhen-lighting-fair-autumn-2026":
-    "https://images.unsplash.com/photo-1507473885765-e6ed057ab6fe?w=1400&h=700&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=1400&h=700&fit=crop&q=80",
   "shantou-toys-gifts-fair-2026":
     "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=1400&h=700&fit=crop&q=80",
   "c-touch-display-shenzhen-2026":

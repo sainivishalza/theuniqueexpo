@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { getBookingsForExhibitor } from "@/lib/booths";
+import { formatCurrency } from "@/lib/format";
 
 export default function ExhibitorDashboard() {
   const { user } = useAuth();
@@ -99,7 +100,7 @@ export default function ExhibitorDashboard() {
                     }`}>
                       {bk.status}
                     </span>
-                    <p className="mt-1 text-lg font-bold text-gray-900">${bk.amount.toLocaleString()}</p>
+                    <p className="mt-1 text-lg font-bold text-gray-900">{formatCurrency(bk.amount)}</p>
                   </div>
                 </div>
               ))}

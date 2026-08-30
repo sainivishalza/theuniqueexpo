@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { exhibitions, getIndustries, getCities } from "@/lib/exhibitions";
+import { formatNumber } from "@/lib/format";
 import { exhibitionHeroImages } from "@/lib/images";
 
 export default function ExhibitionsPage() {
@@ -138,7 +139,7 @@ export default function ExhibitionsPage() {
                   <p className="text-sm text-gray-400 line-clamp-2 mb-4">{expo.description}</p>
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                     <div className="flex gap-4 text-xs text-gray-400">
-                      <span>🏢 {expo.exhibitors.toLocaleString()}+</span>
+                      <span>🏢 {formatNumber(expo.exhibitors)}+</span>
                       <span>👥 {expo.visitors}</span>
                     </div>
                     <span className="text-sm font-semibold text-blue-600 group-hover:translate-x-1 transition-transform">

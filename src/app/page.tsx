@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { exhibitions } from "@/lib/exhibitions";
 import { exhibitionHeroImages, industryImages } from "@/lib/images";
+import { formatNumber } from "@/lib/format";
 
 const stats = [
   { value: "6+", label: "Major Exhibitions", icon: "🎯" },
@@ -162,7 +163,7 @@ export default function Home() {
                   </p>
                   <div className="mt-4 flex items-center justify-between">
                     <div className="flex gap-4 text-xs text-gray-400">
-                      <span>🏢 {expo.exhibitors.toLocaleString()} exhibitors</span>
+                      <span>🏢 {formatNumber(expo.exhibitors)} exhibitors</span>
                       <span>👥 {expo.visitors}</span>
                     </div>
                     <span className="text-blue-600 font-semibold text-sm group-hover:translate-x-1 transition-transform">

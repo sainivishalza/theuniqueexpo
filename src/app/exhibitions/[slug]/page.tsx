@@ -4,6 +4,7 @@ import { use } from "react";
 import Link from "next/link";
 import { getExhibitionById } from "@/lib/exhibitions";
 import { exhibitionHeroImages } from "@/lib/images";
+import { formatNumber } from "@/lib/format";
 
 const exhibitorLogos = [
   { name: "Pacific Foods", abbr: "PF", color: "bg-orange-500" },
@@ -82,7 +83,7 @@ export default function ExhibitionDetailPage({
       <section className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { label: "Exhibitors", value: expo.exhibitors.toLocaleString() + "+", icon: "🏢" },
+            { label: "Exhibitors", value: formatNumber(expo.exhibitors) + "+", icon: "🏢" },
             { label: "Visitors", value: expo.visitors, icon: "👥" },
             { label: "Venue", value: expo.city, icon: "📍" },
             { label: "Duration", value: expo.dates, icon: "📅" },

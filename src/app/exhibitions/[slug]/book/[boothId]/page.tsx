@@ -6,6 +6,7 @@ import { useState, useMemo } from "react";
 import { getExhibitionById } from "@/lib/exhibitions";
 import { initBooths, bookBooth } from "@/lib/booths";
 import { useAuth } from "@/lib/auth-context";
+import { formatNumber, formatCurrency } from "@/lib/format";
 
 export default function BookBoothPage() {
   const params = useParams();
@@ -57,7 +58,7 @@ export default function BookBoothPage() {
             Booth {booth.row}{booth.col} ({booth.size}) at {expo.title} is now yours.
           </p>
           <p className="text-sm text-gray-400">
-            Booking ID: bk-{Date.now()} — ${booth.price.toLocaleString()} charged
+            Booking ID: bk-{Date.now()} — {formatCurrency(booth.price)} charged
           </p>
           <div className="mt-6 flex justify-center gap-3">
             <Link
@@ -106,7 +107,7 @@ export default function BookBoothPage() {
               <Row label="Exhibition" value={expo.title} />
               <Row label="Booth" value={`${booth.row}${booth.col}`} />
               <Row label="Size" value={booth.size} />
-              <Row label="Price" value={`$${booth.price.toLocaleString()}`} />
+              <Row label="Price" value={formatCurrency(booth.price)} />
               <Row label="Exhibitor" value={user.name || user.email} />
             </div>
           </div>
@@ -175,7 +176,7 @@ export default function BookBoothPage() {
             >
               {processing
                 ? "Processing payment..."
-                : `Pay $${booth.price.toLocaleString()}`}
+                : `Pay ${formatCurrency(booth.price)}`}
             </button>
           </div>
         </div>

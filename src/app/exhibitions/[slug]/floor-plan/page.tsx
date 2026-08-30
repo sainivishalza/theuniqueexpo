@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { getExhibitionById } from "@/lib/exhibitions";
 import { initBooths, type Booth } from "@/lib/booths";
 import { useAuth } from "@/lib/auth-context";
+import { formatNumber, formatCurrency } from "@/lib/format";
 
 const SIZE_COLORS: Record<string, string> = {
   platinum: "bg-amber-400 hover:bg-amber-300 border-amber-500/30",
@@ -115,7 +116,7 @@ export default function FloorPlanPage() {
                               if (!isBooked) setSelected(isSelected ? null : booth);
                             }}
                             disabled={isBooked}
-                            title={isBooked ? `Booked: ${booth.exhibitorName}` : `${booth.size} — $${booth.price.toLocaleString()}`}
+                            title={isBooked ? `Booked: ${booth.exhibitorName}` : `${booth.size} — ${formatCurrency(booth.price)}`}
                             className={`mr-2 flex h-16 w-[72px] flex-col items-center justify-center rounded-xl border-2 text-[10px] font-bold transition-all duration-200 ${
                               isSelected
                                 ? "border-gray-600 bg-gray-600 text-white ring-2 ring-gray-300 shadow-lg"
@@ -161,7 +162,7 @@ export default function FloorPlanPage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-500">Price</span>
-                      <span className="font-semibold text-gray-900">${selected.price.toLocaleString()}</span>
+                      <span className="font-semibold text-gray-900">{formatCurrency(selected.price)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-500">Status</span>
@@ -173,7 +174,7 @@ export default function FloorPlanPage() {
                       href={`/exhibitions/${slug}/book/${selected.id}`}
                       className="mt-6 block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
                     >
-                      Book — ${selected.price.toLocaleString()}
+                      Book — {formatCurrency(selected.price)}
                     </Link>
                   ) : (
                     <Link

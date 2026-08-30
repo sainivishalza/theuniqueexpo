@@ -7,7 +7,7 @@ import { formatCurrency } from "@/lib/format";
 
 export default function ExhibitorDashboard() {
   const { user } = useAuth();
-  const bookings = user ? getBookingsForExhibitor(user.id) : [];
+  const bookings = user ? getBookingsForExhibitor(String(user.id)) : [];
 
   return (
     <div>

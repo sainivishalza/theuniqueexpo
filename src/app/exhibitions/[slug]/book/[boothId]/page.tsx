@@ -42,7 +42,7 @@ export default function BookBoothPage() {
     setProcessing(true);
     // Simulate Stripe checkout
     setTimeout(() => {
-      bookBooth(boothId, user.id, user.name || user.email);
+      bookBooth(boothId, String(user.id), user.name || user.email);
       setProcessing(false);
       setStep("confirm");
     }, 2000);
@@ -68,7 +68,7 @@ export default function BookBoothPage() {
               View in Dashboard
             </Link>
             <Link
-              href={`/exhibitor/${user.id}`}
+              href={`/exhibitor/${String(user.id)}`}
               className="rounded border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               View My Profile

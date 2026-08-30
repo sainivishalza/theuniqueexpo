@@ -5,9 +5,9 @@ import { getReferralsForPartner, getPartnerStats, generateReferralLink } from "@
 
 export default function PartnerDashboard() {
   const { user } = useAuth();
-  const referrals = user ? getReferralsForPartner(user.id) : [];
-  const stats = user ? getPartnerStats(user.id) : { totalReferrals: 0, totalCommission: 0, conversionRate: 0 };
-  const referralLink = user ? generateReferralLink(user.id) : "";
+  const referrals = user ? getReferralsForPartner(String(user.id)) : [];
+  const stats = user ? getPartnerStats(String(user.id)) : { totalReferrals: 0, totalCommission: 0, conversionRate: 0 };
+  const referralLink = user ? generateReferralLink(String(user.id)) : "";
 
   const statusLabels: Record<string, { label: string; color: string }> = {
     signed_up: { label: "Signed Up", color: "bg-yellow-100 text-yellow-700 border border-yellow-200" },

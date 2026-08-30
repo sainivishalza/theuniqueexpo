@@ -1,11 +1,11 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 export type UserRole = "buyer" | "exhibitor" | "visitor" | "partner" | "admin";
 
 export interface MockUser {
-  id: string;
+  id: number;
   name: string;
   email: string;
   role: UserRole;
@@ -15,35 +15,52 @@ export interface MockUser {
 interface AuthContextValue {
   user: MockUser | null;
   loading: boolean;
-  login: (email: string, role: UserRole) => void;
-  register: (name: string, email: string, role: UserRole, country: string) => void;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string, role: UserRole, country: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<MockUser | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const login = useCallback((email: string, role: UserRole) => {
-    setLoading(true);
-    // Simulate network delay
-    setTimeout(() => {
-      setUser({ id: "mock-1", name: "Test User", email, role, country: "" });
-      setLoading(false);
-    }, 500);
+  // Check for existing session on mount
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) setUser(data.user);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
-  const register = useCallback((name: string, email: string, role: UserRole, country: string) => {
-    setLoading(true);
-    setTimeout(() => {
-      setUser({ id: "mock-1", name, email, role, country });
-      setLoading(false);
-    }, 500);
+  const login = useCallback(async (email: string, password: string) => {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Login failed");
+    setUser(data.user);
   }, []);
 
-  const logout = useCallback(() => {
+  const register = useCallback(async (name: string, email: string, password: string, role: UserRole, country: string) => {
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password, role, country }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Registration failed");
+    setUser(data.user);
+  }, []);
+
+  const logout = useCallback(async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
   }, []);
 

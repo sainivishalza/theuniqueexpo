@@ -47,7 +47,7 @@ export default function HotelsPage() {
       hotelId: selectedHotel.id,
       hotelName: selectedHotel.name,
       exhibitionId: expo.id,
-      userId: user.id,
+      userId: String(user.id),
       userName: user.name || user.email,
       checkIn,
       checkOut,

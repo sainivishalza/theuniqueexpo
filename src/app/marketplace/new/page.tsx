@@ -30,7 +30,7 @@ export default function NewRFQPage() {
     if (!canSubmit || !user) return;
     createRFQ({
       title, product, category, description, quantity, targetPrice, deadline,
-      buyerId: user.id, buyerName: user.name || user.email,
+      buyerId: String(user.id), buyerName: user.name || user.email,
     });
     setSubmitted(true);
     setTimeout(() => router.push("/marketplace"), 1500);

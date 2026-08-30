@@ -41,9 +41,9 @@ export default function RFQDetailPage() {
   const handleSubmitQuote = (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !quotePrice || !quoteLeadTime) return;
-    const profile = mockExhibitorProfiles.find((p) => p.id === user.id);
+    const profile = mockExhibitorProfiles.find((p) => p.id === String(user.id));
     createQuote({
-      rfqId: rfq.id, exhibitorId: user.id,
+      rfqId: rfq.id, exhibitorId: String(user.id),
       exhibitorName: profile?.name || user.name || user.email,
       price: quotePrice, leadTime: quoteLeadTime, notes: quoteNotes,
     });

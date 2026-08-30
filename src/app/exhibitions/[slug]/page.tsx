@@ -68,12 +68,12 @@ export default function ExhibitionDetailPage() {
       </div>
 
       {/* CTA */}
-      <div className="mt-10 flex gap-4">
+      <div className="mt-10 flex flex-wrap gap-4">
         <Link
-          href="/register"
+          href={`/exhibitions/${slug}/floor-plan`}
           className="rounded bg-black px-6 py-2 text-sm font-medium text-white hover:bg-gray-800"
         >
-          Register as Exhibitor
+          View Floor Plan & Book Booth
         </Link>
         <Link
           href="/register"

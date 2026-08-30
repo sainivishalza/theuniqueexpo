@@ -16,6 +16,12 @@ export default function NavBar() {
         <Link href="/exhibitions" className="text-sm text-gray-700 hover:text-black">
           Exhibitions
         </Link>
+        <Link href="/directory" className="text-sm text-gray-700 hover:text-black">
+          Directory
+        </Link>
+        <Link href="/marketplace" className="text-sm text-gray-700 hover:text-black">
+          Marketplace
+        </Link>
         {user ? (
           <>
             <Link href="/dashboard" className="text-sm text-gray-700 hover:text-black">

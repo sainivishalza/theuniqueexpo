@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import { businessTours, submitTourApplication } from "@/lib/tours";
+import { chinaTours } from "@/lib/tours";
 
 const TOUR_SERVICES = [
   "Purchase of tickets (flights)",
@@ -16,21 +16,17 @@ const TOUR_SERVICES = [
 ];
 
 export default function ApplyPage({ params }: { params: Promise<{ slug: string }> }) {
-  const [slug, setSlug] = useState<string>("");
+  const { slug } = use(params);
   const { user } = useAuth();
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "", email: "", phone: "", company: "", nationality: "", travelers: 1,
     services: [] as string[], specialRequests: "",
   });
 
-  // Resolve params on mount
-  import("next/navigation").then(({ useParams }) => {
-    const p = useParams();
-    if (p.slug && !slug) setSlug(p.slug as string);
-  });
-
-  const tour = businessTours.find((t) => t.slug === slug);
+  const tour = chinaTours.find((t) => t.slug === slug);
 
   const toggleService = (s: string) => {
     setForm((prev) => ({
@@ -39,15 +35,28 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!tour || !user) return;
-    submitTourApplication({
-      tourId: tour.id, userId: user.id, name: form.name, email: form.email,
-      phone: form.phone, company: form.company, nationality: form.nationality,
-      travelers: form.travelers, services: form.services, specialRequests: form.specialRequests,
-    });
-    setSubmitted(true);
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch("/api/tour-applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tourId: tour.id, name: form.name, email: form.email,
+          phone: form.phone, company: form.company, nationality: form.nationality,
+          travelers: form.travelers, services: form.services, specialRequests: form.specialRequests,
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Submission failed");
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!tour) return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">Loading...</p></div>;
@@ -57,7 +66,7 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
         <div className="text-6xl mb-4">✅</div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted!</h1>
         <p className="text-gray-500 mb-6">Your tour application for <strong>{tour.title}</strong> has been received. Our team will review it and contact you within 24-48 hours.</p>
-        <Link href="/services/business-tours" className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">← Back to Tours</Link>
+        <Link href="/services/china-tours" className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">← Back to Tours</Link>
       </div>
     </div>
   );
@@ -65,7 +74,7 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
   return (
     <div className="py-12 bg-gray-50 min-h-screen">
       <div className="mx-auto max-w-3xl px-6">
-        <Link href={"/services/business-tours/" + tour.slug} className="text-sm text-blue-600 hover:text-blue-700 mb-6 inline-block">← Back to {tour.title}</Link>
+        <Link href={"/services/china-tours/" + tour.slug} className="text-sm text-blue-600 hover:text-blue-700 mb-6 inline-block">← Back to {tour.title}</Link>
         <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Apply for {tour.title}</h1>
         <p className="text-gray-500 mb-8">{tour.dates} • {tour.duration} • ${tour.price} USD/person</p>
 
@@ -100,8 +109,9 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
             <textarea value={form.specialRequests} onChange={(e) => setForm({...form, specialRequests: e.target.value})} rows={4} placeholder="Any dietary requirements, accessibility needs, or special requests..." className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none resize-none" />
           </div>
 
-          <button type="submit" className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity">
-            Submit Application
+          {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+          <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
+            {submitting ? "Submitting..." : "Submit Application"}
           </button>
         </form>
       </div>

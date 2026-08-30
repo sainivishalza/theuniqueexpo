@@ -1,18 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { exhibitions, getIndustries, getCities } from "@/lib/exhibitions";
 import { formatNumber } from "@/lib/format";
-import { exhibitionHeroImages } from "@/lib/images";
+
+interface Exhibition {
+  id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
+  venue: string; city: string; country: string; industry: string; description: string;
+  highlights: string[]; exhibitors: number; visitors: string; organizer: string; website: string;
+  color: string; image: string;
+}
 
 export default function ExhibitionsPage() {
   const [industry, setIndustry] = useState("All");
   const [city, setCity] = useState("All");
   const [dateFilter, setDateFilter] = useState("all");
+  const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const industries = getIndustries();
-  const cities = getCities();
+  useEffect(() => {
+    fetch("/api/exhibitions")
+      .then((res) => res.json())
+      .then((data) => setExhibitions(data.exhibitions || []))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const industries = useMemo(() => [...new Set(exhibitions.map((e) => e.industry))].sort(), [exhibitions]);
+  const cities = useMemo(() => [...new Set(exhibitions.map((e) => e.city))].sort(), [exhibitions]);
 
   const filtered = exhibitions.filter((e) => {
     if (industry !== "All" && e.industry !== industry) return false;
@@ -89,6 +103,7 @@ export default function ExhibitionsPage() {
       {/* Exhibition Grid */}
       <section className="py-12 bg-gray-50">
         <div className="mx-auto max-w-7xl px-6">
+          {loading && <p className="text-center py-20 text-gray-400">Loading exhibitions...</p>}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map((expo) => (
               <Link
@@ -99,7 +114,7 @@ export default function ExhibitionsPage() {
                 {/* Image */}
                 <div className="relative h-52 overflow-hidden">
                   <img
-                    src={exhibitionHeroImages[expo.slug]}
+                    src={expo.image}
                     alt={expo.title}
                     className="img-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -151,7 +166,7 @@ export default function ExhibitionsPage() {
             ))}
           </div>
 
-          {filtered.length === 0 && (
+          {!loading && filtered.length === 0 && (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">🔍</div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">No exhibitions found</h3>

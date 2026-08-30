@@ -1,10 +1,15 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
-import { getExhibitionById } from "@/lib/exhibitions";
-import { exhibitionHeroImages } from "@/lib/images";
 import { formatNumber } from "@/lib/format";
+
+interface Exhibition {
+  id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
+  venue: string; city: string; country: string; industry: string; description: string;
+  highlights: string[]; exhibitors: number; visitors: string; organizer: string; website: string;
+  color: string; image: string;
+}
 
 const exhibitorLogos = [
   { name: "Pacific Foods", abbr: "PF", color: "bg-orange-500" },
@@ -21,7 +26,18 @@ export default function ExhibitionDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
-  const expo = getExhibitionById(slug);
+  const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
+
+  useEffect(() => {
+    fetch(`/api/exhibitions/${slug}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data) => setExpo(data.exhibition))
+      .catch(() => setExpo(null));
+  }, [slug]);
+
+  if (expo === undefined) {
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">Loading...</div>;
+  }
 
   if (!expo) {
     return (
@@ -44,7 +60,7 @@ export default function ExhibitionDetailPage({
       {/* Hero Banner */}
       <section className="relative h-[420px] md:h-[480px] overflow-hidden">
         <img
-          src={exhibitionHeroImages[expo.slug]}
+          src={expo.image}
           alt={expo.title}
           className="img-cover"
         />

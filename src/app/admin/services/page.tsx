@@ -1,23 +1,37 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import { businessTours, chinaTours, getTourApplications } from "@/lib/tours";
-import { visaServices, getVisaApplications } from "@/lib/visa-setup";
+import { businessTours, chinaTours } from "@/lib/tours";
 import { subsidies } from "@/lib/subsidies";
 
 export default function AdminServicesPage() {
   const { user } = useAuth();
+  const [counts, setCounts] = useState({ tourApps: 0, visaApps: 0, consultations: 0 });
+
+  useEffect(() => {
+    if (!user || user.role !== "admin") return;
+    Promise.all([
+      fetch("/api/admin/tour-applications").then((r) => r.json()),
+      fetch("/api/admin/visa-applications").then((r) => r.json()),
+      fetch("/api/admin/consultations").then((r) => r.json()),
+    ]).then(([tourData, visaData, consultData]) => {
+      setCounts({
+        tourApps: (tourData.applications || []).length,
+        visaApps: (visaData.applications || []).length,
+        consultations: (consultData.bookings || []).length,
+      });
+    });
+  }, [user]);
+
   if (!user || user.role !== "admin") return <div className="min-h-[60vh] flex items-center justify-center"><div className="text-center"><div className="text-6xl mb-4">🔒</div><h1 className="text-2xl font-bold">Access Denied</h1><p className="text-gray-500 mt-2">Admin privileges required.</p><p className="text-xs text-gray-400 mt-1">Tip: login with admin@theuniqueexpo.com</p></div></div>;
 
-  const tourApps = getTourApplications();
-  const visaApps = getVisaApplications();
-
   const sections = [
-    { title: "Business Tours", description: "Manage tour packages tied to exhibitions.", href: "/admin/services/tours", icon: "✈️", color: "from-blue-500 to-blue-600", count: businessTours.length },
-    { title: "Tour Applications", description: "Review and manage tour booking applications.", href: "/admin/services/tour-applications", icon: "📝", color: "from-purple-500 to-purple-600", count: tourApps.length },
-    { title: "Visa & Setup Applications", description: "Review company setup and visa applications.", href: "/admin/services/visa-applications", icon: "📋", color: "from-emerald-500 to-green-600", count: visaApps.length },
+    { title: "Business Tours", description: "Manage tour packages tied to exhibitions.", href: "/admin/services/tours", icon: "✈️", color: "from-blue-500 to-blue-600", count: businessTours.length + chinaTours.length },
+    { title: "Tour Applications", description: "Review and manage tour booking applications.", href: "/admin/services/tour-applications", icon: "📝", color: "from-purple-500 to-purple-600", count: counts.tourApps },
+    { title: "Visa & Setup Applications", description: "Review company setup and visa applications.", href: "/admin/services/visa-applications", icon: "📋", color: "from-emerald-500 to-green-600", count: counts.visaApps },
     { title: "Transport Subsidies", description: "Manage exhibition travel subsidies.", href: "/admin/services/subsidies", icon: "🚌", color: "from-cyan-500 to-teal-600", count: subsidies.length },
-    { title: "Consultation Requests", description: "Review and schedule consultation bookings.", href: "/admin/services/consultations", icon: "💬", color: "from-orange-500 to-red-500", count: 0 },
+    { title: "Consultation Requests", description: "Review and schedule consultation bookings.", href: "/admin/services/consultations", icon: "💬", color: "from-orange-500 to-red-500", count: counts.consultations },
   ];
 
   return (

@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { exhibitions } from "@/lib/exhibitions";
-import { exhibitionHeroImages } from "@/lib/images";
 import { formatNumber } from "@/lib/format";
 import { featuredEvents } from "@/lib/featured-events";
+import { listExhibitions } from "@/lib/server/exhibitions-repo";
 
 const stats = [
   { value: "20+", label: "Major Exhibitions", icon: "🎯" },
@@ -26,8 +25,8 @@ const industries = [
   { name: "Agriculture", icon: "🚜", count: 55, color: "from-green-500 to-lime-600" },
 ];
 
-export default function Home() {
-  const featured = exhibitions.slice(0, 6);
+export default async function Home() {
+  const exhibitions = await listExhibitions();
 
   return (
     <main>

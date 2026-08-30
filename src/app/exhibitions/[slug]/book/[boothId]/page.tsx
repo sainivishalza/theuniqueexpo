@@ -2,11 +2,12 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useState, useMemo } from "react";
-import { getExhibitionById } from "@/lib/exhibitions";
+import { useState, useMemo, useEffect } from "react";
 import { initBooths, bookBooth } from "@/lib/booths";
 import { useAuth } from "@/lib/auth-context";
 import { formatNumber, formatCurrency } from "@/lib/format";
+
+interface Exhibition { id: string; slug: string; title: string; }
 
 export default function BookBoothPage() {
   const params = useParams();
@@ -14,9 +15,17 @@ export default function BookBoothPage() {
   const { user } = useAuth();
   const slug = typeof params.slug === "string" ? params.slug : "";
   const boothId = typeof params.boothId === "string" ? params.boothId : "";
-  const expo = getExhibitionById(slug);
+  const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
   const [step, setStep] = useState<"details" | "payment" | "confirm">("details");
   const [processing, setProcessing] = useState(false);
+
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`/api/exhibitions/${slug}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data) => setExpo(data.exhibition))
+      .catch(() => setExpo(null));
+  }, [slug]);
 
   const booths = useMemo(() => {
     if (!expo) return [];
@@ -24,6 +33,10 @@ export default function BookBoothPage() {
   }, [expo]);
 
   const booth = booths.find((b) => b.id === boothId);
+
+  if (expo === undefined) {
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">Loading...</div>;
+  }
 
   if (!expo || !booth || !user) {
     return (

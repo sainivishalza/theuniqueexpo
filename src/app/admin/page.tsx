@@ -1,13 +1,32 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import { exhibitions } from "@/lib/exhibitions";
-import { getRFQs } from "@/lib/rfq";
-import { getAllHotelBookings } from "@/lib/hotels";
 
 export default function AdminPage() {
   const { user } = useAuth();
+  const [stats, setStats] = useState({ exhibitions: 0, openRfqs: 0, hotelBookings: 0, totalRfqs: 0 });
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user || user.role !== "admin") return;
+    Promise.all([
+      fetch("/api/exhibitions").then((r) => r.json()),
+      fetch("/api/rfqs").then((r) => r.json()),
+      fetch("/api/admin/hotel-bookings").then((r) => r.json()),
+    ])
+      .then(([exhibitionsData, rfqsData, bookingsData]) => {
+        const rfqs = rfqsData.rfqs || [];
+        setStats({
+          exhibitions: (exhibitionsData.exhibitions || []).length,
+          openRfqs: rfqs.filter((r: any) => r.status === "open").length,
+          hotelBookings: (bookingsData.bookings || []).length,
+          totalRfqs: rfqs.length,
+        });
+      })
+      .finally(() => setStatsLoading(false));
+  }, [user]);
 
   if (!user || user.role !== "admin") {
     return (
@@ -23,15 +42,19 @@ export default function AdminPage() {
     );
   }
 
-  const rfqs = getRFQs();
-  const hotelBookings = getAllHotelBookings();
-
   const sections = [
     { title: "Exhibition Management", description: "Create, edit, and manage exhibition listings and floor plans.", href: "/admin/exhibitions", icon: "🎪", color: "from-blue-500 to-blue-600" },
     { title: "RFQ Review", description: "View and moderate all buy requests and submitted quotes.", href: "/admin/rfqs", icon: "📋", color: "from-purple-500 to-purple-600" },
     { title: "Hotel Bookings", description: "Review and confirm hotel booking requests from buyers.", href: "/admin/hotels", icon: "🏨", color: "from-emerald-500 to-green-600" },
     { title: "Services Management", description: "Manage tours, applications, subsidies, and consultations.", href: "/admin/services", icon: "🛠️", color: "from-violet-500 to-purple-600" },
     { title: "User Management", description: "Manage user accounts, roles, and verification status.", icon: "👥", color: "from-orange-500 to-red-500", comingSoon: true },
+  ];
+
+  const statCards = [
+    { label: "Exhibitions", value: stats.exhibitions, icon: "🎪" },
+    { label: "Open RFQs", value: stats.openRfqs, icon: "📋" },
+    { label: "Hotel Bookings", value: stats.hotelBookings, icon: "🏨" },
+    { label: "Total RFQs", value: stats.totalRfqs, icon: "📊" },
   ];
 
   return (
@@ -46,15 +69,10 @@ export default function AdminPage() {
             </div>
           </div>
           <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: "Exhibitions", value: exhibitions.length, icon: "🎪" },
-              { label: "Open RFQs", value: rfqs.filter(r => r.status === "open").length, icon: "📋" },
-              { label: "Hotel Bookings", value: hotelBookings.length, icon: "🏨" },
-              { label: "Total RFQs", value: rfqs.length, icon: "📊" },
-            ].map((s) => (
+            {statCards.map((s) => (
               <div key={s.label} className="rounded-xl bg-white/10 backdrop-blur-sm p-4 border border-white/10">
                 <div className="text-sm opacity-70 mb-1">{s.icon} {s.label}</div>
-                <div className="text-2xl font-extrabold text-white">{s.value}</div>
+                <div className="text-2xl font-extrabold text-white">{statsLoading ? "…" : s.value}</div>
               </div>
             ))}
           </div>

@@ -2,10 +2,17 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { getExhibitionById } from "@/lib/exhibitions";
-import { getHotelsForExhibition, createHotelBooking, type Hotel } from "@/lib/hotels";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
+
+interface Exhibition {
+  id: string; slug: string; title: string; city: string;
+}
+
+interface Hotel {
+  id: string; name: string; stars: number; address: string; city: string;
+  pricePerNight: number; distanceToVenue: string; amenities: string[];
+}
 
 const hotelImages = [
   "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=300&fit=crop&q=80",
@@ -19,18 +26,35 @@ const hotelImages = [
 export default function HotelsPage() {
   const params = useParams();
   const slug = typeof params.slug === "string" ? params.slug : "";
-  const expo = getExhibitionById(slug);
   const { user } = useAuth();
+  const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
+  const [hotels, setHotels] = useState<Hotel[]>([]);
   const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [rooms, setRooms] = useState(1);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const hotels = useMemo(() => {
-    if (!expo) return [];
-    return getHotelsForExhibition(expo.id);
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`/api/exhibitions/${slug}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data) => setExpo(data.exhibition))
+      .catch(() => setExpo(null));
+  }, [slug]);
+
+  useEffect(() => {
+    if (!expo) return;
+    fetch(`/api/hotels?exhibitionId=${expo.id}`)
+      .then((res) => res.json())
+      .then((data) => setHotels(data.hotels || []));
   }, [expo]);
+
+  if (expo === undefined) {
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">Loading...</div>;
+  }
 
   if (!expo) {
     return (
@@ -40,20 +64,30 @@ export default function HotelsPage() {
     );
   }
 
-  const handleBook = (e: React.FormEvent) => {
+  const handleBook = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedHotel || !checkIn || !checkOut || !user) return;
-    createHotelBooking({
-      hotelId: selectedHotel.id,
-      hotelName: selectedHotel.name,
-      exhibitionId: expo.id,
-      userId: String(user.id),
-      userName: user.name || user.email,
-      checkIn,
-      checkOut,
-      rooms,
-    });
-    setSubmitted(true);
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch("/api/hotel-bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hotelId: Number(selectedHotel.id),
+          exhibitionId: Number(expo.id),
+          checkIn,
+          checkOut,
+          rooms,
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Booking failed");
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -141,6 +175,7 @@ export default function HotelsPage() {
                 </div>
               ) : user ? (
                 <form onSubmit={handleBook} className="space-y-4">
+                  {error && <div className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</div>}
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-1.5">Check-in</label>
@@ -159,8 +194,8 @@ export default function HotelsPage() {
                       </select>
                     </div>
                   </div>
-                  <button type="submit" className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
-                    Submit Booking Request
+                  <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 disabled:opacity-50">
+                    {submitting ? "Submitting..." : "Submit Booking Request"}
                   </button>
                 </form>
               ) : (

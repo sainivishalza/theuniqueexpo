@@ -1,12 +1,48 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import { getTourApplications } from "@/lib/tours";
+
+interface TourApplication {
+  id: string; tourId: string; name: string; email: string; travelers: number;
+  services: string[]; status: string; createdAt: string;
+}
+
+const STATUSES = ["pending", "confirmed", "cancelled"];
 
 export default function AdminTourAppsPage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const [apps, setApps] = useState<TourApplication[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user || user.role !== "admin") return;
+    fetch("/api/admin/tour-applications")
+      .then((res) => res.json())
+      .then((data) => setApps(data.applications || []))
+      .finally(() => setLoading(false));
+  }, [user]);
+
+  async function updateStatus(id: string, status: string) {
+    setUpdatingId(id);
+    try {
+      const res = await fetch(`/api/admin/tour-applications/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Update failed");
+      setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
+  if (authLoading) return null;
   if (!user || user.role !== "admin") return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">Admin access required.</p></div>;
-  const apps = getTourApplications();
 
   return (
     <div>
@@ -14,12 +50,12 @@ export default function AdminTourAppsPage() {
         <div className="mx-auto max-w-7xl px-6">
           <Link href="/admin/services" className="text-sm text-blue-200 hover:text-white mb-4 inline-block">← Back to Services Admin</Link>
           <h1 className="text-3xl font-extrabold text-white">Tour Applications</h1>
-          <p className="mt-1 text-blue-200/80">{apps.length} applications received</p>
+          <p className="mt-1 text-blue-200/80">{loading ? "Loading..." : `${apps.length} applications received`}</p>
         </div>
       </section>
       <section className="py-10 bg-gray-50">
         <div className="mx-auto max-w-7xl px-6">
-          {apps.length === 0 ? (
+          {!loading && apps.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
               <div className="text-5xl mb-4">📝</div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">No applications yet</h3>
@@ -41,7 +77,16 @@ export default function AdminTourAppsPage() {
                     <td className="px-6 py-4 text-gray-500">{a.tourId}</td>
                     <td className="px-6 py-4 text-gray-900">{a.travelers}</td>
                     <td className="px-6 py-4 text-gray-500">{a.services.length} services</td>
-                    <td className="px-6 py-4"><span className={`rounded-lg px-2 py-1 text-xs font-bold ${a.status === "confirmed" ? "bg-green-100 text-green-700" : a.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>{a.status}</span></td>
+                    <td className="px-6 py-4">
+                      <select
+                        value={a.status}
+                        disabled={updatingId === a.id}
+                        onChange={(e) => updateStatus(a.id, e.target.value)}
+                        className={`rounded-lg px-2 py-1 text-xs font-bold border-0 disabled:opacity-50 ${a.status === "confirmed" ? "bg-green-100 text-green-700" : a.status === "cancelled" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}
+                      >
+                        {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </td>
                     <td className="px-6 py-4 text-gray-400 text-xs">{new Date(a.createdAt).toLocaleDateString()}</td>
                   </tr>
                 ))}

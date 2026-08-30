@@ -2,11 +2,12 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { getExhibitionById } from "@/lib/exhibitions";
+import { useEffect, useMemo, useState } from "react";
 import { initBooths, type Booth } from "@/lib/booths";
 import { useAuth } from "@/lib/auth-context";
 import { formatNumber, formatCurrency } from "@/lib/format";
+
+interface Exhibition { id: string; slug: string; title: string; }
 
 const SIZE_COLORS: Record<string, string> = {
   platinum: "bg-amber-400 hover:bg-amber-300 border-amber-500/30",
@@ -23,14 +24,26 @@ const SIZE_LABELS: Record<string, { label: string; price: string }> = {
 export default function FloorPlanPage() {
   const params = useParams();
   const slug = typeof params.slug === "string" ? params.slug : "";
-  const expo = getExhibitionById(slug);
   const { user } = useAuth();
   const [selected, setSelected] = useState<Booth | null>(null);
+  const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
+
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`/api/exhibitions/${slug}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data) => setExpo(data.exhibition))
+      .catch(() => setExpo(null));
+  }, [slug]);
 
   const booths = useMemo(() => {
     if (!expo) return [];
     return initBooths(expo.id);
   }, [expo]);
+
+  if (expo === undefined) {
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">Loading...</div>;
+  }
 
   if (!expo) {
     return (

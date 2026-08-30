@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { createRFQ } from "@/lib/rfq";
 import { useAuth } from "@/lib/auth-context";
 
 const CATEGORIES = [
@@ -22,18 +21,29 @@ export default function NewRFQPage() {
   const [targetPrice, setTargetPrice] = useState("");
   const [deadline, setDeadline] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const canSubmit = title && product && category && description && quantity && !submitted;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit || !user) return;
-    createRFQ({
-      title, product, category, description, quantity, targetPrice, deadline,
-      buyerId: String(user.id), buyerName: user.name || user.email,
-    });
-    setSubmitted(true);
-    setTimeout(() => router.push("/marketplace"), 1500);
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch("/api/rfqs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, product, category, description, quantity, targetPrice, deadline }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Failed to post request");
+      setSubmitted(true);
+      setTimeout(() => router.push("/marketplace"), 1500);
+    } catch (err: any) {
+      setError(err.message);
+      setSubmitting(false);
+    }
   };
 
   if (!user) {
@@ -102,8 +112,9 @@ export default function NewRFQPage() {
             <Field label="Deadline (optional)">
               <input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none" />
             </Field>
-            <button type="submit" disabled={!canSubmit} className="w-full rounded-xl gradient-brand py-3.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:hover:scale-100">
-              Post Buy Request
+            {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+            <button type="submit" disabled={!canSubmit || submitting} className="w-full rounded-xl gradient-brand py-3.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:hover:scale-100">
+              {submitting ? "Posting..." : "Post Buy Request"}
             </button>
           </form>
         </div>

@@ -3,6 +3,24 @@
 import Link from "next/link";
 import { serviceCategories } from "@/lib/services";
 
+const marketAreas = [
+  { city: "Linyi", emoji: "📦", desc: "Trade & Logistics Hub", slug: "linyi-20-22-sept" },
+  { city: "Guzhen", emoji: "💡", desc: "Lighting Capital of China", slug: "guzhen-lighting-fair" },
+  { city: "Shenzhen", emoji: "📱", desc: "Electronics & Tech Hub", slug: "cioe-shenzhen" },
+  { city: "Dongguan", emoji: "🏭", desc: "Manufacturing Center", slug: "dongguan-manufacturing" },
+  { city: "Wuxi", emoji: "⚙️", desc: "Industrial & Machinery", slug: "wuxi-industrial" },
+  { city: "Hong Kong", emoji: "🌐", desc: "Global Sourcing Fair", slug: "hk-electronics-fair" },
+  { city: "Beijing", emoji: "🏛️", desc: "Trade in Services", slug: "ciftis-beijing" },
+  { city: "Shanghai", emoji: "🪑", desc: "Furniture & Design", slug: "ciff-shanghai" },
+  { city: "Nanning", emoji: "🤝", desc: "China-ASEAN Expo", slug: "caexpo-nanning" },
+  { city: "Guangzhou", emoji: "💄", desc: "Beauty & Cosmetics", slug: "cibe-guangzhou" },
+  { city: "Weifang", emoji: "🌾", desc: "Agricultural Machinery", slug: "weifang-agriculture" },
+  { city: "Taizhou", emoji: "🔧", desc: "Plastics & Molding", slug: "taizhou-plastics" },
+  { city: "Hangzhou", emoji: "☁️", desc: "Cloud & AI Tech", slug: "apsara-hangzhou" },
+  { city: "Macao", emoji: "🎰", desc: "Trade & Investment", slug: "mif-macao" },
+  { city: "Shantou", emoji: "🧸", desc: "Toy Capital of China", slug: "shantou-toys" },
+];
+
 export default function ServicesPage() {
   return (
     <div>
@@ -13,6 +31,30 @@ export default function ServicesPage() {
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
           <h1 className="text-4xl md:text-5xl font-extrabold">Our Services</h1>
           <p className="mt-3 text-lg text-gray-300 max-w-2xl">Everything you need to exhibit at, attend, or do business in China — from tours and visas to moving and consultation.</p>
+        </div>
+      </section>
+
+      {/* Markets We Cover */}
+      <section className="py-16 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">Markets We Cover</h2>
+            <p className="text-blue-100 text-lg max-w-2xl mx-auto">We operate across all major Chinese trade hubs and exhibition cities — covering 15+ markets nationwide.</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            {marketAreas.map((m) => (
+              <Link key={m.city} href={`/exhibitions/${m.slug}`} className="group relative rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 p-4 text-center hover:bg-white/20 hover:scale-105 transition-all duration-300">
+                <div className="text-3xl mb-2">{m.emoji}</div>
+                <h3 className="font-bold text-white text-sm">{m.city}</h3>
+                <p className="text-xs text-blue-200 mt-1">{m.desc}</p>
+              </Link>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link href="/exhibitions" className="inline-block rounded-xl bg-white px-6 py-3 font-semibold text-blue-600 hover:bg-blue-50 transition-colors">
+              View All Exhibitions →
+            </Link>
+          </div>
         </div>
       </section>
 

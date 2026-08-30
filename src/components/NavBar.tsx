@@ -103,6 +103,8 @@ export default function NavBar() {
         <div className="md:hidden border-t border-gray-200/60 bg-white/95 backdrop-blur-xl px-6 py-4 space-y-2">
           <Link href="/exhibitions" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Exhibitions</Link>
           <Link href="/directory" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Directory</Link>
+          <Link href="/services" className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors">Services</Link>
+          <Link href="/services" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Services</Link>
           <Link href="/marketplace" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Marketplace</Link>
           {user ? (
             <>

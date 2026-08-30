@@ -30,6 +30,7 @@ export default function AdminPage() {
     { title: "Exhibition Management", description: "Create, edit, and manage exhibition listings and floor plans.", href: "/admin/exhibitions", icon: "🎪", color: "from-blue-500 to-blue-600" },
     { title: "RFQ Review", description: "View and moderate all buy requests and submitted quotes.", href: "/admin/rfqs", icon: "📋", color: "from-purple-500 to-purple-600" },
     { title: "Hotel Bookings", description: "Review and confirm hotel booking requests from buyers.", href: "/admin/hotels", icon: "🏨", color: "from-emerald-500 to-green-600" },
+    { title: "Services Management", description: "Manage tours, applications, subsidies, and consultations.", href: "/admin/services", icon: "🛠️", color: "from-violet-500 to-purple-600" },
     { title: "User Management", description: "Manage user accounts, roles, and verification status.", icon: "👥", color: "from-orange-500 to-red-500", comingSoon: true },
   ];
 

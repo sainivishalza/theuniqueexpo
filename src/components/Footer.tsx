@@ -3,6 +3,9 @@ import Link from "next/link";
 const footerLinks = {
   Platform: [
     { label: "Browse Exhibitions", href: "/exhibitions" },
+    { label: "Our Services", href: "/services" },
+    { label: "Business Tours", href: "/services/business-tours" },
+    { label: "China Tours", href: "/services/china-tours" },
     { label: "Exhibitor Directory", href: "/directory" },
     { label: "RFQ Marketplace", href: "/marketplace" },
     { label: "Partner Program", href: "/register" },

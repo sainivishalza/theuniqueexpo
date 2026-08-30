@@ -10,12 +10,18 @@ const stats = [
 ];
 
 const industries = [
-  { name: "Food & Beverage", icon: "🍽️", count: 120, color: "from-orange-500 to-red-500" },
-  { name: "Automotive", icon: "🚗", count: 85, color: "from-blue-500 to-indigo-600" },
-  { name: "Industrial", icon: "⚙️", count: 64, color: "from-purple-500 to-violet-600" },
-  { name: "Digital Trade", icon: "💻", count: 150, color: "from-cyan-500 to-blue-500" },
-  { name: "Manufacturing", icon: "🏭", count: 95, color: "from-amber-500 to-orange-500" },
-  { name: "Trade & Investment", icon: "🤝", count: 110, color: "from-emerald-500 to-green-600" },
+  { name: "Electronics", icon: "🔌", count: 200, color: "from-blue-500 to-indigo-600" },
+  { name: "Trade & Investment", icon: "🤝", count: 150, color: "from-emerald-500 to-green-600" },
+  { name: "Digital Trade", icon: "💻", count: 120, color: "from-cyan-500 to-blue-500" },
+  { name: "Manufacturing", icon: "🏭", count: 110, color: "from-amber-500 to-orange-500" },
+  { name: "Food & Beverage", icon: "🍽️", count: 90, color: "from-orange-500 to-red-500" },
+  { name: "Automotive", icon: "🚗", count: 85, color: "from-red-500 to-pink-600" },
+  { name: "Industrial", icon: "⚙️", count: 80, color: "from-purple-500 to-violet-600" },
+  { name: "Lighting", icon: "💡", count: 75, color: "from-yellow-400 to-amber-500" },
+  { name: "Hospitality", icon: "🏨", count: 70, color: "from-orange-600 to-red-700" },
+  { name: "Toys & Gifts", icon: "🧸", count: 65, color: "from-pink-400 to-rose-500" },
+  { name: "Logistics", icon: "📦", count: 60, color: "from-teal-500 to-cyan-600" },
+  { name: "Agriculture", icon: "🚜", count: 55, color: "from-green-500 to-lime-600" },
 ];
 
 const testimonials = [

@@ -1,78 +1,103 @@
 import Link from "next/link";
 
+const footerLinks = {
+  Platform: [
+    { label: "Browse Exhibitions", href: "/exhibitions" },
+    { label: "Exhibitor Directory", href: "/directory" },
+    { label: "RFQ Marketplace", href: "/marketplace" },
+    { label: "Partner Program", href: "/register" },
+  ],
+  Company: [
+    { label: "About Us", href: "#" },
+    { label: "Contact", href: "#" },
+    { label: "Careers", href: "#" },
+    { label: "Blog", href: "#" },
+  ],
+  Resources: [
+    { label: "Help Center", href: "#" },
+    { label: "Exhibition Guide", href: "#" },
+    { label: "Booth Setup Tips", href: "#" },
+    { label: "API Documentation", href: "#" },
+  ],
+};
+
 export default function Footer() {
   return (
-    <footer className="border-t border-gray-200 bg-gray-50">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand */}
+    <footer className="bg-gray-900 text-gray-300">
+      {/* Newsletter */}
+      <div className="border-b border-gray-800">
+        <div className="mx-auto max-w-7xl px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-lg font-bold">ExpoBridge</h3>
-            <p className="mt-2 text-sm text-gray-500">
-              Global B2B Exhibition, Trade &amp; Sourcing Platform
-            </p>
-            <p className="mt-3 text-xs text-gray-400">
-              Connecting buyers with exhibitors worldwide.
-            </p>
+            <h3 className="text-xl font-bold text-white">Stay Updated</h3>
+            <p className="text-sm text-gray-400 mt-1">Get the latest exhibition news and exclusive early-bird offers.</p>
           </div>
+          <form className="flex gap-2 w-full md:w-auto" onSubmit={(e) => e.preventDefault()}>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="flex-1 md:w-72 rounded-xl bg-gray-800 border border-gray-700 px-4 py-3 text-sm text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
+            />
+            <button className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity whitespace-nowrap">
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </div>
 
-          {/* Exhibitions */}
-          <div>
-            <h4 className="text-sm font-semibold">Exhibitions</h4>
-            <ul className="mt-2 space-y-1.5 text-sm text-gray-500">
-              <li>
-                <Link href="/exhibitions" className="hover:text-black">
-                  Browse Exhibitions
-                </Link>
-              </li>
-              <li>
-                <Link href="/directory" className="hover:text-black">
-                  Exhibitor Directory
-                </Link>
-              </li>
-              <li>
-                <Link href="/marketplace" className="hover:text-black">
-                  Procurement Marketplace
-                </Link>
-              </li>
-            </ul>
+      {/* Links */}
+      <div className="mx-auto max-w-7xl px-6 py-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
+        {/* Brand */}
+        <div className="lg:col-span-2">
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center text-white text-sm font-bold">E</div>
+            <span className="text-xl font-extrabold text-white">
+              Expo<span className="text-blue-400">Bridge</span>
+            </span>
           </div>
-
-          {/* Platform */}
-          <div>
-            <h4 className="text-sm font-semibold">Platform</h4>
-            <ul className="mt-2 space-y-1.5 text-sm text-gray-500">
-              <li>
-                <Link href="/register" className="hover:text-black">
-                  Register
-                </Link>
-              </li>
-              <li>
-                <Link href="/login" className="hover:text-black">
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard" className="hover:text-black">
-                  Dashboard
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="text-sm font-semibold">Contact</h4>
-            <ul className="mt-2 space-y-1.5 text-sm text-gray-500">
-              <li>📧 info@expobridge.com</li>
-              <li>📞 +86 137 2521 5988</li>
-              <li>📍 Guangzhou, China</li>
-            </ul>
+          <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
+            The global B2B exhibition, trade-fair &amp; sourcing platform connecting buyers
+            with exhibitors worldwide.
+          </p>
+          {/* Social icons */}
+          <div className="flex gap-3 mt-5">
+            {["𝕏", "in", "f", "▶"].map((icon, i) => (
+              <a
+                key={i}
+                href="#"
+                className="w-9 h-9 rounded-lg bg-gray-800 flex items-center justify-center text-sm text-gray-400 hover:bg-gray-700 hover:text-white transition-colors"
+              >
+                {icon}
+              </a>
+            ))}
           </div>
         </div>
 
-        <div className="mt-8 border-t border-gray-200 pt-4 text-center text-xs text-gray-400">
-          © {new Date().getFullYear()} ExpoBridge. All rights reserved.
+        {/* Link columns */}
+        {Object.entries(footerLinks).map(([title, links]) => (
+          <div key={title}>
+            <h4 className="text-sm font-bold text-white mb-4">{title}</h4>
+            <ul className="space-y-2.5">
+              {links.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom bar */}
+      <div className="border-t border-gray-800">
+        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+          <span>© {new Date().getFullYear()} ExpoBridge. All rights reserved.</span>
+          <div className="flex gap-4">
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+          </div>
         </div>
       </div>
     </footer>

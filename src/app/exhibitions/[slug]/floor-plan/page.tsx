@@ -8,15 +8,15 @@ import { initBooths, type Booth } from "@/lib/booths";
 import { useAuth } from "@/lib/auth-context";
 
 const SIZE_COLORS: Record<string, string> = {
-  platinum: "bg-yellow-400 hover:bg-yellow-300",
-  gold: "bg-blue-400 hover:bg-blue-300",
-  standard: "bg-green-400 hover:bg-green-300",
+  platinum: "bg-amber-400 hover:bg-amber-300 border-amber-500/30",
+  gold: "bg-blue-400 hover:bg-blue-300 border-blue-500/30",
+  standard: "bg-emerald-400 hover:bg-emerald-300 border-emerald-500/30",
 };
 
-const SIZE_LABELS: Record<string, string> = {
-  platinum: "Platinum — $15,000",
-  gold: "Gold — $8,000",
-  standard: "Standard — $3,500",
+const SIZE_LABELS: Record<string, { label: string; price: string }> = {
+  platinum: { label: "Platinum", price: "$15,000" },
+  gold: { label: "Gold", price: "$8,000" },
+  standard: { label: "Standard", price: "$3,500" },
 };
 
 export default function FloorPlanPage() {
@@ -33,9 +33,13 @@ export default function FloorPlanPage() {
 
   if (!expo) {
     return (
-      <main className="flex min-h-[calc(100vh-52px)] items-center justify-center">
-        <p className="text-gray-500">Exhibition not found.</p>
-      </main>
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">😕</div>
+          <h1 className="text-2xl font-bold text-gray-900">Exhibition not found</h1>
+          <Link href="/exhibitions" className="mt-4 inline-block text-blue-600 hover:underline">Browse all exhibitions →</Link>
+        </div>
+      </div>
     );
   }
 
@@ -43,149 +47,171 @@ export default function FloorPlanPage() {
   const cols = 8;
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
-      <Link
-        href={`/exhibitions/${slug}`}
-        className="text-sm text-gray-500 hover:underline"
-      >
-        ← Back to {expo.title}
-      </Link>
-
-      <h1 className="mt-4 text-2xl font-bold">Floor Plan — Booth Selection</h1>
-      <p className="mt-1 text-sm text-gray-500">
-        Click an available booth to select and book it.
-      </p>
-
-      {/* Legend */}
-      <div className="mt-6 flex flex-wrap gap-4 text-xs">
-        {Object.entries(SIZE_LABELS).map(([size, label]) => (
-          <div key={size} className="flex items-center gap-1.5">
-            <span className={`inline-block h-4 w-4 rounded ${SIZE_COLORS[size].split(" ")[0]}`} />
-            {label}
-          </div>
-        ))}
-        <div className="flex items-center gap-1.5">
-          <span className="inline-block h-4 w-4 rounded bg-red-400" />
-          Booked
+    <div>
+      {/* Hero */}
+      <section className="bg-gray-900 py-8">
+        <div className="mx-auto max-w-7xl px-6">
+          <Link href={`/exhibitions/${slug}`} className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+            Back to {expo.title}
+          </Link>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white">Floor Plan & Booth Selection</h1>
+          <p className="mt-2 text-gray-400">Click an available booth to select and reserve it.</p>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="inline-block h-4 w-4 rounded bg-gray-600" />
-          Selected
-        </div>
-      </div>
+      </section>
 
-      {/* Floor plan grid */}
-      <div className="mt-6 overflow-x-auto">
-        <div className="inline-block min-w-[600px]">
-          {/* Column headers */}
-          <div className="mb-2 flex">
-            <div className="w-10" />
-            {Array.from({ length: cols }, (_, i) => (
-              <div
-                key={i}
-                className="flex h-8 w-16 items-center justify-center text-xs font-medium text-gray-400"
-              >
-                {i + 1}
+      {/* Content */}
+      <section className="py-10 bg-gray-50">
+        <div className="mx-auto max-w-7xl px-6">
+          {/* Legend */}
+          <div className="mb-8 flex flex-wrap gap-5 items-center">
+            {Object.entries(SIZE_LABELS).map(([size, { label, price }]) => (
+              <div key={size} className="flex items-center gap-2">
+                <span className={`inline-block h-4 w-4 rounded ${SIZE_COLORS[size].split(" ")[0]}`} />
+                <span className="text-sm font-medium text-gray-700">{label} — {price}</span>
               </div>
             ))}
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-4 w-4 rounded bg-red-400" />
+              <span className="text-sm font-medium text-gray-700">Booked</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-4 w-4 rounded bg-gray-600" />
+              <span className="text-sm font-medium text-gray-700">Selected</span>
+            </div>
           </div>
 
-          {/* Rows */}
-          {rows.map((row) => (
-            <div key={row} className="mb-2 flex items-center">
-              <div className="w-10 text-center text-sm font-bold text-gray-500">
-                {row}
+          <div className="grid gap-8 lg:grid-cols-4">
+            {/* Floor plan */}
+            <div className="lg:col-span-3 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
+              <h2 className="text-lg font-bold text-gray-900 mb-6">Exhibition Hall Map</h2>
+              <div className="overflow-x-auto">
+                <div className="inline-block min-w-[500px]">
+                  {/* Column headers */}
+                  <div className="mb-2 flex">
+                    <div className="w-10" />
+                    {Array.from({ length: cols }, (_, i) => (
+                      <div key={i} className="flex h-8 w-[72px] items-center justify-center text-xs font-semibold text-gray-400">
+                        {i + 1}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Rows */}
+                  {rows.map((row) => (
+                    <div key={row} className="mb-2 flex items-center">
+                      <div className="w-10 text-center text-sm font-bold text-gray-500">{row}</div>
+                      {Array.from({ length: cols }, (_, i) => {
+                        const booth = booths.find((b) => b.row === row && b.col === i + 1);
+                        if (!booth) return <div key={i} className="h-16 w-[72px]" />;
+
+                        const isBooked = booth.status === "booked";
+                        const isSelected = selected?.id === booth.id;
+
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => {
+                              if (!isBooked) setSelected(isSelected ? null : booth);
+                            }}
+                            disabled={isBooked}
+                            title={isBooked ? `Booked: ${booth.exhibitorName}` : `${booth.size} — $${booth.price.toLocaleString()}`}
+                            className={`mr-2 flex h-16 w-[72px] flex-col items-center justify-center rounded-xl border-2 text-[10px] font-bold transition-all duration-200 ${
+                              isSelected
+                                ? "border-gray-600 bg-gray-600 text-white ring-2 ring-gray-300 shadow-lg"
+                                : isBooked
+                                  ? "cursor-not-allowed border-red-300 bg-red-100 text-red-600"
+                                  : `${SIZE_COLORS[booth.size]} text-gray-800 shadow-sm hover:shadow-md`
+                            }`}
+                          >
+                            <span className="text-xs font-bold">{row}{i + 1}</span>
+                            {isBooked ? (
+                              <span className="mt-0.5 text-[9px] opacity-60">Booked</span>
+                            ) : (
+                              <span className="mt-0.5 text-[9px] opacity-70">
+                                ${booth.price >= 1000 ? `${booth.price / 1000}k` : booth.price}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ))}
+
+                  {/* Stage */}
+                  <div className="mt-6 flex justify-center">
+                    <div className="flex h-14 w-96 items-center justify-center rounded-xl bg-gradient-to-r from-gray-800 to-gray-900 text-sm font-bold text-gray-300 shadow-lg">
+                      🎤 MAIN STAGE
+                    </div>
+                  </div>
+                </div>
               </div>
-              {Array.from({ length: cols }, (_, i) => {
-                const booth = booths.find(
-                  (b) => b.row === row && b.col === i + 1
-                );
-                if (!booth) return <div key={i} className="h-14 w-16" />;
-
-                const isBooked = booth.status === "booked";
-                const isSelected = selected?.id === booth.id;
-
-                return (
-                  <button
-                    key={i}
-                    onClick={() => {
-                      if (!isBooked) setSelected(isSelected ? null : booth);
-                    }}
-                    disabled={isBooked}
-                    title={
-                      isBooked
-                        ? `Booked: ${booth.exhibitorName}`
-                        : `${booth.size} — $${booth.price.toLocaleString()}`
-                    }
-                    className={`mr-2 flex h-14 w-16 flex-col items-center justify-center rounded border text-[10px] font-medium transition ${
-                      isSelected
-                        ? "border-white bg-gray-600 text-white ring-2 ring-white"
-                        : isBooked
-                          ? "cursor-not-allowed border-red-500/30 bg-red-400/80 text-red-900"
-                          : `${SIZE_COLORS[booth.size]} border-transparent text-gray-900`
-                    }`}
-                  >
-                    <span>{row}{i + 1}</span>
-                    {isBooked ? (
-                      <span className="mt-0.5 text-[8px] opacity-70">Booked</span>
-                    ) : (
-                      <span className="mt-0.5 text-[8px] opacity-70">
-                        ${booth.price >= 1000 ? `${booth.price / 1000}k` : booth.price}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
             </div>
-          ))}
 
-          {/* Stage */}
-          <div className="mt-4 flex justify-center">
-            <div className="flex h-12 w-96 items-center justify-center rounded bg-gray-800 text-xs font-medium text-gray-400">
-              🎤 STAGE
+            {/* Selection panel */}
+            <div className="space-y-6">
+              {selected ? (
+                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+                  <div className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center text-white text-sm font-bold mb-4">✓</div>
+                  <h3 className="text-lg font-bold text-gray-900">Booth {selected.row}{selected.col}</h3>
+                  <div className="mt-4 space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Size</span>
+                      <span className="font-semibold capitalize text-gray-900">{selected.size}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Price</span>
+                      <span className="font-semibold text-gray-900">${selected.price.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">Status</span>
+                      <span className="font-semibold text-green-600">Available</span>
+                    </div>
+                  </div>
+                  {user?.role === "exhibitor" ? (
+                    <Link
+                      href={`/exhibitions/${slug}/book/${selected.id}`}
+                      className="mt-6 block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                    >
+                      Book — ${selected.price.toLocaleString()}
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/register"
+                      className="mt-6 block w-full text-center rounded-xl bg-gray-900 py-3 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
+                    >
+                      Register as Exhibitor
+                    </Link>
+                  )}
+                </div>
+              ) : (
+                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100 text-center">
+                  <div className="text-4xl mb-3">🗺️</div>
+                  <h3 className="text-lg font-bold text-gray-900">Select a Booth</h3>
+                  <p className="mt-2 text-sm text-gray-500">Click any available booth on the floor plan to see details and pricing.</p>
+                </div>
+              )}
+
+              {/* Quick stats */}
+              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+                <h3 className="text-sm font-bold text-gray-900 mb-4">Booth Stats</h3>
+                <div className="space-y-3">
+                  {[
+                    { label: "Total booths", value: booths.length, color: "text-gray-900" },
+                    { label: "Available", value: booths.filter(b => b.status === "available").length, color: "text-green-600" },
+                    { label: "Booked", value: booths.filter(b => b.status === "booked").length, color: "text-red-500" },
+                  ].map((s) => (
+                    <div key={s.label} className="flex justify-between text-sm">
+                      <span className="text-gray-500">{s.label}</span>
+                      <span className={`font-bold ${s.color}`}>{s.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Selection panel */}
-      {selected && (
-        <div className="mt-8 rounded-lg border border-gray-200 bg-white p-6 shadow-md">
-          <h2 className="text-lg font-bold">Selected Booth: {selected.row}{selected.col}</h2>
-          <div className="mt-2 grid grid-cols-3 gap-4 text-sm">
-            <div>
-              <span className="text-gray-400">Size</span>
-              <p className="font-medium capitalize">{selected.size}</p>
-            </div>
-            <div>
-              <span className="text-gray-400">Price</span>
-              <p className="font-medium">${selected.price.toLocaleString()}</p>
-            </div>
-            <div>
-              <span className="text-gray-400">Status</span>
-              <p className="font-medium capitalize text-green-600">Available</p>
-            </div>
-          </div>
-
-          {user?.role === "exhibitor" ? (
-            <Link
-              href={`/exhibitions/${slug}/book/${selected.id}`}
-              className="mt-4 inline-block rounded bg-black px-6 py-2 text-sm font-medium text-white hover:bg-gray-800"
-            >
-              Book This Booth — ${selected.price.toLocaleString()}
-            </Link>
-          ) : (
-            <div className="mt-4">
-              <Link
-                href="/register"
-                className="inline-block rounded bg-black px-6 py-2 text-sm font-medium text-white hover:bg-gray-800"
-              >
-                Register as Exhibitor to Book
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
-    </main>
+      </section>
+    </div>
   );
 }

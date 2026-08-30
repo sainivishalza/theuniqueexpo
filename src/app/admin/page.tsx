@@ -11,111 +11,74 @@ export default function AdminPage() {
 
   if (!user || user.role !== "admin") {
     return (
-      <main className="flex min-h-[calc(100vh-52px)] items-center justify-center">
-        <div className="text-center space-y-3">
-          <div className="text-4xl">🔒</div>
-          <h1 className="text-2xl font-bold">Access Denied</h1>
-          <p className="text-gray-500">You need admin privileges to view this page.</p>
-          <p className="text-xs text-gray-400">
-            Tip: register with email "admin@expobridge.com" to get admin access.
-          </p>
-          <Link href="/" className="text-sm font-medium text-black hover:underline">
-            Go home →
-          </Link>
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔒</div>
+          <h1 className="text-2xl font-bold text-gray-900">Access Denied</h1>
+          <p className="mt-2 text-gray-500">Admin privileges required.</p>
+          <p className="mt-1 text-xs text-gray-400">Tip: login with admin@expobridge.com</p>
+          <Link href="/" className="mt-4 inline-block text-blue-600 hover:underline text-sm font-semibold">Go home →</Link>
         </div>
-      </main>
+      </div>
     );
   }
 
   const rfqs = getRFQs();
   const hotelBookings = getAllHotelBookings();
 
-  return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">Admin Back Office</h1>
-        <p className="mt-1 text-gray-500">
-          Manage exhibitions, bookings, RFQs, and user listings.
-        </p>
-      </div>
-
-      {/* Stats */}
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Exhibitions" value={exhibitions.length} icon="🎪" />
-        <StatCard label="Open RFQs" value={rfqs.filter((r) => r.status === "open").length} icon="📋" />
-        <StatCard label="Hotel Bookings" value={hotelBookings.length} icon="🏨" />
-        <StatCard label="Total RFQs" value={rfqs.length} icon="📊" />
-      </div>
-
-      {/* Management sections */}
-      <div className="grid gap-6 sm:grid-cols-2">
-        <AdminCard
-          title="Exhibition Management"
-          description="Create, edit, and manage exhibition listings, floor plans, and booth inventory."
-          href="/admin/exhibitions"
-        />
-        <AdminCard
-          title="RFQ Review"
-          description="View and moderate all buy requests and submitted quotes."
-          href="/admin/rfqs"
-        />
-        <AdminCard
-          title="Hotel Bookings"
-          description="Review and confirm hotel booking requests from buyers."
-          href="/admin/hotels"
-        />
-        <AdminCard
-          title="User Management"
-          description="Manage user accounts, roles, and verification status."
-          comingSoon
-        />
-      </div>
-    </main>
-  );
-}
-
-function StatCard({ label, value, icon }: { label: string; value: number; icon: string }) {
-  return (
-    <div className="rounded-lg border border-gray-200 p-4">
-      <div className="flex items-center justify-between">
-        <span className="text-2xl">{icon}</span>
-        <span className="text-2xl font-bold">{value}</span>
-      </div>
-      <p className="mt-2 text-sm text-gray-500">{label}</p>
-    </div>
-  );
-}
-
-function AdminCard({
-  title,
-  description,
-  href,
-  comingSoon,
-}: {
-  title: string;
-  description: string;
-  href?: string;
-  comingSoon?: boolean;
-}) {
-  if (href) {
-    return (
-      <Link
-        href={href}
-        className="rounded-lg border border-gray-200 p-5 transition hover:shadow-md"
-      >
-        <h2 className="font-semibold">{title}</h2>
-        <p className="mt-1 text-sm text-gray-500">{description}</p>
-      </Link>
-    );
-  }
+  const sections = [
+    { title: "Exhibition Management", description: "Create, edit, and manage exhibition listings and floor plans.", href: "/admin/exhibitions", icon: "🎪", color: "from-blue-500 to-blue-600" },
+    { title: "RFQ Review", description: "View and moderate all buy requests and submitted quotes.", href: "/admin/rfqs", icon: "📋", color: "from-purple-500 to-purple-600" },
+    { title: "Hotel Bookings", description: "Review and confirm hotel booking requests from buyers.", href: "/admin/hotels", icon: "🏨", color: "from-emerald-500 to-green-600" },
+    { title: "User Management", description: "Manage user accounts, roles, and verification status.", icon: "👥", color: "from-orange-500 to-red-500", comingSoon: true },
+  ];
 
   return (
-    <div className="rounded-lg border border-gray-200 p-5 transition hover:shadow-md">
-      <h2 className="font-semibold">{title}</h2>
-      <p className="mt-1 text-sm text-gray-500">{description}</p>
-      {comingSoon && (
-        <span className="mt-3 inline-block text-xs font-medium text-gray-400">Coming soon</span>
-      )}
+    <div>
+      <section className="gradient-hero py-12">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl">⚙️</div>
+            <div className="text-white">
+              <h1 className="text-3xl font-extrabold">Admin Back Office</h1>
+              <p className="mt-1 text-blue-200/80">Manage exhibitions, bookings, RFQs, and users.</p>
+            </div>
+          </div>
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: "Exhibitions", value: exhibitions.length, icon: "🎪" },
+              { label: "Open RFQs", value: rfqs.filter(r => r.status === "open").length, icon: "📋" },
+              { label: "Hotel Bookings", value: hotelBookings.length, icon: "🏨" },
+              { label: "Total RFQs", value: rfqs.length, icon: "📊" },
+            ].map((s) => (
+              <div key={s.label} className="rounded-xl bg-white/10 backdrop-blur-sm p-4 border border-white/10">
+                <div className="text-sm opacity-70 mb-1">{s.icon} {s.label}</div>
+                <div className="text-2xl font-extrabold text-white">{s.value}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-10 bg-gray-50">
+        <div className="mx-auto max-w-7xl px-6 grid gap-5 sm:grid-cols-2">
+          {sections.map((s) => {
+            const content = (
+              <div className="flex items-start gap-4 p-6 rounded-2xl bg-white border border-gray-100 shadow-sm card-hover h-full">
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center text-xl flex-shrink-0`}>
+                  {s.icon}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900">{s.title}</h3>
+                  <p className="text-sm text-gray-500 mt-1">{s.description}</p>
+                  {s.comingSoon && <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">Coming soon</span>}
+                </div>
+              </div>
+            );
+            return s.href ? <Link key={s.title} href={s.href}>{content}</Link> : <div key={s.title}>{content}</div>;
+          })}
+        </div>
+      </section>
     </div>
   );
 }

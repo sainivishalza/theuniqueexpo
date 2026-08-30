@@ -4,6 +4,15 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { mockExhibitorProfiles } from "@/lib/booths";
 
+const avatarColors = [
+  "from-blue-500 to-blue-600",
+  "from-green-500 to-emerald-600",
+  "from-purple-500 to-violet-600",
+  "from-orange-500 to-red-500",
+  "from-pink-500 to-rose-500",
+  "from-teal-500 to-cyan-500",
+];
+
 export default function DirectoryPage() {
   const [search, setSearch] = useState("");
   const [industry, setIndustry] = useState("");
@@ -29,74 +38,114 @@ export default function DirectoryPage() {
   }, [search, industry]);
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
-      <h1 className="text-3xl font-bold">Exhibitor Directory</h1>
-      <p className="mt-2 text-gray-500">
-        Search verified suppliers and exhibitors across all exhibitions.
-      </p>
+    <div>
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-gray-900 py-20">
+        <div className="absolute inset-0 opacity-15">
+          <img
+            src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&h=600&fit=crop&q=80"
+            alt=""
+            className="img-cover"
+          />
+        </div>
+        <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
+          <h1 className="text-4xl md:text-5xl font-extrabold">Exhibitor Directory</h1>
+          <p className="mt-3 text-lg text-gray-300 max-w-xl">
+            Search verified suppliers and exhibitors across all exhibitions.
+          </p>
+        </div>
+      </section>
 
       {/* Search & filters */}
-      <div className="mt-6 flex flex-wrap gap-3">
-        <input
-          type="text"
-          placeholder="Search by name, product, or country..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 min-w-[200px] rounded border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
-        />
-        <select
-          value={industry}
-          onChange={(e) => setIndustry(e.target.value)}
-          className="rounded border border-gray-300 px-3 py-2 text-sm focus:border-black focus:outline-none focus:ring-1 focus:ring-black"
-        >
-          <option value="">All Industries</option>
-          {industries.map((i) => (
-            <option key={i} value={i}>
-              {i}
-            </option>
-          ))}
-        </select>
-      </div>
+      <section className="border-b border-gray-200 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-4 flex flex-wrap gap-3 items-center">
+          <div className="relative flex-1 min-w-[200px]">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search by name, product, or country..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 py-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
+            />
+          </div>
+          <select
+            value={industry}
+            onChange={(e) => setIndustry(e.target.value)}
+            className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700 focus:border-blue-500 outline-none"
+          >
+            <option value="">All Industries</option>
+            {industries.map((i) => (
+              <option key={i} value={i}>{i}</option>
+            ))}
+          </select>
+          <span className="text-sm text-gray-400">
+            {filtered.length} exhibitor{filtered.length !== 1 ? "s" : ""}
+          </span>
+        </div>
+      </section>
 
       {/* Results */}
-      <div className="mt-8 space-y-4">
-        {filtered.length === 0 ? (
-          <div className="py-16 text-center text-gray-400">
-            No exhibitors match your search.
-          </div>
-        ) : (
-          filtered.map((ex) => (
-            <Link
-              key={ex.id}
-              href={`/exhibitor/${ex.id}`}
-              className="block rounded-lg border border-gray-200 p-5 transition hover:shadow-md"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold hover:underline">{ex.name}</h2>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {ex.industry} • {ex.country}
+      <section className="py-12 bg-gray-50">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {filtered.length === 0 ? (
+              <div className="col-span-full text-center py-20">
+                <div className="text-5xl mb-4">🔍</div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">No exhibitors found</h3>
+                <p className="text-gray-500">Try a different search or filter.</p>
+              </div>
+            ) : (
+              filtered.map((ex, idx) => (
+                <Link
+                  key={ex.id}
+                  href={`/exhibitor/${ex.id}`}
+                  className="group block rounded-2xl bg-white p-6 shadow-sm border border-gray-100 card-hover"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${avatarColors[idx % avatarColors.length]} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
+                      {ex.name[0]}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                          {ex.name}
+                        </h2>
+                        <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-bold text-green-700 flex-shrink-0">
+                          ✓ Verified
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500 mt-0.5">
+                        {ex.industry} • {ex.country}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm text-gray-600 line-clamp-2 leading-relaxed">
+                    {ex.description}
                   </p>
-                </div>
-                <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-                  Verified
-                </span>
-              </div>
-              <p className="mt-2 text-sm text-gray-600 line-clamp-2">{ex.description}</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {ex.products.slice(0, 4).map((p) => (
-                  <span
-                    key={p}
-                    className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-600"
-                  >
-                    {p}
-                  </span>
-                ))}
-              </div>
-            </Link>
-          ))
-        )}
-      </div>
-    </main>
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {ex.products.slice(0, 4).map((p) => (
+                      <span
+                        key={p}
+                        className="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600"
+                      >
+                        {p}
+                      </span>
+                    ))}
+                    {ex.products.length > 4 && (
+                      <span className="rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-600">
+                        +{ex.products.length - 4} more
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              ))
+            )}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

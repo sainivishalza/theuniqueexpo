@@ -74,11 +74,14 @@ export interface ExpoRegistrationInput {
   docOrderList: string;
 }
 
-export interface ExpoRegistration extends ExpoRegistrationInput {
+export interface ExpoRegistration extends Partial<ExpoRegistrationInput> {
   id: string;
   userId: string;
+  exhibitionId: number;
   status: "pending" | "approved" | "rejected";
   createdAt: string;
+  customAnswers?: Record<string, unknown> | null;
+  formSchemaSnapshot?: unknown | null;
 }
 
 const REQUIRED_TEXT_FIELDS: { field: keyof ExpoRegistrationInput; label: string }[] = [

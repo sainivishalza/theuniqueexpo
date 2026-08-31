@@ -46,6 +46,16 @@ function safeParseArray(text: any): string[] {
   }
 }
 
+function safeParseJson(text: any): any {
+  if (!text) return null;
+  if (typeof text === "object") return text;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
 export function mapExhibitionRow(row: any) {
   return {
     id: String(row.id),
@@ -66,6 +76,8 @@ export function mapExhibitionRow(row: any) {
     website: row.website,
     color: row.color,
     image: row.image,
+    registrationEnabled: row.registration_enabled === undefined ? true : !!row.registration_enabled,
+    registrationFormSchema: safeParseJson(row.registration_form_schema),
   };
 }
 
@@ -110,4 +122,18 @@ export async function updateExhibition(id: number, input: ExhibitionInput) {
 
 export async function deleteExhibition(id: number) {
   await pool.query("DELETE FROM exhibitions WHERE id = ?", [id]);
+}
+
+export async function updateRegistrationFormConfig(
+  id: number,
+  input: { registrationEnabled: boolean; registrationFormSchema: unknown }
+) {
+  await pool.query(
+    "UPDATE exhibitions SET registration_enabled = ?, registration_form_schema = ? WHERE id = ?",
+    [
+      input.registrationEnabled,
+      input.registrationFormSchema ? JSON.stringify(input.registrationFormSchema) : null,
+      id,
+    ]
+  );
 }

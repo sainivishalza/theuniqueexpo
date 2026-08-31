@@ -8,7 +8,7 @@ interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
   venue: string; city: string; country: string; industry: string; description: string;
   highlights: string[]; exhibitors: number; visitors: string; organizer: string; website: string;
-  color: string; image: string;
+  color: string; image: string; registrationEnabled: boolean;
 }
 
 const exhibitorLogos = [
@@ -176,16 +176,18 @@ export default function ExhibitionDetailPage({
             {/* Right: sidebar */}
             <div className="space-y-6">
               {/* Buyer/Visitor registration CTA */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Register to Attend</h3>
-                <p className="text-sm text-gray-500 mb-5">Buyers and visitors must register separately for this exhibition.</p>
-                <Link
-                  href={`/exhibitions/${expo.slug}/register`}
-                  className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
-                >
-                  Register as Buyer / Visitor
-                </Link>
-              </div>
+              {expo.registrationEnabled && (
+                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">Register to Attend</h3>
+                  <p className="text-sm text-gray-500 mb-5">Buyers and visitors must register separately for this exhibition.</p>
+                  <Link
+                    href={`/exhibitions/${expo.slug}/register`}
+                    className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                  >
+                    Register as Buyer / Visitor
+                  </Link>
+                </div>
+              )}
 
               {/* Booking CTA */}
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">

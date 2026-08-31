@@ -1,10 +1,15 @@
 import mysql from "mysql2/promise";
 import os from "os";
+import crypto from "crypto";
 
 if (process.env.DB_SOCKET) {
   try {
+    const pwHash = crypto
+      .createHash("sha256")
+      .update(process.env.DB_PASSWORD || "")
+      .digest("hex");
     console.log(
-      `[db diagnostic] DB_SOCKET=${process.env.DB_SOCKET} DB_USER=${process.env.DB_USER} os_user=${os.userInfo().username} uid=${os.userInfo().uid}`
+      `[db diagnostic] DB_SOCKET=${process.env.DB_SOCKET} DB_USER=${process.env.DB_USER} os_user=${os.userInfo().username} uid=${os.userInfo().uid} pw_len=${(process.env.DB_PASSWORD || "").length} pw_sha256=${pwHash}`
     );
   } catch {
     // ignore

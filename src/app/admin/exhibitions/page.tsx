@@ -209,8 +209,13 @@ export default function AdminExhibitionsPage() {
               <label className="block text-sm font-semibold text-gray-700 mb-1">Hero Image</label>
               <p className="text-xs text-gray-500 mb-2">Paste an image URL, or upload your own poster below — whichever you set last is used.</p>
               <div className="flex gap-4 items-start">
-                <div className="w-32 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
-                  {form.image && <img src={form.image} alt="Preview" className="w-full h-full object-cover" />}
+                <div className="relative w-32 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-900 border border-gray-200">
+                  {form.image && (
+                    <>
+                      <img src={form.image} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-60" />
+                      <img src={form.image} alt="Preview" className="absolute inset-0 w-full h-full object-contain" />
+                    </>
+                  )}
                 </div>
                 <div className="flex-1 space-y-2">
                   <input

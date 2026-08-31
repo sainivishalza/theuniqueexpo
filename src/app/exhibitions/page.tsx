@@ -112,11 +112,19 @@ export default function ExhibitionsPage() {
                 className="group block rounded-2xl overflow-hidden bg-white shadow-md shadow-gray-200/50 card-hover"
               >
                 {/* Image */}
-                <div className="relative h-52 overflow-hidden">
+                <div className="relative h-52 overflow-hidden bg-gray-900">
+                  {/* Blurred backdrop fills the frame regardless of the poster's aspect ratio */}
+                  <img
+                    src={expo.image}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-60 group-hover:scale-125 transition-transform duration-500"
+                  />
+                  {/* Full poster, never cropped, so any text/details stay readable */}
                   <img
                     src={expo.image}
                     alt={expo.title}
-                    className="img-cover group-hover:scale-105 transition-transform duration-500"
+                    className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 gradient-overlay" />
                   <div className="absolute top-4 left-4 flex gap-2">

@@ -58,11 +58,19 @@ export default function ExhibitionDetailPage({
   return (
     <div>
       {/* Hero Banner */}
-      <section className="relative h-[420px] md:h-[480px] overflow-hidden">
+      <section className="relative h-[420px] md:h-[480px] overflow-hidden bg-gray-900">
+        {/* Blurred backdrop fills the frame regardless of the poster's aspect ratio */}
+        <img
+          src={expo.image}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-60"
+        />
+        {/* Full poster, never cropped, so any text/details stay readable */}
         <img
           src={expo.image}
           alt={expo.title}
-          className="img-cover"
+          className="absolute inset-0 w-full h-full object-contain"
         />
         <div className="absolute inset-0 gradient-overlay" />
 

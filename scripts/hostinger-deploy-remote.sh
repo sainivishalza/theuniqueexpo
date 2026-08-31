@@ -79,6 +79,10 @@ set -a
 source .env.local
 set +a
 
+echo "=== DIAGNOSTIC: DB_PASSWORD hash as bash sees it (compare to Node's [db diagnostic] line) ==="
+echo -n "$DB_PASSWORD" | sha256sum
+echo "=== END DIAGNOSTIC ==="
+
 BACKUP_FILE=~/theuniqueexpo-backup-$(date +%Y%m%d-%H%M%S).sql
 echo "Backing up database to $BACKUP_FILE ..."
 mysqldump -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$BACKUP_FILE"

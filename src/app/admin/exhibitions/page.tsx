@@ -63,17 +63,31 @@ export default function AdminExhibitionsPage() {
     }
   }
 
-  function openEdit(expo: Exhibition) {
+  async function openEdit(expo: Exhibition) {
     setForm({
       slug: expo.slug, title: expo.title, startDate: expo.startDate, endDate: expo.endDate,
       venue: expo.venue, city: expo.city, country: expo.country, industry: expo.industry,
       description: expo.description, highlights: expo.highlights.join("\n"), exhibitors: expo.exhibitors,
       visitors: expo.visitors, organizer: expo.organizer, website: expo.website, color: expo.color,
-      image: expo.image,
+      image: expo.image || "",
     });
     setFormError("");
     setEditingId(expo.id);
     setShowNew(false);
+
+    // The list response points the image at the cacheable /image endpoint
+    // instead of embedding the raw base64 (see listExhibitions) -- fetch
+    // the real value so saving without touching the image doesn't
+    // overwrite the stored poster with just that URL.
+    try {
+      const res = await fetch(`/api/exhibitions/${expo.slug}`);
+      const data = await res.json();
+      if (res.ok && data.exhibition) {
+        setForm((prev) => (prev.slug === expo.slug ? { ...prev, image: data.exhibition.image || "" } : prev));
+      }
+    } catch {
+      // Keep the lightweight URL as a fallback.
+    }
   }
 
   function openNew() {

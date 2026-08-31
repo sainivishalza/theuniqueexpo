@@ -37,16 +37,20 @@ if [ -f "$APP_DIR/.env.local" ] && [ -d "$HBUILDS/source/repository" ]; then
   echo "Copied .env.local into hbuilds' own build checkout (added DB_SOCKET for its network-isolated build)."
 fi
 
-echo "=== DIAGNOSTIC: hbuilds current state ==="
-readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
-(cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='current commit: %H %cI %s' 2>/dev/null) || echo "(hbuilds/current is not a git checkout)"
-(cd "$HBUILDS/source/repository" 2>/dev/null && git log -1 --format='source commit: %H %cI %s' 2>/dev/null) || echo "(couldn't read hbuilds/source git info)"
-LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
-echo "latest hbuilds deploy log: ${LATEST_LOG:-none found}"
-if [ -n "${LATEST_LOG:-}" ]; then
-  echo "--- tail of $LATEST_LOG ---"
-  tail -100 "$LATEST_LOG" || true
-fi
+echo "=== DIAGNOSTIC: comparing the two .env.local files and testing hbuilds' exact copy ==="
+diff "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local" && echo "(files identical except the appended DB_SOCKET line)"
+(
+  set -a
+  # shellcheck disable=SC1091
+  source "$HBUILDS/source/repository/.env.local"
+  set +a
+  echo "hbuilds env: DB_HOST=$DB_HOST DB_SOCKET=$DB_SOCKET DB_USER=$DB_USER DB_NAME=$DB_NAME password_length=${#DB_PASSWORD}"
+  if mysql --socket="$DB_SOCKET" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -e "SELECT 1" 2>&1; then
+    echo "socket connect using hbuilds' exact copied values: OK"
+  else
+    echo "socket connect using hbuilds' exact copied values: FAILED"
+  fi
+)
 echo "=== END DIAGNOSTIC ==="
 
 # A non-interactive SSH command doesn't source .bashrc/.profile, so
@@ -67,10 +71,6 @@ fi
 set -a
 source .env.local
 set +a
-
-echo "=== DIAGNOSTIC: this DB user's actual grants ==="
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" -N -e "SHOW GRANTS FOR CURRENT_USER()" 2>&1 || echo "(SHOW GRANTS failed)"
-echo "=== END DIAGNOSTIC ==="
 
 BACKUP_FILE=~/theuniqueexpo-backup-$(date +%Y%m%d-%H%M%S).sql
 echo "Backing up database to $BACKUP_FILE ..."

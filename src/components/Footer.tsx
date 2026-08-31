@@ -12,7 +12,7 @@ const footerLinks = {
     { label: "Partner Program", href: "/register" },
   ],
   Company: [
-    { label: "About Us", href: "#" },
+    { label: "About Us", href: "/about" },
     { label: "Contact", href: "#" },
     { label: "Careers", href: "#" },
     { label: "Blog", href: "#" },

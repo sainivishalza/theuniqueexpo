@@ -74,4 +74,8 @@ for i in 1 2 3 4 5 6 7 8 9 10; do
   sleep 3
 done
 
+echo "Origin-level check of the new registration routes (bypasses any CDN cache in front of the public domain):"
+echo "  /exhibitions/global-ocean-city-food-expo-2026/register -> $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/exhibitions/global-ocean-city-food-expo-2026/register)"
+echo "  /api/expo-registrations/me -> $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/expo-registrations/me)"
+
 echo "Backup saved at: $BACKUP_FILE (keep this until you've confirmed everything works)"

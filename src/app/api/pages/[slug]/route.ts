@@ -9,5 +9,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   }
 
   const content = await getSitePage(slug);
-  return NextResponse.json({ content });
+  return NextResponse.json(
+    { content },
+    { headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=300" } }
+  );
 }

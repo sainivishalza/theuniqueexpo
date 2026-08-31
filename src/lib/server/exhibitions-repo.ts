@@ -81,8 +81,18 @@ export function mapExhibitionRow(row: any) {
   };
 }
 
+// List views only ever render a thumbnail, never re-submit the image, so
+// never pull the raw column (uploaded posters are base64 and can run into
+// the hundreds of KB each -- 20+ of those turned every list fetch into a
+// multi-megabyte payload). Point at the dedicated image endpoint instead;
+// plain external URLs (short, already cheap) pass through unchanged.
 export async function listExhibitions() {
-  const [rows] = await pool.query("SELECT * FROM exhibitions ORDER BY start_date ASC");
+  const [rows] = await pool.query(
+    `SELECT id, slug, title, start_date, end_date, venue, city, country, industry, description,
+            highlights, exhibitors, visitors, organizer, website, color, registration_enabled, registration_form_schema,
+            IF(LEFT(image, 5) = 'data:', CONCAT('/api/exhibitions/', slug, '/image'), image) AS image
+     FROM exhibitions ORDER BY start_date ASC`
+  );
   return (rows as any[]).map(mapExhibitionRow);
 }
 
@@ -93,6 +103,17 @@ export async function getExhibitionBySlugOrId(slugOrId: string) {
   );
   const row = (rows as any[])[0];
   return row ? mapExhibitionRow(row) : null;
+}
+
+// Targeted lookup for the dedicated image-serving route -- avoids pulling
+// every other column just to read the (potentially huge) image value.
+export async function getExhibitionImageValue(slugOrId: string): Promise<string | null> {
+  const [rows] = await pool.query(
+    "SELECT image FROM exhibitions WHERE slug = ? OR id = ? LIMIT 1",
+    [slugOrId, Number(slugOrId) || 0]
+  );
+  const row = (rows as any[])[0];
+  return row ? row.image : null;
 }
 
 export async function createExhibition(input: ExhibitionInput) {

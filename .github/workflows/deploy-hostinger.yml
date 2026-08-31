@@ -31,9 +31,9 @@ jobs:
           SSH="sshpass -e ssh -o StrictHostKeyChecking=accept-new -p $SSH_PORT $SSH_USER@$SSH_HOST"
 
           echo "==> Locating the app directory on the server..."
-          APP_DIR=$($SSH 'find ~ -maxdepth 3 -name "package.json" -not -path "*/node_modules/*" -exec dirname {} \; | head -1')
+          APP_DIR=$($SSH 'for f in $(find ~ -maxdepth 4 -name "package.json" -not -path "*/node_modules/*" -not -path "*/.*/*" 2>/dev/null); do grep -q "\"name\": *\"expobridge\"" "$f" 2>/dev/null && dirname "$f" && break; done')
           if [ -z "$APP_DIR" ]; then
-            echo "Could not find an app directory (package.json) on the server." >&2
+            echo "Could not find the expobridge app directory (package.json with name expobridge) on the server." >&2
             exit 1
           fi
           echo "App directory: $APP_DIR"

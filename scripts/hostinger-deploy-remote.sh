@@ -12,24 +12,28 @@ DEPLOY_REF="$2"
 
 cd "$APP_DIR"
 
-echo "=== DIAGNOSTIC: how is this domain actually served? ==="
-echo "--- home directory structure ---"
-ls -la ~ 2>/dev/null
-echo "--- domains directory (common Hostinger layout) ---"
-ls -la ~/domains/ 2>/dev/null || echo "(no ~/domains directory)"
-find ~/domains -maxdepth 3 2>/dev/null || true
-echo "--- .htaccess files anywhere in home (Passenger/Node config often lives here) ---"
-find ~ -maxdepth 5 -iname ".htaccess" -not -path "*/node_modules/*" 2>/dev/null | while read -r f; do
-  echo "  >> $f"
-  cat "$f"
-  echo "  -- end $f --"
+HBUILDS=~/domains/theuniqueexpo.com/hbuilds
+echo "=== DIAGNOSTIC: hbuilds/Passenger state and real error logs ==="
+echo "--- hbuilds/current (what Passenger actually serves) ---"
+ls -la "$HBUILDS/current" 2>/dev/null
+readlink -f "$HBUILDS/current" 2>/dev/null
+echo "--- git info inside hbuilds/current's source, if it's a checkout ---"
+(cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='%H %cI %s' 2>/dev/null) || echo "(not a git checkout, or no git here)"
+echo "--- hbuilds/versions (deploy history) ---"
+ls -lat "$HBUILDS/versions" 2>/dev/null | head -10
+echo "--- hbuilds/source git info ---"
+(cd "$HBUILDS/source/repository" 2>/dev/null && git log -1 --format='%H %cI %s' 2>/dev/null) || (cd "$HBUILDS/source" 2>/dev/null && git log -1 --format='%H %cI %s' 2>/dev/null) || echo "(couldn't read hbuilds/source git info)"
+echo "--- most recent deploy log(s) ---"
+LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs ls -t 2>/dev/null | head -1)
+echo "latest log file: $LATEST_LOG"
+if [ -n "$LATEST_LOG" ]; then
+  echo "--- tail of $LATEST_LOG ---"
+  tail -100 "$LATEST_LOG"
+fi
+echo "--- Node/Passenger app runtime error logs (~/.logs and domain logs dirs) ---"
+find ~/.logs ~/domains/theuniqueexpo.com -maxdepth 2 -iname "*error*" -o -iname "*.log" 2>/dev/null | grep -v hbuilds/logs | while read -r f; do
+  echo "  >> $f (last modified: $(stat -c %y "$f" 2>/dev/null))"
 done
-echo "--- any Passenger config files ---"
-find ~ -maxdepth 5 -iname "*passenger*" -not -path "*/node_modules/*" 2>/dev/null
-echo "--- currently listening ports (this account's view) ---"
-ss -tlnp 2>/dev/null || netstat -tlnp 2>/dev/null || echo "(no permission to list sockets)"
-echo "--- all node/pm2 processes for this user right now ---"
-ps -u "$(whoami)" -o pid,ppid,etime,cmd 2>/dev/null | grep -i "node\|pm2" | grep -v grep
 echo "=== END DIAGNOSTIC ==="
 
 # A non-interactive SSH command doesn't source .bashrc/.profile, so

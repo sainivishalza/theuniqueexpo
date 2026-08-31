@@ -18,6 +18,20 @@ const nextConfig = {
           { key: "Cache-Control", value: "no-store, must-revalidate" },
         ],
       },
+      {
+        // Per-exhibition registration is auth-gated and per-user (prefilled
+        // from the visitor's own past submissions) -- must never be cached.
+        source: "/exhibitions/:slug/register",
+        headers: [
+          { key: "Cache-Control", value: "no-store, must-revalidate" },
+        ],
+      },
+      {
+        source: "/api/expo-registrations/:path*",
+        headers: [
+          { key: "Cache-Control", value: "no-store, must-revalidate" },
+        ],
+      },
     ];
   },
 };

@@ -43,22 +43,6 @@ if [ -f "$APP_DIR/.env.local" ] && [ -d "$HBUILDS/source/repository" ]; then
   echo "Re-copied .env.local into hbuilds' build checkout every 3s for 2 minutes (added DB_SOCKET for its network-isolated build), to win the race against its own webhook-triggered rebuild."
 fi
 
-echo "=== DIAGNOSTIC: comparing the two .env.local files and testing hbuilds' exact copy ==="
-diff "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local" && echo "(files identical except the appended DB_SOCKET line)"
-(
-  set -a
-  # shellcheck disable=SC1091
-  source "$HBUILDS/source/repository/.env.local"
-  set +a
-  echo "hbuilds env: DB_HOST=$DB_HOST DB_SOCKET=$DB_SOCKET DB_USER=$DB_USER DB_NAME=$DB_NAME password_length=${#DB_PASSWORD}"
-  if mysql --socket="$DB_SOCKET" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -e "SELECT 1" 2>&1; then
-    echo "socket connect using hbuilds' exact copied values: OK"
-  else
-    echo "socket connect using hbuilds' exact copied values: FAILED"
-  fi
-)
-echo "=== END DIAGNOSTIC ==="
-
 # A non-interactive SSH command doesn't source .bashrc/.profile, so
 # nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.
 export NVM_DIR="$HOME/.nvm"
@@ -77,27 +61,6 @@ fi
 set -a
 source .env.local
 set +a
-
-echo "=== DIAGNOSTIC: testing mysql2 (the actual Node driver, not just the CLI) over the socket ==="
-DB_SOCKET=/var/lib/mysql/mysql.sock node -e "
-const mysql = require('$APP_DIR/node_modules/mysql2/promise');
-(async () => {
-  try {
-    const conn = await mysql.createConnection({
-      socketPath: process.env.DB_SOCKET,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-    });
-    const [rows] = await conn.query('SELECT 1 AS ok');
-    console.log('mysql2 socket connect: OK', JSON.stringify(rows));
-    await conn.end();
-  } catch (e) {
-    console.log('mysql2 socket connect: FAILED -', e.message);
-  }
-})();
-" || true
-echo "=== END DIAGNOSTIC ==="
 
 BACKUP_FILE=~/theuniqueexpo-backup-$(date +%Y%m%d-%H%M%S).sql
 echo "Backing up database to $BACKUP_FILE ..."

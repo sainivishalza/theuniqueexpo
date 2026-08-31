@@ -14,6 +14,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Install sshpass
         run: sudo apt-get update && sudo apt-get install -y sshpass
 
@@ -36,40 +38,5 @@ jobs:
           fi
           echo "App directory: $APP_DIR"
 
-          echo "==> Running the deploy remotely (DB credentials are read from the server's own .env.local, never leave the server)..."
-          $SSH bash -s <<EOF
-            set -euo pipefail
-            cd "$APP_DIR"
-
-            # Load DB_HOST / DB_USER / DB_PASSWORD / DB_NAME from the server's own env file
-            set -a
-            source .env.local
-            set +a
-
-            BACKUP_FILE=~/theuniqueexpo-backup-\$(date +%Y%m%d-%H%M%S).sql
-            echo "Backing up database to \$BACKUP_FILE ..."
-            mysqldump -h "\$DB_HOST" -u "\$DB_USER" -p"\$DB_PASSWORD" "\$DB_NAME" > "\$BACKUP_FILE"
-            ls -lh "\$BACKUP_FILE"
-
-            echo "Fetching and checking out $DEPLOY_REF ..."
-            git fetch origin "$DEPLOY_REF"
-            git checkout "$DEPLOY_REF"
-            git pull origin "$DEPLOY_REF"
-
-            echo "Applying new migrations ..."
-            mysql -h "\$DB_HOST" -u "\$DB_USER" -p"\$DB_PASSWORD" "\$DB_NAME" < schema-migrations/002-expo-registrations.sql
-            mysql -h "\$DB_HOST" -u "\$DB_USER" -p"\$DB_PASSWORD" "\$DB_NAME" < schema-migrations/003-reset-admin-password.sql
-
-            echo "Installing dependencies and building ..."
-            npm install
-            npm run build
-
-            echo "Restarting via PM2 ..."
-            pm2 restart theuniqueexpo || pm2 start npm --name theuniqueexpo --cwd "$APP_DIR" -- start
-            pm2 save
-
-            echo "Checking the app responds ..."
-            curl -s -o /dev/null -w 'HTTP %{http_code}\n' http://localhost:3000/
-
-            echo "Backup saved at: \$BACKUP_FILE (keep this until you've confirmed everything works)"
-EOF
+          echo "==> Running the deploy remotely..."
+          $SSH "bash -s -- '$APP_DIR' '$DEPLOY_REF'" < scripts/hostinger-deploy-remote.sh

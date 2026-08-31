@@ -19,22 +19,28 @@ cd "$APP_DIR"
 # stale build) once pages started needing DB access at build time for ISR:
 # hbuilds' checkout at hbuilds/source/repository has no .env.local of its
 # own, so Next.js falls back to default DB creds and every prerender of a
-# DB-backed page fails with ER_ACCESS_DENIED_ERROR. Copy this app's own
-# .env.local over so hbuilds' independent build can reach the database too.
+# DB-backed page fails with ER_ACCESS_DENIED_ERROR.
 #
-# With the file copied, hbuilds' build got further but kept failing with
-# "Access denied" no matter which TCP host we tried (localhost -> ::1,
-# then a forced 127.0.0.1) -- its build sandbox is network-isolated from
-# the DB server, so no TCP host string will ever match a grant there, even
-# though every one of them works fine from this normal SSH session. It
-# does share this server's filesystem though, so point it at the DB's
-# actual Unix socket instead of TCP entirely (see src/lib/db.ts's DB_SOCKET
-# support), which sidesteps host-based grant matching altogether.
+# Copying the file once looked like it fixed things (later attempts showed
+# real credentials, then real credentials over the DB's Unix socket), but a
+# build right after this fix landed failed again with the ORIGINAL
+# root/no-password error -- proving .env.local was completely absent at
+# that build, not just misconfigured. hbuilds' own webhook build starts
+# independently the instant `main` is pushed, and apparently re-clones (or
+# otherwise clears) hbuilds/source/repository, wiping any untracked
+# .env.local we'd placed there. Every earlier "success" was this script's
+# one-shot copy winning a race against hbuilds' build by luck of timing,
+# not a real fix. Keep re-copying the file for a couple of minutes so it's
+# in place no matter when hbuilds' own checkout-then-build cycle actually
+# runs relative to this script.
 HBUILDS=~/domains/theuniqueexpo.com/hbuilds
 if [ -f "$APP_DIR/.env.local" ] && [ -d "$HBUILDS/source/repository" ]; then
-  cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local"
-  echo "DB_SOCKET=/var/lib/mysql/mysql.sock" >> "$HBUILDS/source/repository/.env.local"
-  echo "Copied .env.local into hbuilds' own build checkout (added DB_SOCKET for its network-isolated build)."
+  for i in $(seq 1 40); do
+    cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local"
+    echo "DB_SOCKET=/var/lib/mysql/mysql.sock" >> "$HBUILDS/source/repository/.env.local"
+    sleep 3
+  done
+  echo "Re-copied .env.local into hbuilds' build checkout every 3s for 2 minutes (added DB_SOCKET for its network-isolated build), to win the race against its own webhook-triggered rebuild."
 fi
 
 # A non-interactive SSH command doesn't source .bashrc/.profile, so

@@ -31,10 +31,29 @@ export async function GET(request: Request) {
 
   const registrations = await listRegistrationsForExhibition(Number(exhibition.id));
 
-  const lines = [
-    COLUMNS.join(","),
-    ...registrations.map((r) => COLUMNS.map((col) => csvCell((r as any)[col])).join(",")),
-  ];
+  const schema = exhibition.registrationFormSchema;
+  let lines: string[];
+  if (schema && schema.length > 0) {
+    const headers = ["id", ...schema.map((f: any) => f.label), "status", "createdAt"];
+    lines = [
+      headers.map(csvCell).join(","),
+      ...registrations.map((r: any) => {
+        const answers = r.customAnswers || {};
+        const cells = [
+          r.id,
+          ...schema.map((f: any) => (f.type === "file" ? (answers[f.id] ? "Uploaded" : "") : answers[f.id])),
+          r.status,
+          r.createdAt,
+        ];
+        return cells.map(csvCell).join(",");
+      }),
+    ];
+  } else {
+    lines = [
+      COLUMNS.join(","),
+      ...registrations.map((r) => COLUMNS.map((col) => csvCell((r as any)[col])).join(",")),
+    ];
+  }
   const csv = "﻿" + lines.join("\r\n");
 
   return new NextResponse(csv, {

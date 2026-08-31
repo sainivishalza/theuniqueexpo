@@ -3,16 +3,35 @@ import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import type { ExpoRegistration } from "@/lib/expo-registrations";
+import type { CustomFormField } from "@/lib/custom-registration-form";
 
 interface Exhibition { id: string; slug: string; title: string; }
 type RegistrationSummary = Pick<
   ExpoRegistration,
   "id" | "registrationType" | "fullName" | "gender" | "email" | "phone" | "nationality" |
   "companyName" | "companyWebsite" | "companyType" | "companyScale" | "purposeOfVisit" |
-  "exportingMarkets" | "status" | "createdAt"
+  "exportingMarkets" | "status" | "createdAt" | "customAnswers" | "formSchemaSnapshot"
 >;
 
 const STATUSES = ["pending", "approved", "rejected"];
+
+function customSchemaOf(r: { formSchemaSnapshot?: unknown }): CustomFormField[] {
+  return Array.isArray(r.formSchemaSnapshot) ? (r.formSchemaSnapshot as CustomFormField[]) : [];
+}
+
+function displayName(r: RegistrationSummary): string {
+  if (r.fullName) return r.fullName;
+  const schema = customSchemaOf(r);
+  const nameField = schema.find((f) => /name/i.test(f.label) && f.type !== "file");
+  const value = nameField && r.customAnswers ? r.customAnswers[nameField.id] : null;
+  return typeof value === "string" && value ? value : `Registration #${r.id}`;
+}
+
+function formatAnswer(value: unknown): string {
+  if (Array.isArray(value)) return value.join(", ") || "—";
+  if (value === undefined || value === null || value === "") return "—";
+  return String(value);
+}
 
 export default function AdminExpoRegistrationsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -119,11 +138,11 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {registrations.map((r) => (
                   <tr key={r.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{r.fullName}<br/><span className="text-xs text-gray-400">{r.nationality}</span></td>
-                    <td className="px-6 py-4 capitalize text-gray-700">{r.registrationType}</td>
-                    <td className="px-6 py-4 text-gray-500">{r.companyName}</td>
-                    <td className="px-6 py-4 text-gray-500">{r.email}<br/><span className="text-xs text-gray-400">{r.phone}</span></td>
-                    <td className="px-6 py-4 text-gray-500">{r.purposeOfVisit}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{displayName(r)}<br/><span className="text-xs text-gray-400">{r.nationality || "—"}</span></td>
+                    <td className="px-6 py-4 capitalize text-gray-700">{r.registrationType || (r.customAnswers ? "Custom form" : "—")}</td>
+                    <td className="px-6 py-4 text-gray-500">{r.companyName || "—"}</td>
+                    <td className="px-6 py-4 text-gray-500">{r.email || "—"}<br/><span className="text-xs text-gray-400">{r.phone || ""}</span></td>
+                    <td className="px-6 py-4 text-gray-500">{r.purposeOfVisit || "—"}</td>
                     <td className="px-6 py-4">
                       <select
                         value={r.status}
@@ -154,49 +173,75 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
             ) : detail && (
               <>
                 <div className="flex items-start justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">{detail.fullName}</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">{displayName(detail)}</h2>
                   <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600">✕</button>
                 </div>
-                <div className="grid grid-cols-2 gap-4 text-sm mb-6">
-                  <Detail label="Registration Type" value={detail.registrationType} capitalize />
-                  <Detail label="Gender" value={detail.gender} capitalize />
-                  <Detail label="Nationality" value={detail.nationality} />
-                  <Detail label="Passport Number" value={detail.passportNumber} />
-                  <Detail label="Email" value={detail.email} />
-                  <Detail label="Phone" value={detail.phone} />
-                  <Detail label="Company" value={detail.companyName} />
-                  <Detail label="Website" value={detail.companyWebsite || "—"} />
-                  <Detail label="Company Type" value={detail.companyType === "Other" ? detail.companyTypeOther : detail.companyType} />
-                  <Detail label="Company Scale" value={detail.companyScale} />
-                  <Detail label="Purpose of Visit" value={detail.purposeOfVisit} />
-                  <Detail label="Info Source" value={detail.infoSource === "Other" ? detail.infoSourceOther : detail.infoSource} />
-                  <Detail label="Exporting Markets" value={detail.exportingMarkets.map((m) => (m === "Other" ? detail.exportingMarketOther : m)).join(", ")} />
-                </div>
-                {detail.companyIntro && (
-                  <div className="mb-6">
-                    <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Company Introduction</p>
-                    <p className="text-sm text-gray-700">{detail.companyIntro}</p>
+                {detail.customAnswers ? (
+                  <div className="space-y-4">
+                    {customSchemaOf(detail).map((field) => {
+                      const value = detail.customAnswers ? (detail.customAnswers as Record<string, unknown>)[field.id] : undefined;
+                      return (
+                        <div key={field.id}>
+                          <p className="text-xs font-semibold text-gray-400 uppercase mb-1">{field.label}</p>
+                          {field.type === "file" && typeof value === "string" && value ? (
+                            <a href={value} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-gray-200 p-2 hover:border-emerald-400 max-w-xs">
+                              {value.startsWith("data:image") ? (
+                                <img src={value} alt={field.label} className="h-28 w-full object-contain rounded-lg bg-gray-50" />
+                              ) : (
+                                <div className="h-28 w-full flex items-center justify-center rounded-lg bg-gray-50 text-sm text-gray-500">📄 View file</div>
+                              )}
+                            </a>
+                          ) : (
+                            <p className="text-gray-900 text-sm">{formatAnswer(value)}</p>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-4 text-sm mb-6">
+                      <Detail label="Registration Type" value={detail.registrationType || "—"} capitalize />
+                      <Detail label="Gender" value={detail.gender || "—"} capitalize />
+                      <Detail label="Nationality" value={detail.nationality || "—"} />
+                      <Detail label="Passport Number" value={detail.passportNumber || "—"} />
+                      <Detail label="Email" value={detail.email || "—"} />
+                      <Detail label="Phone" value={detail.phone || "—"} />
+                      <Detail label="Company" value={detail.companyName || "—"} />
+                      <Detail label="Website" value={detail.companyWebsite || "—"} />
+                      <Detail label="Company Type" value={detail.companyType === "Other" ? (detail.companyTypeOther || "—") : (detail.companyType || "—")} />
+                      <Detail label="Company Scale" value={detail.companyScale || "—"} />
+                      <Detail label="Purpose of Visit" value={detail.purposeOfVisit || "—"} />
+                      <Detail label="Info Source" value={detail.infoSource === "Other" ? (detail.infoSourceOther || "—") : (detail.infoSource || "—")} />
+                      <Detail label="Exporting Markets" value={(detail.exportingMarkets || []).map((m) => (m === "Other" ? detail.exportingMarketOther : m)).join(", ") || "—"} />
+                    </div>
+                    {detail.companyIntro && (
+                      <div className="mb-6">
+                        <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Company Introduction</p>
+                        <p className="text-sm text-gray-700">{detail.companyIntro}</p>
+                      </div>
+                    )}
+                    <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Documents</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      {[
+                        { label: "Passport Front Page", src: detail.docPassportFront },
+                        { label: "Business Card", src: detail.docBusinessCard },
+                        { label: "Visa Page", src: detail.docVisaPage },
+                        { label: "Business License", src: detail.docBusinessLicense },
+                        { label: "Order List", src: detail.docOrderList },
+                      ].filter((d) => d.src).map((d) => (
+                        <a key={d.label} href={d.src} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-gray-200 p-2 hover:border-emerald-400">
+                          {d.src!.startsWith("data:image") ? (
+                            <img src={d.src} alt={d.label} className="h-28 w-full object-contain rounded-lg bg-gray-50" />
+                          ) : (
+                            <div className="h-28 w-full flex items-center justify-center rounded-lg bg-gray-50 text-sm text-gray-500">📄 View file</div>
+                          )}
+                          <p className="text-xs text-gray-500 mt-1 text-center">{d.label}</p>
+                        </a>
+                      ))}
+                    </div>
+                  </>
                 )}
-                <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Documents</p>
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { label: "Passport Front Page", src: detail.docPassportFront },
-                    { label: "Business Card", src: detail.docBusinessCard },
-                    { label: "Visa Page", src: detail.docVisaPage },
-                    { label: "Business License", src: detail.docBusinessLicense },
-                    { label: "Order List", src: detail.docOrderList },
-                  ].filter((d) => d.src).map((d) => (
-                    <a key={d.label} href={d.src} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-gray-200 p-2 hover:border-emerald-400">
-                      {d.src!.startsWith("data:image") ? (
-                        <img src={d.src} alt={d.label} className="h-28 w-full object-contain rounded-lg bg-gray-50" />
-                      ) : (
-                        <div className="h-28 w-full flex items-center justify-center rounded-lg bg-gray-50 text-sm text-gray-500">📄 View file</div>
-                      )}
-                      <p className="text-xs text-gray-500 mt-1 text-center">{d.label}</p>
-                    </a>
-                  ))}
-                </div>
               </>
             )}
           </div>

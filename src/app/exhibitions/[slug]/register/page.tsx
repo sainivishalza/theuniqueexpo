@@ -6,9 +6,11 @@ import {
   COMPANY_TYPES, COMPANY_SCALES, PURPOSES_OF_VISIT, INFO_SOURCES, EXPORTING_MARKETS, NATIONALITIES,
   type RegistrationType, type Gender, type ExpoRegistrationInput,
 } from "@/lib/expo-registrations";
+import { validateCustomAnswers, type CustomFormField, type CustomFormSchema } from "@/lib/custom-registration-form";
 
 interface Exhibition {
   id: string; slug: string; title: string; dates: string;
+  registrationEnabled: boolean; registrationFormSchema: CustomFormSchema | null;
 }
 
 const EMPTY_FORM: Omit<ExpoRegistrationInput, "exhibitionId"> = {
@@ -63,6 +65,8 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [fileErrors, setFileErrors] = useState<Record<string, string>>({});
+  const [customAnswers, setCustomAnswers] = useState<Record<string, unknown>>({});
+  const [customFileErrors, setCustomFileErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetch(`/api/exhibitions/${slug}`)
@@ -121,6 +125,56 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
     }
   }
 
+  async function handleCustomFile(fieldId: string, file: File | null) {
+    setCustomFileErrors((prev) => ({ ...prev, [fieldId]: "" }));
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      setCustomFileErrors((prev) => ({ ...prev, [fieldId]: "File is too large. Please choose one under 8 MB." }));
+      return;
+    }
+    try {
+      const dataUrl = await readFileAsDataUrl(file);
+      setCustomAnswers((a) => ({ ...a, [fieldId]: dataUrl }));
+    } catch {
+      setCustomFileErrors((prev) => ({ ...prev, [fieldId]: "Couldn't read that file. Please try again." }));
+    }
+  }
+
+  function toggleCustomCheckbox(fieldId: string, option: string) {
+    setCustomAnswers((a) => {
+      const current = Array.isArray(a[fieldId]) ? (a[fieldId] as string[]) : [];
+      return {
+        ...a,
+        [fieldId]: current.includes(option) ? current.filter((o) => o !== option) : [...current, option],
+      };
+    });
+  }
+
+  async function handleCustomSubmit(e: React.FormEvent, schema: CustomFormSchema) {
+    e.preventDefault();
+    setError("");
+    const validationError = validateCustomAnswers(schema, customAnswers);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/expo-registrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ exhibitionSlug: slug, customAnswers }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Registration failed");
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   function toggleMarket(market: string) {
     setForm((f) => ({
       ...f,
@@ -164,6 +218,18 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       </div>
     );
   }
+  if (!expo.registrationEnabled) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
+          <div className="text-5xl mb-4">🚫</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Registration is closed</h1>
+          <p className="text-gray-500 mb-6">Registration for <strong>{expo.title}</strong> is not currently open.</p>
+          <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">← Back to {expo.title}</Link>
+        </div>
+      </div>
+    );
+  }
   if (!user) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -185,8 +251,42 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
         <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
           <div className="text-6xl mb-4">✅</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Registration Submitted!</h1>
-          <p className="text-gray-500 mb-6">Your {form.registrationType} registration for <strong>{expo.title}</strong> has been received. Our team will review it shortly.</p>
+          <p className="text-gray-500 mb-6">Your registration for <strong>{expo.title}</strong> has been received. Our team will review it shortly.</p>
           <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">← Back to {expo.title}</Link>
+        </div>
+      </div>
+    );
+  }
+
+  const customSchema = expo.registrationFormSchema;
+  if (customSchema && customSchema.length > 0) {
+    return (
+      <div className="py-12 bg-gray-50 min-h-screen">
+        <div className="mx-auto max-w-3xl px-6">
+          <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">← Back to {expo.title}</Link>
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Register for {expo.title}</h1>
+          <p className="text-gray-500 mb-8">{expo.dates} • Registration is required separately for each exhibition.</p>
+
+          <form onSubmit={(e) => handleCustomSubmit(e, customSchema)} className="space-y-6">
+            <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
+              {customSchema.map((field) => (
+                <CustomField
+                  key={field.id}
+                  field={field}
+                  value={customAnswers[field.id]}
+                  onChange={(v) => setCustomAnswers((a) => ({ ...a, [field.id]: v }))}
+                  onToggleCheckbox={(option) => toggleCustomCheckbox(field.id, option)}
+                  onFile={(file) => handleCustomFile(field.id, file)}
+                  fileError={customFileErrors[field.id]}
+                />
+              ))}
+            </div>
+
+            {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+            <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
+              {submitting ? "Submitting..." : "Submit Registration"}
+            </button>
+          </form>
         </div>
       </div>
     );
@@ -334,6 +434,77 @@ function SelectField({ label, value, onChange, options, required, placeholder }:
         <option value="" disabled>{placeholder || "Select"}</option>
         {options.map((o) => <option key={o} value={o}>{o}</option>)}
       </select>
+    </div>
+  );
+}
+
+function CustomField({
+  field, value, onChange, onToggleCheckbox, onFile, fileError,
+}: {
+  field: CustomFormField;
+  value: unknown;
+  onChange: (v: string) => void;
+  onToggleCheckbox: (option: string) => void;
+  onFile: (file: File | null) => void;
+  fileError?: string;
+}) {
+  if (field.type === "text") {
+    return <TextField label={field.label} required={field.required} value={(value as string) || ""} onChange={onChange} />;
+  }
+
+  if (field.type === "textarea") {
+    return (
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{field.label} {field.required && "*"}</label>
+        {field.helpText && <p className="text-xs text-gray-400 mb-1">{field.helpText}</p>}
+        <textarea
+          required={field.required}
+          value={(value as string) || ""}
+          onChange={(e) => onChange(e.target.value)}
+          rows={3}
+          className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none"
+        />
+      </div>
+    );
+  }
+
+  if (field.type === "radio") {
+    return <OptionGroup label={field.label} required={field.required} options={field.options || []} value={(value as string) || ""} onChange={onChange} />;
+  }
+
+  if (field.type === "checkbox") {
+    const selected = Array.isArray(value) ? (value as string[]) : [];
+    return (
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{field.label} {field.required && "*"}</label>
+        <div className="grid gap-2 md:grid-cols-2">
+          {(field.options || []).map((o) => (
+            <label key={o} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors text-sm ${selected.includes(o) ? "border-emerald-500 bg-emerald-50" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
+              <input type="checkbox" checked={selected.includes(o)} onChange={() => onToggleCheckbox(o)} className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+              {o}
+            </label>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // file
+  const fileValue = (value as string) || "";
+  const isImage = fileValue.startsWith("data:image");
+  return (
+    <div className="rounded-xl border border-gray-200 p-4">
+      <label className="block text-sm font-medium text-gray-700 mb-2">{field.label} {field.required && "*"}</label>
+      {fileValue && (isImage ? (
+        <img src={fileValue} alt="" className="h-20 w-full object-contain mb-2 rounded-lg bg-gray-50" />
+      ) : (
+        <div className="h-20 w-full flex items-center justify-center mb-2 rounded-lg bg-gray-50 text-sm text-gray-500">📄 File attached</div>
+      ))}
+      <label className="cursor-pointer inline-block rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
+        {fileValue ? "Replace file" : "Choose file"}
+        <input type="file" accept="image/*,application/pdf" className="hidden" onChange={(e) => onFile(e.target.files?.[0] || null)} />
+      </label>
+      {fileError && <p className="mt-1 text-xs text-red-600">{fileError}</p>}
     </div>
   );
 }

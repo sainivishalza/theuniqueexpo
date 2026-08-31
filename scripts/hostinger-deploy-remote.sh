@@ -72,6 +72,27 @@ set -a
 source .env.local
 set +a
 
+echo "=== DIAGNOSTIC: testing mysql2 (the actual Node driver, not just the CLI) over the socket ==="
+DB_SOCKET=/var/lib/mysql/mysql.sock node -e "
+const mysql = require('$APP_DIR/node_modules/mysql2/promise');
+(async () => {
+  try {
+    const conn = await mysql.createConnection({
+      socketPath: process.env.DB_SOCKET,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
+    const [rows] = await conn.query('SELECT 1 AS ok');
+    console.log('mysql2 socket connect: OK', JSON.stringify(rows));
+    await conn.end();
+  } catch (e) {
+    console.log('mysql2 socket connect: FAILED -', e.message);
+  }
+})();
+" || true
+echo "=== END DIAGNOSTIC ==="
+
 BACKUP_FILE=~/theuniqueexpo-backup-$(date +%Y%m%d-%H%M%S).sql
 echo "Backing up database to $BACKUP_FILE ..."
 mysqldump -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$BACKUP_FILE"

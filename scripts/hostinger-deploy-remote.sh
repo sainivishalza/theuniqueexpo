@@ -34,13 +34,19 @@ cd "$APP_DIR"
 # in place no matter when hbuilds' own checkout-then-build cycle actually
 # runs relative to this script.
 HBUILDS=~/domains/theuniqueexpo.com/hbuilds
-if [ -f "$APP_DIR/.env.local" ] && [ -d "$HBUILDS/source/repository" ]; then
+if [ -f "$APP_DIR/.env.local" ]; then
+  # Check hbuilds/source/repository fresh on every iteration, not once up
+  # front -- a run where it happened to not exist at that single instant
+  # (hbuilds' own checkout was mid-recreate) skipped the copy entirely and
+  # produced a completely-missing-.env.local build failure.
   for i in $(seq 1 40); do
-    cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local"
-    echo "DB_SOCKET=/var/lib/mysql/mysql.sock" >> "$HBUILDS/source/repository/.env.local"
+    if [ -d "$HBUILDS/source/repository" ]; then
+      cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local"
+      echo "DB_SOCKET=/var/lib/mysql/mysql.sock" >> "$HBUILDS/source/repository/.env.local"
+    fi
     sleep 3
   done
-  echo "Re-copied .env.local into hbuilds' build checkout every 3s for 2 minutes (added DB_SOCKET for its network-isolated build), to win the race against its own webhook-triggered rebuild."
+  echo "Re-copied .env.local into hbuilds' build checkout every 3s for 2 minutes whenever its directory existed (added DB_SOCKET for its network-isolated build), to win the race against its own webhook-triggered rebuild."
 fi
 
 # A non-interactive SSH command doesn't source .bashrc/.profile, so

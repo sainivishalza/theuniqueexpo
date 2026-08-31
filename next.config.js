@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    // Defaults to os.cpus().length - 1, which on shared hosting reports the
+    // host's full core count (60+) rather than what the account can actually
+    // spawn — the build then hits the account's process-spawn limit (EAGAIN)
+    // while collecting page data. Cap it low so builds succeed there.
+    cpus: 2,
+  },
   async headers() {
     return [
       {

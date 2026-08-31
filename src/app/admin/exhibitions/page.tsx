@@ -41,6 +41,7 @@ export default function AdminExhibitionsPage() {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [imageError, setImageError] = useState("");
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -118,6 +119,23 @@ export default function AdminExhibitionsPage() {
     }
   }
 
+  function handleImageFile(file: File | null) {
+    setImageError("");
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setImageError("Please choose an image file.");
+      return;
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      setImageError("Image is too large. Please choose one under 4 MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setForm((prev) => ({ ...prev, image: reader.result as string }));
+    reader.onerror = () => setImageError("Couldn't read that file. Please try again.");
+    reader.readAsDataURL(file);
+  }
+
   async function handleDelete(id: string) {
     if (!confirm("Delete this exhibition? This cannot be undone.")) return;
     setDeletingId(id);
@@ -186,7 +204,45 @@ export default function AdminExhibitionsPage() {
               <Field label="Organizer" value={form.organizer} onChange={(v) => setForm({ ...form, organizer: v })} />
               <Field label="Website" value={form.website} onChange={(v) => setForm({ ...form, website: v })} />
               <Field label="Accent Color" type="color" value={form.color} onChange={(v) => setForm({ ...form, color: v })} />
-              <Field label="Hero Image URL" value={form.image} onChange={(v) => setForm({ ...form, image: v })} placeholder="https://..." />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Hero Image</label>
+              <p className="text-xs text-gray-500 mb-2">Paste an image URL, or upload your own poster below — whichever you set last is used.</p>
+              <div className="flex gap-4 items-start">
+                <div className="w-32 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
+                  {form.image && <img src={form.image} alt="Preview" className="w-full h-full object-cover" />}
+                </div>
+                <div className="flex-1 space-y-2">
+                  <input
+                    type="text"
+                    value={form.image.startsWith("data:") ? "" : form.image}
+                    placeholder={form.image.startsWith("data:") ? "Uploaded image set — paste a URL to replace it" : "https://..."}
+                    onChange={(e) => setForm({ ...form, image: e.target.value })}
+                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <div className="flex items-center gap-3">
+                    <label className="cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                      Upload poster image
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleImageFile(e.target.files?.[0] || null)}
+                      />
+                    </label>
+                    {form.image && (
+                      <button
+                        type="button"
+                        onClick={() => setForm((prev) => ({ ...prev, image: "" }))}
+                        className="text-xs font-semibold text-red-600 hover:underline"
+                      >
+                        Remove image
+                      </button>
+                    )}
+                  </div>
+                  {imageError && <p className="text-xs text-red-600">{imageError}</p>}
+                </div>
+              </div>
             </div>
             <div className="mt-4">
               <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>

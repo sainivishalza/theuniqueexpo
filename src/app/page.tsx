@@ -3,6 +3,8 @@ import { formatNumber } from "@/lib/format";
 import { featuredEvents } from "@/lib/featured-events";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 
+export const dynamic = "force-dynamic";
+
 const stats = [
   { value: "20+", label: "Major Exhibitions", icon: "🎯" },
   { value: "15,000+", label: "Exhibitors", icon: "🏢" },

@@ -22,30 +22,20 @@ cd "$APP_DIR"
 # DB-backed page fails with ER_ACCESS_DENIED_ERROR. Copy this app's own
 # .env.local over so hbuilds' independent build can reach the database too.
 #
-# With the file copied, hbuilds' build got further but then failed with
-# "Access denied ... '@::1' (using password: YES)" -- its isolated build
-# sandbox resolves DB_HOST=localhost to the IPv6 loopback in a way that
-# doesn't satisfy the grant there, even though every host variant (including
-# ::1) connects fine from this normal SSH session. Force a plain IPv4
-# literal in hbuilds' copy so its build never touches IPv6 resolution.
+# With the file copied, hbuilds' build got further but kept failing with
+# "Access denied" no matter which TCP host we tried (localhost -> ::1,
+# then a forced 127.0.0.1) -- its build sandbox is network-isolated from
+# the DB server, so no TCP host string will ever match a grant there, even
+# though every one of them works fine from this normal SSH session. It
+# does share this server's filesystem though, so point it at the DB's
+# actual Unix socket instead of TCP entirely (see src/lib/db.ts's DB_SOCKET
+# support), which sidesteps host-based grant matching altogether.
 HBUILDS=~/domains/theuniqueexpo.com/hbuilds
 if [ -f "$APP_DIR/.env.local" ] && [ -d "$HBUILDS/source/repository" ]; then
   cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local"
-  sed -i 's/^DB_HOST=.*/DB_HOST=127.0.0.1/' "$HBUILDS/source/repository/.env.local"
-  echo "Copied .env.local into hbuilds' own build checkout (forced DB_HOST=127.0.0.1)."
+  echo "DB_SOCKET=/var/lib/mysql/mysql.sock" >> "$HBUILDS/source/repository/.env.local"
+  echo "Copied .env.local into hbuilds' own build checkout (added DB_SOCKET for its network-isolated build)."
 fi
-
-echo "=== DIAGNOSTIC: hbuilds current state ==="
-readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
-(cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='current commit: %H %cI %s' 2>/dev/null) || echo "(hbuilds/current is not a git checkout)"
-(cd "$HBUILDS/source/repository" 2>/dev/null && git log -1 --format='source commit: %H %cI %s' 2>/dev/null) || echo "(couldn't read hbuilds/source git info)"
-LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
-echo "latest hbuilds deploy log: ${LATEST_LOG:-none found}"
-if [ -n "${LATEST_LOG:-}" ]; then
-  echo "--- tail of $LATEST_LOG ---"
-  tail -100 "$LATEST_LOG" || true
-fi
-echo "=== END DIAGNOSTIC ==="
 
 # A non-interactive SSH command doesn't source .bashrc/.profile, so
 # nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.
@@ -65,13 +55,6 @@ fi
 set -a
 source .env.local
 set +a
-
-echo "=== DIAGNOSTIC: MySQL unix socket path ==="
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -N -e "SHOW VARIABLES LIKE 'socket'" 2>/dev/null || echo "(couldn't query socket variable)"
-for p in /var/run/mysqld/mysqld.sock /var/lib/mysql/mysql.sock /tmp/mysql.sock; do
-  [ -S "$p" ] && echo "  socket file exists: $p"
-done
-echo "=== END DIAGNOSTIC ==="
 
 BACKUP_FILE=~/theuniqueexpo-backup-$(date +%Y%m%d-%H%M%S).sql
 echo "Backing up database to $BACKUP_FILE ..."

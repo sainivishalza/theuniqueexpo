@@ -1,0 +1,75 @@
+name: Deploy to Hostinger
+
+# Manually triggered only — this never runs automatically on push,
+# so a deploy always requires someone to click "Run workflow".
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch or tag to deploy"
+        required: true
+        default: "claude/remote-control-mwymfu"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Deploy over SSH
+        env:
+          SSHPASS: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          DEPLOY_REF: ${{ github.event.inputs.ref }}
+        run: |
+          set -euo pipefail
+          SSH="sshpass -e ssh -o StrictHostKeyChecking=accept-new -p $SSH_PORT $SSH_USER@$SSH_HOST"
+
+          echo "==> Locating the app directory on the server..."
+          APP_DIR=$($SSH 'find ~ -maxdepth 3 -name "package.json" -not -path "*/node_modules/*" -exec dirname {} \; | head -1')
+          if [ -z "$APP_DIR" ]; then
+            echo "Could not find an app directory (package.json) on the server." >&2
+            exit 1
+          fi
+          echo "App directory: $APP_DIR"
+
+          echo "==> Running the deploy remotely (DB credentials are read from the server's own .env.local, never leave the server)..."
+          $SSH bash -s <<EOF
+            set -euo pipefail
+            cd "$APP_DIR"
+
+            # Load DB_HOST / DB_USER / DB_PASSWORD / DB_NAME from the server's own env file
+            set -a
+            source .env.local
+            set +a
+
+            BACKUP_FILE=~/theuniqueexpo-backup-\$(date +%Y%m%d-%H%M%S).sql
+            echo "Backing up database to \$BACKUP_FILE ..."
+            mysqldump -h "\$DB_HOST" -u "\$DB_USER" -p"\$DB_PASSWORD" "\$DB_NAME" > "\$BACKUP_FILE"
+            ls -lh "\$BACKUP_FILE"
+
+            echo "Fetching and checking out $DEPLOY_REF ..."
+            git fetch origin "$DEPLOY_REF"
+            git checkout "$DEPLOY_REF"
+            git pull origin "$DEPLOY_REF"
+
+            echo "Applying new migrations ..."
+            mysql -h "\$DB_HOST" -u "\$DB_USER" -p"\$DB_PASSWORD" "\$DB_NAME" < schema-migrations/002-expo-registrations.sql
+            mysql -h "\$DB_HOST" -u "\$DB_USER" -p"\$DB_PASSWORD" "\$DB_NAME" < schema-migrations/003-reset-admin-password.sql
+
+            echo "Installing dependencies and building ..."
+            npm install
+            npm run build
+
+            echo "Restarting via PM2 ..."
+            pm2 restart theuniqueexpo || pm2 start npm --name theuniqueexpo --cwd "$APP_DIR" -- start
+            pm2 save
+
+            echo "Checking the app responds ..."
+            curl -s -o /dev/null -w 'HTTP %{http_code}\n' http://localhost:3000/
+
+            echo "Backup saved at: \$BACKUP_FILE (keep this until you've confirmed everything works)"
+EOF

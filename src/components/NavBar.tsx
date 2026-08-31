@@ -48,7 +48,7 @@ export default function NavBar() {
                 Dashboard
               </Link>
               <div className="flex items-center gap-2 ml-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
                   {user.email?.[0]?.toUpperCase() || "U"}
                 </div>
                 <button
@@ -70,7 +70,7 @@ export default function NavBar() {
               </Link>
               <Link
                 href="/register"
-                className="ml-1 px-5 py-2.5 text-sm font-semibold text-white gradient-brand rounded-xl shadow-sm shadow-blue-500/25 hover:shadow-md hover:shadow-blue-500/30 hover:scale-105 transition-all duration-200"
+                className="ml-1 px-5 py-2.5 text-sm font-semibold text-white gradient-brand rounded-xl shadow-sm shadow-emerald-500/25 hover:shadow-md hover:shadow-emerald-500/30 hover:scale-105 transition-all duration-200"
               >
                 Register
               </Link>
@@ -98,19 +98,19 @@ export default function NavBar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden border-t border-gray-200/60 bg-white/95 backdrop-blur-xl px-6 py-4 space-y-2">
-          <Link href="/exhibitions" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Exhibitions</Link>
-          <Link href="/directory" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Directory</Link>
-          <Link href="/services" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Services</Link>
-          <Link href="/marketplace" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Marketplace</Link>
+          <Link href="/exhibitions" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>Exhibitions</Link>
+          <Link href="/directory" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>Directory</Link>
+          <Link href="/services" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>Services</Link>
+          <Link href="/marketplace" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>Marketplace</Link>
           {user ? (
             <>
-              <Link href="/dashboard" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Dashboard</Link>
+              <Link href="/dashboard" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>Dashboard</Link>
               <button onClick={() => { logout(); setMobileOpen(false); }} className="block py-2.5 text-sm font-medium text-red-500 hover:text-red-700">Logout</button>
             </>
           ) : (
             <>
-              <Link href="/login" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600" onClick={() => setMobileOpen(false)}>Login</Link>
-              <Link href="/register" className="block py-2.5 text-sm font-semibold text-blue-600" onClick={() => setMobileOpen(false)}>Register →</Link>
+              <Link href="/login" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>Login</Link>
+              <Link href="/register" className="block py-2.5 text-sm font-semibold text-emerald-600" onClick={() => setMobileOpen(false)}>Register →</Link>
             </>
           )}
         </div>

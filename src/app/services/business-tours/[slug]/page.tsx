@@ -18,7 +18,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ slu
         <div className="absolute inset-0 gradient-overlay" />
         <div className="absolute inset-0 flex items-end">
           <div className="mx-auto max-w-7xl px-6 pb-8 w-full">
-            <Link href="/services/business-tours" className="text-sm text-blue-300 hover:text-blue-200 mb-2 inline-block">← Back to Business Tours</Link>
+            <Link href="/services/business-tours" className="text-sm text-emerald-300 hover:text-emerald-200 mb-2 inline-block">← Back to Business Tours</Link>
             <h1 className="text-3xl md:text-4xl font-extrabold text-white">{tour.title}</h1>
             <div className="flex flex-wrap gap-3 mt-3">
               <span className="rounded-lg bg-white/20 backdrop-blur-sm px-3 py-1 text-sm text-white">{tour.city}</span>
@@ -35,7 +35,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ slu
               <h2 className="text-2xl font-bold text-gray-900 mb-4">About This Tour</h2>
               <p className="text-gray-600 leading-relaxed">{tour.description}</p>
               <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-gray-50 rounded-xl"><div className="text-2xl font-extrabold text-blue-600">${formatNumber(tour.price)}</div><div className="text-xs text-gray-400 mt-1">per person</div></div>
+                <div className="text-center p-4 bg-gray-50 rounded-xl"><div className="text-2xl font-extrabold text-emerald-600">${formatNumber(tour.price)}</div><div className="text-xs text-gray-400 mt-1">per person</div></div>
                 <div className="text-center p-4 bg-gray-50 rounded-xl"><div className="text-2xl font-extrabold text-gray-900">{tour.groupSize}</div><div className="text-xs text-gray-400 mt-1">group size</div></div>
                 <div className="text-center p-4 bg-gray-50 rounded-xl"><div className="text-2xl font-extrabold text-green-600">{tour.duration}</div><div className="text-xs text-gray-400 mt-1">duration</div></div>
               </div>
@@ -45,7 +45,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ slu
               <div className="grid gap-3 md:grid-cols-2">
                 {tour.highlights.map((h) => (
                   <div key={h} className="flex items-start gap-3 p-3 rounded-xl bg-gray-50">
-                    <span className="text-blue-500 mt-0.5">✓</span>
+                    <span className="text-emerald-500 mt-0.5">✓</span>
                     <span className="text-sm text-gray-700">{h}</span>
                   </div>
                 ))}
@@ -57,7 +57,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ slu
                 {tour.itinerary.map((day, i) => (
                   <div key={i} className="flex gap-4">
                     <div className="w-20 flex-shrink-0">
-                      <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xs font-bold">{day.day}</div>
+                      <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white text-xs font-bold">{day.day}</div>
                     </div>
                     <div className="flex-1 pb-4 border-b border-gray-100">
                       <h3 className="font-bold text-gray-900">{day.title}</h3>

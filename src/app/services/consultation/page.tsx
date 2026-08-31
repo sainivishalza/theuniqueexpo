@@ -25,7 +25,7 @@ export default function ConsultationPage() {
       <section className="relative overflow-hidden bg-gray-900 py-20">
         <div className="absolute inset-0 opacity-15"><img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1600&h=600&fit=crop&q=80" alt="" className="img-cover" /></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
-          <p className="text-blue-300 font-semibold mb-2">Our Services</p>
+          <p className="text-emerald-300 font-semibold mb-2">Our Services</p>
           <h1 className="text-4xl md:text-5xl font-extrabold">Consultation on China</h1>
           <p className="mt-3 text-lg text-gray-300 max-w-2xl">One-on-one expert sessions on doing business in China — market entry, sourcing, legal, and trade compliance.</p>
         </div>
@@ -57,17 +57,17 @@ export default function ConsultationPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Book a Consultation</h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">Name *</label><input required type="text" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none" /></div>
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">Email *</label><input required type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none" /></div>
+                  <div><label className="block text-sm font-medium text-gray-700 mb-1">Name *</label><input required type="text" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                  <div><label className="block text-sm font-medium text-gray-700 mb-1">Email *</label><input required type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
                 </div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">Company</label><input type="text" value={form.company} onChange={(e) => setForm({...form, company: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none" /></div>
+                <div><label className="block text-sm font-medium text-gray-700 mb-1">Company</label><input type="text" value={form.company} onChange={(e) => setForm({...form, company: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">Topic *</label>
-                  <select required value={form.topic} onChange={(e) => setForm({...form, topic: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none">
+                  <select required value={form.topic} onChange={(e) => setForm({...form, topic: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none">
                     <option value="">Select a topic...</option>{TOPICS.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">Preferred Date</label><input type="date" value={form.date} onChange={(e) => setForm({...form, date: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none" /></div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">Questions / Topics to Cover</label><textarea value={form.questions} onChange={(e) => setForm({...form, questions: e.target.value})} rows={4} placeholder="Tell us about your business needs and what you'd like to discuss..." className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none resize-none" /></div>
+                <div><label className="block text-sm font-medium text-gray-700 mb-1">Preferred Date</label><input type="date" value={form.date} onChange={(e) => setForm({...form, date: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                <div><label className="block text-sm font-medium text-gray-700 mb-1">Questions / Topics to Cover</label><textarea value={form.questions} onChange={(e) => setForm({...form, questions: e.target.value})} rows={4} placeholder="Tell us about your business needs and what you'd like to discuss..." className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
                 <button type="submit" className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity">Book Consultation</button>
               </form>
             </div>

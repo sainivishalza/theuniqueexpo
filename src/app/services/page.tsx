@@ -35,23 +35,23 @@ export default function ServicesPage() {
       </section>
 
       {/* Markets We Cover */}
-      <section className="py-16 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700">
+      <section className="py-16 bg-gradient-to-br from-emerald-600 via-teal-600 to-purple-700">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">Markets We Cover</h2>
-            <p className="text-blue-100 text-lg max-w-2xl mx-auto">We operate across all major Chinese trade hubs and exhibition cities — covering 15+ markets nationwide.</p>
+            <p className="text-emerald-100 text-lg max-w-2xl mx-auto">We operate across all major Chinese trade hubs and exhibition cities — covering 15+ markets nationwide.</p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
             {marketAreas.map((m) => (
               <Link key={m.city} href={`/exhibitions/${m.slug}`} className="group relative rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 p-4 text-center hover:bg-white/20 hover:scale-105 transition-all duration-300">
                 <div className="text-3xl mb-2">{m.emoji}</div>
                 <h3 className="font-bold text-white text-sm">{m.city}</h3>
-                <p className="text-xs text-blue-200 mt-1">{m.desc}</p>
+                <p className="text-xs text-emerald-200 mt-1">{m.desc}</p>
               </Link>
             ))}
           </div>
           <div className="text-center mt-8">
-            <Link href="/exhibitions" className="inline-block rounded-xl bg-white px-6 py-3 font-semibold text-blue-600 hover:bg-blue-50 transition-colors">
+            <Link href="/exhibitions" className="inline-block rounded-xl bg-white px-6 py-3 font-semibold text-emerald-600 hover:bg-emerald-50 transition-colors">
               View All Exhibitions →
             </Link>
           </div>
@@ -96,7 +96,7 @@ export default function ServicesPage() {
           <div className="grid gap-8 md:grid-cols-4">
             {[{icon:"🎯",title:"End-to-End",desc:"From visa to factory visit, we handle everything"},{icon:"🌍",title:"15+ Years",desc:"Deep expertise in China trade and exhibitions"},{icon:"🤝",title:"Trusted Network",desc:"500+ verified partners across China"},{icon:"💬",title:"24/7 Support",desc:"Multilingual support throughout your journey"}].map((b) => (
               <div key={b.title} className="text-center">
-                <div className="w-16 h-16 mx-auto rounded-2xl bg-blue-50 flex items-center justify-center text-3xl mb-4">{b.icon}</div>
+                <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-50 flex items-center justify-center text-3xl mb-4">{b.icon}</div>
                 <h3 className="font-bold text-gray-900 mb-1">{b.title}</h3>
                 <p className="text-sm text-gray-500">{b.desc}</p>
               </div>

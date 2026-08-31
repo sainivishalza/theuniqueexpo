@@ -29,7 +29,7 @@ export const serviceCategories: ServiceCategory[] = [
       "Airport transfers & logistics",
     ],
     ctaText: "Book a Business Tour",
-    color: "from-blue-500 to-indigo-600",
+    color: "from-fuchsia-500 to-pink-600",
   },
   {
     id: "china-tours",

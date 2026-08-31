@@ -8,7 +8,7 @@ export default function VisaSetupPage() {
       <section className="relative overflow-hidden bg-gray-900 py-20">
         <div className="absolute inset-0 opacity-15"><img src="https://images.unsplash.com/photo-1450101499163-c8848e968838?w=1600&h=600&fit=crop&q=80" alt="" className="img-cover" /></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
-          <p className="text-blue-300 font-semibold mb-2">Our Services</p>
+          <p className="text-emerald-300 font-semibold mb-2">Our Services</p>
           <h1 className="text-4xl md:text-5xl font-extrabold">Company Setup & Visas</h1>
           <p className="mt-3 text-lg text-gray-300 max-w-2xl">End-to-end assistance with setting up a business in China and obtaining the right visas.</p>
         </div>
@@ -44,7 +44,7 @@ export default function VisaSetupPage() {
                 <div className="flex flex-wrap gap-3">
                   {svc.process.map((step) => (
                     <div key={step.step} className="flex items-center gap-2 bg-gray-50 rounded-xl px-4 py-2">
-                      <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">{step.step}</div>
+                      <div className="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs font-bold">{step.step}</div>
                       <div className="text-sm"><span className="font-medium text-gray-900">{step.title}</span> <span className="text-gray-400">({step.duration})</span></div>
                     </div>
                   ))}

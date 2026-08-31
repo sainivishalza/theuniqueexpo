@@ -72,7 +72,7 @@ export const featuredEvents: FeaturedEvent[] = [
     ],
     image: "/images/events/ciftis-2026.jpg",
     color: "#1D4ED8",
-    gradient: "from-blue-700 via-blue-600 to-cyan-500",
+    gradient: "from-cyan-700 via-cyan-600 to-teal-500",
     slug: "ciftis-2026-beijing",
   },
   {
@@ -192,7 +192,7 @@ export const featuredEvents: FeaturedEvent[] = [
     ],
     image: "/images/events/weifang-machinery-2026.jpg",
     color: "#0369A1",
-    gradient: "from-sky-700 via-sky-600 to-blue-400",
+    gradient: "from-rose-700 via-pink-600 to-red-400",
     slug: "weifang-agricultural-machinery-2026",
   },
   {
@@ -222,7 +222,7 @@ export const featuredEvents: FeaturedEvent[] = [
     ],
     image: "/images/events/digital-trade-expo-2026.jpg",
     color: "#7C3AED",
-    gradient: "from-violet-700 via-purple-600 to-blue-500",
+    gradient: "from-violet-700 via-purple-600 to-fuchsia-500",
     slug: "5th-global-digital-trade-expo-2026",
   },
   {
@@ -283,7 +283,7 @@ export const featuredEvents: FeaturedEvent[] = [
     ],
     image: "/images/events/ai-macro-expo-2026.jpg",
     color: "#4F46E5",
-    gradient: "from-indigo-700 via-indigo-600 to-blue-500",
+    gradient: "from-slate-700 via-slate-600 to-gray-500",
     slug: "miecf-macao-winter-2026",
   },
 ];

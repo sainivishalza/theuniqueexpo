@@ -3,7 +3,7 @@
 import { useAuth } from "@/lib/auth-context";
 
 const features = [
-  { title: "Browse Exhibitions", description: "Upcoming events near you", icon: "🎯", color: "from-blue-500 to-blue-600" },
+  { title: "Browse Exhibitions", description: "Upcoming events near you", icon: "🎯", color: "from-teal-500 to-cyan-600" },
   { title: "Visit Planner", description: "Build your show-day itinerary", icon: "📅", color: "from-purple-500 to-purple-600" },
   { title: "Saved Exhibitors", description: "Your bookmarked profiles", icon: "⭐", color: "from-yellow-400 to-amber-500" },
   { title: "My Registrations", description: "Events you're attending", icon: "🎫", color: "from-emerald-500 to-green-600" },
@@ -22,7 +22,7 @@ export default function VisitorDashboard() {
             <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl">🎫</div>
             <div className="text-white">
               <h1 className="text-3xl font-extrabold">Visitor Dashboard</h1>
-              <p className="mt-1 text-blue-200/80">Welcome back{user?.name ? `, ${user.name}` : ""}. Explore, attend, connect.</p>
+              <p className="mt-1 text-emerald-200/80">Welcome back{user?.name ? `, ${user.name}` : ""}. Explore, attend, connect.</p>
             </div>
           </div>
         </div>

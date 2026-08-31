@@ -9,7 +9,7 @@ const actions = [
     description: "Discover upcoming trade shows worldwide",
     href: "/exhibitions",
     icon: "🎯",
-    color: "from-blue-500 to-blue-600",
+    color: "from-teal-500 to-cyan-600",
   },
   {
     title: "Exhibitor Directory",
@@ -60,7 +60,7 @@ export default function BuyerDashboard() {
             <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl">🛒</div>
             <div className="text-white">
               <h1 className="text-3xl font-extrabold">Buyer Dashboard</h1>
-              <p className="mt-1 text-blue-200/80">
+              <p className="mt-1 text-emerald-200/80">
                 Welcome back{user?.name ? `, ${user.name}` : ""}. Ready to source?
               </p>
             </div>

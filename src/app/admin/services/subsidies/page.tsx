@@ -11,9 +11,9 @@ export default function AdminSubsidiesPage() {
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-7xl px-6">
-          <Link href="/admin/services" className="text-sm text-blue-200 hover:text-white mb-4 inline-block">← Back to Services Admin</Link>
+          <Link href="/admin/services" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">← Back to Services Admin</Link>
           <h1 className="text-3xl font-extrabold text-white">Transport Subsidies</h1>
-          <p className="mt-1 text-blue-200/80">{subsidies.length} subsidies configured</p>
+          <p className="mt-1 text-emerald-200/80">{subsidies.length} subsidies configured</p>
         </div>
       </section>
       <section className="py-10 bg-gray-50">

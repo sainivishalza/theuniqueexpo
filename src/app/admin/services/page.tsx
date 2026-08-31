@@ -27,7 +27,7 @@ export default function AdminServicesPage() {
   if (!user || user.role !== "admin") return <div className="min-h-[60vh] flex items-center justify-center"><div className="text-center"><div className="text-6xl mb-4">🔒</div><h1 className="text-2xl font-bold">Access Denied</h1><p className="text-gray-500 mt-2">Admin privileges required.</p><p className="text-xs text-gray-400 mt-1">Tip: login with admin@theuniqueexpo.com</p></div></div>;
 
   const sections = [
-    { title: "Business Tours", description: "Manage tour packages tied to exhibitions.", href: "/admin/services/tours", icon: "✈️", color: "from-blue-500 to-blue-600", count: businessTours.length + chinaTours.length },
+    { title: "Business Tours", description: "Manage tour packages tied to exhibitions.", href: "/admin/services/tours", icon: "✈️", color: "from-amber-500 to-yellow-600", count: businessTours.length + chinaTours.length },
     { title: "Tour Applications", description: "Review and manage tour booking applications.", href: "/admin/services/tour-applications", icon: "📝", color: "from-purple-500 to-purple-600", count: counts.tourApps },
     { title: "Visa & Setup Applications", description: "Review company setup and visa applications.", href: "/admin/services/visa-applications", icon: "📋", color: "from-emerald-500 to-green-600", count: counts.visaApps },
     { title: "Transport Subsidies", description: "Manage exhibition travel subsidies.", href: "/admin/services/subsidies", icon: "🚌", color: "from-cyan-500 to-teal-600", count: subsidies.length },
@@ -42,7 +42,7 @@ export default function AdminServicesPage() {
             <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl">🛠️</div>
             <div className="text-white">
               <h1 className="text-3xl font-extrabold">Services Management</h1>
-              <p className="mt-1 text-blue-200/80">Manage tours, applications, subsidies, and consultations.</p>
+              <p className="mt-1 text-emerald-200/80">Manage tours, applications, subsidies, and consultations.</p>
             </div>
           </div>
           <div className="mt-8 grid grid-cols-2 md:grid-cols-5 gap-4">

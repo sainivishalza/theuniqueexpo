@@ -9,7 +9,7 @@ export default function SubsidiesPage() {
       <section className="relative overflow-hidden bg-gray-900 py-20">
         <div className="absolute inset-0 opacity-15"><img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1600&h=600&fit=crop&q=80" alt="" className="img-cover" /></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
-          <p className="text-blue-300 font-semibold mb-2">Our Services</p>
+          <p className="text-emerald-300 font-semibold mb-2">Our Services</p>
           <h1 className="text-4xl md:text-5xl font-extrabold">Transport Subsidies</h1>
           <p className="mt-3 text-lg text-gray-300 max-w-2xl">Government and organizer-backed travel subsidies for exhibitors and buyers attending major trade fairs across China.</p>
           <div className="mt-6 inline-flex items-center gap-2 rounded-xl bg-green-500/20 backdrop-blur-sm px-4 py-2 text-sm text-green-300">
@@ -33,7 +33,7 @@ export default function SubsidiesPage() {
                     <h2 className="text-2xl font-bold text-gray-900">{sub.title}</h2>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-extrabold text-blue-600">{sub.amount}</div>
+                    <div className="text-lg font-extrabold text-emerald-600">{sub.amount}</div>
                     <div className="text-sm text-gray-400">Deadline: {sub.deadline}</div>
                   </div>
                 </div>
@@ -42,7 +42,7 @@ export default function SubsidiesPage() {
                   <div>
                     <h3 className="text-sm font-bold text-gray-900 mb-3">Eligibility:</h3>
                     <ul className="space-y-2">
-                      {sub.eligibility.map((e) => (<li key={e} className="flex items-start gap-2 text-sm text-gray-600"><span className="text-blue-500">•</span>{e}</li>))}
+                      {sub.eligibility.map((e) => (<li key={e} className="flex items-start gap-2 text-sm text-gray-600"><span className="text-emerald-500">•</span>{e}</li>))}
                     </ul>
                   </div>
                   <div>

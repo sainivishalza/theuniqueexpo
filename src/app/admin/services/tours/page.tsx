@@ -11,9 +11,9 @@ export default function AdminToursPage() {
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-7xl px-6">
-          <Link href="/admin/services" className="text-sm text-blue-200 hover:text-white mb-4 inline-block">← Back to Services Admin</Link>
+          <Link href="/admin/services" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">← Back to Services Admin</Link>
           <h1 className="text-3xl font-extrabold text-white">Manage Tours</h1>
-          <p className="mt-1 text-blue-200/80">{businessTours.length} business tours + {chinaTours.length} China tours</p>
+          <p className="mt-1 text-emerald-200/80">{businessTours.length} business tours + {chinaTours.length} China tours</p>
         </div>
       </section>
       <section className="py-10 bg-gray-50">
@@ -34,7 +34,7 @@ export default function AdminToursPage() {
                     <td className="px-6 py-4 text-gray-500">{t.city}</td>
                     <td className="px-6 py-4 text-gray-500">{t.dates}</td>
                     <td className="px-6 py-4 font-semibold text-gray-900">${t.price}</td>
-                    <td className="px-6 py-4"><Link href={"/services/business-tours/" + t.slug} className="text-blue-600 hover:underline text-sm">View →</Link></td>
+                    <td className="px-6 py-4"><Link href={"/services/business-tours/" + t.slug} className="text-emerald-600 hover:underline text-sm">View →</Link></td>
                   </tr>
                 ))}
               </tbody></table>
@@ -56,7 +56,7 @@ export default function AdminToursPage() {
                     <td className="px-6 py-4 text-gray-500">{t.city}</td>
                     <td className="px-6 py-4 text-gray-500">{t.dates}</td>
                     <td className="px-6 py-4 font-semibold text-gray-900">${t.price}</td>
-                    <td className="px-6 py-4"><Link href={"/services/china-tours/" + t.slug} className="text-blue-600 hover:underline text-sm">View →</Link></td>
+                    <td className="px-6 py-4"><Link href={"/services/china-tours/" + t.slug} className="text-emerald-600 hover:underline text-sm">View →</Link></td>
                   </tr>
                 ))}
               </tbody></table>

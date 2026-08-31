@@ -5,7 +5,7 @@ import Link from "next/link";
 import { mockExhibitorProfiles } from "@/lib/booths";
 
 const avatarColors = [
-  "from-blue-500 to-blue-600",
+  "from-emerald-500 to-emerald-600",
   "from-green-500 to-emerald-600",
   "from-purple-500 to-violet-600",
   "from-orange-500 to-red-500",
@@ -24,7 +24,7 @@ export default function ExhibitorProfilePage() {
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
           <h1 className="text-2xl font-bold text-gray-900">Exhibitor not found</h1>
-          <Link href="/exhibitions" className="mt-4 inline-block text-blue-600 hover:underline">Browse exhibitions →</Link>
+          <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">Browse exhibitions →</Link>
         </div>
       </div>
     );
@@ -94,7 +94,7 @@ export default function ExhibitorProfilePage() {
                 <h2 className="text-xl font-bold text-gray-900 mb-5">Certifications</h2>
                 <div className="flex flex-wrap gap-2">
                   {profile.certifications.map((c) => (
-                    <span key={c} className="rounded-xl bg-blue-50 border border-blue-100 px-4 py-2 text-sm font-semibold text-blue-700">
+                    <span key={c} className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700">
                       🏆 {c}
                     </span>
                   ))}
@@ -109,7 +109,7 @@ export default function ExhibitorProfilePage() {
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Connect</h3>
                 <Link
                   href="/register"
-                  className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                  className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
                 >
                   Request Meeting
                 </Link>

@@ -9,7 +9,7 @@ import { mockExhibitorProfiles } from "@/lib/booths";
 
 const STATUS_STYLES: Record<string, string> = {
   open: "bg-green-100 text-green-700 border border-green-200",
-  quotes_received: "bg-blue-100 text-blue-700 border border-blue-200",
+  quotes_received: "bg-emerald-100 text-emerald-700 border border-emerald-200",
   awarded: "bg-purple-100 text-purple-700 border border-purple-200",
   closed: "bg-gray-100 text-gray-500 border border-gray-200",
 };
@@ -32,7 +32,7 @@ export default function RFQDetailPage() {
         <div className="text-center">
           <div className="text-5xl mb-4">📋</div>
           <h1 className="text-xl font-bold text-gray-900">RFQ not found</h1>
-          <Link href="/marketplace" className="mt-3 inline-block text-blue-600 hover:underline text-sm font-semibold">Back to marketplace →</Link>
+          <Link href="/marketplace" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">Back to marketplace →</Link>
         </div>
       </div>
     );
@@ -102,7 +102,7 @@ export default function RFQDetailPage() {
                   {user?.role === "exhibitor" && !quoteSubmitted && (
                     <button
                       onClick={() => setShowQuoteForm(!showQuoteForm)}
-                      className="rounded-xl gradient-brand px-5 py-2 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg transition-all"
+                      className="rounded-xl gradient-brand px-5 py-2 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all"
                     >
                       Submit Quote
                     </button>
@@ -114,18 +114,18 @@ export default function RFQDetailPage() {
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-semibold text-gray-600 mb-1">Price</label>
-                        <input type="text" placeholder="e.g. $28/unit" value={quotePrice} onChange={(e) => setQuotePrice(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-blue-500 outline-none" required />
+                        <input type="text" placeholder="e.g. $28/unit" value={quotePrice} onChange={(e) => setQuotePrice(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none" required />
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-gray-600 mb-1">Lead Time</label>
-                        <input type="text" placeholder="e.g. 30 days" value={quoteLeadTime} onChange={(e) => setQuoteLeadTime(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-blue-500 outline-none" required />
+                        <input type="text" placeholder="e.g. 30 days" value={quoteLeadTime} onChange={(e) => setQuoteLeadTime(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none" required />
                       </div>
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-gray-600 mb-1">Notes</label>
-                      <textarea rows={3} placeholder="Additional details, MOQ, certifications..." value={quoteNotes} onChange={(e) => setQuoteNotes(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-blue-500 outline-none resize-none" />
+                      <textarea rows={3} placeholder="Additional details, MOQ, certifications..." value={quoteNotes} onChange={(e) => setQuoteNotes(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none resize-none" />
                     </div>
-                    <button type="submit" className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg transition-all">
+                    <button type="submit" className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all">
                       Submit Quote
                     </button>
                   </form>
@@ -151,7 +151,7 @@ export default function RFQDetailPage() {
                             <h3 className="font-bold text-gray-900">{q.exhibitorName}</h3>
                             <p className="text-xs text-gray-400">Submitted {q.createdAt}</p>
                           </div>
-                          <span className="rounded-lg bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-700 border border-blue-200">{q.status}</span>
+                          <span className="rounded-lg bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">{q.status}</span>
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm mb-2">
                           <div><span className="text-gray-400">Price</span><p className="font-bold text-gray-900">{q.price}</p></div>

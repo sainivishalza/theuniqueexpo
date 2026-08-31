@@ -36,18 +36,18 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left: Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-emerald-600 via-teal-600 to-purple-700 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1200&h=800&fit=crop&q=80" alt="" className="img-cover" />
         </div>
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <Logo size="large" />
           <h1 className="text-4xl font-extrabold mt-8 mb-4 leading-tight">Join the<br/>Global Trade<br/>Community</h1>
-          <p className="text-blue-100 text-lg max-w-md">Create your free account and start connecting with exhibitors, buyers, and trade professionals worldwide.</p>
+          <p className="text-emerald-100 text-lg max-w-md">Create your free account and start connecting with exhibitors, buyers, and trade professionals worldwide.</p>
           <div className="mt-10 grid grid-cols-3 gap-6">
-            <div><div className="text-3xl font-extrabold">100K+</div><div className="text-sm text-blue-200">Users</div></div>
-            <div><div className="text-3xl font-extrabold">50+</div><div className="text-sm text-blue-200">Countries</div></div>
-            <div><div className="text-3xl font-extrabold">Free</div><div className="text-sm text-blue-200">To join</div></div>
+            <div><div className="text-3xl font-extrabold">100K+</div><div className="text-sm text-emerald-200">Users</div></div>
+            <div><div className="text-3xl font-extrabold">50+</div><div className="text-sm text-emerald-200">Countries</div></div>
+            <div><div className="text-3xl font-extrabold">Free</div><div className="text-sm text-emerald-200">To join</div></div>
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function RegisterPage() {
               <div className="grid grid-cols-2 gap-3">
                 {roles.map((r) => (
                   <button key={r.value} type="button" onClick={() => setForm({ ...form, role: r.value })}
-                    className={`p-3 rounded-xl border-2 text-left transition-all ${form.role === r.value ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-gray-300"}`}>
+                    className={`p-3 rounded-xl border-2 text-left transition-all ${form.role === r.value ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-gray-300"}`}>
                     <span className="text-xl">{r.icon}</span>
                     <div className="font-semibold text-sm mt-1">{r.label}</div>
                     <div className="text-xs text-gray-400">{r.desc}</div>
@@ -79,19 +79,19 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-              <input required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none bg-white" />
+              <input required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-              <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none bg-white" placeholder="you@company.com" />
+              <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder="you@company.com" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
-              <input required type="password" minLength={6} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none bg-white" placeholder="Min. 6 characters" />
+              <input required type="password" minLength={6} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder="Min. 6 characters" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-              <input type="text" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none bg-white" placeholder="e.g. UAE, India, China" />
+              <input type="text" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder="e.g. UAE, India, China" />
             </div>
 
             <button type="submit" disabled={loading} className="w-full rounded-xl gradient-brand py-3.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
@@ -101,7 +101,7 @@ export default function RegisterPage() {
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500">Already have an account?{" "}
-              <Link href="/login" className="font-semibold text-blue-600 hover:text-blue-700">Sign in →</Link>
+              <Link href="/login" className="font-semibold text-emerald-600 hover:text-emerald-700">Sign in →</Link>
             </p>
           </div>
         </div>

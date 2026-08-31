@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 
 const STATUS_STYLES: Record<string, string> = {
   open: "bg-green-100 text-green-700 border-green-200",
-  quotes_received: "bg-blue-100 text-blue-700 border-blue-200",
+  quotes_received: "bg-emerald-100 text-emerald-700 border-emerald-200",
   awarded: "bg-purple-100 text-purple-700 border-purple-200",
   closed: "bg-gray-100 text-gray-500 border-gray-200",
 };
@@ -35,7 +35,7 @@ export default function MarketplacePage() {
           </div>
           <Link
             href="/marketplace/new"
-            className="hidden md:inline-flex items-center gap-2 rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:scale-105 transition-all duration-200"
+            className="hidden md:inline-flex items-center gap-2 rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:scale-105 transition-all duration-200"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
             Post Buy Request
@@ -48,7 +48,7 @@ export default function MarketplacePage() {
         <div className="mx-auto max-w-7xl px-6 py-4 flex gap-8">
           {[
             { label: "Open RFQs", value: rfqs.filter(r => r.status === "open").length, color: "text-green-600" },
-            { label: "Total Requests", value: rfqs.length, color: "text-blue-600" },
+            { label: "Total Requests", value: rfqs.length, color: "text-emerald-600" },
             { label: "Active Buyers", value: "120+", color: "text-purple-600" },
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-2">
@@ -95,7 +95,7 @@ export default function MarketplacePage() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
-                        <h2 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        <h2 className="text-lg font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">
                           {rfq.title}
                         </h2>
                         <span className={`rounded-lg border px-2.5 py-0.5 text-xs font-bold ${STATUS_STYLES[rfq.status]}`}>
@@ -118,7 +118,7 @@ export default function MarketplacePage() {
                         <span>{item.icon}</span> {item.text}
                       </span>
                     ))}
-                    <span className="ml-auto text-sm font-semibold text-blue-600 group-hover:translate-x-1 transition-transform">
+                    <span className="ml-auto text-sm font-semibold text-emerald-600 group-hover:translate-x-1 transition-transform">
                       View Details →
                     </span>
                   </div>

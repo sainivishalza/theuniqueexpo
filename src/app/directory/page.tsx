@@ -5,7 +5,7 @@ import Link from "next/link";
 import { mockExhibitorProfiles } from "@/lib/booths";
 
 const avatarColors = [
-  "from-blue-500 to-blue-600",
+  "from-emerald-500 to-emerald-600",
   "from-green-500 to-emerald-600",
   "from-purple-500 to-violet-600",
   "from-orange-500 to-red-500",
@@ -68,13 +68,13 @@ export default function DirectoryPage() {
               placeholder="Search by name, product, or country..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 py-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
             />
           </div>
           <select
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
-            className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700 focus:border-blue-500 outline-none"
+            className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700 focus:border-emerald-500 outline-none"
           >
             <option value="">All Industries</option>
             {industries.map((i) => (
@@ -110,7 +110,7 @@ export default function DirectoryPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h2 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                        <h2 className="text-lg font-bold text-gray-900 group-hover:text-emerald-600 transition-colors truncate">
                           {ex.name}
                         </h2>
                         <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-bold text-green-700 flex-shrink-0">
@@ -135,7 +135,7 @@ export default function DirectoryPage() {
                       </span>
                     ))}
                     {ex.products.length > 4 && (
-                      <span className="rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-600">
+                      <span className="rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-600">
                         +{ex.products.length - 4} more
                       </span>
                     )}

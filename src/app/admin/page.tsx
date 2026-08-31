@@ -36,16 +36,16 @@ export default function AdminPage() {
           <h1 className="text-2xl font-bold text-gray-900">Access Denied</h1>
           <p className="mt-2 text-gray-500">Admin privileges required.</p>
           <p className="mt-1 text-xs text-gray-400">Tip: login with admin@theuniqueexpo.com</p>
-          <Link href="/" className="mt-4 inline-block text-blue-600 hover:underline text-sm font-semibold">Go home →</Link>
+          <Link href="/" className="mt-4 inline-block text-emerald-600 hover:underline text-sm font-semibold">Go home →</Link>
         </div>
       </div>
     );
   }
 
   const sections = [
-    { title: "Exhibition Management", description: "Create, edit, and manage exhibition listings and floor plans.", href: "/admin/exhibitions", icon: "🎪", color: "from-blue-500 to-blue-600" },
+    { title: "Exhibition Management", description: "Create, edit, and manage exhibition listings and floor plans.", href: "/admin/exhibitions", icon: "🎪", color: "from-emerald-500 to-emerald-600" },
     { title: "RFQ Review", description: "View and moderate all buy requests and submitted quotes.", href: "/admin/rfqs", icon: "📋", color: "from-purple-500 to-purple-600" },
-    { title: "Hotel Bookings", description: "Review and confirm hotel booking requests from buyers.", href: "/admin/hotels", icon: "🏨", color: "from-emerald-500 to-green-600" },
+    { title: "Hotel Bookings", description: "Review and confirm hotel booking requests from buyers.", href: "/admin/hotels", icon: "🏨", color: "from-amber-500 to-yellow-600" },
     { title: "Services Management", description: "Manage tours, applications, subsidies, and consultations.", href: "/admin/services", icon: "🛠️", color: "from-violet-500 to-purple-600" },
     { title: "User Management", description: "Manage user accounts, roles, and verification status.", icon: "👥", color: "from-orange-500 to-red-500", comingSoon: true },
   ];
@@ -65,7 +65,7 @@ export default function AdminPage() {
             <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl">⚙️</div>
             <div className="text-white">
               <h1 className="text-3xl font-extrabold">Admin Back Office</h1>
-              <p className="mt-1 text-blue-200/80">Manage exhibitions, bookings, RFQs, and users.</p>
+              <p className="mt-1 text-emerald-200/80">Manage exhibitions, bookings, RFQs, and users.</p>
             </div>
           </div>
           <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">

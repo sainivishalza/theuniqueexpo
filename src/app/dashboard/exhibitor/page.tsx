@@ -18,7 +18,7 @@ export default function ExhibitorDashboard() {
             <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl">🏢</div>
             <div className="text-white">
               <h1 className="text-3xl font-extrabold">Exhibitor Dashboard</h1>
-              <p className="mt-1 text-blue-200/80">
+              <p className="mt-1 text-emerald-200/80">
                 Welcome back{user?.name ? `, ${user.name}` : ""}. Manage your presence.
               </p>
             </div>
@@ -44,7 +44,7 @@ export default function ExhibitorDashboard() {
           {/* Quick actions */}
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-10">
             <Link href="/exhibitions" className="flex items-start gap-4 p-6 rounded-2xl bg-white border border-gray-100 shadow-sm card-hover">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-xl">🏗️</div>
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-xl">🏗️</div>
               <div>
                 <h3 className="font-bold text-gray-900">Book a Booth</h3>
                 <p className="text-sm text-gray-500 mt-1">Browse exhibitions and reserve space</p>
@@ -76,7 +76,7 @@ export default function ExhibitorDashboard() {
               <p className="text-gray-500 mb-6">Browse exhibitions and book your first booth.</p>
               <Link
                 href="/exhibitions"
-                className="inline-flex items-center gap-2 rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                className="inline-flex items-center gap-2 rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
               >
                 Browse Exhibitions
               </Link>
@@ -86,7 +86,7 @@ export default function ExhibitorDashboard() {
               {bookings.map((bk) => (
                 <div key={bk.id} className="flex items-center justify-between rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-sm font-bold">
                       {bk.boothId.split("-").pop()?.slice(0, 3) || "BK"}
                     </div>
                     <div>

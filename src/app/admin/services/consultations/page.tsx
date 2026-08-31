@@ -47,9 +47,9 @@ export default function AdminConsultationsPage() {
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-7xl px-6">
-          <Link href="/admin/services" className="text-sm text-blue-200 hover:text-white mb-4 inline-block">← Back to Services Admin</Link>
+          <Link href="/admin/services" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">← Back to Services Admin</Link>
           <h1 className="text-3xl font-extrabold text-white">Consultation Requests</h1>
-          <p className="mt-1 text-blue-200/80">{loading ? "Loading..." : `${bookings.length} requests received`}</p>
+          <p className="mt-1 text-emerald-200/80">{loading ? "Loading..." : `${bookings.length} requests received`}</p>
         </div>
       </section>
       <section className="py-10 bg-gray-50">
@@ -77,7 +77,7 @@ export default function AdminConsultationsPage() {
                         value={b.status}
                         disabled={updatingId === b.id}
                         onChange={(e) => updateStatus(b.id, e.target.value)}
-                        className={`rounded-lg px-2 py-1 text-xs font-bold border-0 disabled:opacity-50 ${b.status === "completed" ? "bg-green-100 text-green-700" : b.status === "scheduled" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"}`}
+                        className={`rounded-lg px-2 py-1 text-xs font-bold border-0 disabled:opacity-50 ${b.status === "completed" ? "bg-green-100 text-green-700" : b.status === "scheduled" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}
                       >
                         {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>

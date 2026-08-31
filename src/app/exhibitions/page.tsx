@@ -62,7 +62,7 @@ export default function ExhibitionsPage() {
           <select
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:border-blue-500 outline-none"
+            className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 outline-none"
           >
             <option>All Industries</option>
             {industries.map((i) => (
@@ -72,7 +72,7 @@ export default function ExhibitionsPage() {
           <select
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:border-blue-500 outline-none"
+            className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 outline-none"
           >
             <option>All Cities</option>
             {cities.map((c) => (
@@ -165,7 +165,7 @@ export default function ExhibitionsPage() {
                       <span>🏢 {formatNumber(expo.exhibitors)}+</span>
                       <span>👥 {expo.visitors}</span>
                     </div>
-                    <span className="text-sm font-semibold text-blue-600 group-hover:translate-x-1 transition-transform">
+                    <span className="text-sm font-semibold text-emerald-600 group-hover:translate-x-1 transition-transform">
                       View Details →
                     </span>
                   </div>

@@ -27,7 +27,7 @@ interface Exhibition {
 const EMPTY_FORM = {
   slug: "", title: "", startDate: "", endDate: "", venue: "", city: "", country: "",
   industry: "", description: "", highlights: "", exhibitors: 0, visitors: "", organizer: "",
-  website: "", color: "#2563EB", image: "",
+  website: "", color: "#059669", image: "",
 };
 
 export default function AdminExhibitionsPage() {
@@ -177,7 +177,7 @@ export default function AdminExhibitionsPage() {
             <h1 className="text-3xl font-extrabold text-white">Exhibition Management</h1>
             <button
               onClick={openNew}
-              className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+              className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
             >
               + New Exhibition
             </button>
@@ -223,7 +223,7 @@ export default function AdminExhibitionsPage() {
                     value={form.image.startsWith("data:") ? "" : form.image}
                     placeholder={form.image.startsWith("data:") ? "Uploaded image set — paste a URL to replace it" : "https://..."}
                     onChange={(e) => setForm({ ...form, image: e.target.value })}
-                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                   <div className="flex items-center gap-3">
                     <label className="cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
@@ -252,7 +252,7 @@ export default function AdminExhibitionsPage() {
             <div className="mt-4">
               <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
               <textarea
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={3}
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -261,7 +261,7 @@ export default function AdminExhibitionsPage() {
             <div className="mt-4">
               <label className="block text-sm font-semibold text-gray-700 mb-1">Highlights (one per line)</label>
               <textarea
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={4}
                 value={form.highlights}
                 onChange={(e) => setForm({ ...form, highlights: e.target.value })}
@@ -330,7 +330,7 @@ function Field({ label, value, onChange, type = "text", placeholder }: { label: 
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
       />
     </div>
   );

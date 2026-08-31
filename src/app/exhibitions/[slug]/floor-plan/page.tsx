@@ -11,7 +11,7 @@ interface Exhibition { id: string; slug: string; title: string; }
 
 const SIZE_COLORS: Record<string, string> = {
   platinum: "bg-amber-400 hover:bg-amber-300 border-amber-500/30",
-  gold: "bg-blue-400 hover:bg-blue-300 border-blue-500/30",
+  gold: "bg-teal-400 hover:bg-teal-300 border-teal-500/30",
   standard: "bg-emerald-400 hover:bg-emerald-300 border-emerald-500/30",
 };
 
@@ -51,7 +51,7 @@ export default function FloorPlanPage() {
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
           <h1 className="text-2xl font-bold text-gray-900">Exhibition not found</h1>
-          <Link href="/exhibitions" className="mt-4 inline-block text-blue-600 hover:underline">Browse all exhibitions →</Link>
+          <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">Browse all exhibitions →</Link>
         </div>
       </div>
     );
@@ -185,7 +185,7 @@ export default function FloorPlanPage() {
                   {user?.role === "exhibitor" ? (
                     <Link
                       href={`/exhibitions/${slug}/book/${selected.id}`}
-                      className="mt-6 block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                      className="mt-6 block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
                     >
                       Book — {formatCurrency(selected.price)}
                     </Link>

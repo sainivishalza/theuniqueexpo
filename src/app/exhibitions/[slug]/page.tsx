@@ -13,7 +13,7 @@ interface Exhibition {
 
 const exhibitorLogos = [
   { name: "Pacific Foods", abbr: "PF", color: "bg-orange-500" },
-  { name: "TechFlow", abbr: "TF", color: "bg-blue-500" },
+  { name: "TechFlow", abbr: "TF", color: "bg-emerald-500" },
   { name: "GlobalParts", abbr: "GP", color: "bg-green-500" },
   { name: "Industrial Co", abbr: "IC", color: "bg-purple-500" },
   { name: "TradeLink", abbr: "TL", color: "bg-red-500" },
@@ -45,7 +45,7 @@ export default function ExhibitionDetailPage({
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
           <h1 className="text-2xl font-bold text-gray-900">Exhibition not found</h1>
-          <Link href="/exhibitions" className="mt-4 inline-block text-blue-600 hover:underline">
+          <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">
             Browse all exhibitions →
           </Link>
         </div>
@@ -166,7 +166,7 @@ export default function ExhibitionDetailPage({
                 </div>
                 <Link
                   href="/directory"
-                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline"
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 hover:underline"
                 >
                   View all exhibitors →
                 </Link>
@@ -182,7 +182,7 @@ export default function ExhibitionDetailPage({
                 {isUpcoming ? (
                   <Link
                     href={`/exhibitions/${expo.slug}/floor-plan`}
-                    className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/30 hover:scale-[1.02] transition-all duration-200"
+                    className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:shadow-emerald-500/30 hover:scale-[1.02] transition-all duration-200"
                   >
                     View Floor Plan & Book
                   </Link>

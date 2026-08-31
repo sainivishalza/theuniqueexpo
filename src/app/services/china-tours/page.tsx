@@ -9,7 +9,7 @@ export default function ChinaToursPage() {
       <section className="relative overflow-hidden bg-gray-900 py-20">
         <div className="absolute inset-0 opacity-15"><img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1600&h=600&fit=crop&q=80" alt="" className="img-cover" /></div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
-          <p className="text-blue-300 font-semibold mb-2">Our Services</p>
+          <p className="text-emerald-300 font-semibold mb-2">Our Services</p>
           <h1 className="text-4xl md:text-5xl font-extrabold">Tours of China</h1>
           <p className="mt-3 text-lg text-gray-300 max-w-2xl">Curated tour packages covering China major cities, trade hubs, and cultural landmarks.</p>
         </div>
@@ -35,7 +35,7 @@ export default function ChinaToursPage() {
                   <p className="text-sm text-gray-400 line-clamp-2 mb-4">{tour.description}</p>
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                     <div className="text-xl font-extrabold text-gray-900">${formatNumber(tour.price)} <span className="text-sm font-normal text-gray-400">USD</span></div>
-                    <span className="text-sm font-semibold text-blue-600 group-hover:translate-x-1 transition-transform">View Details →</span>
+                    <span className="text-sm font-semibold text-emerald-600 group-hover:translate-x-1 transition-transform">View Details →</span>
                   </div>
                 </div>
               </Link>

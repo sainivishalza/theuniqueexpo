@@ -30,18 +30,18 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left: Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-emerald-600 via-teal-600 to-purple-700 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&h=800&fit=crop&q=80" alt="" className="img-cover" />
         </div>
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <Logo size="large" />
           <h1 className="text-4xl font-extrabold mt-8 mb-4 leading-tight">Discover<br/>Something<br/>Unique Together</h1>
-          <p className="text-blue-100 text-lg max-w-md">Access 20+ global exhibitions, business tours, visa services, and B2B matchmaking — all in one platform.</p>
+          <p className="text-emerald-100 text-lg max-w-md">Access 20+ global exhibitions, business tours, visa services, and B2B matchmaking — all in one platform.</p>
           <div className="mt-10 grid grid-cols-3 gap-6">
-            <div><div className="text-3xl font-extrabold">20+</div><div className="text-sm text-blue-200">Exhibitions</div></div>
-            <div><div className="text-3xl font-extrabold">5</div><div className="text-sm text-blue-200">Tours</div></div>
-            <div><div className="text-3xl font-extrabold">6</div><div className="text-sm text-blue-200">Services</div></div>
+            <div><div className="text-3xl font-extrabold">20+</div><div className="text-sm text-emerald-200">Exhibitions</div></div>
+            <div><div className="text-3xl font-extrabold">5</div><div className="text-sm text-emerald-200">Tours</div></div>
+            <div><div className="text-3xl font-extrabold">6</div><div className="text-sm text-emerald-200">Services</div></div>
           </div>
         </div>
       </div>
@@ -58,11 +58,11 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none bg-white" placeholder="you@company.com" />
+              <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder="you@company.com" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none bg-white" placeholder="Enter your password" />
+              <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder="Enter your password" />
             </div>
             <button type="submit" disabled={loading} className="w-full rounded-xl gradient-brand py-3.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
               {loading ? "Signing in..." : "Sign In"}
@@ -71,7 +71,7 @@ export default function LoginPage() {
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500">Don&apos;t have an account?{" "}
-              <Link href="/register" className="font-semibold text-blue-600 hover:text-blue-700">Create one free →</Link>
+              <Link href="/register" className="font-semibold text-emerald-600 hover:text-emerald-700">Create one free →</Link>
             </p>
           </div>
         </div>

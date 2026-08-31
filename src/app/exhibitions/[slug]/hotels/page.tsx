@@ -125,7 +125,7 @@ export default function HotelsPage() {
                 <div
                   key={hotel.id}
                   className={`rounded-2xl bg-white shadow-sm border-2 overflow-hidden card-hover transition-all ${
-                    selectedHotel?.id === hotel.id ? "border-blue-500 shadow-md shadow-blue-500/10" : "border-gray-100"
+                    selectedHotel?.id === hotel.id ? "border-emerald-500 shadow-md shadow-emerald-500/10" : "border-gray-100"
                   }`}
                 >
                   <div className="relative h-40 overflow-hidden">
@@ -151,7 +151,7 @@ export default function HotelsPage() {
                       onClick={() => setSelectedHotel(selectedHotel?.id === hotel.id ? null : hotel)}
                       className={`mt-4 w-full rounded-xl py-2.5 text-sm font-semibold transition-all ${
                         selectedHotel?.id === hotel.id
-                          ? "gradient-brand text-white shadow-md shadow-blue-500/25"
+                          ? "gradient-brand text-white shadow-md shadow-emerald-500/25"
                           : "border border-gray-200 text-gray-700 hover:bg-gray-50"
                       }`}
                     >
@@ -179,27 +179,27 @@ export default function HotelsPage() {
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-1.5">Check-in</label>
-                      <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none" required />
+                      <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" required />
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-1.5">Check-out</label>
-                      <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none" required />
+                      <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" required />
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-1.5">Rooms</label>
-                      <select value={rooms} onChange={(e) => setRooms(Number(e.target.value))} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-blue-500 outline-none">
+                      <select value={rooms} onChange={(e) => setRooms(Number(e.target.value))} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none">
                         {[1, 2, 3, 4, 5].map((n) => (
                           <option key={n} value={n}>{n} room{n > 1 ? "s" : ""}</option>
                         ))}
                       </select>
                     </div>
                   </div>
-                  <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 disabled:opacity-50">
+                  <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 disabled:opacity-50">
                     {submitting ? "Submitting..." : "Submit Booking Request"}
                   </button>
                 </form>
               ) : (
-                <Link href="/login" className="text-sm font-semibold text-blue-600 hover:underline">Log in to book →</Link>
+                <Link href="/login" className="text-sm font-semibold text-emerald-600 hover:underline">Log in to book →</Link>
               )}
             </div>
           )}

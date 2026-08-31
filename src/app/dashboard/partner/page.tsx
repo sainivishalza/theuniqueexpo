@@ -12,7 +12,7 @@ export default function PartnerDashboard() {
   const statusLabels: Record<string, { label: string; color: string }> = {
     signed_up: { label: "Signed Up", color: "bg-yellow-100 text-yellow-700 border border-yellow-200" },
     booked_booth: { label: "Booked Booth", color: "bg-green-100 text-green-700 border border-green-200" },
-    posted_rfq: { label: "Posted RFQ", color: "bg-blue-100 text-blue-700 border border-blue-200" },
+    posted_rfq: { label: "Posted RFQ", color: "bg-emerald-100 text-emerald-700 border border-emerald-200" },
   };
 
   return (
@@ -24,7 +24,7 @@ export default function PartnerDashboard() {
             <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl">🤝</div>
             <div className="text-white">
               <h1 className="text-3xl font-extrabold">Partner Dashboard</h1>
-              <p className="mt-1 text-blue-200/80">Welcome back{user?.name ? `, ${user.name}` : ""}. Track your referrals and earnings.</p>
+              <p className="mt-1 text-emerald-200/80">Welcome back{user?.name ? `, ${user.name}` : ""}. Track your referrals and earnings.</p>
             </div>
           </div>
           <div className="mt-8 grid grid-cols-3 gap-4">
@@ -59,7 +59,7 @@ export default function PartnerDashboard() {
               />
               <button
                 onClick={() => navigator.clipboard.writeText(referralLink)}
-                className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
               >
                 Copy Link
               </button>

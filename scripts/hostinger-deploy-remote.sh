@@ -59,7 +59,15 @@ echo "Restarting via PM2 ..."
 pm2 restart theuniqueexpo || pm2 start npm --name theuniqueexpo --cwd "$APP_DIR" -- start
 pm2 save
 
-echo "Checking the app responds ..."
-curl -s -o /dev/null -w 'HTTP %{http_code}\n' http://localhost:3000/
+echo "Checking the app responds (it may take a few seconds to finish booting) ..."
+for i in 1 2 3 4 5 6 7 8 9 10; do
+  CODE=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/ || true)
+  if [ -n "$CODE" ] && [ "$CODE" != "000" ]; then
+    echo "HTTP $CODE"
+    break
+  fi
+  echo "  not up yet (attempt $i/10), waiting 3s..."
+  sleep 3
+done
 
 echo "Backup saved at: $BACKUP_FILE (keep this until you've confirmed everything works)"

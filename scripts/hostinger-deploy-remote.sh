@@ -12,39 +12,11 @@ DEPLOY_REF="$2"
 
 cd "$APP_DIR"
 
-HBUILDS=~/domains/theuniqueexpo.com/hbuilds
-echo "=== DIAGNOSTIC: hbuilds/Passenger state and real error logs ==="
-echo "--- hbuilds/current (what Passenger actually serves) ---"
-ls -la "$HBUILDS/current" 2>/dev/null
-readlink -f "$HBUILDS/current" 2>/dev/null
-echo "--- git info inside hbuilds/current's source, if it's a checkout ---"
-(cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='%H %cI %s' 2>/dev/null) || echo "(not a git checkout, or no git here)"
-echo "--- hbuilds/versions (deploy history) ---"
-ls -lat "$HBUILDS/versions" 2>/dev/null | head -10
-echo "--- hbuilds/source git info ---"
-(cd "$HBUILDS/source/repository" 2>/dev/null && git log -1 --format='%H %cI %s' 2>/dev/null) || (cd "$HBUILDS/source" 2>/dev/null && git log -1 --format='%H %cI %s' 2>/dev/null) || echo "(couldn't read hbuilds/source git info)"
-echo "--- most recent deploy log(s) ---"
-LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs ls -t 2>/dev/null | head -1)
-echo "latest log file: $LATEST_LOG"
-if [ -n "$LATEST_LOG" ]; then
-  echo "--- tail of $LATEST_LOG ---"
-  tail -100 "$LATEST_LOG"
-fi
-echo "--- Node/Passenger app runtime error logs (~/.logs and domain logs dirs) ---"
-(find ~/.logs ~/domains/theuniqueexpo.com -maxdepth 2 \( -iname "*error*" -o -iname "*.log" \) 2>/dev/null | grep -v hbuilds/logs || true) | while read -r f; do
-  echo "  >> $f (last modified: $(stat -c %y "$f" 2>/dev/null))"
-done
-echo "--- Live-requesting the register page directly against the Passenger app and showing what comes back ---"
-curl -s -m 15 "https://theuniqueexpo.com/exhibitions/global-ocean-city-food-expo-2026/register" | head -c 2000
-echo ""
-echo "--- Passenger error/stderr log candidates ---"
-for candidate in ~/logs/theuniqueexpo.com ~/domains/theuniqueexpo.com/logs ~/access-logs ~/error-logs "$HBUILDS/current/nodejs/tmp"; do
-  if [ -e "$candidate" ]; then
-    echo "  found: $candidate"
-    ls -la "$candidate" 2>/dev/null
-  fi
-done
-echo "=== END DIAGNOSTIC ==="
+# Hostinger's real production serving mechanism is Passenger/hbuilds, which
+# builds from `main` on its own (webhook-driven) independently of this
+# script. This script's job is now just: keep the production database
+# migrated, and keep this secondary PM2 process (if anything still depends
+# on it) in sync too. See git history for the diagnostics that found this.
 
 # A non-interactive SSH command doesn't source .bashrc/.profile, so
 # nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.

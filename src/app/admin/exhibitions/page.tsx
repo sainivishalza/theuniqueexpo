@@ -301,6 +301,7 @@ export default function AdminExhibitionsPage() {
               </div>
               <div className="flex gap-2">
                 <Link href={`/exhibitions/${expo.slug}`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">View</Link>
+                <Link href={`/admin/exhibitions/${expo.slug}/registrations`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">Registrations</Link>
                 <button onClick={() => openEdit(expo)} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">Edit</button>
                 <button
                   onClick={() => handleDelete(expo.id)}

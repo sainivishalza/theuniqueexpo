@@ -78,3 +78,38 @@ CREATE TABLE IF NOT EXISTS quotes (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (rfq_id) REFERENCES rfqs(id) ON DELETE CASCADE
 );
+
+-- Per-exhibition Buyer/Visitor registration (see schema-migrations/002-expo-registrations.sql for details)
+CREATE TABLE IF NOT EXISTS expo_registrations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  exhibition_id INT NOT NULL,
+  user_id INT NOT NULL,
+  registration_type ENUM('buyer','visitor') NOT NULL,
+  gender ENUM('male','female') NOT NULL,
+  full_name VARCHAR(255) NOT NULL,
+  nationality VARCHAR(100) NOT NULL,
+  passport_number VARCHAR(100) NOT NULL,
+  company_name VARCHAR(255) NOT NULL,
+  company_website VARCHAR(255) DEFAULT '',
+  phone VARCHAR(50) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  company_type VARCHAR(100) NOT NULL,
+  company_type_other VARCHAR(255) DEFAULT '',
+  company_scale VARCHAR(50) NOT NULL,
+  company_intro TEXT,
+  purpose_of_visit VARCHAR(100) NOT NULL,
+  info_source VARCHAR(100) NOT NULL,
+  info_source_other VARCHAR(255) DEFAULT '',
+  exporting_markets JSON,
+  exporting_market_other VARCHAR(255) DEFAULT '',
+  doc_passport_front LONGTEXT NOT NULL,
+  doc_business_card LONGTEXT NOT NULL,
+  doc_visa_page LONGTEXT NOT NULL,
+  doc_business_license LONGTEXT NOT NULL,
+  doc_order_list LONGTEXT,
+  status ENUM('pending','approved','rejected') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_exhibition_user (exhibition_id, user_id),
+  FOREIGN KEY (exhibition_id) REFERENCES exhibitions(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);

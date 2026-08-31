@@ -48,6 +48,7 @@ export default function AdminPage() {
     { title: "Hotel Bookings", description: "Review and confirm hotel booking requests from buyers.", href: "/admin/hotels", icon: "🏨", color: "from-amber-500 to-yellow-600" },
     { title: "Services Management", description: "Manage tours, applications, subsidies, and consultations.", href: "/admin/services", icon: "🛠️", color: "from-violet-500 to-purple-600" },
     { title: "About Us Page", description: "Edit the company story, mission, vision, and stats shown to visitors.", href: "/admin/about", icon: "📝", color: "from-blue-500 to-cyan-600" },
+    { title: "Website Pages", description: "Edit Contact, Careers, Blog, Help Center, and other footer pages.", href: "/admin/pages", icon: "📄", color: "from-sky-500 to-indigo-600" },
     { title: "User Management", description: "Manage user accounts, roles, and verification status.", icon: "👥", color: "from-orange-500 to-red-500", comingSoon: true },
   ];
 

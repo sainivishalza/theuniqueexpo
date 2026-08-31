@@ -13,15 +13,15 @@ const footerLinks = {
   ],
   Company: [
     { label: "About Us", href: "/about" },
-    { label: "Contact", href: "#" },
-    { label: "Careers", href: "#" },
-    { label: "Blog", href: "#" },
+    { label: "Contact", href: "/contact" },
+    { label: "Careers", href: "/careers" },
+    { label: "Blog", href: "/blog" },
   ],
   Resources: [
-    { label: "Help Center", href: "#" },
-    { label: "Exhibition Guide", href: "#" },
-    { label: "Booth Setup Tips", href: "#" },
-    { label: "API Documentation", href: "#" },
+    { label: "Help Center", href: "/help" },
+    { label: "Exhibition Guide", href: "/exhibition-guide" },
+    { label: "Booth Setup Tips", href: "/booth-setup-tips" },
+    { label: "API Documentation", href: "/api-documentation" },
   ],
 };
 

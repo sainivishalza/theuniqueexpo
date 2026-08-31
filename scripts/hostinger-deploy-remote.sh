@@ -31,8 +31,18 @@ if [ -n "$LATEST_LOG" ]; then
   tail -100 "$LATEST_LOG"
 fi
 echo "--- Node/Passenger app runtime error logs (~/.logs and domain logs dirs) ---"
-find ~/.logs ~/domains/theuniqueexpo.com -maxdepth 2 -iname "*error*" -o -iname "*.log" 2>/dev/null | grep -v hbuilds/logs | while read -r f; do
+(find ~/.logs ~/domains/theuniqueexpo.com -maxdepth 2 \( -iname "*error*" -o -iname "*.log" \) 2>/dev/null | grep -v hbuilds/logs || true) | while read -r f; do
   echo "  >> $f (last modified: $(stat -c %y "$f" 2>/dev/null))"
+done
+echo "--- Live-requesting the register page directly against the Passenger app and showing what comes back ---"
+curl -s -m 15 "https://theuniqueexpo.com/exhibitions/global-ocean-city-food-expo-2026/register" | head -c 2000
+echo ""
+echo "--- Passenger error/stderr log candidates ---"
+for candidate in ~/logs/theuniqueexpo.com ~/domains/theuniqueexpo.com/logs ~/access-logs ~/error-logs "$HBUILDS/current/nodejs/tmp"; do
+  if [ -e "$candidate" ]; then
+    echo "  found: $candidate"
+    ls -la "$candidate" 2>/dev/null
+  fi
 done
 echo "=== END DIAGNOSTIC ==="
 

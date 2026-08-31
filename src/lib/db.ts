@@ -1,4 +1,15 @@
 import mysql from "mysql2/promise";
+import os from "os";
+
+if (process.env.DB_SOCKET) {
+  try {
+    console.log(
+      `[db diagnostic] DB_SOCKET=${process.env.DB_SOCKET} DB_USER=${process.env.DB_USER} os_user=${os.userInfo().username} uid=${os.userInfo().uid}`
+    );
+  } catch {
+    // ignore
+  }
+}
 
 const pool = mysql.createPool({
   // DB_SOCKET connects over a Unix socket instead of TCP -- needed in build

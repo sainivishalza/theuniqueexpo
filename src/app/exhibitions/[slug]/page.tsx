@@ -57,51 +57,52 @@ export default function ExhibitionDetailPage({
 
   return (
     <div>
-      {/* Hero Banner */}
-      <section className="relative h-[420px] md:h-[480px] overflow-hidden bg-gray-900">
-        {/* Blurred backdrop fills the frame regardless of the poster's aspect ratio */}
-        <img
-          src={expo.image}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-60"
-        />
-        {/* Full poster, never cropped, so any text/details stay readable */}
-        <img
-          src={expo.image}
-          alt={expo.title}
-          className="absolute inset-0 w-full h-full object-contain"
-        />
-        <div className="absolute inset-0 gradient-overlay" />
-
-        {/* Content overlay */}
-        <div className="absolute inset-0 flex items-end">
-          <div className="mx-auto max-w-7xl px-6 pb-10 w-full">
-            <div className="flex flex-wrap gap-2 mb-4">
-              <span className="rounded-lg bg-white/20 backdrop-blur-sm px-3 py-1 text-sm font-medium text-white border border-white/10">
-                {expo.industry}
+      {/* Title header — plain text, never overlaps the poster */}
+      <section className="bg-gray-900 py-8 md:py-10">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="rounded-lg bg-white/10 px-3 py-1 text-sm font-medium text-white border border-white/10">
+              {expo.industry}
+            </span>
+            <span className="rounded-lg bg-white/10 px-3 py-1 text-sm font-medium text-white border border-white/10">
+              {expo.city}, {expo.country}
+            </span>
+            {isUpcoming && (
+              <span className="rounded-lg bg-green-500/90 px-3 py-1 text-sm font-bold text-white">
+                Upcoming
               </span>
-              <span className="rounded-lg bg-white/20 backdrop-blur-sm px-3 py-1 text-sm font-medium text-white border border-white/10">
-                {expo.city}, {expo.country}
-              </span>
-              {isUpcoming && (
-                <span className="rounded-lg bg-green-500/90 px-3 py-1 text-sm font-bold text-white">
-                  Upcoming
-                </span>
-              )}
-            </div>
-            <h1 className="text-3xl md:text-5xl font-extrabold text-white text-shadow-lg leading-tight max-w-3xl">
-              {expo.title}
-            </h1>
-            <p className="mt-3 text-lg text-white/80 flex items-center gap-2">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              {expo.dates}
-            </p>
+            )}
           </div>
+          <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight max-w-3xl">
+            {expo.title}
+          </h1>
+          <p className="mt-3 text-lg text-white/80 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {expo.dates}
+          </p>
         </div>
       </section>
+
+      {/* Poster — shown in full at its own proportions, never cropped or shrunk to illegibility */}
+      {expo.image && (
+        <section className="relative bg-gray-950 py-8 md:py-10 overflow-hidden">
+          <img
+            src={expo.image}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover blur-3xl scale-110 opacity-25"
+          />
+          <div className="relative mx-auto max-w-4xl px-6 flex justify-center">
+            <img
+              src={expo.image}
+              alt={expo.title}
+              className="max-w-full max-h-[75vh] w-auto h-auto rounded-xl shadow-2xl"
+            />
+          </div>
+        </section>
+      )}
 
       {/* Quick stats bar */}
       <section className="bg-white border-b border-gray-200">

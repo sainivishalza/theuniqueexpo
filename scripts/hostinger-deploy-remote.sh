@@ -12,6 +12,19 @@ DEPLOY_REF="$2"
 
 cd "$APP_DIR"
 
+# A non-interactive SSH command doesn't source .bashrc/.profile, so
+# nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.
+export NVM_DIR="$HOME/.nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  # shellcheck disable=SC1091
+  . "$NVM_DIR/nvm.sh"
+fi
+
+if ! command -v npm >/dev/null 2>&1; then
+  echo "npm still not found after loading nvm. Is Node installed another way (not nvm)?" >&2
+  exit 1
+fi
+
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own
 # .env.local — they never pass through GitHub Actions or its secrets.
 set -a

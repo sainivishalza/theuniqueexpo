@@ -23,6 +23,12 @@ echo "Backing up database to $BACKUP_FILE ..."
 mysqldump -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$BACKUP_FILE"
 ls -lh "$BACKUP_FILE"
 
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo "Server has uncommitted local changes — stashing them (recoverable via 'git stash list') before checkout:"
+  git status --short
+  git stash push -u -m "pre-deploy-autostash-$(date +%s)"
+fi
+
 echo "Fetching and checking out $DEPLOY_REF ..."
 git fetch origin "$DEPLOY_REF"
 git checkout "$DEPLOY_REF"

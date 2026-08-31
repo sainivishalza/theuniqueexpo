@@ -62,7 +62,7 @@ export default function AdminTourAppsPage() {
               <p className="text-gray-500">Tour applications will appear here once users submit them.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
               <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">Name</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">Tour</th>

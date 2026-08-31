@@ -305,15 +305,17 @@ export default function AdminExhibitionsPage() {
           {loading && <p className="text-gray-500 text-center py-10">Loading exhibitions...</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
           {!loading && !error && exhibitions.map((expo) => (
-            <div key={expo.id} className="flex items-center gap-5 rounded-2xl bg-white p-5 shadow-sm border border-gray-100 card-hover">
-              <div className="w-20 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
-                {expo.image && <img src={expo.image} alt={expo.title} className="img-cover" />}
+            <div key={expo.id} className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl bg-white p-5 shadow-sm border border-gray-100 card-hover">
+              <div className="flex items-center gap-4 min-w-0 flex-1">
+                <div className="w-20 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
+                  {expo.image && <img src={expo.image} alt={expo.title} className="img-cover" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h2 className="font-bold text-gray-900 truncate">{expo.title}</h2>
+                  <p className="text-sm text-gray-500">{expo.startDate} → {expo.endDate} • {expo.city} • {expo.exhibitors} exhibitors</p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="font-bold text-gray-900 truncate">{expo.title}</h2>
-                <p className="text-sm text-gray-500">{expo.startDate} → {expo.endDate} • {expo.city} • {expo.exhibitors} exhibitors</p>
-              </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Link href={`/exhibitions/${expo.slug}`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">View</Link>
                 <Link href={`/admin/exhibitions/${expo.slug}/registrations`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">Registrations</Link>
                 <Link href={`/admin/exhibitions/${expo.slug}/registration-form`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">Registration Form</Link>

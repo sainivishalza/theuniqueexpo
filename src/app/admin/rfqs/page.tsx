@@ -88,14 +88,14 @@ export default function AdminRFQsPage() {
       <div className="mt-6 space-y-4">
         {rfqs.map((rfq) => (
           <div key={rfq.id} className="rounded-lg border border-gray-200 p-5">
-            <div className="flex items-start justify-between gap-4">
-              <div>
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <div className="min-w-0">
                 <h2 className="font-semibold">{rfq.title}</h2>
                 <p className="text-sm text-gray-500">
                   {rfq.category} • Posted by {rfq.buyerName} • {rfq.createdAt}
                 </p>
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 flex-wrap sm:flex-shrink-0">
                 <select
                   value={rfq.status}
                   disabled={updatingId === rfq.id}

@@ -14,9 +14,18 @@ cd "$APP_DIR"
 
 # Hostinger's real production serving mechanism is Passenger/hbuilds, which
 # builds from `main` on its own (webhook-driven) independently of this
-# script. This script's job is now just: keep the production database
-# migrated, and keep this secondary PM2 process (if anything still depends
-# on it) in sync too. See git history for the diagnostics that found this.
+# script's own SSH-driven build+PM2 restart below. Diagnostics found that
+# hbuilds' build kept failing (and so kept leaving the live site on an old,
+# stale build) once pages started needing DB access at build time for ISR:
+# hbuilds' checkout at hbuilds/source/repository has no .env.local of its
+# own, so Next.js falls back to default DB creds and every prerender of a
+# DB-backed page fails with ER_ACCESS_DENIED_ERROR. Copy this app's own
+# .env.local over so hbuilds' independent build can reach the database too.
+HBUILDS=~/domains/theuniqueexpo.com/hbuilds
+if [ -f "$APP_DIR/.env.local" ] && [ -d "$HBUILDS/source/repository" ]; then
+  cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local"
+  echo "Copied .env.local into hbuilds' own build checkout."
+fi
 
 # A non-interactive SSH command doesn't source .bashrc/.profile, so
 # nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.

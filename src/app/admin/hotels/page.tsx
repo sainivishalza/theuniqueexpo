@@ -83,15 +83,15 @@ export default function AdminHotelsPage() {
           {bookings.map((bk) => (
             <div
               key={bk.id}
-              className="flex items-center justify-between rounded-lg border border-gray-200 p-4"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg border border-gray-200 p-4"
             >
-              <div>
+              <div className="min-w-0">
                 <h2 className="font-semibold">{bk.hotelName}</h2>
                 <p className="text-sm text-gray-500">
                   {bk.userName} • {bk.checkIn} to {bk.checkOut} • {bk.rooms} room(s)
                 </p>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-wrap">
                 <span
                   className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                     bk.status === "pending"

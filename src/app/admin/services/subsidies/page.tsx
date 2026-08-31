@@ -18,7 +18,7 @@ export default function AdminSubsidiesPage() {
       </section>
       <section className="py-10 bg-gray-50">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
             <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
               <th className="text-left px-6 py-3 font-semibold text-gray-600">Subsidy</th>
               <th className="text-left px-6 py-3 font-semibold text-gray-600">Exhibition</th>

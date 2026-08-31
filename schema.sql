@@ -73,8 +73,8 @@ CREATE TABLE IF NOT EXISTS consultation_bookings (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert default admin user (password: admin123)
+-- Insert default admin user (password: TheUniqueExpo2026!)
 -- In production, change this password immediately!
 INSERT INTO users (name, email, password_hash, role, country) VALUES
-('Admin', 'admin@theuniqueexpo.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 'China')
-ON DUPLICATE KEY UPDATE email=email;
+('Admin', 'admin@theuniqueexpo.com', '$2b$10$W2RX8zFZ.9gxdmF8CPsnZe7YiHPK4IY41IRUwGXjfI56cfq0lVdZ.', 'admin', 'China')
+ON DUPLICATE KEY UPDATE password_hash=VALUES(password_hash);

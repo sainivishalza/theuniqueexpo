@@ -12,6 +12,26 @@ DEPLOY_REF="$2"
 
 cd "$APP_DIR"
 
+echo "=== DIAGNOSTIC: how is this domain actually served? ==="
+echo "--- home directory structure ---"
+ls -la ~ 2>/dev/null
+echo "--- domains directory (common Hostinger layout) ---"
+ls -la ~/domains/ 2>/dev/null || echo "(no ~/domains directory)"
+find ~/domains -maxdepth 3 2>/dev/null || true
+echo "--- .htaccess files anywhere in home (Passenger/Node config often lives here) ---"
+find ~ -maxdepth 5 -iname ".htaccess" -not -path "*/node_modules/*" 2>/dev/null | while read -r f; do
+  echo "  >> $f"
+  cat "$f"
+  echo "  -- end $f --"
+done
+echo "--- any Passenger config files ---"
+find ~ -maxdepth 5 -iname "*passenger*" -not -path "*/node_modules/*" 2>/dev/null
+echo "--- currently listening ports (this account's view) ---"
+ss -tlnp 2>/dev/null || netstat -tlnp 2>/dev/null || echo "(no permission to list sockets)"
+echo "--- all node/pm2 processes for this user right now ---"
+ps -u "$(whoami)" -o pid,ppid,etime,cmd 2>/dev/null | grep -i "node\|pm2" | grep -v grep
+echo "=== END DIAGNOSTIC ==="
+
 # A non-interactive SSH command doesn't source .bashrc/.profile, so
 # nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.
 export NVM_DIR="$HOME/.nvm"

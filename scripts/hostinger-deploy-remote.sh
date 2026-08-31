@@ -21,10 +21,18 @@ cd "$APP_DIR"
 # own, so Next.js falls back to default DB creds and every prerender of a
 # DB-backed page fails with ER_ACCESS_DENIED_ERROR. Copy this app's own
 # .env.local over so hbuilds' independent build can reach the database too.
+#
+# With the file copied, hbuilds' build got further but then failed with
+# "Access denied ... '@::1' (using password: YES)" -- its isolated build
+# sandbox resolves DB_HOST=localhost to the IPv6 loopback in a way that
+# doesn't satisfy the grant there, even though every host variant (including
+# ::1) connects fine from this normal SSH session. Force a plain IPv4
+# literal in hbuilds' copy so its build never touches IPv6 resolution.
 HBUILDS=~/domains/theuniqueexpo.com/hbuilds
 if [ -f "$APP_DIR/.env.local" ] && [ -d "$HBUILDS/source/repository" ]; then
   cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local"
-  echo "Copied .env.local into hbuilds' own build checkout."
+  sed -i 's/^DB_HOST=.*/DB_HOST=127.0.0.1/' "$HBUILDS/source/repository/.env.local"
+  echo "Copied .env.local into hbuilds' own build checkout (forced DB_HOST=127.0.0.1)."
 fi
 
 # A non-interactive SSH command doesn't source .bashrc/.profile, so

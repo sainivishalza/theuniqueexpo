@@ -3,7 +3,9 @@ import { formatNumber } from "@/lib/format";
 import { featuredEvents } from "@/lib/featured-events";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 
-export const dynamic = "force-dynamic";
+// Content only changes via the admin panel -- cache the rendered page and
+// revalidate in the background instead of hitting the DB on every request.
+export const revalidate = 60;
 
 const stats = [
   { value: "20+", label: "Major Exhibitions", icon: "🎯" },

@@ -9,5 +9,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   if (!exhibition) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-  return NextResponse.json({ exhibition: mapExhibitionRow(exhibition) });
+  // Short cache so visiting Exhibition -> Floor Plan -> Hotels -> back
+  // doesn't re-fetch the same exhibition four times; admin's edit-open
+  // flow tolerates a few seconds of staleness here.
+  return NextResponse.json(
+    { exhibition: mapExhibitionRow(exhibition) },
+    { headers: { "Cache-Control": "public, max-age=20, stale-while-revalidate=60" } }
+  );
 }

@@ -74,6 +74,15 @@ export async function listExhibitions() {
   return (rows as any[]).map(mapExhibitionRow);
 }
 
+export async function getExhibitionBySlugOrId(slugOrId: string) {
+  const [rows] = await pool.query(
+    "SELECT * FROM exhibitions WHERE slug = ? OR id = ? LIMIT 1",
+    [slugOrId, Number(slugOrId) || 0]
+  );
+  const row = (rows as any[])[0];
+  return row ? mapExhibitionRow(row) : null;
+}
+
 export async function createExhibition(input: ExhibitionInput) {
   const [result] = await pool.query(
     `INSERT INTO exhibitions (slug, title, start_date, end_date, venue, city, country, industry, description, highlights, exhibitors, visitors, organizer, website, color, image)

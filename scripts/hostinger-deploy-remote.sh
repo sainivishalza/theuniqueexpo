@@ -74,6 +74,10 @@ set -a
 source .env.local
 set +a
 
+echo "=== DIAGNOSTIC: this DB user's actual grants ==="
+mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" -N -e "SHOW GRANTS FOR CURRENT_USER()" 2>&1 || echo "(SHOW GRANTS failed)"
+echo "=== END DIAGNOSTIC ==="
+
 BACKUP_FILE=~/theuniqueexpo-backup-$(date +%Y%m%d-%H%M%S).sql
 echo "Backing up database to $BACKUP_FILE ..."
 mysqldump -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$BACKUP_FILE"

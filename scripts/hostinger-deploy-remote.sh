@@ -43,6 +43,15 @@ if [ -f "$APP_DIR/.env.local" ] && [ -d "$HBUILDS/source/repository" ]; then
   echo "Re-copied .env.local into hbuilds' build checkout every 3s for 2 minutes (added DB_SOCKET for its network-isolated build), to win the race against its own webhook-triggered rebuild."
 fi
 
+echo "=== DIAGNOSTIC: hbuilds latest build log ==="
+LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
+echo "latest hbuilds deploy log: ${LATEST_LOG:-none found}"
+if [ -n "${LATEST_LOG:-}" ]; then
+  echo "--- tail of $LATEST_LOG ---"
+  tail -120 "$LATEST_LOG" || true
+fi
+echo "=== END DIAGNOSTIC ==="
+
 # A non-interactive SSH command doesn't source .bashrc/.profile, so
 # nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.
 export NVM_DIR="$HOME/.nvm"

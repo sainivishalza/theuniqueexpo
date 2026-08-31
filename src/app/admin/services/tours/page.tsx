@@ -20,7 +20,7 @@ export default function AdminToursPage() {
         <div className="mx-auto max-w-7xl px-6 space-y-8">
           <div>
             <h2 className="text-xl font-bold text-gray-900 mb-4">Business Tours</h2>
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
               <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">Tour</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">City</th>
@@ -42,7 +42,7 @@ export default function AdminToursPage() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900 mb-4">China Tours</h2>
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
               <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">Tour</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">City</th>

@@ -35,19 +35,6 @@ if [ -f "$APP_DIR/.env.local" ] && [ -d "$HBUILDS/source/repository" ]; then
   echo "Copied .env.local into hbuilds' own build checkout (forced DB_HOST=127.0.0.1)."
 fi
 
-echo "=== DIAGNOSTIC: hbuilds state after copy ==="
-readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
-(cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='current commit: %H %cI %s' 2>/dev/null) || echo "(hbuilds/current is not a git checkout)"
-(cd "$HBUILDS/source/repository" 2>/dev/null && git log -1 --format='source commit: %H %cI %s' 2>/dev/null) || echo "(couldn't read hbuilds/source git info)"
-ls -la "$HBUILDS/source/repository/.env.local" 2>/dev/null || echo "(.env.local missing from hbuilds/source/repository right now)"
-LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
-echo "latest hbuilds deploy log: ${LATEST_LOG:-none found}"
-if [ -n "${LATEST_LOG:-}" ]; then
-  echo "--- tail of $LATEST_LOG ---"
-  tail -80 "$LATEST_LOG" || true
-fi
-echo "=== END DIAGNOSTIC ==="
-
 # A non-interactive SSH command doesn't source .bashrc/.profile, so
 # nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.
 export NVM_DIR="$HOME/.nvm"
@@ -66,6 +53,16 @@ fi
 set -a
 source .env.local
 set +a
+
+echo "=== DIAGNOSTIC: DB connectivity by host variant (DB_HOST is currently '$DB_HOST') ==="
+for h in "$DB_HOST" 127.0.0.1 ::1 localhost; do
+  if mysql -h "$h" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -e "SELECT 1" >/dev/null 2>&1; then
+    echo "  $h -> OK"
+  else
+    echo "  $h -> FAILED"
+  fi
+done
+echo "=== END DIAGNOSTIC ==="
 
 BACKUP_FILE=~/theuniqueexpo-backup-$(date +%Y%m%d-%H%M%S).sql
 echo "Backing up database to $BACKUP_FILE ..."

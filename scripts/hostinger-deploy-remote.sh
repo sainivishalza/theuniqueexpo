@@ -53,7 +53,11 @@ mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < schema-migration
 
 echo "Installing dependencies and building ..."
 npm install
-npm run build
+# The host can't load Next's native SWC binary (GLIBC mismatch), so it falls
+# back to a WASM build using Rust's rayon thread pool, which by default also
+# sizes itself off the host's (misreported) CPU count and can hit the same
+# process/thread resource limit as experimental.cpus did. Cap it too.
+RAYON_NUM_THREADS=2 npm run build
 
 echo "Restarting via PM2 ..."
 pm2 restart theuniqueexpo || pm2 start npm --name theuniqueexpo --cwd "$APP_DIR" -- start

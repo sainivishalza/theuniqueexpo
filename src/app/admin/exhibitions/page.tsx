@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import Link from "next/link";
 import { slugify } from "@/lib/slugify";
+import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 
 interface Exhibition {
   id: string;
@@ -23,12 +24,15 @@ interface Exhibition {
   website: string;
   color: string;
   image: string;
+  galleryImages: string[];
 }
+
+const MAX_GALLERY_IMAGES = 10;
 
 const EMPTY_FORM = {
   slug: "", title: "", startDate: "", endDate: "", venue: "", city: "", country: "",
   industry: "", description: "", highlights: "", exhibitors: 0, visitors: "", organizer: "",
-  website: "", color: "#059669", image: "",
+  website: "", color: "#059669", image: "", galleryImages: [] as string[],
 };
 
 export default function AdminExhibitionsPage() {
@@ -46,6 +50,8 @@ export default function AdminExhibitionsPage() {
   const [formError, setFormError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [imageError, setImageError] = useState("");
+  const [galleryError, setGalleryError] = useState("");
+  const [galleryUploading, setGalleryUploading] = useState(false);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -73,7 +79,7 @@ export default function AdminExhibitionsPage() {
       venue: expo.venue, city: expo.city, country: expo.country, industry: expo.industry,
       description: expo.description, highlights: expo.highlights.join("\n"), exhibitors: expo.exhibitors,
       visitors: expo.visitors, organizer: expo.organizer, website: expo.website, color: expo.color,
-      image: expo.image || "",
+      image: expo.image || "", galleryImages: [],
     });
     setFormError("");
     setEditingId(expo.id);
@@ -83,12 +89,18 @@ export default function AdminExhibitionsPage() {
     // The list response points the image at the cacheable /image endpoint
     // instead of embedding the raw base64 (see listExhibitions) -- fetch
     // the real value so saving without touching the image doesn't
-    // overwrite the stored poster with just that URL.
+    // overwrite the stored poster with just that URL. The list response
+    // never includes gallery_images at all, so this is also the only
+    // source for the existing gallery photos.
     try {
       const res = await fetch(`/api/exhibitions/${expo.slug}`);
       const data = await res.json();
       if (res.ok && data.exhibition) {
-        setForm((prev) => (prev.slug === expo.slug ? { ...prev, image: data.exhibition.image || "" } : prev));
+        setForm((prev) =>
+          prev.slug === expo.slug
+            ? { ...prev, image: data.exhibition.image || "", galleryImages: data.exhibition.galleryImages || [] }
+            : prev
+        );
       }
     } catch {
       // Keep the lightweight URL as a fallback.
@@ -139,21 +151,66 @@ export default function AdminExhibitionsPage() {
     }
   }
 
-  function handleImageFile(file: File | null) {
+  async function handleImageFile(file: File | null) {
     setImageError("");
     if (!file) return;
     if (!file.type.startsWith("image/")) {
       setImageError("Please choose an image file.");
       return;
     }
-    if (file.size > 4 * 1024 * 1024) {
-      setImageError("Image is too large. Please choose one under 4 MB.");
+    if (file.size > 8 * 1024 * 1024) {
+      setImageError("Image is too large. Please choose one under 8 MB.");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => setForm((prev) => ({ ...prev, image: reader.result as string }));
-    reader.onerror = () => setImageError("Couldn't read that file. Please try again.");
-    reader.readAsDataURL(file);
+    try {
+      const dataUrl = await readDocumentAsDataUrl(file);
+      setForm((prev) => ({ ...prev, image: dataUrl }));
+    } catch {
+      setImageError("Couldn't read that file. Please try again.");
+    }
+  }
+
+  // Extra photos shown on the exhibition's own page, beyond the single
+  // hero image above. Accepts multiple files at once; each is compressed
+  // the same way as the hero image so a handful of phone photos doesn't
+  // bloat the save request.
+  async function handleGalleryFiles(files: FileList | null) {
+    setGalleryError("");
+    if (!files || files.length === 0) return;
+    const remaining = MAX_GALLERY_IMAGES - form.galleryImages.length;
+    if (remaining <= 0) {
+      setGalleryError(`You can add up to ${MAX_GALLERY_IMAGES} additional photos.`);
+      return;
+    }
+    const picked = Array.from(files).slice(0, remaining);
+    setGalleryUploading(true);
+    try {
+      const results: string[] = [];
+      for (const file of picked) {
+        if (!file.type.startsWith("image/")) {
+          setGalleryError("Please choose image files only.");
+          continue;
+        }
+        if (file.size > 8 * 1024 * 1024) {
+          setGalleryError("One or more images were too large (over 8 MB) and were skipped.");
+          continue;
+        }
+        try {
+          results.push(await readDocumentAsDataUrl(file));
+        } catch {
+          setGalleryError("Couldn't read one of the files. Please try again.");
+        }
+      }
+      if (results.length > 0) {
+        setForm((prev) => ({ ...prev, galleryImages: [...prev.galleryImages, ...results] }));
+      }
+    } finally {
+      setGalleryUploading(false);
+    }
+  }
+
+  function removeGalleryImage(index: number) {
+    setForm((prev) => ({ ...prev, galleryImages: prev.galleryImages.filter((_, i) => i !== index) }));
   }
 
   async function handleDelete(id: string) {
@@ -280,6 +337,44 @@ export default function AdminExhibitionsPage() {
                   {imageError && <p className="text-xs text-red-600">{imageError}</p>}
                 </div>
               </div>
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Additional Photos</label>
+              <p className="text-xs text-gray-500 mb-2">Shown as a gallery on the exhibition's own page, below the hero image above. Up to {MAX_GALLERY_IMAGES} photos.</p>
+              {form.galleryImages.length > 0 && (
+                <div className="mb-3 grid grid-cols-3 sm:grid-cols-4 gap-3">
+                  {form.galleryImages.map((img, i) => (
+                    <div key={i} className="relative aspect-video rounded-xl overflow-hidden bg-gray-900 border border-gray-200 group">
+                      <img src={img} alt={`Gallery photo ${i + 1}`} className="absolute inset-0 w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removeGalleryImage(i)}
+                        className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white text-xs font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        aria-label={`Remove photo ${i + 1}`}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {form.galleryImages.length < MAX_GALLERY_IMAGES && (
+                <label className="cursor-pointer inline-block rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                  {galleryUploading ? "Uploading..." : "Add photos"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    disabled={galleryUploading}
+                    onChange={(e) => {
+                      void handleGalleryFiles(e.target.files);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+              )}
+              {galleryError && <p className="mt-1 text-xs text-red-600">{galleryError}</p>}
             </div>
             <div className="mt-4">
               <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>

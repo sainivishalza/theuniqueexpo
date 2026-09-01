@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS exhibitions (
   website VARCHAR(255) DEFAULT '',
   color VARCHAR(20) DEFAULT '#059669',
   image MEDIUMTEXT,
+  gallery_images JSON DEFAULT NULL,
   registration_enabled BOOLEAN DEFAULT TRUE,
   registration_form_schema JSON DEFAULT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { formatNumber } from "@/lib/format";
-import { featuredEvents } from "@/lib/featured-events";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
+
+// How many of the soonest upcoming exhibitions to feature on the homepage.
+const FEATURED_COUNT = 6;
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
@@ -31,6 +33,7 @@ const industries = [
 
 export default async function Home() {
   const exhibitions = await listExhibitions();
+  const featured = exhibitions.slice(0, FEATURED_COUNT);
 
   return (
     <main>
@@ -46,7 +49,7 @@ export default async function Home() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-sm mb-6">
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              {featuredEvents.length} Upcoming Exhibitions in 2026
+              {exhibitions.length} Upcoming Exhibitions in 2026
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight">
               Where Global
@@ -98,21 +101,23 @@ export default async function Home() {
             </p>
           </div>
 
-          {/* Event Cards — Poster-Style Layout */}
+          {/* Event Cards — Poster-Style Layout. Pulls straight from the same
+              admin-editable exhibitions as /exhibitions and the detail
+              pages, so editing one in the admin panel updates everywhere
+              at once instead of drifting out of sync. */}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {featuredEvents.map((evt) => (
+            {featured.map((evt) => (
               <Link
                 key={evt.id}
                 href={`/exhibitions/${evt.slug}`}
                 className="group block rounded-2xl overflow-hidden bg-white shadow-lg shadow-gray-200/60 card-hover border border-gray-100"
               >
-                {/* Header with gradient */}
-                <div className={`relative bg-gradient-to-r ${evt.gradient} p-6 text-white`}>
+                {/* Header */}
+                <div className="relative p-6 text-white" style={{ backgroundColor: evt.color }}>
                   <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1 text-xs font-bold">
                     {evt.dates.split(",")[0]}
                   </div>
                   <h3 className="text-xl font-extrabold leading-tight pr-20">{evt.title}</h3>
-                  <p className="text-sm text-white/80 mt-1">{evt.subtitle}</p>
                   <div className="mt-3 flex items-center gap-2 text-xs text-white/70">
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     {evt.venue}, {evt.city}
@@ -120,10 +125,12 @@ export default async function Home() {
                 </div>
 
                 {/* Image */}
-                <div className="relative h-44 overflow-hidden">
-                  <img src={evt.image} alt={evt.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                </div>
+                {evt.image && (
+                  <div className="relative h-44 overflow-hidden">
+                    <img src={evt.image} alt={evt.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                  </div>
+                )}
 
                 {/* Highlights */}
                 <div className="p-5">
@@ -140,23 +147,9 @@ export default async function Home() {
                     ))}
                   </ul>
 
-                  {/* Benefits */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-6 h-6 rounded-full bg-green-400 flex items-center justify-center text-xs font-bold text-white">✓</span>
-                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Buyer Benefits</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {evt.benefits.slice(0, 3).map((b) => (
-                      <span key={b} className="rounded-full bg-green-50 px-2.5 py-1 text-[11px] text-green-700 font-medium">{b}</span>
-                    ))}
-                    {evt.benefits.length > 3 && (
-                      <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] text-gray-400">+{evt.benefits.length - 3} more</span>
-                    )}
-                  </div>
-
                   {/* CTA */}
                   <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-                    <span className="text-xs text-gray-400">Tap to view full details</span>
+                    <span className="text-xs text-gray-400">{formatNumber(evt.exhibitors)}+ exhibitors</span>
                     <span className="inline-flex items-center gap-1 rounded-lg bg-gray-900 px-4 py-2 text-xs font-semibold text-white group-hover:bg-emerald-600 transition-colors">
                       View Details →
                     </span>

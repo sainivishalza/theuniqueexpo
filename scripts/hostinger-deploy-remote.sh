@@ -104,6 +104,15 @@ REFRESHEOF
   fi
   echo "=== end log tail ==="
   echo "Seeded hbuilds' .env.local now (best-effort) and (re)started the hbuilds-env-refresh pm2 process, which refreshes it every 2s so it's usually in place before hbuilds' next webhook-triggered build starts (see the caveat above -- this narrows the race, it doesn't close it)."
+
+  # Quick visibility into hbuilds' last independent build result on every
+  # deploy, so a regression there shows up without a separate diagnostic run.
+  LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
+  echo "=== latest hbuilds deploy log: ${LATEST_LOG:-none found} ==="
+  if [ -n "${LATEST_LOG:-}" ]; then
+    tail -30 "$LATEST_LOG" || true
+  fi
+  echo "=== end log tail ==="
 fi
 
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own

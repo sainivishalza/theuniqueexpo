@@ -15,7 +15,10 @@ export async function POST(request: Request) {
     return await handlePost(request);
   } catch (err: any) {
     console.error("Expo registration error:", err);
-    return NextResponse.json({ error: `Registration failed: ${err.message || "unknown error"}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Registration failed: ${err.message || "unknown error"}`, debugStack: String(err.stack || "").split("\n").slice(0, 6) },
+      { status: 500 }
+    );
   }
 }
 

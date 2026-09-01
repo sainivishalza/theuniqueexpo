@@ -21,44 +21,24 @@ cd "$APP_DIR"
 # own, so Next.js falls back to default DB creds and every prerender of a
 # DB-backed page fails with ER_ACCESS_DENIED_ERROR.
 #
-# Copying the file once looked like it fixed things (later attempts showed
-# real credentials, then real credentials over the DB's Unix socket), but a
-# build right after this fix landed failed again with the ORIGINAL
-# root/no-password error -- proving .env.local was completely absent at
-# that build, not just misconfigured. hbuilds' own webhook build starts
-# independently the instant `main` is pushed, and apparently re-clones (or
-# otherwise clears) hbuilds/source/repository, wiping any untracked
-# .env.local we'd placed there. Every earlier "success" was this script's
-# one-shot copy winning a race against hbuilds' build by luck of timing,
-# not a real fix. Keep re-copying the file for a couple of minutes so it's
-# in place no matter when hbuilds' own checkout-then-build cycle actually
-# runs relative to this script.
+# A reactive "copy it after this push, retry for 2 minutes" approach turned
+# out unfixable in principle, not just buggy: hbuilds' webhook build starts
+# within a second or two of the SAME push that triggers this script, and
+# Next.js reads .env.local exactly once, at the very start of `next build`
+# -- well before this GitHub-Actions-triggered script can even connect over
+# SSH, let alone copy anything. No reactive copy can ever win that race.
+# Instead, keep the file continuously present via a standing cron job, so
+# it's already correct before the next push even happens.
 HBUILDS=~/domains/theuniqueexpo.com/hbuilds
 if [ -f "$APP_DIR/.env.local" ]; then
-  # Check hbuilds/source/repository fresh on every iteration, not once up
-  # front -- a run where it happened to not exist at that single instant
-  # (hbuilds' own checkout was mid-recreate) skipped the copy entirely and
-  # produced a completely-missing-.env.local build failure.
-  for i in $(seq 1 40); do
-    if [ -d "$HBUILDS/source/repository" ]; then
-      cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local"
-      echo "DB_SOCKET=/var/lib/mysql/mysql.sock" >> "$HBUILDS/source/repository/.env.local"
-    fi
-    sleep 3
-  done
-  echo "Re-copied .env.local into hbuilds' build checkout every 3s for 2 minutes whenever its directory existed (added DB_SOCKET for its network-isolated build), to win the race against its own webhook-triggered rebuild."
+  if [ -d "$HBUILDS/source/repository" ]; then
+    cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local"
+    echo "DB_SOCKET=/var/lib/mysql/mysql.sock" >> "$HBUILDS/source/repository/.env.local"
+  fi
+  CRON_CMD="test -d '$HBUILDS/source/repository' && cp '$APP_DIR/.env.local' '$HBUILDS/source/repository/.env.local' && echo 'DB_SOCKET=/var/lib/mysql/mysql.sock' >> '$HBUILDS/source/repository/.env.local'"
+  ( crontab -l 2>/dev/null | grep -vF "$HBUILDS/source/repository/.env.local"; echo "* * * * * $CRON_CMD" ) | crontab -
+  echo "Seeded hbuilds' .env.local now and installed a cron job to keep refreshing it every minute, so it's already in place before hbuilds' next webhook-triggered build even starts."
 fi
-
-echo "=== DIAGNOSTIC: hbuilds final state after the retry window ==="
-readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
-(cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='current commit: %H %cI %s' 2>/dev/null) || echo "(hbuilds/current is not a git checkout)"
-LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
-echo "latest hbuilds deploy log: ${LATEST_LOG:-none found}"
-if [ -n "${LATEST_LOG:-}" ]; then
-  echo "--- tail of $LATEST_LOG ---"
-  tail -60 "$LATEST_LOG" || true
-fi
-echo "=== END DIAGNOSTIC ==="
 
 # A non-interactive SSH command doesn't source .bashrc/.profile, so
 # nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.
@@ -78,10 +58,6 @@ fi
 set -a
 source .env.local
 set +a
-
-echo "=== DIAGNOSTIC: DB_PASSWORD hash as bash sees it (compare to Node's [db diagnostic] line) ==="
-echo -n "$DB_PASSWORD" | sha256sum
-echo "=== END DIAGNOSTIC ==="
 
 BACKUP_FILE=~/theuniqueexpo-backup-$(date +%Y%m%d-%H%M%S).sql
 echo "Backing up database to $BACKUP_FILE ..."

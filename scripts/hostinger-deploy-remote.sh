@@ -5,6 +5,9 @@
 #
 # $1 = app directory on the server (e.g. /home/u428186913/theuniqueexpo)
 # $2 = git branch/ref to deploy
+#
+# See the hbuilds .env.local caveat below for why hbuilds' own independent
+# build can still occasionally fail even with the refresher running.
 set -euo pipefail
 
 APP_DIR="$1"

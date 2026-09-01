@@ -96,13 +96,6 @@ REFRESHEOF
 
   pm2 restart hbuilds-env-refresh || pm2 start "$HOME/.hbuilds-env-refresh.sh" --name hbuilds-env-refresh --interpreter bash
   pm2 save
-
-  LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
-  echo "=== latest hbuilds deploy log: ${LATEST_LOG:-none found} ==="
-  if [ -n "${LATEST_LOG:-}" ]; then
-    tail -30 "$LATEST_LOG" || true
-  fi
-  echo "=== end log tail ==="
   echo "Seeded hbuilds' .env.local now (best-effort) and (re)started the hbuilds-env-refresh pm2 process, which refreshes it every 2s so it's usually in place before hbuilds' next webhook-triggered build starts (see the caveat above -- this narrows the race, it doesn't close it)."
 
   # Quick visibility into hbuilds' last independent build result on every
@@ -113,6 +106,15 @@ REFRESHEOF
     tail -30 "$LATEST_LOG" || true
   fi
   echo "=== end log tail ==="
+
+  echo "=== EMERGENCY DIAGNOSTIC: production is returning 500 ==="
+  readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
+  echo "--- recent logs under the domain dir ---"
+  find ~/domains/theuniqueexpo.com -maxdepth 3 -iname "*.log" -newer "$APP_DIR/package.json" 2>/dev/null | while read -r f; do
+    echo "-- $f --"
+    tail -40 "$f"
+  done
+  echo "=== END EMERGENCY DIAGNOSTIC ==="
 fi
 
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own

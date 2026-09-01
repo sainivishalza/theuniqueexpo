@@ -55,6 +55,10 @@ export default function ExhibitionDetailPage({
   }
 
   const isUpcoming = new Date(expo.endDate) >= new Date();
+  // Hero poster first, then gallery photos -- one combined set so the
+  // lightbox's prev/next cycles through every picture for this exhibition,
+  // not just the gallery ones.
+  const allImages = [expo.image, ...expo.galleryImages].filter(Boolean);
 
   return (
     <div>
@@ -96,11 +100,23 @@ export default function ExhibitionDetailPage({
             className="absolute inset-0 w-full h-full object-cover blur-3xl scale-110 opacity-25"
           />
           <div className="relative mx-auto max-w-4xl px-6 flex justify-center">
-            <img
-              src={expo.image}
-              alt={expo.title}
-              className="max-w-full max-h-[75vh] w-auto h-auto rounded-xl shadow-2xl"
-            />
+            <button
+              type="button"
+              onClick={() => setLightboxIndex(0)}
+              className="relative group cursor-zoom-in"
+              aria-label="View full-size poster"
+            >
+              <img
+                src={expo.image}
+                alt={expo.title}
+                className="max-w-full max-h-[75vh] w-auto h-auto rounded-xl shadow-2xl"
+              />
+              <div className="absolute inset-0 rounded-xl bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity w-12 h-12 rounded-full bg-white/90 flex items-center justify-center text-2xl">
+                  🔍
+                </div>
+              </div>
+            </button>
           </div>
         </section>
       )}
@@ -161,7 +177,7 @@ export default function ExhibitionDetailPage({
                       <button
                         key={i}
                         type="button"
-                        onClick={() => setLightboxIndex(i)}
+                        onClick={() => setLightboxIndex(allImages.indexOf(img))}
                         className="relative aspect-video rounded-xl overflow-hidden bg-gray-100 group"
                       >
                         <img src={img} alt={`${expo.title} photo ${i + 1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform" />
@@ -282,8 +298,12 @@ export default function ExhibitionDetailPage({
         </div>
       </section>
 
-      {/* Gallery lightbox */}
-      {lightboxIndex !== null && expo.galleryImages[lightboxIndex] && (
+      {/* Poster / gallery lightbox -- covers the hero poster and every
+          gallery photo as one browsable set. Pinch-to-zoom works natively
+          here since the site doesn't restrict viewport scaling; this modal
+          just needs to actually show the image at full size, which the
+          poster previously never did (no click handler at all). */}
+      {lightboxIndex !== null && allImages[lightboxIndex] && (
         <div
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
           onClick={() => setLightboxIndex(null)}
@@ -296,12 +316,12 @@ export default function ExhibitionDetailPage({
           >
             ×
           </button>
-          {expo.galleryImages.length > 1 && (
+          {allImages.length > 1 && (
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                setLightboxIndex((i) => (i === null ? null : (i - 1 + expo.galleryImages.length) % expo.galleryImages.length));
+                setLightboxIndex((i) => (i === null ? null : (i - 1 + allImages.length) % allImages.length));
               }}
               className="absolute left-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
               aria-label="Previous photo"
@@ -310,17 +330,17 @@ export default function ExhibitionDetailPage({
             </button>
           )}
           <img
-            src={expo.galleryImages[lightboxIndex]}
+            src={allImages[lightboxIndex]}
             alt={`${expo.title} photo ${lightboxIndex + 1}`}
             className="max-w-full max-h-[85vh] w-auto h-auto rounded-xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />
-          {expo.galleryImages.length > 1 && (
+          {allImages.length > 1 && (
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                setLightboxIndex((i) => (i === null ? null : (i + 1) % expo.galleryImages.length));
+                setLightboxIndex((i) => (i === null ? null : (i + 1) % allImages.length));
               }}
               className="absolute right-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
               aria-label="Next photo"

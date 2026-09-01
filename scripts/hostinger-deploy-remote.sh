@@ -107,25 +107,20 @@ REFRESHEOF
   fi
   echo "=== end log tail ==="
 
-  echo "=== DIAGNOSTIC: list every process, find the real hbuilds server, check its env ==="
-  echo "(keys only, values redacted -- this is checking presence, not leaking secrets)"
-  for pid in $(ls /proc 2>/dev/null | grep -E '^[0-9]+$'); do
-    CMDLINE=$(tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null || true)
-    [ -z "$CMDLINE" ] && continue
-    CWD=$(readlink -f "/proc/$pid/cwd" 2>/dev/null || true)
-    case "$CMDLINE" in
-      *hbuilds-env-refresh*) continue ;;  # skip our own refresher, already known
-    esac
-    case "$CMDLINE$CWD" in
-      *hbuilds*|*Passenger*|*passenger*)
-        echo "-- pid $pid --"
-        echo "cwd: ${CWD:-?}"
-        echo "cmd: $CMDLINE"
-        tr '\0' '\n' < "/proc/$pid/environ" 2>/dev/null | grep -E '^DB_' | sed -E 's/=.*/=<present>/' || echo "(no DB_* vars in this process' environment, or /proc/$pid/environ unreadable)"
-        ;;
-    esac
-  done
-  echo "=== END DIAGNOSTIC ==="
+  # hbuilds' actual serving workers (Passenger-managed next-server processes)
+  # can live for a long time across many rebuilds without a full restart --
+  # a build-time-only DB pool created once and never recycled can end up
+  # with stale/exhausted MySQL connections (or the env value it captured
+  # before an hPanel edit), causing exactly the kind of runtime-only 500 we
+  # saw on /api/exhibitions even though the process's env vars are present
+  # and correct. Ask Passenger for a graceful restart on every deploy via
+  # its own documented mechanism (touching tmp/restart.txt in the app root)
+  # so those workers always start fresh, rather than sending signals to
+  # processes directly.
+  mkdir -p "$HBUILDS/current/tmp" 2>/dev/null || true
+  touch "$HBUILDS/current/tmp/restart.txt" 2>/dev/null \
+    && echo "Requested a graceful Passenger restart for hbuilds (touched tmp/restart.txt)." \
+    || echo "(could not touch hbuilds' tmp/restart.txt -- current symlink or tmp dir may not exist yet)"
 fi
 
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own

@@ -134,6 +134,31 @@ REFRESHEOF
     mkdir -p "$HBUILDS/current/nodejs/tmp" "$HBUILDS/current/tmp" 2>/dev/null || true
     touch "$HBUILDS/current/nodejs/tmp/restart.txt" "$HBUILDS/current/tmp/restart.txt" 2>/dev/null || true
   fi
+
+  echo "=== DIAGNOSTIC: do hPanel's runtime env values match our .env.local? (hashes only) ==="
+  ( set -a; source "$APP_DIR/.env.local"; set +a
+    for key in DB_HOST DB_USER DB_PASSWORD DB_NAME DB_SOCKET; do
+      val="$(eval echo \"\$$key\")"
+      printf '%s (from .env.local): %s\n' "$key" "$(printf '%s' "$val" | sha256sum | cut -d' ' -f1)"
+    done )
+  for pid in $(ls /proc 2>/dev/null | grep -E '^[0-9]+$'); do
+    CWD=$(readlink -f "/proc/$pid/cwd" 2>/dev/null || true)
+    case "$CWD" in
+      */hbuilds/versions/*/nodejs)
+        echo "-- live hbuilds worker pid $pid --"
+        for key in DB_HOST DB_USER DB_PASSWORD DB_NAME DB_SOCKET; do
+          val=$(tr '\0' '\n' < "/proc/$pid/environ" 2>/dev/null | grep "^$key=" | cut -d= -f2-)
+          if [ -n "$val" ]; then
+            printf '%s (live process): %s\n' "$key" "$(printf '%s' "$val" | sha256sum | cut -d' ' -f1)"
+          else
+            echo "$key (live process): NOT SET"
+          fi
+        done
+        break
+        ;;
+    esac
+  done
+  echo "=== END DIAGNOSTIC ==="
 fi
 
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own

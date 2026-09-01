@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { updateExhibition, deleteExhibition } from "@/lib/server/exhibitions-repo";
+import { slugify } from "@/lib/slugify";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const admin = await requireAdmin(request);
@@ -10,6 +11,10 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   const body = await request.json();
   if (!body.title || !body.slug || !body.startDate || !body.endDate) {
     return NextResponse.json({ error: "title, slug, startDate, and endDate are required" }, { status: 400 });
+  }
+  body.slug = slugify(body.slug);
+  if (!body.slug) {
+    return NextResponse.json({ error: "Slug must contain at least one letter or number" }, { status: 400 });
   }
 
   try {

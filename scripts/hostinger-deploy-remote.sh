@@ -35,14 +35,24 @@ fi
 # own, so Next.js falls back to default DB creds and every prerender of a
 # DB-backed page fails with ER_ACCESS_DENIED_ERROR.
 #
-# A reactive "copy it after this push, retry for 2 minutes" approach turned
-# out unfixable in principle, not just buggy: hbuilds' webhook build starts
-# within a second or two of the SAME push that triggers this script, and
-# Next.js reads .env.local exactly once, at the very start of `next build`
-# -- well before this GitHub-Actions-triggered script can even connect over
-# SSH, let alone copy anything. No reactive copy can ever win that race.
-# Instead, keep the file continuously present via a standing background
-# job, so it's already correct before the next push even happens.
+# IMPORTANT CAVEAT (confirmed by diagnostics, not just suspected): hbuilds
+# rebuilds source/repository from scratch on every build -- it has no
+# persistent .git, so it must be a fresh clone/extract each time, and this
+# recreation can happen at literally any moment, wiping any .env.local we
+# placed there. A background refresher loop (below) narrows this race but
+# CANNOT close it completely: however tight the interval, there is always
+# a window between hbuilds wiping the directory and our next cycle where a
+# build reading .env.local at that exact instant will fail. This has been
+# observed directly: builds have failed with .env.local completely absent
+# even with the refresher running continuously.
+#
+# The only fully robust fix is configuring DB_HOST/DB_USER/DB_PASSWORD/
+# DB_NAME/DB_SOCKET as persistent environment variables on hbuilds' Node.js
+# app directly in Hostinger's hPanel (Websites -> theuniqueexpo.com -> Node.js
+# app settings), which survive any checkout wipe since they're not a file in
+# source/repository at all. That's a manual one-time step outside SSH/git
+# access. Until it's done, this refresher is a (tightened, but incomplete)
+# mitigation, not a guarantee.
 #
 # `crontab` isn't available on this shared-hosting shell (command not
 # found), so use pm2 to keep the refresher running instead -- pm2 is
@@ -72,49 +82,15 @@ while true; do
     cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
     printf '\nDB_SOCKET=/var/lib/mysql/mysql.sock\n' >> "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
   fi
-  sleep 60
+  sleep 2
 done
 REFRESHEOF
   chmod +x "$HOME/.hbuilds-env-refresh.sh"
 
   pm2 restart hbuilds-env-refresh || pm2 start "$HOME/.hbuilds-env-refresh.sh" --name hbuilds-env-refresh --interpreter bash
   pm2 save
-  echo "Seeded hbuilds' .env.local now (best-effort) and (re)started the hbuilds-env-refresh pm2 process, which refreshes it every 60s so it's already in place before hbuilds' next webhook-triggered build even starts."
+  echo "Seeded hbuilds' .env.local now (best-effort) and (re)started the hbuilds-env-refresh pm2 process, which refreshes it every 2s so it's usually in place before hbuilds' next webhook-triggered build starts (see the caveat above -- this narrows the race, it doesn't close it)."
 fi
-
-echo "=== DIAGNOSTIC: hbuilds current state ==="
-pm2 describe hbuilds-env-refresh 2>/dev/null | grep -E "status|restarts|uptime" || echo "(hbuilds-env-refresh not found in pm2)"
-ls -la "$HBUILDS/source/repository/.env.local" 2>/dev/null || echo "(no .env.local in hbuilds' checkout)"
-grep -n '^DB_SOCKET=' "$HBUILDS/source/repository/.env.local" 2>/dev/null \
-  && echo "(DB_SOCKET is on its own line -- good)" \
-  || echo "(DB_SOCKET NOT found on its own line -- likely merged into the previous line by a missing trailing newline)"
-readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
-(cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='current commit: %H %cI %s') || echo "(hbuilds/current is not a git checkout)"
-if [ -d "$HBUILDS/source/repository/.git" ]; then
-  echo "(source/repository IS a persistent git checkout -- .git present)"
-  (cd "$HBUILDS/source/repository" && git log -1 --format='source/repository commit: %H %cI %s')
-  ls -la "$HBUILDS/source/repository/.git/hooks/" 2>/dev/null | grep -v sample
-else
-  echo "(source/repository has NO .git -- hbuilds must recreate it fresh, not git-hookable)"
-fi
-# Give hbuilds' own webhook-triggered build (which started around the same
-# time as this script, independently) a chance to actually finish before
-# reading its log -- a fixed sleep kept undershooting, so poll instead:
-# wait until the log stops changing (build finished) or we give up.
-for i in $(seq 1 24); do
-  LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
-  if [ -n "${LATEST_LOG:-}" ] && grep -qE 'Route \(app\)|ERROR:|Error occurred prerendering' "$LATEST_LOG" 2>/dev/null; then
-    break
-  fi
-  sleep 5
-done
-LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
-echo "latest hbuilds deploy log: ${LATEST_LOG:-none found}"
-if [ -n "${LATEST_LOG:-}" ]; then
-  echo "--- tail of $LATEST_LOG ---"
-  tail -80 "$LATEST_LOG" || true
-fi
-echo "=== END DIAGNOSTIC ==="
 
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own
 # .env.local — they never pass through GitHub Actions or its secrets.

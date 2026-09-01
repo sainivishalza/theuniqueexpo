@@ -107,27 +107,24 @@ REFRESHEOF
   fi
   echo "=== end log tail ==="
 
-  echo "=== DIAGNOSTIC: does the LIVE serving process actually have DB env vars? ==="
+  echo "=== DIAGNOSTIC: list every process, find the real hbuilds server, check its env ==="
   echo "(keys only, values redacted -- this is checking presence, not leaking secrets)"
-  FOUND_ANY=0
-  for pid in $(pgrep -f "hbuilds" 2>/dev/null); do
-    if [ -r "/proc/$pid/environ" ]; then
-      FOUND_ANY=1
-      echo "-- pid $pid --"
-      echo "cmd: $(tr '\0' ' ' < /proc/$pid/cmdline 2>/dev/null)"
-      tr '\0' '\n' < /proc/$pid/environ 2>/dev/null | grep -E '^DB_' | sed -E 's/=.*/=<present>/' || echo "(no DB_* vars in this process' environment)"
-    fi
+  for pid in $(ls /proc 2>/dev/null | grep -E '^[0-9]+$'); do
+    CMDLINE=$(tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null || true)
+    [ -z "$CMDLINE" ] && continue
+    CWD=$(readlink -f "/proc/$pid/cwd" 2>/dev/null || true)
+    case "$CMDLINE" in
+      *hbuilds-env-refresh*) continue ;;  # skip our own refresher, already known
+    esac
+    case "$CMDLINE$CWD" in
+      *hbuilds*|*Passenger*|*passenger*)
+        echo "-- pid $pid --"
+        echo "cwd: ${CWD:-?}"
+        echo "cmd: $CMDLINE"
+        tr '\0' '\n' < "/proc/$pid/environ" 2>/dev/null | grep -E '^DB_' | sed -E 's/=.*/=<present>/' || echo "(no DB_* vars in this process' environment, or /proc/$pid/environ unreadable)"
+        ;;
+    esac
   done
-  if [ "$FOUND_ANY" = "0" ]; then
-    echo "(no hbuilds-related process found via pgrep -- trying a broader node process search)"
-    for pid in $(pgrep -f "node" 2>/dev/null); do
-      if [ -r "/proc/$pid/cwd" ] && readlink -f "/proc/$pid/cwd" 2>/dev/null | grep -q "hbuilds"; then
-        echo "-- pid $pid (cwd matches hbuilds) --"
-        echo "cmd: $(tr '\0' ' ' < /proc/$pid/cmdline 2>/dev/null)"
-        tr '\0' '\n' < /proc/$pid/environ 2>/dev/null | grep -E '^DB_' | sed -E 's/=.*/=<present>/' || echo "(no DB_* vars in this process' environment)"
-      fi
-    done
-  fi
   echo "=== END DIAGNOSTIC ==="
 fi
 

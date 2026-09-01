@@ -47,7 +47,9 @@ fi
 # `crontab` isn't available on this shared-hosting shell (command not
 # found), so use pm2 to keep the refresher running instead -- pm2 is
 # already proven to persist here across deploys (it's what runs the main
-# app itself, restarted/saved a few lines below).
+# app itself, restarted/saved a few lines below). `pm2 restart` is a
+# no-op-safe way to pick up a changed script body on redeploys, since the
+# process is identified by name rather than by file path.
 HBUILDS=~/domains/theuniqueexpo.com/hbuilds
 if [ -f "$APP_DIR/.env.local" ]; then
   # hbuilds can be mid-rebuild at any instant, so source/repository can

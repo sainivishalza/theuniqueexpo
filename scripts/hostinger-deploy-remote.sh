@@ -119,12 +119,21 @@ REFRESHEOF
   # processes directly.
   # Diagnostics showed the actual serving process's cwd is
   # hbuilds/current/nodejs (a subdirectory of the version root), not the
-  # version root itself -- Passenger's watched app root is that nodejs
-  # dir, so restart.txt has to live under tmp/ inside it, not at the top.
-  mkdir -p "$HBUILDS/current/nodejs/tmp" "$HBUILDS/current/tmp" 2>/dev/null || true
-  touch "$HBUILDS/current/nodejs/tmp/restart.txt" "$HBUILDS/current/tmp/restart.txt" 2>/dev/null \
-    && echo "Requested a graceful Passenger restart for hbuilds (touched tmp/restart.txt in both the nodejs dir and the version root, to cover either being the real app root)." \
-    || echo "(could not touch hbuilds' tmp/restart.txt -- current symlink or tmp dir may not exist yet)"
+  # version root itself. touch-ing tmp/restart.txt at both candidate app
+  # roots didn't actually cause a restart (production kept serving stale
+  # responses across several redeploys), so Passenger here doesn't seem to
+  # be watching that convention. Use its own CLI restart command instead --
+  # the same kind of sanctioned "restart this managed app" operation as the
+  # pm2 restart already used above, just for the Passenger-managed side.
+  if command -v passenger-config >/dev/null 2>&1; then
+    passenger-config restart-app "$HBUILDS/current/nodejs" 2>&1 || true
+    passenger-config restart-app "$HBUILDS/current" 2>&1 || true
+    echo "Requested a Passenger app restart via passenger-config for both candidate app roots."
+  else
+    echo "(passenger-config not found on PATH -- falling back to touching tmp/restart.txt, which may not be honored here)"
+    mkdir -p "$HBUILDS/current/nodejs/tmp" "$HBUILDS/current/tmp" 2>/dev/null || true
+    touch "$HBUILDS/current/nodejs/tmp/restart.txt" "$HBUILDS/current/tmp/restart.txt" 2>/dev/null || true
+  fi
 fi
 
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own

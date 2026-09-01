@@ -138,7 +138,7 @@ REFRESHEOF
   echo "=== DIAGNOSTIC: do hPanel's runtime env values match our .env.local? (hashes only) ==="
   ( set -a; source "$APP_DIR/.env.local"; set +a
     for key in DB_HOST DB_USER DB_PASSWORD DB_NAME DB_SOCKET; do
-      val="$(eval echo \"\$$key\")"
+      val="${!key:-}"
       printf '%s (from .env.local): %s\n' "$key" "$(printf '%s' "$val" | sha256sum | cut -d' ' -f1)"
     done )
   for pid in $(ls /proc 2>/dev/null | grep -E '^[0-9]+$'); do

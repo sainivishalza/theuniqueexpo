@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import Link from "next/link";
+import { slugify } from "@/lib/slugify";
 
 interface Exhibition {
   id: string;
@@ -38,6 +39,9 @@ export default function AdminExhibitionsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
+  // Once the admin hand-edits the slug, stop overwriting it as they keep
+  // typing the title -- only auto-derive it while it's still untouched.
+  const [slugTouched, setSlugTouched] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -74,6 +78,7 @@ export default function AdminExhibitionsPage() {
     setFormError("");
     setEditingId(expo.id);
     setShowNew(false);
+    setSlugTouched(true);
 
     // The list response points the image at the cacheable /image endpoint
     // instead of embedding the raw base64 (see listExhibitions) -- fetch
@@ -95,6 +100,7 @@ export default function AdminExhibitionsPage() {
     setFormError("");
     setShowNew(true);
     setEditingId(null);
+    setSlugTouched(false);
   }
 
   function closeForm() {
@@ -205,8 +211,20 @@ export default function AdminExhibitionsPage() {
             <h2 className="text-xl font-bold text-gray-900 mb-4">{editingId ? "Edit Exhibition" : "New Exhibition"}</h2>
             {formError && <div className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{formError}</div>}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Field label="Title" value={form.title} onChange={(v) => setForm({ ...form, title: v })} />
-              <Field label="Slug" value={form.slug} onChange={(v) => setForm({ ...form, slug: v })} placeholder="my-exhibition-2026" />
+              <Field
+                label="Title"
+                value={form.title}
+                onChange={(v) => setForm((f) => ({ ...f, title: v, slug: slugTouched ? f.slug : slugify(v) }))}
+              />
+              <Field
+                label="Slug"
+                value={form.slug}
+                onChange={(v) => {
+                  setSlugTouched(true);
+                  setForm((f) => ({ ...f, slug: v }));
+                }}
+                placeholder="my-exhibition-2026"
+              />
               <Field label="Start Date" type="date" value={form.startDate} onChange={(v) => setForm({ ...form, startDate: v })} />
               <Field label="End Date" type="date" value={form.endDate} onChange={(v) => setForm({ ...form, endDate: v })} />
               <Field label="Venue" value={form.venue} onChange={(v) => setForm({ ...form, venue: v })} />

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { listExhibitions, createExhibition } from "@/lib/server/exhibitions-repo";
+import { slugify } from "@/lib/slugify";
 
 export async function GET(request: Request) {
   const admin = await requireAdmin(request);
@@ -17,6 +18,13 @@ export async function POST(request: Request) {
   const body = await request.json();
   if (!body.title || !body.slug || !body.startDate || !body.endDate) {
     return NextResponse.json({ error: "title, slug, startDate, and endDate are required" }, { status: 400 });
+  }
+  // Never trust the client's slug as URL-safe -- it becomes part of every
+  // exhibition URL (detail page, register, floor plan, hotels...), so
+  // normalize it here regardless of what the admin form already did.
+  body.slug = slugify(body.slug);
+  if (!body.slug) {
+    return NextResponse.json({ error: "Slug must contain at least one letter or number" }, { status: 400 });
   }
 
   try {

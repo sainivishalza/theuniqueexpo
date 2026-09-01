@@ -12,6 +12,20 @@ DEPLOY_REF="$2"
 
 cd "$APP_DIR"
 
+# A non-interactive SSH command doesn't source .bashrc/.profile, so
+# nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.
+# Needed early: the hbuilds refresher below is managed via pm2.
+export NVM_DIR="$HOME/.nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  # shellcheck disable=SC1091
+  . "$NVM_DIR/nvm.sh"
+fi
+
+if ! command -v npm >/dev/null 2>&1; then
+  echo "npm still not found after loading nvm. Is Node installed another way (not nvm)?" >&2
+  exit 1
+fi
+
 # Hostinger's real production serving mechanism is Passenger/hbuilds, which
 # builds from `main` on its own (webhook-driven) independently of this
 # script's own SSH-driven build+PM2 restart below. Diagnostics found that
@@ -27,34 +41,39 @@ cd "$APP_DIR"
 # Next.js reads .env.local exactly once, at the very start of `next build`
 # -- well before this GitHub-Actions-triggered script can even connect over
 # SSH, let alone copy anything. No reactive copy can ever win that race.
-# Instead, keep the file continuously present via a standing cron job, so
-# it's already correct before the next push even happens.
+# Instead, keep the file continuously present via a standing background
+# job, so it's already correct before the next push even happens.
+#
+# `crontab` isn't available on this shared-hosting shell (command not
+# found), so use pm2 to keep the refresher running instead -- pm2 is
+# already proven to persist here across deploys (it's what runs the main
+# app itself, restarted/saved a few lines below).
 HBUILDS=~/domains/theuniqueexpo.com/hbuilds
 if [ -f "$APP_DIR/.env.local" ]; then
   # hbuilds can be mid-rebuild at any instant, so source/repository can
   # vanish between this check and the cp itself -- don't let that transient
-  # race (under set -e) abort the whole deploy; the cron job below is what
-  # actually matters long-term, and it re-checks the directory on every run.
+  # race (under set -e) abort the whole deploy; the refresher loop below is
+  # what actually matters long-term, and it re-checks the directory itself.
   if [ -d "$HBUILDS/source/repository" ]; then
     cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
     echo "DB_SOCKET=/var/lib/mysql/mysql.sock" >> "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
   fi
-  CRON_CMD="test -d '$HBUILDS/source/repository' && cp '$APP_DIR/.env.local' '$HBUILDS/source/repository/.env.local' && echo 'DB_SOCKET=/var/lib/mysql/mysql.sock' >> '$HBUILDS/source/repository/.env.local'"
-  ( crontab -l 2>/dev/null | grep -vF "$HBUILDS/source/repository/.env.local"; echo "* * * * * $CRON_CMD" ) | crontab -
-  echo "Seeded hbuilds' .env.local now (best-effort) and installed a cron job to keep refreshing it every minute, so it's already in place before hbuilds' next webhook-triggered build even starts."
-fi
 
-# A non-interactive SSH command doesn't source .bashrc/.profile, so
-# nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.
-export NVM_DIR="$HOME/.nvm"
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-  # shellcheck disable=SC1091
-  . "$NVM_DIR/nvm.sh"
-fi
+  cat > "$HOME/.hbuilds-env-refresh.sh" <<REFRESHEOF
+#!/bin/bash
+while true; do
+  if [ -d "$HBUILDS/source/repository" ]; then
+    cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
+    echo "DB_SOCKET=/var/lib/mysql/mysql.sock" >> "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
+  fi
+  sleep 60
+done
+REFRESHEOF
+  chmod +x "$HOME/.hbuilds-env-refresh.sh"
 
-if ! command -v npm >/dev/null 2>&1; then
-  echo "npm still not found after loading nvm. Is Node installed another way (not nvm)?" >&2
-  exit 1
+  pm2 restart hbuilds-env-refresh || pm2 start "$HOME/.hbuilds-env-refresh.sh" --name hbuilds-env-refresh --interpreter bash
+  pm2 save
+  echo "Seeded hbuilds' .env.local now (best-effort) and (re)started the hbuilds-env-refresh pm2 process, which refreshes it every 60s so it's already in place before hbuilds' next webhook-triggered build even starts."
 fi
 
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own

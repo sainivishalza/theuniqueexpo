@@ -117,9 +117,13 @@ REFRESHEOF
   # its own documented mechanism (touching tmp/restart.txt in the app root)
   # so those workers always start fresh, rather than sending signals to
   # processes directly.
-  mkdir -p "$HBUILDS/current/tmp" 2>/dev/null || true
-  touch "$HBUILDS/current/tmp/restart.txt" 2>/dev/null \
-    && echo "Requested a graceful Passenger restart for hbuilds (touched tmp/restart.txt)." \
+  # Diagnostics showed the actual serving process's cwd is
+  # hbuilds/current/nodejs (a subdirectory of the version root), not the
+  # version root itself -- Passenger's watched app root is that nodejs
+  # dir, so restart.txt has to live under tmp/ inside it, not at the top.
+  mkdir -p "$HBUILDS/current/nodejs/tmp" "$HBUILDS/current/tmp" 2>/dev/null || true
+  touch "$HBUILDS/current/nodejs/tmp/restart.txt" "$HBUILDS/current/tmp/restart.txt" 2>/dev/null \
+    && echo "Requested a graceful Passenger restart for hbuilds (touched tmp/restart.txt in both the nodejs dir and the version root, to cover either being the real app root)." \
     || echo "(could not touch hbuilds' tmp/restart.txt -- current symlink or tmp dir may not exist yet)"
 fi
 

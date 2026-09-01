@@ -70,20 +70,24 @@ if [ -f "$APP_DIR/.env.local" ]; then
   # race (under set -e) abort the whole deploy; the refresher loop below is
   # what actually matters long-term, and it re-checks the directory itself.
   if [ -d "$HBUILDS/source/repository" ]; then
-    cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
-    # .env.local's last line may not end in a newline, in which case a plain
-    # `>>` would concatenate straight onto it (e.g. DB_PASSWORD=xyzDB_SOCKET=...),
-    # corrupting both values into one unparseable line and silently defeating
-    # DB_SOCKET entirely. Force a newline first so this is always a new line.
-    printf '\nDB_SOCKET=/var/lib/mysql/mysql.sock\n' >> "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
+    # Write to a temp file and mv it into place atomically -- a separate
+    # cp-then-append left a window where hbuilds could read a valid file
+    # that was missing DB_SOCKET (a build failed exactly this way: real
+    # credentials, but a TCP 'localhost' attempt instead of the socket).
+    # mv on the same filesystem is atomic, so readers only ever see the
+    # old complete file or the new complete file, never a partial one.
+    { cat "$APP_DIR/.env.local"; printf '\nDB_SOCKET=/var/lib/mysql/mysql.sock\n'; } \
+      > "$HBUILDS/source/repository/.env.local.tmp" 2>/dev/null \
+      && mv "$HBUILDS/source/repository/.env.local.tmp" "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
   fi
 
   cat > "$HOME/.hbuilds-env-refresh.sh" <<REFRESHEOF
 #!/bin/bash
 while true; do
   if [ -d "$HBUILDS/source/repository" ]; then
-    cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
-    printf '\nDB_SOCKET=/var/lib/mysql/mysql.sock\n' >> "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
+    { cat "$APP_DIR/.env.local"; printf '\nDB_SOCKET=/var/lib/mysql/mysql.sock\n'; } \
+      > "$HBUILDS/source/repository/.env.local.tmp" 2>/dev/null \
+      && mv "$HBUILDS/source/repository/.env.local.tmp" "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
   fi
   sleep 2
 done

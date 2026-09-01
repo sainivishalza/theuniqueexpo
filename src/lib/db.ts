@@ -1,10 +1,18 @@
 import mysql from "mysql2/promise";
+import fs from "fs";
+
+// DB_SOCKET connects over a Unix socket instead of TCP -- needed in build
+// sandboxes (like Hostinger's hbuilds) that are network-isolated from the
+// DB server but still share its filesystem. That env var is set globally
+// (build and runtime share the same config), but the *runtime* serving
+// process runs in a different, non-isolated sandbox where that socket
+// file doesn't exist -- so check it actually exists before trusting it,
+// and fall back to a normal TCP connection otherwise.
+const socketExists =
+  !!process.env.DB_SOCKET && fs.existsSync(process.env.DB_SOCKET);
 
 const pool = mysql.createPool({
-  // DB_SOCKET connects over a Unix socket instead of TCP -- needed in build
-  // sandboxes (like Hostinger's hbuilds) that are network-isolated from the
-  // DB server but still share its filesystem.
-  ...(process.env.DB_SOCKET
+  ...(socketExists
     ? { socketPath: process.env.DB_SOCKET }
     : { host: process.env.DB_HOST || "localhost" }),
   user: process.env.DB_USER || "root",

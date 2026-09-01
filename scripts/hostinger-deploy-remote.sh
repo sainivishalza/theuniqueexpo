@@ -58,7 +58,11 @@ if [ -f "$APP_DIR/.env.local" ]; then
   # what actually matters long-term, and it re-checks the directory itself.
   if [ -d "$HBUILDS/source/repository" ]; then
     cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
-    echo "DB_SOCKET=/var/lib/mysql/mysql.sock" >> "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
+    # .env.local's last line may not end in a newline, in which case a plain
+    # `>>` would concatenate straight onto it (e.g. DB_PASSWORD=xyzDB_SOCKET=...),
+    # corrupting both values into one unparseable line and silently defeating
+    # DB_SOCKET entirely. Force a newline first so this is always a new line.
+    printf '\nDB_SOCKET=/var/lib/mysql/mysql.sock\n' >> "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
   fi
 
   cat > "$HOME/.hbuilds-env-refresh.sh" <<REFRESHEOF
@@ -66,7 +70,7 @@ if [ -f "$APP_DIR/.env.local" ]; then
 while true; do
   if [ -d "$HBUILDS/source/repository" ]; then
     cp "$APP_DIR/.env.local" "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
-    echo "DB_SOCKET=/var/lib/mysql/mysql.sock" >> "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
+    printf '\nDB_SOCKET=/var/lib/mysql/mysql.sock\n' >> "$HBUILDS/source/repository/.env.local" 2>/dev/null || true
   fi
   sleep 60
 done
@@ -81,6 +85,9 @@ fi
 echo "=== DIAGNOSTIC: hbuilds current state ==="
 pm2 describe hbuilds-env-refresh 2>/dev/null | grep -E "status|restarts|uptime" || echo "(hbuilds-env-refresh not found in pm2)"
 ls -la "$HBUILDS/source/repository/.env.local" 2>/dev/null || echo "(no .env.local in hbuilds' checkout)"
+grep -n '^DB_SOCKET=' "$HBUILDS/source/repository/.env.local" 2>/dev/null \
+  && echo "(DB_SOCKET is on its own line -- good)" \
+  || echo "(DB_SOCKET NOT found on its own line -- likely merged into the previous line by a missing trailing newline)"
 readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
 (cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='current commit: %H %cI %s') || echo "(hbuilds/current is not a git checkout)"
 LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)

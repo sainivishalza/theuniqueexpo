@@ -56,6 +56,69 @@ function readFileAsDataUrl(file: File): Promise<string> {
   });
 }
 
+// A raw phone-camera photo (often 3-8MB) turns into an even bigger base64
+// string once embedded in the submission JSON, and every registration
+// requires up to 5 of these -- on a slow mobile connection that payload is
+// what makes the submit button look stuck for minutes. Downscale and
+// re-encode as JPEG before it ever goes in the form, since the receiving
+// end only needs a legible document, not full camera resolution.
+function compressImage(file: File, maxDimension = 1600, quality = 0.72): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const img = new window.Image();
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      let { width, height } = img;
+      if (width > maxDimension || height > maxDimension) {
+        const scale = maxDimension / Math.max(width, height);
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        reject(new Error("Canvas not supported"));
+        return;
+      }
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Couldn't load image"));
+    };
+    img.src = objectUrl;
+  });
+}
+
+// Documents accept images or PDFs -- only images can be recompressed via
+// canvas, so PDFs still go through as-is.
+async function readDocumentAsDataUrl(file: File): Promise<string> {
+  if (file.type.startsWith("image/")) {
+    try {
+      return await compressImage(file);
+    } catch {
+      return readFileAsDataUrl(file);
+    }
+  }
+  return readFileAsDataUrl(file);
+}
+
+// Without this, a genuinely dead connection leaves the submit button
+// spinning forever with no way out but reloading the page. Give up after a
+// minute so the visitor gets an error (and can retry) instead of a stuck UI.
+async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs = 60000): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const { user, loading: authLoading, setUser } = useAuth();
@@ -124,7 +187,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       return;
     }
     try {
-      const dataUrl = await readFileAsDataUrl(file);
+      const dataUrl = await readDocumentAsDataUrl(file);
       setForm((f) => ({ ...f, [key]: dataUrl }));
     } catch {
       setFileErrors((prev) => ({ ...prev, [key]: "Couldn't read that file. Please try again." }));
@@ -139,7 +202,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       return;
     }
     try {
-      const dataUrl = await readFileAsDataUrl(file);
+      const dataUrl = await readDocumentAsDataUrl(file);
       setCustomAnswers((a) => ({ ...a, [fieldId]: dataUrl }));
     } catch {
       setCustomFileErrors((prev) => ({ ...prev, [fieldId]: "Couldn't read that file. Please try again." }));
@@ -167,7 +230,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
     }
     setSubmitting(true);
     try {
-      const res = await fetch("/api/expo-registrations", {
+      const res = await fetchWithTimeout("/api/expo-registrations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -184,7 +247,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       if (data.user) setUser(data.user);
       setSubmitted(true);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.name === "AbortError" ? "This is taking too long. Please check your connection and try again." : err.message);
     } finally {
       setSubmitting(false);
     }
@@ -205,7 +268,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
     setAccountExists(false);
     setSubmitting(true);
     try {
-      const res = await fetch("/api/expo-registrations", {
+      const res = await fetchWithTimeout("/api/expo-registrations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ exhibitionSlug: slug, ...form, ...(!user ? { password } : {}) }),
@@ -218,7 +281,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       if (data.user) setUser(data.user);
       setSubmitted(true);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.name === "AbortError" ? "This is taking too long. Please check your connection and try again." : err.message);
     } finally {
       setSubmitting(false);
     }

@@ -92,8 +92,15 @@ readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)
 (cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='current commit: %H %cI %s') || echo "(hbuilds/current is not a git checkout)"
 # Give hbuilds' own webhook-triggered build (which started around the same
 # time as this script, independently) a chance to actually finish before
-# reading its log -- otherwise this just captures an in-progress snapshot.
-sleep 25
+# reading its log -- a fixed sleep kept undershooting, so poll instead:
+# wait until the log stops changing (build finished) or we give up.
+for i in $(seq 1 24); do
+  LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
+  if [ -n "${LATEST_LOG:-}" ] && grep -qE 'Route \(app\)|ERROR:|Error occurred prerendering' "$LATEST_LOG" 2>/dev/null; then
+    break
+  fi
+  sleep 5
+done
 LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
 echo "latest hbuilds deploy log: ${LATEST_LOG:-none found}"
 if [ -n "${LATEST_LOG:-}" ]; then

@@ -8,7 +8,7 @@ interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
   venue: string; city: string; country: string; industry: string; description: string;
   highlights: string[]; exhibitors: number; visitors: string; organizer: string; website: string;
-  color: string; image: string; registrationEnabled: boolean;
+  color: string; image: string; galleryImages: string[]; registrationEnabled: boolean;
 }
 
 const exhibitorLogos = [
@@ -27,6 +27,7 @@ export default function ExhibitionDetailPage({
 }) {
   const { slug } = use(params);
   const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetch(`/api/exhibitions/${slug}`)
@@ -151,6 +152,25 @@ export default function ExhibitionDetailPage({
                 </div>
               </div>
 
+              {/* Photo gallery */}
+              {expo.galleryImages && expo.galleryImages.length > 0 && (
+                <div className="rounded-2xl bg-white p-8 shadow-sm">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-5">Photo Gallery</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {expo.galleryImages.map((img, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => setLightboxIndex(i)}
+                        className="relative aspect-video rounded-xl overflow-hidden bg-gray-100 group"
+                      >
+                        <img src={img} alt={`${expo.title} photo ${i + 1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Exhibitor preview */}
               <div className="rounded-2xl bg-white p-8 shadow-sm">
                 <h2 className="text-2xl font-bold text-gray-900 mb-5">Featured Exhibitors</h2>
@@ -261,6 +281,55 @@ export default function ExhibitionDetailPage({
           </div>
         </div>
       </section>
+
+      {/* Gallery lightbox */}
+      {lightboxIndex !== null && expo.galleryImages[lightboxIndex] && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          onClick={() => setLightboxIndex(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxIndex(null)}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
+            aria-label="Close"
+          >
+            ×
+          </button>
+          {expo.galleryImages.length > 1 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex((i) => (i === null ? null : (i - 1 + expo.galleryImages.length) % expo.galleryImages.length));
+              }}
+              className="absolute left-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
+              aria-label="Previous photo"
+            >
+              ‹
+            </button>
+          )}
+          <img
+            src={expo.galleryImages[lightboxIndex]}
+            alt={`${expo.title} photo ${lightboxIndex + 1}`}
+            className="max-w-full max-h-[85vh] w-auto h-auto rounded-xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          {expo.galleryImages.length > 1 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex((i) => (i === null ? null : (i + 1) % expo.galleryImages.length));
+              }}
+              className="absolute right-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
+              aria-label="Next photo"
+            >
+              ›
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

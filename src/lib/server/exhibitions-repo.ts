@@ -17,6 +17,7 @@ export interface ExhibitionInput {
   website: string;
   color: string;
   image?: string;
+  galleryImages?: string[];
 }
 
 function toDateStr(d: any) {
@@ -76,6 +77,7 @@ export function mapExhibitionRow(row: any) {
     website: row.website,
     color: row.color,
     image: row.image,
+    galleryImages: safeParseArray(row.gallery_images),
     registrationEnabled: row.registration_enabled === undefined ? true : !!row.registration_enabled,
     registrationFormSchema: safeParseJson(row.registration_form_schema),
   };
@@ -118,12 +120,13 @@ export async function getExhibitionImageValue(slugOrId: string): Promise<string 
 
 export async function createExhibition(input: ExhibitionInput) {
   const [result] = await pool.query(
-    `INSERT INTO exhibitions (slug, title, start_date, end_date, venue, city, country, industry, description, highlights, exhibitors, visitors, organizer, website, color, image)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO exhibitions (slug, title, start_date, end_date, venue, city, country, industry, description, highlights, exhibitors, visitors, organizer, website, color, image, gallery_images)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.slug, input.title, input.startDate, input.endDate, input.venue, input.city, input.country,
       input.industry, input.description, JSON.stringify(input.highlights || []), input.exhibitors,
       input.visitors, input.organizer, input.website, input.color, input.image || "",
+      JSON.stringify(input.galleryImages || []),
     ]
   );
   return (result as any).insertId;
@@ -131,12 +134,13 @@ export async function createExhibition(input: ExhibitionInput) {
 
 export async function updateExhibition(id: number, input: ExhibitionInput) {
   await pool.query(
-    `UPDATE exhibitions SET slug=?, title=?, start_date=?, end_date=?, venue=?, city=?, country=?, industry=?, description=?, highlights=?, exhibitors=?, visitors=?, organizer=?, website=?, color=?, image=?
+    `UPDATE exhibitions SET slug=?, title=?, start_date=?, end_date=?, venue=?, city=?, country=?, industry=?, description=?, highlights=?, exhibitors=?, visitors=?, organizer=?, website=?, color=?, image=?, gallery_images=?
      WHERE id=?`,
     [
       input.slug, input.title, input.startDate, input.endDate, input.venue, input.city, input.country,
       input.industry, input.description, JSON.stringify(input.highlights || []), input.exhibitors,
-      input.visitors, input.organizer, input.website, input.color, input.image || "", id,
+      input.visitors, input.organizer, input.website, input.color, input.image || "",
+      JSON.stringify(input.galleryImages || []), id,
     ]
   );
 }

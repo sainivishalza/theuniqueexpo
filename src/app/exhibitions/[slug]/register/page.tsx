@@ -7,6 +7,7 @@ import {
   type RegistrationType, type Gender, type ExpoRegistrationInput,
 } from "@/lib/expo-registrations";
 import { validateCustomAnswers, type CustomFormField, type CustomFormSchema } from "@/lib/custom-registration-form";
+import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 
 interface Exhibition {
   id: string; slug: string; title: string; dates: string;
@@ -46,65 +47,6 @@ const DOCUMENT_FIELDS: { key: keyof typeof EMPTY_FORM; label: string; required: 
   { key: "docBusinessLicense", label: "Business License", required: true },
   { key: "docOrderList", label: "Order List (if any)", required: false },
 ];
-
-function readFileAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-// A raw phone-camera photo (often 3-8MB) turns into an even bigger base64
-// string once embedded in the submission JSON, and every registration
-// requires up to 5 of these -- on a slow mobile connection that payload is
-// what makes the submit button look stuck for minutes. Downscale and
-// re-encode as JPEG before it ever goes in the form, since the receiving
-// end only needs a legible document, not full camera resolution.
-function compressImage(file: File, maxDimension = 1600, quality = 0.72): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const objectUrl = URL.createObjectURL(file);
-    const img = new window.Image();
-    img.onload = () => {
-      URL.revokeObjectURL(objectUrl);
-      let { width, height } = img;
-      if (width > maxDimension || height > maxDimension) {
-        const scale = maxDimension / Math.max(width, height);
-        width = Math.round(width * scale);
-        height = Math.round(height * scale);
-      }
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        reject(new Error("Canvas not supported"));
-        return;
-      }
-      ctx.drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL("image/jpeg", quality));
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      reject(new Error("Couldn't load image"));
-    };
-    img.src = objectUrl;
-  });
-}
-
-// Documents accept images or PDFs -- only images can be recompressed via
-// canvas, so PDFs still go through as-is.
-async function readDocumentAsDataUrl(file: File): Promise<string> {
-  if (file.type.startsWith("image/")) {
-    try {
-      return await compressImage(file);
-    } catch {
-      return readFileAsDataUrl(file);
-    }
-  }
-  return readFileAsDataUrl(file);
-}
 
 // Without this, a genuinely dead connection leaves the submit button
 // spinning forever with no way out but reloading the page. Give up after a

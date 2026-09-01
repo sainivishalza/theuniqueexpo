@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import pool from "@/lib/db";
-
-const JWT_SECRET = process.env.JWT_SECRET || "theuniqueexpo-secret-key-change-in-production";
+import { createUserAccount, setSessionCookie } from "@/lib/auth-server";
 
 export async function POST(request: Request) {
   try {
@@ -19,31 +16,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email already registered" }, { status: 409 });
     }
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, 10);
+    const { user, token } = await createUserAccount(name, email, password, role || "buyer", country || "");
 
-    // Insert user
-    const [result] = await pool.query(
-      "INSERT INTO users (name, email, password_hash, role, country) VALUES (?, ?, ?, ?, ?)",
-      [name, email, passwordHash, role || "buyer", country || ""]
-    );
-    const userId = (result as any).insertId;
-
-    // Generate JWT
-    const token = jwt.sign({ id: userId, email, role: role || "buyer" }, JWT_SECRET, { expiresIn: "7d" });
-
-    // Set cookie
-    const response = NextResponse.json({
-      user: { id: userId, name, email, role: role || "buyer", country: country || "" },
-    });
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60, // 7 days
-      path: "/",
-    });
-
+    const response = NextResponse.json({ user });
+    setSessionCookie(response, token);
     return response;
   } catch (error) {
     console.error("Register error:", error);

@@ -90,6 +90,13 @@ grep -n '^DB_SOCKET=' "$HBUILDS/source/repository/.env.local" 2>/dev/null \
   || echo "(DB_SOCKET NOT found on its own line -- likely merged into the previous line by a missing trailing newline)"
 readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
 (cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='current commit: %H %cI %s') || echo "(hbuilds/current is not a git checkout)"
+if [ -d "$HBUILDS/source/repository/.git" ]; then
+  echo "(source/repository IS a persistent git checkout -- .git present)"
+  (cd "$HBUILDS/source/repository" && git log -1 --format='source/repository commit: %H %cI %s')
+  ls -la "$HBUILDS/source/repository/.git/hooks/" 2>/dev/null | grep -v sample
+else
+  echo "(source/repository has NO .git -- hbuilds must recreate it fresh, not git-hookable)"
+fi
 # Give hbuilds' own webhook-triggered build (which started around the same
 # time as this script, independently) a chance to actually finish before
 # reading its log -- a fixed sleep kept undershooting, so poll instead:

@@ -78,6 +78,19 @@ REFRESHEOF
   echo "Seeded hbuilds' .env.local now (best-effort) and (re)started the hbuilds-env-refresh pm2 process, which refreshes it every 60s so it's already in place before hbuilds' next webhook-triggered build even starts."
 fi
 
+echo "=== DIAGNOSTIC: hbuilds current state ==="
+pm2 describe hbuilds-env-refresh 2>/dev/null | grep -E "status|restarts|uptime" || echo "(hbuilds-env-refresh not found in pm2)"
+ls -la "$HBUILDS/source/repository/.env.local" 2>/dev/null || echo "(no .env.local in hbuilds' checkout)"
+readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
+(cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='current commit: %H %cI %s') || echo "(hbuilds/current is not a git checkout)"
+LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
+echo "latest hbuilds deploy log: ${LATEST_LOG:-none found}"
+if [ -n "${LATEST_LOG:-}" ]; then
+  echo "--- tail of $LATEST_LOG ---"
+  tail -80 "$LATEST_LOG" || true
+fi
+echo "=== END DIAGNOSTIC ==="
+
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own
 # .env.local — they never pass through GitHub Actions or its secrets.
 set -a

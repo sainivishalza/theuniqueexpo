@@ -183,5 +183,8 @@ done
 echo "Origin-level check of the new registration routes (bypasses any CDN cache in front of the public domain):"
 echo "  /exhibitions/global-ocean-city-food-expo-2026/register -> $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/exhibitions/global-ocean-city-food-expo-2026/register)"
 echo "  /api/expo-registrations/me -> $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/expo-registrations/me)"
+echo "  /api/exhibitions -> $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/exhibitions)"
+echo "  --- direct DB check: exhibitions row count ---"
+mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -e "SELECT COUNT(*) AS exhibitions_count FROM exhibitions;" 2>&1
 
 echo "Backup saved at: $BACKUP_FILE (keep this until you've confirmed everything works)"

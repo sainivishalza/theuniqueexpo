@@ -58,12 +58,18 @@ function readFileAsDataUrl(file: File): Promise<string> {
 
 export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, setUser } = useAuth();
   const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [password, setPassword] = useState("");
+  // Only used by the custom-schema branch, which has no built-in email/name
+  // fields of its own to create an account from.
+  const [accountName, setAccountName] = useState("");
+  const [accountEmail, setAccountEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [accountExists, setAccountExists] = useState(false);
   const [fileErrors, setFileErrors] = useState<Record<string, string>>({});
   const [customAnswers, setCustomAnswers] = useState<Record<string, unknown>>({});
   const [customFileErrors, setCustomFileErrors] = useState<Record<string, string>>({});
@@ -153,6 +159,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
   async function handleCustomSubmit(e: React.FormEvent, schema: CustomFormSchema) {
     e.preventDefault();
     setError("");
+    setAccountExists(false);
     const validationError = validateCustomAnswers(schema, customAnswers);
     if (validationError) {
       setError(validationError);
@@ -163,10 +170,18 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       const res = await fetch("/api/expo-registrations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ exhibitionSlug: slug, customAnswers }),
+        body: JSON.stringify({
+          exhibitionSlug: slug,
+          customAnswers,
+          ...(!user ? { email: accountEmail, fullName: accountName, password } : {}),
+        }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Registration failed");
+      if (!res.ok) {
+        if (data.accountExists) setAccountExists(true);
+        throw new Error(data.error || "Registration failed");
+      }
+      if (data.user) setUser(data.user);
       setSubmitted(true);
     } catch (err: any) {
       setError(err.message);
@@ -187,15 +202,20 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setAccountExists(false);
     setSubmitting(true);
     try {
       const res = await fetch("/api/expo-registrations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ exhibitionSlug: slug, ...form }),
+        body: JSON.stringify({ exhibitionSlug: slug, ...form, ...(!user ? { password } : {}) }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Registration failed");
+      if (!res.ok) {
+        if (data.accountExists) setAccountExists(true);
+        throw new Error(data.error || "Registration failed");
+      }
+      if (data.user) setUser(data.user);
       setSubmitted(true);
     } catch (err: any) {
       setError(err.message);
@@ -230,21 +250,6 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       </div>
     );
   }
-  if (!user) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
-          <div className="text-5xl mb-4">🔒</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Sign in to register</h1>
-          <p className="text-gray-500 mb-6">Create a free account or sign in to register for <strong>{expo.title}</strong> as a Buyer or Visitor.</p>
-          <div className="flex gap-3 justify-center">
-            <Link href="/login" className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50">Sign In</Link>
-            <Link href="/register" className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white">Create Account</Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
   if (submitted) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -268,6 +273,18 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
           <p className="text-gray-500 mb-8">{expo.dates} • Registration is required separately for each exhibition.</p>
 
           <form onSubmit={(e) => handleCustomSubmit(e, customSchema)} className="space-y-6">
+            {!user && (
+              <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
+                <h2 className="text-xl font-bold text-gray-900">Your Account</h2>
+                <p className="text-sm text-gray-500">We'll set up your free account with these details so you can track your registration — no separate sign-up step needed.</p>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <TextField label="Full Name" required value={accountName} onChange={setAccountName} />
+                  <TextField label="Email" type="email" required value={accountEmail} onChange={setAccountEmail} />
+                  <TextField label="Password" type="password" required value={password} onChange={setPassword} placeholder="At least 6 characters" />
+                </div>
+              </div>
+            )}
+
             <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
               {customSchema.map((field) => (
                 <CustomField
@@ -282,7 +299,12 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
               ))}
             </div>
 
-            {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+            {error && (
+              <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+                {error}{" "}
+                {accountExists && <Link href="/login" className="underline font-semibold">Sign in</Link>}
+              </div>
+            )}
             <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
               {submitting ? "Submitting..." : "Submit Registration"}
             </button>
@@ -333,6 +355,9 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
               <TextField label="Passport Number" required value={form.passportNumber} onChange={(v) => setForm({ ...form, passportNumber: v })} />
               <TextField label="Phone Number" type="tel" required value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
               <TextField label="Email" type="email" required value={form.email} onChange={(v) => setForm({ ...form, email: v })} />
+              {!user && (
+                <TextField label="Password" type="password" required value={password} onChange={setPassword} placeholder="At least 6 characters — creates your free account" />
+              )}
             </div>
           </div>
 
@@ -407,7 +432,12 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
             </div>
           </div>
 
-          {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+          {error && (
+            <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}{" "}
+              {accountExists && <Link href="/login" className="underline font-semibold">Sign in</Link>}
+            </div>
+          )}
           <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
             {submitting ? "Submitting..." : "Submit Registration"}
           </button>

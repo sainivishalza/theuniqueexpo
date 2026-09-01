@@ -90,6 +90,10 @@ grep -n '^DB_SOCKET=' "$HBUILDS/source/repository/.env.local" 2>/dev/null \
   || echo "(DB_SOCKET NOT found on its own line -- likely merged into the previous line by a missing trailing newline)"
 readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
 (cd "$HBUILDS/current" 2>/dev/null && git log -1 --format='current commit: %H %cI %s') || echo "(hbuilds/current is not a git checkout)"
+# Give hbuilds' own webhook-triggered build (which started around the same
+# time as this script, independently) a chance to actually finish before
+# reading its log -- otherwise this just captures an in-progress snapshot.
+sleep 25
 LATEST_LOG=$(find "$HBUILDS/logs" -type f -name "*.log" 2>/dev/null | xargs -r ls -t 2>/dev/null | head -1 || true)
 echo "latest hbuilds deploy log: ${LATEST_LOG:-none found}"
 if [ -n "${LATEST_LOG:-}" ]; then

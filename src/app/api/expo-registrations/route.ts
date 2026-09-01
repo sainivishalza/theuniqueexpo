@@ -15,10 +15,7 @@ export async function POST(request: Request) {
     return await handlePost(request);
   } catch (err: any) {
     console.error("Expo registration error:", err);
-    return NextResponse.json(
-      { error: `Registration failed: ${err.message || "unknown error"}`, debugStack: String(err.stack || "").split("\n").slice(0, 6) },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Registration failed. Please try again." }, { status: 500 });
   }
 }
 
@@ -26,18 +23,7 @@ async function handlePost(request: Request): Promise<NextResponse> {
   let user: SessionUser | null = await getSessionUser(request);
   let newSessionToken: string | null = null;
 
-  const rawBody = await request.text();
-  let body: any;
-  try {
-    body = JSON.parse(rawBody);
-  } catch (parseErr: any) {
-    // Diagnostic-only: surface exactly what bytes arrived so we can tell
-    // whether something between the client and this route is rewriting the
-    // request body, rather than just re-throwing the opaque parse error.
-    throw new Error(
-      `JSON parse failed. rawBody length=${rawBody.length}, first 300 chars=${JSON.stringify(rawBody.slice(0, 300))}`
-    );
-  }
+  const body = await request.json();
   const { exhibitionSlug, customAnswers, password, email, fullName, ...input } = body as {
     exhibitionSlug: string;
     customAnswers?: Record<string, unknown>;

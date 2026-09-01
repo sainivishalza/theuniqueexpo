@@ -106,15 +106,6 @@ REFRESHEOF
     tail -30 "$LATEST_LOG" || true
   fi
   echo "=== end log tail ==="
-
-  echo "=== EMERGENCY DIAGNOSTIC: production is returning 500 ==="
-  readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
-  echo "--- recent logs under the domain dir ---"
-  find ~/domains/theuniqueexpo.com -maxdepth 3 -iname "*.log" -newer "$APP_DIR/package.json" 2>/dev/null | while read -r f; do
-    echo "-- $f --"
-    tail -40 "$f"
-  done
-  echo "=== END EMERGENCY DIAGNOSTIC ==="
 fi
 
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own

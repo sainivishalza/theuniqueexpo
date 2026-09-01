@@ -107,14 +107,28 @@ REFRESHEOF
   fi
   echo "=== end log tail ==="
 
-  echo "=== EMERGENCY DIAGNOSTIC: production is returning 500 ==="
-  readlink -f "$HBUILDS/current" 2>/dev/null || echo "(no hbuilds/current symlink)"
-  echo "--- recent logs under the domain dir ---"
-  find ~/domains/theuniqueexpo.com -maxdepth 3 -iname "*.log" -newer "$APP_DIR/package.json" 2>/dev/null | while read -r f; do
-    echo "-- $f --"
-    tail -40 "$f"
+  echo "=== DIAGNOSTIC: does the LIVE serving process actually have DB env vars? ==="
+  echo "(keys only, values redacted -- this is checking presence, not leaking secrets)"
+  FOUND_ANY=0
+  for pid in $(pgrep -f "hbuilds" 2>/dev/null); do
+    if [ -r "/proc/$pid/environ" ]; then
+      FOUND_ANY=1
+      echo "-- pid $pid --"
+      echo "cmd: $(tr '\0' ' ' < /proc/$pid/cmdline 2>/dev/null)"
+      tr '\0' '\n' < /proc/$pid/environ 2>/dev/null | grep -E '^DB_' | sed -E 's/=.*/=<present>/' || echo "(no DB_* vars in this process' environment)"
+    fi
   done
-  echo "=== END EMERGENCY DIAGNOSTIC ==="
+  if [ "$FOUND_ANY" = "0" ]; then
+    echo "(no hbuilds-related process found via pgrep -- trying a broader node process search)"
+    for pid in $(pgrep -f "node" 2>/dev/null); do
+      if [ -r "/proc/$pid/cwd" ] && readlink -f "/proc/$pid/cwd" 2>/dev/null | grep -q "hbuilds"; then
+        echo "-- pid $pid (cwd matches hbuilds) --"
+        echo "cmd: $(tr '\0' ' ' < /proc/$pid/cmdline 2>/dev/null)"
+        tr '\0' '\n' < /proc/$pid/environ 2>/dev/null | grep -E '^DB_' | sed -E 's/=.*/=<present>/' || echo "(no DB_* vars in this process' environment)"
+      fi
+    done
+  fi
+  echo "=== END DIAGNOSTIC ==="
 fi
 
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own

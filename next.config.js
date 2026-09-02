@@ -1,3 +1,6 @@
+const createNextIntlPlugin = require("next-intl/plugin");
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -27,7 +30,8 @@ const nextConfig = {
         // Admin pages are auth-gated, client-rendered dashboards -- they must
         // never be served from a long-lived edge/CDN cache, or a redeploy's
         // changes (styling, features) can appear "stuck" on stale content.
-        source: "/admin/:path*",
+        // Pages now sit under a /:locale prefix (see src/i18n/routing.ts).
+        source: "/:locale/admin/:path*",
         headers: [
           { key: "Cache-Control", value: "no-store, must-revalidate" },
         ],
@@ -35,13 +39,13 @@ const nextConfig = {
       {
         // Per-exhibition registration is auth-gated and per-user (prefilled
         // from the visitor's own past submissions) -- must never be cached.
-        source: "/exhibitions/:slug/register",
+        source: "/:locale/exhibitions/:slug/register",
         headers: [
           { key: "Cache-Control", value: "no-store, must-revalidate" },
         ],
       },
       {
-        source: "/tours/:slug/register",
+        source: "/:locale/tours/:slug/register",
         headers: [
           { key: "Cache-Control", value: "no-store, must-revalidate" },
         ],
@@ -62,4 +66,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);

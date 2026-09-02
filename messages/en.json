@@ -1,0 +1,166 @@
+{
+  "nav": {
+    "exhibitions": "Exhibitions",
+    "directory": "Directory",
+    "tours": "Tours",
+    "marketplace": "Marketplace",
+    "services": "Services",
+    "messages": "Messages",
+    "dashboard": "Dashboard",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register"
+  },
+  "footer": {
+    "newsletterTitle": "Stay Updated",
+    "newsletterSubtitle": "Get the latest exhibition news and exclusive early-bird offers.",
+    "emailPlaceholder": "Enter your email",
+    "subscribe": "Subscribe",
+    "brandBlurb": "The global B2B exhibition, trade-fair & sourcing platform connecting buyers with exhibitors worldwide.",
+    "columns": {
+      "platform": "Platform",
+      "company": "Company",
+      "resources": "Resources"
+    },
+    "links": {
+      "browseExhibitions": "Browse Exhibitions",
+      "ourServices": "Our Services",
+      "businessTours": "Business Tours",
+      "chinaTours": "China Tours",
+      "exhibitorDirectory": "Exhibitor Directory",
+      "rfqMarketplace": "RFQ Marketplace",
+      "partnerProgram": "Partner Program",
+      "aboutUs": "About Us",
+      "contact": "Contact",
+      "careers": "Careers",
+      "blog": "Blog",
+      "helpCenter": "Help Center",
+      "exhibitionGuide": "Exhibition Guide",
+      "boothSetupTips": "Booth Setup Tips",
+      "apiDocumentation": "API Documentation"
+    },
+    "copyright": "© {year} The Unique Expo. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "cookiePolicy": "Cookie Policy"
+  },
+  "about": {
+    "ourStory": "Our Story",
+    "ourMission": "Our Mission",
+    "ourVision": "Our Vision"
+  },
+  "exhibitionsPage": {
+    "title": "Exhibitions",
+    "subtitle": "Discover world-class trade fairs and exhibitions across the globe.",
+    "filter": "Filter:",
+    "allIndustries": "All Industries",
+    "allCities": "All Cities",
+    "allDates": "All Dates",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "count": "{count, plural, one {# exhibition} other {# exhibitions}}",
+    "loading": "Loading exhibitions...",
+    "viewDetails": "View Details →",
+    "noResultsTitle": "No exhibitions found",
+    "noResultsSubtitle": "Try adjusting your filters to find events."
+  },
+  "toursPage": {
+    "title": "Tours",
+    "subtitle": "Guided travel tours across China and beyond — tell us who's going and what you love, and we'll tailor the trip.",
+    "loading": "Loading tours...",
+    "perPerson": "/ person",
+    "viewDetails": "View Details →",
+    "noResultsTitle": "No tours yet",
+    "noResultsSubtitle": "Check back soon for upcoming travel tours."
+  },
+  "marketplacePage": {
+    "title": "Procurement Marketplace",
+    "subtitle": "Browse open buy requests from verified buyers worldwide.",
+    "postBuyRequest": "Post Buy Request",
+    "stats": {
+      "openRfqs": "Open RFQs",
+      "totalRequests": "Total Requests",
+      "activeBuyers": "Active Buyers"
+    },
+    "buyRequests": "Buy Requests",
+    "newRfq": "+ New RFQ",
+    "loadingBuyRequests": "Loading buy requests...",
+    "noResultsTitle": "No buy requests yet",
+    "noResultsSubtitle": "Be the first to post a request and find suppliers.",
+    "postFirstRfq": "Post Your First RFQ",
+    "status": {
+      "open": "open",
+      "quotesReceived": "quotes received",
+      "awarded": "awarded",
+      "closed": "closed"
+    },
+    "postedBy": "Posted by {name} • {category}",
+    "qty": "Qty: {value}",
+    "target": "Target: {value}",
+    "deadline": "Deadline: {value}",
+    "viewDetails": "View Details →"
+  },
+  "directoryPage": {
+    "title": "Exhibitor Directory",
+    "subtitle": "Search verified suppliers and exhibitors across all exhibitions.",
+    "searchPlaceholder": "Search by name, product, or country...",
+    "allIndustries": "All Industries",
+    "count": "{count, plural, one {# exhibitor} other {# exhibitors}}",
+    "noResultsTitle": "No exhibitors found",
+    "noResultsSubtitle": "Try a different search or filter.",
+    "verified": "✓ Verified",
+    "ratingLine": "★ {average} ({count, plural, one {# review} other {# reviews}})",
+    "moreProducts": "+{count} more"
+  },
+  "home": {
+    "badge": "{count} Upcoming Exhibitions in 2026",
+    "heroTitleLine1": "Where Global",
+    "heroTitleLine2": "Trade Happens",
+    "heroSubtitle": "Discover exhibitions, connect with buyers & exhibitors, and grow your business on the world's leading B2B trade platform.",
+    "browseExhibitions": "Browse Exhibitions",
+    "ourServices": "Our Services",
+    "stats": {
+      "exhibitions": "Major Exhibitions",
+      "exhibitors": "Exhibitors",
+      "visitors": "Global Visitors",
+      "markets": "Chinese Markets"
+    },
+    "featuredBadge": "🎪 Featured Events",
+    "featuredTitle": "Upcoming Exhibitions",
+    "featuredSubtitle": "Don't miss these world-class trade events. Register as a hosted buyer and enjoy exclusive benefits.",
+    "highlights": "Highlights",
+    "exhibitorsSuffix": "+ exhibitors",
+    "viewDetails": "View Details →",
+    "viewAll": "View All {count} Exhibitions",
+    "industryBadge": "Browse by Industry",
+    "industryTitle": "Find Your Sector",
+    "industrySubtitle": "Explore exhibitions across the industries that matter most.",
+    "eventsSuffix": "+ events",
+    "industries": {
+      "electronics": "Electronics",
+      "digitalTrade": "Digital Trade",
+      "lighting": "Lighting",
+      "furniture": "Furniture",
+      "manufacturing": "Manufacturing",
+      "energy": "Energy",
+      "tradeInvestment": "Trade & Investment",
+      "healthBeauty": "Health & Beauty",
+      "logistics": "Logistics",
+      "hospitality": "Hospitality",
+      "toysGifts": "Toys & Gifts",
+      "agriculture": "Agriculture"
+    },
+    "processBadge": "Simple Process",
+    "processTitle": "How The Unique Expo Works",
+    "step": "STEP {number}",
+    "steps": {
+      "discover": { "title": "Discover Exhibitions", "desc": "Browse global trade fairs by industry, date, and location. Find the perfect event for your business." },
+      "registerBuyer": { "title": "Register as Buyer", "desc": "Apply for hosted buyer programmes, get travel subsidies, hotel accommodation, and VIP access." },
+      "connect": { "title": "Connect & Close Deals", "desc": "Meet exhibitors face-to-face, schedule 1-on-1 meetings, negotiate, and close deals on-site." }
+    },
+    "ctaTitle": "Ready to Grow Your Business?",
+    "ctaSubtitle": "Join thousands of exhibitors and buyers who use The Unique Expo to discover opportunities, register as hosted buyers, and close deals at world-class trade events in China.",
+    "getStarted": "Get Started Free",
+    "exploreServices": "Explore Our Services"
+  }
+}

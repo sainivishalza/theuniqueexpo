@@ -7,6 +7,12 @@ const nextConfig = {
     // SSRF targets (plain-http internal/metadata endpoints); the images.*
     // fields are only ever set by authenticated admins, not public users.
     remotePatterns: [{ protocol: "https", hostname: "**" }],
+    // The exhibition poster/gallery endpoints append a ?v=<updated_at>
+    // cache-busting query string (see exhibitions-repo.ts) -- Next 16
+    // rejects local image srcs with a query string unless explicitly
+    // allowed here. `search` is intentionally omitted so any ?v= value
+    // matches, since it changes on every re-upload.
+    localPatterns: [{ pathname: "/api/exhibitions/**" }],
   },
   experimental: {
     // Defaults to os.cpus().length - 1, which on shared hosting reports the

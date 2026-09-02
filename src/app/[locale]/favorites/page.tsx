@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -20,6 +21,7 @@ interface Exhibition {
 }
 
 export default function FavoritesPage() {
+  const t = useTranslations("favoritesPage");
   const { user, loading: authLoading } = useAuth();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,8 +41,8 @@ export default function FavoritesPage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-4">❤️</div>
-          <h1 className="text-xl font-bold text-gray-900">Log in to see your saved exhibitions</h1>
-          <Link href="/login" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">Log in →</Link>
+          <h1 className="text-xl font-bold text-gray-900">{t("loginPrompt")}</h1>
+          <Link href="/login" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("logIn")}</Link>
         </div>
       </div>
     );
@@ -48,16 +50,16 @@ export default function FavoritesPage() {
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-10">
-      <h1 className="text-2xl font-bold text-gray-900">Saved Exhibitions</h1>
-      <p className="mt-1 text-sm text-gray-500">Exhibitions you've bookmarked for later.</p>
+      <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
+      <p className="mt-1 text-sm text-gray-500">{t("subtitle")}</p>
 
-      {loading && <p className="mt-10 text-center text-gray-400">Loading...</p>}
+      {loading && <p className="mt-10 text-center text-gray-400">{t("loading")}</p>}
 
       {!loading && exhibitions.length === 0 && (
         <div className="mt-16 text-center">
           <div className="text-5xl mb-4">🤍</div>
-          <p className="text-gray-400">No saved exhibitions yet.</p>
-          <Link href="/exhibitions" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">Browse exhibitions →</Link>
+          <p className="text-gray-400">{t("noResults")}</p>
+          <Link href="/exhibitions" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("browseExhibitions")}</Link>
         </div>
       )}
 

@@ -1,10 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 
+const SECTION_KEYS = [
+  { key: "exhibitionManagement", href: "/admin/exhibitions", icon: "🎪", color: "from-emerald-500 to-emerald-600" },
+  { key: "tourManagement", href: "/admin/tours", icon: "🧳", color: "from-cyan-500 to-blue-600" },
+  { key: "rfqReview", href: "/admin/rfqs", icon: "📋", color: "from-purple-500 to-purple-600" },
+  { key: "hotelBookings", href: "/admin/hotels", icon: "🏨", color: "from-amber-500 to-yellow-600" },
+  { key: "servicesManagement", href: "/admin/services", icon: "🛠️", color: "from-violet-500 to-purple-600" },
+  { key: "aboutUsPage", href: "/admin/about", icon: "📝", color: "from-blue-500 to-cyan-600" },
+  { key: "websitePages", href: "/admin/pages", icon: "📄", color: "from-sky-500 to-indigo-600" },
+  { key: "userManagement", icon: "👥", color: "from-orange-500 to-red-500", comingSoon: true },
+];
+
 export default function AdminPage() {
+  const t = useTranslations("adminHome");
+  const ta = useTranslations("adminCommon");
   const { user } = useAuth();
   const [stats, setStats] = useState({ exhibitions: 0, openRfqs: 0, hotelBookings: 0, totalRfqs: 0 });
   const [statsLoading, setStatsLoading] = useState(true);
@@ -33,31 +47,26 @@ export default function AdminPage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">🔒</div>
-          <h1 className="text-2xl font-bold text-gray-900">Access Denied</h1>
-          <p className="mt-2 text-gray-500">Admin privileges required.</p>
-          <p className="mt-1 text-xs text-gray-400">Tip: login with admin@theuniqueexpo.com</p>
-          <Link href="/" className="mt-4 inline-block text-emerald-600 hover:underline text-sm font-semibold">Go home →</Link>
+          <h1 className="text-2xl font-bold text-gray-900">{t("accessDenied")}</h1>
+          <p className="mt-2 text-gray-500">{ta("accessRequired")}</p>
+          <p className="mt-1 text-xs text-gray-400">{t("loginTip")}</p>
+          <Link href="/" className="mt-4 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("goHome")}</Link>
         </div>
       </div>
     );
   }
 
-  const sections = [
-    { title: "Exhibition Management", description: "Create, edit, and manage exhibition listings and floor plans.", href: "/admin/exhibitions", icon: "🎪", color: "from-emerald-500 to-emerald-600" },
-    { title: "Tour Management", description: "Create, edit, and manage travel tours and their registration forms.", href: "/admin/tours", icon: "🧳", color: "from-cyan-500 to-blue-600" },
-    { title: "RFQ Review", description: "View and moderate all buy requests and submitted quotes.", href: "/admin/rfqs", icon: "📋", color: "from-purple-500 to-purple-600" },
-    { title: "Hotel Bookings", description: "Review and confirm hotel booking requests from buyers.", href: "/admin/hotels", icon: "🏨", color: "from-amber-500 to-yellow-600" },
-    { title: "Services Management", description: "Manage tours, applications, subsidies, and consultations.", href: "/admin/services", icon: "🛠️", color: "from-violet-500 to-purple-600" },
-    { title: "About Us Page", description: "Edit the company story, mission, vision, and stats shown to visitors.", href: "/admin/about", icon: "📝", color: "from-blue-500 to-cyan-600" },
-    { title: "Website Pages", description: "Edit Contact, Careers, Blog, Help Center, and other footer pages.", href: "/admin/pages", icon: "📄", color: "from-sky-500 to-indigo-600" },
-    { title: "User Management", description: "Manage user accounts, roles, and verification status.", icon: "👥", color: "from-orange-500 to-red-500", comingSoon: true },
-  ];
+  const sections = SECTION_KEYS.map((s) => ({
+    ...s,
+    title: t(`sections.${s.key}.title`),
+    description: t(`sections.${s.key}.description`),
+  }));
 
   const statCards = [
-    { label: "Exhibitions", value: stats.exhibitions, icon: "🎪" },
-    { label: "Open RFQs", value: stats.openRfqs, icon: "📋" },
-    { label: "Hotel Bookings", value: stats.hotelBookings, icon: "🏨" },
-    { label: "Total RFQs", value: stats.totalRfqs, icon: "📊" },
+    { label: t("stats.exhibitions"), value: stats.exhibitions, icon: "🎪" },
+    { label: t("stats.openRfqs"), value: stats.openRfqs, icon: "📋" },
+    { label: t("stats.hotelBookings"), value: stats.hotelBookings, icon: "🏨" },
+    { label: t("stats.totalRfqs"), value: stats.totalRfqs, icon: "📊" },
   ];
 
   return (
@@ -67,8 +76,8 @@ export default function AdminPage() {
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl">⚙️</div>
             <div className="text-white">
-              <h1 className="text-3xl font-extrabold">Admin Back Office</h1>
-              <p className="mt-1 text-emerald-200/80">Manage exhibitions, bookings, RFQs, and users.</p>
+              <h1 className="text-3xl font-extrabold">{t("title")}</h1>
+              <p className="mt-1 text-emerald-200/80">{t("subtitle")}</p>
             </div>
           </div>
           <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -93,7 +102,7 @@ export default function AdminPage() {
                 <div className="flex-1">
                   <h3 className="font-bold text-gray-900">{s.title}</h3>
                   <p className="text-sm text-gray-500 mt-1">{s.description}</p>
-                  {s.comingSoon && <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">Coming soon</span>}
+                  {s.comingSoon && <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">{t("comingSoon")}</span>}
                 </div>
               </div>
             );

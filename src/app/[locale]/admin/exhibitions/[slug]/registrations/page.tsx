@@ -1,5 +1,6 @@
 "use client";
 import { use, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import type { ExpoRegistration } from "@/lib/expo-registrations";
@@ -19,12 +20,12 @@ function customSchemaOf(r: { formSchemaSnapshot?: unknown }): CustomFormField[] 
   return Array.isArray(r.formSchemaSnapshot) ? (r.formSchemaSnapshot as CustomFormField[]) : [];
 }
 
-function displayName(r: RegistrationSummary): string {
+function displayName(r: RegistrationSummary, fallback: string): string {
   if (r.fullName) return r.fullName;
   const schema = customSchemaOf(r);
   const nameField = schema.find((f) => /name/i.test(f.label) && f.type !== "file");
   const value = nameField && r.customAnswers ? r.customAnswers[nameField.id] : null;
-  return typeof value === "string" && value ? value : `Registration #${r.id}`;
+  return typeof value === "string" && value ? value : fallback;
 }
 
 function formatAnswer(value: unknown): string {
@@ -35,6 +36,9 @@ function formatAnswer(value: unknown): string {
 
 export default function AdminExpoRegistrationsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
+  const t = useTranslations("adminExhibitionRegistrations");
+  const tr = useTranslations("adminRegistrationsCommon");
+  const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [exhibition, setExhibition] = useState<Exhibition | null>(null);
   const [registrations, setRegistrations] = useState<RegistrationSummary[]>([]);
@@ -65,7 +69,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
-      if (!res.ok) throw new Error((await res.json()).error || "Update failed");
+      if (!res.ok) throw new Error((await res.json()).error || tr("updateFailed"));
       setRegistrations((prev) => prev.map((r) => (r.id === id ? { ...r, status: status as any } : r)));
     } catch (err: any) {
       alert(err.message);
@@ -79,7 +83,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
     try {
       const res = await fetch(`/api/admin/expo-registrations/${id}`);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to load");
+      if (!res.ok) throw new Error(data.error || tr("loadDetailFailed"));
       setDetail(data.registration);
     } catch (err: any) {
       alert(err.message);
@@ -90,25 +94,25 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
 
   if (authLoading) return null;
   if (!user || user.role !== "admin") {
-    return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">Admin access required.</p></div>;
+    return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{ta("accessRequired")}</p></div>;
   }
 
   return (
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-7xl px-6">
-          <Link href="/admin/exhibitions" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">← Back to Exhibitions</Link>
+          <Link href="/admin/exhibitions" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToExhibitions")}</Link>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-extrabold text-white">{exhibition ? `${exhibition.title} — Registrations` : "Registrations"}</h1>
-              <p className="mt-1 text-emerald-200/80">{loading ? "Loading..." : `${registrations.length} buyers/visitors registered`}</p>
+              <h1 className="text-3xl font-extrabold text-white">{exhibition ? t("titleWithName", { name: exhibition.title }) : t("title")}</h1>
+              <p className="mt-1 text-emerald-200/80">{loading ? ta("loading") : t("registeredCount", { count: registrations.length })}</p>
             </div>
             {exhibition && (
               <a
                 href={`/api/admin/expo-registrations/export?exhibition=${exhibition.slug}`}
                 className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/20 transition-colors"
               >
-                ⬇ Export to Excel
+                {t("exportToExcel")}
               </a>
             )}
           </div>
@@ -121,25 +125,25 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
           {!loading && !error && registrations.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
               <div className="text-5xl mb-4">📝</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">No registrations yet</h3>
-              <p className="text-gray-500">Buyer and visitor registrations for this expo will appear here.</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t("noResultsTitle")}</h3>
+              <p className="text-gray-500">{t("noResultsSubtitle")}</p>
             </div>
           ) : !error && (
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
               <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">Name</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">Type</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">Company</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">Contact</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">Purpose</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">Status</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">Date</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("type")}</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("company")}</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("contact")}</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("purpose")}</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600"></th>
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {registrations.map((r) => (
                   <tr key={r.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{displayName(r)}<br/><span className="text-xs text-gray-400">{r.nationality || "—"}</span></td>
-                    <td className="px-6 py-4 capitalize text-gray-700">{r.registrationType || (r.customAnswers ? "Custom form" : "—")}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{displayName(r, tr("registrationNumber", { id: r.id }))}<br/><span className="text-xs text-gray-400">{r.nationality || "—"}</span></td>
+                    <td className="px-6 py-4 capitalize text-gray-700">{r.registrationType || (r.customAnswers ? t("customForm") : "—")}</td>
                     <td className="px-6 py-4 text-gray-500">{r.companyName || "—"}</td>
                     <td className="px-6 py-4 text-gray-500">{r.email || "—"}<br/><span className="text-xs text-gray-400">{r.phone || ""}</span></td>
                     <td className="px-6 py-4 text-gray-500">{r.purposeOfVisit || "—"}</td>
@@ -150,12 +154,12 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                         onChange={(e) => updateStatus(r.id, e.target.value)}
                         className={`rounded-lg px-2 py-1 text-xs font-bold border-0 disabled:opacity-50 ${r.status === "approved" ? "bg-green-100 text-green-700" : r.status === "rejected" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}
                       >
-                        {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                        {STATUSES.map((s) => <option key={s} value={s}>{tr(`statuses.${s}`)}</option>)}
                       </select>
                     </td>
                     <td className="px-6 py-4 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4">
-                      <button onClick={() => viewDetail(r.id)} className="text-xs font-semibold text-emerald-600 hover:underline">View</button>
+                      <button onClick={() => viewDetail(r.id)} className="text-xs font-semibold text-emerald-600 hover:underline">{tr("view")}</button>
                     </td>
                   </tr>
                 ))}
@@ -169,11 +173,11 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-50" onClick={() => setDetail(null)}>
           <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-8" onClick={(e) => e.stopPropagation()}>
             {detailLoading && !detail ? (
-              <p className="text-gray-500 text-center py-10">Loading...</p>
+              <p className="text-gray-500 text-center py-10">{ta("loading")}</p>
             ) : detail && (
               <>
                 <div className="flex items-start justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">{displayName(detail)}</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">{displayName(detail, tr("registrationNumber", { id: detail.id }))}</h2>
                   <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600">✕</button>
                 </div>
                 {detail.customAnswers ? (
@@ -188,7 +192,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                               {value.startsWith("data:image") ? (
                                 <img src={value} alt={field.label} className="h-28 w-full object-contain rounded-lg bg-gray-50" />
                               ) : (
-                                <div className="h-28 w-full flex items-center justify-center rounded-lg bg-gray-50 text-sm text-gray-500">📄 View file</div>
+                                <div className="h-28 w-full flex items-center justify-center rounded-lg bg-gray-50 text-sm text-gray-500">{tr("viewFile")}</div>
                               )}
                             </a>
                           ) : (
@@ -201,40 +205,40 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                 ) : (
                   <>
                     <div className="grid grid-cols-2 gap-4 text-sm mb-6">
-                      <Detail label="Registration Type" value={detail.registrationType || "—"} capitalize />
-                      <Detail label="Gender" value={detail.gender || "—"} capitalize />
-                      <Detail label="Nationality" value={detail.nationality || "—"} />
-                      <Detail label="Passport Number" value={detail.passportNumber || "—"} />
-                      <Detail label="Email" value={detail.email || "—"} />
-                      <Detail label="Phone" value={detail.phone || "—"} />
-                      <Detail label="Company" value={detail.companyName || "—"} />
-                      <Detail label="Website" value={detail.companyWebsite || "—"} />
-                      <Detail label="Company Type" value={detail.companyType === "Other" ? (detail.companyTypeOther || "—") : (detail.companyType || "—")} />
-                      <Detail label="Company Scale" value={detail.companyScale || "—"} />
-                      <Detail label="Purpose of Visit" value={detail.purposeOfVisit || "—"} />
-                      <Detail label="Info Source" value={detail.infoSource === "Other" ? (detail.infoSourceOther || "—") : (detail.infoSource || "—")} />
-                      <Detail label="Exporting Markets" value={(detail.exportingMarkets || []).map((m) => (m === "Other" ? detail.exportingMarketOther : m)).join(", ") || "—"} />
+                      <Detail label={t("fields.registrationType")} value={detail.registrationType || "—"} capitalize />
+                      <Detail label={t("fields.gender")} value={detail.gender || "—"} capitalize />
+                      <Detail label={t("fields.nationality")} value={detail.nationality || "—"} />
+                      <Detail label={t("fields.passportNumber")} value={detail.passportNumber || "—"} />
+                      <Detail label={ta("email")} value={detail.email || "—"} />
+                      <Detail label={t("fields.phone")} value={detail.phone || "—"} />
+                      <Detail label={t("fields.company")} value={detail.companyName || "—"} />
+                      <Detail label={t("fields.website")} value={detail.companyWebsite || "—"} />
+                      <Detail label={t("fields.companyType")} value={detail.companyType === "Other" ? (detail.companyTypeOther || "—") : (detail.companyType || "—")} />
+                      <Detail label={t("fields.companyScale")} value={detail.companyScale || "—"} />
+                      <Detail label={t("fields.purposeOfVisit")} value={detail.purposeOfVisit || "—"} />
+                      <Detail label={t("fields.infoSource")} value={detail.infoSource === "Other" ? (detail.infoSourceOther || "—") : (detail.infoSource || "—")} />
+                      <Detail label={t("fields.exportingMarkets")} value={(detail.exportingMarkets || []).map((m) => (m === "Other" ? detail.exportingMarketOther : m)).join(", ") || "—"} />
                     </div>
                     {detail.companyIntro && (
                       <div className="mb-6">
-                        <p className="text-xs font-semibold text-gray-400 uppercase mb-1">Company Introduction</p>
+                        <p className="text-xs font-semibold text-gray-400 uppercase mb-1">{t("fields.companyIntro")}</p>
                         <p className="text-sm text-gray-700">{detail.companyIntro}</p>
                       </div>
                     )}
-                    <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Documents</p>
+                    <p className="text-xs font-semibold text-gray-400 uppercase mb-2">{t("documents")}</p>
                     <div className="grid grid-cols-2 gap-4">
                       {[
-                        { label: "Passport Front Page", src: detail.docPassportFront },
-                        { label: "Business Card", src: detail.docBusinessCard },
-                        { label: "Visa Page", src: detail.docVisaPage },
-                        { label: "Business License", src: detail.docBusinessLicense },
-                        { label: "Order List", src: detail.docOrderList },
+                        { label: t("docs.passportFront"), src: detail.docPassportFront },
+                        { label: t("docs.businessCard"), src: detail.docBusinessCard },
+                        { label: t("docs.visaPage"), src: detail.docVisaPage },
+                        { label: t("docs.businessLicense"), src: detail.docBusinessLicense },
+                        { label: t("docs.orderList"), src: detail.docOrderList },
                       ].filter((d) => d.src).map((d) => (
                         <a key={d.label} href={d.src} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-gray-200 p-2 hover:border-emerald-400">
                           {d.src!.startsWith("data:image") ? (
                             <img src={d.src} alt={d.label} className="h-28 w-full object-contain rounded-lg bg-gray-50" />
                           ) : (
-                            <div className="h-28 w-full flex items-center justify-center rounded-lg bg-gray-50 text-sm text-gray-500">📄 View file</div>
+                            <div className="h-28 w-full flex items-center justify-center rounded-lg bg-gray-50 text-sm text-gray-500">{tr("viewFile")}</div>
                           )}
                           <p className="text-xs text-gray-500 mt-1 text-center">{d.label}</p>
                         </a>

@@ -1,5 +1,6 @@
 "use client";
 import { use, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { SITE_PAGES, isValidSitePageSlug, type SitePageContent, type SitePageItem } from "@/lib/site-pages";
@@ -10,6 +11,8 @@ const EMPTY_CONTENT: SitePageContent = {
 
 export default function AdminSitePageEditor({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
+  const t = useTranslations("adminSitePageEditor");
+  const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [content, setContent] = useState<SitePageContent>(EMPTY_CONTENT);
   const [loading, setLoading] = useState(true);
@@ -58,7 +61,7 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
         body: JSON.stringify(content),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Save failed");
+      if (!res.ok) throw new Error(data.error || t("saveFailed"));
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err: any) {
@@ -70,20 +73,20 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
 
   if (authLoading) return null;
   if (!user || user.role !== "admin") {
-    return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">Admin access required.</p></div>;
+    return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{ta("accessRequired")}</p></div>;
   }
   if (!pageDef) {
-    return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">Unknown page.</p></div>;
+    return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{t("unknownPage")}</p></div>;
   }
 
   return (
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-4xl px-6">
-          <Link href="/admin/pages" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">← Back to Website Pages</Link>
+          <Link href="/admin/pages" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToWebsitePages")}</Link>
           <h1 className="text-3xl font-extrabold text-white">{pageDef.navLabel}</h1>
           <p className="mt-1 text-emerald-200/80">
-            Edit what visitors see at <Link href={pageDef.path} target="_blank" className="underline hover:text-white">{pageDef.path}</Link>.
+            {t.rich("subtitle", { path: pageDef.path, link: (chunks) => <Link href={pageDef.path} target="_blank" className="underline hover:text-white">{chunks}</Link> })}
           </p>
         </div>
       </section>
@@ -91,13 +94,13 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
       <section className="py-10 bg-gray-50">
         <div className="mx-auto max-w-4xl px-6 space-y-6">
           {loading ? (
-            <p className="text-center text-gray-500 py-10">Loading...</p>
+            <p className="text-center text-gray-500 py-10">{ta("loading")}</p>
           ) : (
             <>
               <div className="bg-white rounded-2xl p-6 shadow-sm space-y-5">
-                <h2 className="font-bold text-gray-900">Header</h2>
+                <h2 className="font-bold text-gray-900">{t("header")}</h2>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Heading</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heading")}</label>
                   <input
                     type="text"
                     value={content.heading}
@@ -106,7 +109,7 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Tagline</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("tagline")}</label>
                   <input
                     type="text"
                     value={content.tagline}
@@ -117,8 +120,8 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
               </div>
 
               <div className="bg-white rounded-2xl p-6 shadow-sm space-y-3">
-                <h2 className="font-bold text-gray-900">Body Text</h2>
-                <p className="text-xs text-gray-400">Separate paragraphs with a blank line. Leave empty to hide.</p>
+                <h2 className="font-bold text-gray-900">{t("bodyText")}</h2>
+                <p className="text-xs text-gray-400">{t("bodyHint")}</p>
                 <textarea
                   value={content.body}
                   onChange={(e) => update({ body: e.target.value })}
@@ -128,10 +131,10 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
               </div>
 
               <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
-                <h2 className="font-bold text-gray-900">Contact Details (optional)</h2>
+                <h2 className="font-bold text-gray-900">{t("contactDetails")}</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">Email</label>
+                    <label className="block text-xs font-semibold text-gray-500 mb-1">{ta("email")}</label>
                     <input
                       type="text"
                       value={content.contactEmail}
@@ -141,7 +144,7 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">Phone</label>
+                    <label className="block text-xs font-semibold text-gray-500 mb-1">{t("phone")}</label>
                     <input
                       type="text"
                       value={content.contactPhone}
@@ -155,8 +158,8 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
 
               <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
                 <div>
-                  <h2 className="font-bold text-gray-900">Items List</h2>
-                  <label className="block text-xs font-semibold text-gray-500 mt-3 mb-1">Section heading</label>
+                  <h2 className="font-bold text-gray-900">{t("itemsList")}</h2>
+                  <label className="block text-xs font-semibold text-gray-500 mt-3 mb-1">{t("sectionHeading")}</label>
                   <input
                     type="text"
                     value={content.itemsLabel}
@@ -171,35 +174,35 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                       type="text"
                       value={item.title}
                       onChange={(e) => updateItem(i, { title: e.target.value })}
-                      placeholder="Title"
+                      placeholder={t("itemTitle")}
                       className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold"
                     />
                     <textarea
                       value={item.description}
                       onChange={(e) => updateItem(i, { description: e.target.value })}
-                      placeholder="Description"
+                      placeholder={t("itemDescription")}
                       rows={2}
                       className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-y"
                     />
-                    <button onClick={() => removeItem(i)} className="text-xs font-semibold text-red-600 hover:underline">Remove</button>
+                    <button onClick={() => removeItem(i)} className="text-xs font-semibold text-red-600 hover:underline">{ta("delete")}</button>
                   </div>
                 ))}
                 <button
                   onClick={addItem}
                   className="w-full rounded-xl border-2 border-dashed border-gray-300 py-2.5 text-sm font-semibold text-gray-500 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
                 >
-                  + Add Item
+                  {t("addItem")}
                 </button>
               </div>
 
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-              {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">Saved.</div>}
+              {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{t("saved")}</div>}
               <button
                 onClick={handleSave}
                 disabled={saving}
                 className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50"
               >
-                {saving ? "Saving..." : `Save ${pageDef.navLabel}`}
+                {saving ? ta("saving") : t("saveButton", { name: pageDef.navLabel })}
               </button>
             </>
           )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 
@@ -26,6 +27,7 @@ interface ThreadContext {
 
 export default function MessageThreadPage({ params }: { params: Promise<{ quoteId: string }> }) {
   const { quoteId } = use(params);
+  const t = useTranslations("messageThreadPage");
   const { user, loading: authLoading } = useAuth();
   const [thread, setThread] = useState<ThreadContext | null | undefined>(undefined);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -61,7 +63,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
         body: JSON.stringify({ text }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to send message");
+      if (!res.ok) throw new Error(data.error || t("sendFailed"));
       setMessages((prev) => [...prev, data.message]);
       setText("");
     } catch (err: any) {
@@ -77,23 +79,23 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-xl font-bold text-gray-900">Log in to view this conversation</h1>
-          <Link href="/login" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">Log in →</Link>
+          <h1 className="text-xl font-bold text-gray-900">{t("loginPrompt")}</h1>
+          <Link href="/login" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("logIn")}</Link>
         </div>
       </div>
     );
   }
 
   if (thread === undefined) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">Loading...</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
   }
 
   if (!thread) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-xl font-bold text-gray-900">Conversation not found</h1>
-          <Link href="/messages" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">Back to messages →</Link>
+          <h1 className="text-xl font-bold text-gray-900">{t("notFound")}</h1>
+          <Link href="/messages" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("backToMessages")}</Link>
         </div>
       </div>
     );
@@ -104,22 +106,22 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-8">
-      <Link href="/messages" className="text-sm text-gray-500 hover:underline">← Back to messages</Link>
+      <Link href="/messages" className="text-sm text-gray-500 hover:underline">{t("backToMessagesShort")}</Link>
 
       <div className="mt-4 rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
         <div className="border-b border-gray-100 p-5">
           <h1 className="font-bold text-gray-900">{thread.rfqTitle}</h1>
           <p className="text-sm text-gray-500 mt-0.5">
-            With {otherParty} • Quote: {thread.quotePrice}
+            {t("withParty", { name: otherParty })} • {t("quote", { price: thread.quotePrice })}
           </p>
           <Link href={`/marketplace/${thread.rfqId}`} className="text-xs text-emerald-600 hover:underline mt-1 inline-block">
-            View request →
+            {t("viewRequest")}
           </Link>
         </div>
 
         <div className="p-5 space-y-3 max-h-[50vh] overflow-y-auto">
           {messages.length === 0 && (
-            <p className="text-center text-sm text-gray-400 py-8">No messages yet. Say hello!</p>
+            <p className="text-center text-sm text-gray-400 py-8">{t("noMessages")}</p>
           )}
           {messages.map((m) => {
             const mine = m.senderId === String(user.id);
@@ -143,7 +145,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Type a message..."
+            placeholder={t("typeMessage")}
             className="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none"
           />
           <button
@@ -151,7 +153,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
             disabled={sending || !text.trim()}
             className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
           >
-            {sending ? "..." : "Send"}
+            {sending ? "..." : t("send")}
           </button>
         </form>
         {error && <p className="px-4 pb-3 text-xs text-red-600">{error}</p>}

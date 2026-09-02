@@ -1,18 +1,20 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { getReferralsForPartner, getPartnerStats, generateReferralLink } from "@/lib/partners";
 
 export default function PartnerDashboard() {
+  const t = useTranslations("partnerDashboard");
   const { user } = useAuth();
   const referrals = user ? getReferralsForPartner(String(user.id)) : [];
   const stats = user ? getPartnerStats(String(user.id)) : { totalReferrals: 0, totalCommission: 0, conversionRate: 0 };
   const referralLink = user ? generateReferralLink(String(user.id)) : "";
 
   const statusLabels: Record<string, { label: string; color: string }> = {
-    signed_up: { label: "Signed Up", color: "bg-yellow-100 text-yellow-700 border border-yellow-200" },
-    booked_booth: { label: "Booked Booth", color: "bg-green-100 text-green-700 border border-green-200" },
-    posted_rfq: { label: "Posted RFQ", color: "bg-emerald-100 text-emerald-700 border border-emerald-200" },
+    signed_up: { label: t("statuses.signedUp"), color: "bg-yellow-100 text-yellow-700 border border-yellow-200" },
+    booked_booth: { label: t("statuses.bookedBooth"), color: "bg-green-100 text-green-700 border border-green-200" },
+    posted_rfq: { label: t("statuses.postedRfq"), color: "bg-emerald-100 text-emerald-700 border border-emerald-200" },
   };
 
   return (
@@ -23,21 +25,21 @@ export default function PartnerDashboard() {
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl">🤝</div>
             <div className="text-white">
-              <h1 className="text-3xl font-extrabold">Partner Dashboard</h1>
-              <p className="mt-1 text-emerald-200/80">Welcome back{user?.name ? `, ${user.name}` : ""}. Track your referrals and earnings.</p>
+              <h1 className="text-3xl font-extrabold">{t("title")}</h1>
+              <p className="mt-1 text-emerald-200/80">{t("welcome", { name: user?.name ? `, ${user.name}` : "" })}</p>
             </div>
           </div>
           <div className="mt-8 grid grid-cols-3 gap-4">
             <div className="rounded-xl bg-white/10 backdrop-blur-sm p-4 border border-white/10">
-              <div className="text-sm opacity-70 mb-1">👥 Referrals</div>
+              <div className="text-sm opacity-70 mb-1">👥 {t("stats.referrals")}</div>
               <div className="text-2xl font-extrabold text-white">{stats.totalReferrals}</div>
             </div>
             <div className="rounded-xl bg-white/10 backdrop-blur-sm p-4 border border-white/10">
-              <div className="text-sm opacity-70 mb-1">💰 Commission</div>
+              <div className="text-sm opacity-70 mb-1">💰 {t("stats.commission")}</div>
               <div className="text-2xl font-extrabold text-white">${stats.totalCommission}</div>
             </div>
             <div className="rounded-xl bg-white/10 backdrop-blur-sm p-4 border border-white/10">
-              <div className="text-sm opacity-70 mb-1">📈 Conversion</div>
+              <div className="text-sm opacity-70 mb-1">📈 {t("stats.conversion")}</div>
               <div className="text-2xl font-extrabold text-white">{stats.conversionRate}%</div>
             </div>
           </div>
@@ -48,8 +50,8 @@ export default function PartnerDashboard() {
         <div className="mx-auto max-w-7xl px-6">
           {/* Referral Link */}
           <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100 mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Your Referral Link</h2>
-            <p className="text-sm text-gray-500 mb-4">Share this with potential exhibitors and buyers. Signups are tracked automatically.</p>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">{t("referralLinkTitle")}</h2>
+            <p className="text-sm text-gray-500 mb-4">{t("referralLinkSubtitle")}</p>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -61,7 +63,7 @@ export default function PartnerDashboard() {
                 onClick={() => navigator.clipboard.writeText(referralLink)}
                 className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
               >
-                Copy Link
+                {t("copyLink")}
               </button>
             </div>
           </div>
@@ -69,23 +71,23 @@ export default function PartnerDashboard() {
           {/* Referrals Table */}
           <div className="rounded-2xl bg-white shadow-sm border border-gray-100 overflow-hidden">
             <div className="p-6 border-b border-gray-100">
-              <h2 className="text-xl font-bold text-gray-900">Referred Users ({referrals.length})</h2>
+              <h2 className="text-xl font-bold text-gray-900">{t("referredUsers", { count: referrals.length })}</h2>
             </div>
             {referrals.length === 0 ? (
               <div className="p-12 text-center">
                 <div className="text-5xl mb-4">📋</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">No referrals yet</h3>
-                <p className="text-gray-500">Share your link to start earning commissions.</p>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{t("noReferralsTitle")}</h3>
+                <p className="text-gray-500">{t("noReferralsSubtitle")}</p>
               </div>
             ) : (
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   <tr>
-                    <th className="px-6 py-3">Name</th>
-                    <th className="px-6 py-3">Email</th>
-                    <th className="px-6 py-3">Date</th>
-                    <th className="px-6 py-3">Status</th>
-                    <th className="px-6 py-3 text-right">Commission</th>
+                    <th className="px-6 py-3">{t("columns.name")}</th>
+                    <th className="px-6 py-3">{t("columns.email")}</th>
+                    <th className="px-6 py-3">{t("columns.date")}</th>
+                    <th className="px-6 py-3">{t("columns.status")}</th>
+                    <th className="px-6 py-3 text-right">{t("columns.commission")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -112,13 +114,13 @@ export default function PartnerDashboard() {
 
           {/* Marketing Kit */}
           <div className="mt-8 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Marketing Kit</h2>
-            <p className="text-sm text-gray-500 mb-5">Download materials to promote The Unique Expo in your region.</p>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">{t("marketingKit")}</h2>
+            <p className="text-sm text-gray-500 mb-5">{t("marketingKitSubtitle")}</p>
             <div className="flex flex-wrap gap-3">
               {[
-                { icon: "📄", label: "Pitch Deck (PDF)" },
-                { icon: "🖼️", label: "Banner Pack" },
-                { icon: "📋", label: "Brochure" },
+                { icon: "📄", label: t("materials.pitchDeck") },
+                { icon: "🖼️", label: t("materials.bannerPack") },
+                { icon: "📋", label: t("materials.brochure") },
               ].map((m) => (
                 <button key={m.label} className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors">
                   {m.icon} {m.label}

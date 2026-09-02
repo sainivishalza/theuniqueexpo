@@ -4,10 +4,10 @@ import { getExhibitionBySlugOrId } from "@/lib/server/exhibitions-repo";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const expo = await getExhibitionBySlugOrId(slug);
+  const { slug, locale } = await params;
+  const expo = await getExhibitionBySlugOrId(slug, locale);
   if (!expo) {
     return { title: "Exhibition not found" };
   }

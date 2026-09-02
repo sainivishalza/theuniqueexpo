@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { businessTours, chinaTours } from "@/lib/tours";
+import { businessToursData, chinaToursData } from "@/lib/tours";
 import { subsidies } from "@/lib/subsidies";
 
 const SECTION_KEYS = [
@@ -37,7 +37,7 @@ export default function AdminServicesPage() {
   if (!user || user.role !== "admin") return <div className="min-h-[60vh] flex items-center justify-center"><div className="text-center"><div className="text-6xl mb-4">🔒</div><h1 className="text-2xl font-bold">{t("accessDenied")}</h1><p className="text-gray-500 mt-2">{t("accessRequired")}</p><p className="text-xs text-gray-400 mt-1">{t("loginTip")}</p></div></div>;
 
   const counters: Record<string, number> = {
-    businessTours: businessTours.length + chinaTours.length,
+    businessTours: businessToursData.length + chinaToursData.length,
     tourApplications: counts.tourApps,
     visaApplications: counts.visaApps,
     transportSubsidies: subsidies.length,

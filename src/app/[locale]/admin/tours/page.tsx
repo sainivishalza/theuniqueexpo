@@ -18,6 +18,10 @@ interface Tour {
   destination: string;
   description: string;
   highlights: string[];
+  descriptionRu: string;
+  descriptionZh: string;
+  highlightsRu: string[];
+  highlightsZh: string[];
   price: string;
   currency: string;
   groupSize: string;
@@ -31,7 +35,8 @@ const MAX_GALLERY_IMAGES = 10;
 
 const EMPTY_FORM = {
   slug: "", title: "", startDate: "", endDate: "", duration: "", departureCity: "", destination: "",
-  description: "", highlights: "", price: "", currency: "USD", groupSize: "", organizer: "",
+  description: "", highlights: "", descriptionRu: "", descriptionZh: "", highlightsRu: "", highlightsZh: "",
+  price: "", currency: "USD", groupSize: "", organizer: "",
   color: "#0891b2", image: "", galleryImages: [] as string[],
 };
 
@@ -77,7 +82,10 @@ export default function AdminToursPage() {
     setForm({
       slug: tour.slug, title: tour.title, startDate: tour.startDate, endDate: tour.endDate,
       duration: tour.duration, departureCity: tour.departureCity, destination: tour.destination,
-      description: tour.description, highlights: tour.highlights.join("\n"), price: tour.price,
+      description: tour.description, highlights: tour.highlights.join("\n"),
+      descriptionRu: tour.descriptionRu || "", descriptionZh: tour.descriptionZh || "",
+      highlightsRu: (tour.highlightsRu || []).join("\n"), highlightsZh: (tour.highlightsZh || []).join("\n"),
+      price: tour.price,
       currency: tour.currency, groupSize: tour.groupSize, organizer: tour.organizer, color: tour.color,
       image: tour.image || "", galleryImages: [],
     });
@@ -127,6 +135,8 @@ export default function AdminToursPage() {
     const payload = {
       ...form,
       highlights: form.highlights.split("\n").map((h) => h.trim()).filter(Boolean),
+      highlightsRu: form.highlightsRu.split("\n").map((h) => h.trim()).filter(Boolean),
+      highlightsZh: form.highlightsZh.split("\n").map((h) => h.trim()).filter(Boolean),
     };
     try {
       const url = editingId ? `/api/admin/tours/${editingId}` : "/api/admin/tours";
@@ -384,6 +394,48 @@ export default function AdminToursPage() {
                 value={form.highlights}
                 onChange={(e) => setForm({ ...form, highlights: e.target.value })}
               />
+            </div>
+            <div className="mt-6 rounded-xl border border-gray-100 bg-gray-50 p-4">
+              <h4 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-3">{t("translationsOptional")}</h4>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("descriptionRu")}</label>
+                  <textarea
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    rows={3}
+                    value={form.descriptionRu}
+                    onChange={(e) => setForm({ ...form, descriptionRu: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("descriptionZh")}</label>
+                  <textarea
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    rows={3}
+                    value={form.descriptionZh}
+                    onChange={(e) => setForm({ ...form, descriptionZh: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("highlightsRu")}</label>
+                  <textarea
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    rows={4}
+                    value={form.highlightsRu}
+                    onChange={(e) => setForm({ ...form, highlightsRu: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("highlightsZh")}</label>
+                  <textarea
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    rows={4}
+                    value={form.highlightsZh}
+                    onChange={(e) => setForm({ ...form, highlightsZh: e.target.value })}
+                  />
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-gray-400">{t("translationsHint")}</p>
             </div>
             <div className="mt-5 flex gap-3">
               <button

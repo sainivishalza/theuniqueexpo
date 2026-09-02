@@ -1,12 +1,14 @@
 "use client";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { chinaTours } from "@/lib/tours";
+import { chinaToursData, localizeTour } from "@/lib/tours";
 import { formatNumber } from "@/lib/format";
 
 export default function ChinaToursPage() {
   const t = useTranslations("chinaToursPage");
+  const locale = useLocale();
+  const chinaTours = chinaToursData.map((tour) => localizeTour(tour, locale));
   return (
     <div>
       <section className="relative overflow-hidden bg-gray-900 py-20">

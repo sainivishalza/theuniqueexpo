@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -30,11 +30,12 @@ export default function ExhibitionDetailPage({
 }) {
   const { slug } = use(params);
   const t = useTranslations("exhibitionDetail");
+  const locale = useLocale();
   const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch(`/api/exhibitions/${slug}`)
+    fetch(`/api/exhibitions/${slug}?locale=${locale}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => {
         // The API returns the poster/gallery photos as raw base64 (the admin
@@ -56,7 +57,7 @@ export default function ExhibitionDetailPage({
         });
       })
       .catch(() => setExpo(null));
-  }, [slug]);
+  }, [slug, locale]);
 
   if (expo === undefined) {
     return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;

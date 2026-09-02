@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 interface Tour {
@@ -14,12 +14,13 @@ interface Tour {
 
 export default function TourDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const t = useTranslations("tourDetail");
+  const locale = useLocale();
   const { slug } = use(params);
   const [tour, setTour] = useState<Tour | null | undefined>(undefined);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch(`/api/tours/${slug}`)
+    fetch(`/api/tours/${slug}?locale=${locale}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => {
         const tour = data.tour;
@@ -38,7 +39,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
         });
       })
       .catch(() => setTour(null));
-  }, [slug]);
+  }, [slug, locale]);
 
   if (tour === undefined) {
     return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;

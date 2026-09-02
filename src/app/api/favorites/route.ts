@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ exhibitionIds: ids });
   }
 
-  const exhibitions = await listFavoriteExhibitions(user.id);
+  const exhibitions = await listFavoriteExhibitions(user.id, searchParams.get("locale") || undefined);
   return NextResponse.json({ exhibitions });
 }
 

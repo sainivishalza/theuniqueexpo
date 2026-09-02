@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { businessTours } from "@/lib/tours";
 import { formatNumber } from "@/lib/format";
@@ -8,7 +9,14 @@ export default function BusinessToursPage() {
     <div>
       <section className="relative overflow-hidden bg-gray-900 py-20">
         <div className="absolute inset-0 opacity-15">
-          <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&h=600&fit=crop&q=80" alt="" className="img-cover" />
+          <Image
+            src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&h=600&fit=crop&q=80"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
           <p className="text-emerald-300 font-semibold mb-2">Our Services</p>
@@ -22,7 +30,13 @@ export default function BusinessToursPage() {
             {businessTours.map((tour) => (
               <Link key={tour.id} href={"/services/business-tours/" + tour.slug} className="group block rounded-2xl overflow-hidden bg-white shadow-md card-hover">
                 <div className="relative h-52 overflow-hidden">
-                  <img src={tour.image} alt={tour.title} className="img-cover group-hover:scale-105 transition-transform duration-500" />
+                  <Image
+                    src={tour.image}
+                    alt={tour.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                   <div className="absolute inset-0 gradient-overlay" />
                   <div className="absolute top-4 left-4 flex gap-2">
                     <span className="rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold text-gray-900">{tour.city}</span>

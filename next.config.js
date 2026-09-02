@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    // Admins can paste any external image URL for a poster or hero image
+    // (not just Unsplash), so a fixed allowlist of hostnames would break
+    // those uploads. Restricting to https still blocks the most common
+    // SSRF targets (plain-http internal/metadata endpoints); the images.*
+    // fields are only ever set by authenticated admins, not public users.
+    remotePatterns: [{ protocol: "https", hostname: "**" }],
+  },
   experimental: {
     // Defaults to os.cpus().length - 1, which on shared hosting reports the
     // host's full core count (60+) rather than what the account can actually

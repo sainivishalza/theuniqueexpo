@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
@@ -34,10 +35,13 @@ export default function MarketplacePage() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-gray-900 py-20">
         <div className="absolute inset-0 opacity-15">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1556740758-90de374c12ad?w=1600&h=600&fit=crop&q=80"
             alt=""
-            className="img-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 flex items-end justify-between gap-6">

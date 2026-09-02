@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { chinaTours } from "@/lib/tours";
 import { formatNumber } from "@/lib/format";
@@ -7,7 +8,9 @@ export default function ChinaToursPage() {
   return (
     <div>
       <section className="relative overflow-hidden bg-gray-900 py-20">
-        <div className="absolute inset-0 opacity-15"><img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1600&h=600&fit=crop&q=80" alt="" className="img-cover" /></div>
+        <div className="absolute inset-0 opacity-15">
+          <Image src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1600&h=600&fit=crop&q=80" alt="" fill priority sizes="100vw" className="object-cover" />
+        </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
           <p className="text-emerald-300 font-semibold mb-2">Our Services</p>
           <h1 className="text-4xl md:text-5xl font-extrabold">Tours of China</h1>
@@ -20,7 +23,13 @@ export default function ChinaToursPage() {
             {chinaTours.map((tour) => (
               <Link key={tour.id} href={"/services/china-tours/" + tour.slug} className="group block rounded-2xl overflow-hidden bg-white shadow-md card-hover">
                 <div className="relative h-64 overflow-hidden">
-                  <img src={tour.image} alt={tour.title} className="img-cover group-hover:scale-105 transition-transform duration-500" />
+                  <Image
+                    src={tour.image}
+                    alt={tour.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                   <div className="absolute inset-0 gradient-overlay" />
                   <div className="absolute top-4 left-4 flex gap-2">
                     <span className="rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold text-gray-900">{tour.city}</span>

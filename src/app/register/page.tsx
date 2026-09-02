@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth, type UserRole } from "@/lib/auth-context";
@@ -38,7 +39,13 @@ export default function RegisterPage() {
       {/* Left: Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-emerald-600 via-teal-600 to-purple-700 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1200&h=800&fit=crop&q=80" alt="" className="img-cover" />
+          <Image
+            src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1200&h=800&fit=crop&q=80"
+            alt=""
+            fill
+            sizes="50vw"
+            className="object-cover"
+          />
         </div>
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <Logo size="large" />

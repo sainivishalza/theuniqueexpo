@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { visaServices } from "@/lib/visa-setup";
 
@@ -6,7 +7,9 @@ export default function VisaSetupPage() {
   return (
     <div>
       <section className="relative overflow-hidden bg-gray-900 py-20">
-        <div className="absolute inset-0 opacity-15"><img src="https://images.unsplash.com/photo-1450101499163-c8848e968838?w=1600&h=600&fit=crop&q=80" alt="" className="img-cover" /></div>
+        <div className="absolute inset-0 opacity-15">
+          <Image src="https://images.unsplash.com/photo-1450101499163-c8848e968838?w=1600&h=600&fit=crop&q=80" alt="" fill priority sizes="100vw" className="object-cover" />
+        </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
           <p className="text-emerald-300 font-semibold mb-2">Our Services</p>
           <h1 className="text-4xl md:text-5xl font-extrabold">Company Setup & Visas</h1>
@@ -18,7 +21,9 @@ export default function VisaSetupPage() {
           {visaServices.map((svc) => (
             <div key={svc.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
               <div className="grid md:grid-cols-2 gap-0">
-                <div className="relative h-64 md:h-auto"><img src={svc.image} alt={svc.title} className="img-cover" /></div>
+                <div className="relative h-64 md:h-auto">
+                  <Image src={svc.image} alt={svc.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+                </div>
                 <div className="p-8">
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">{svc.title}</h2>
                   <p className="text-gray-500 mb-6">{svc.description}</p>

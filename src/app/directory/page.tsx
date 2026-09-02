@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { mockExhibitorProfiles } from "@/lib/booths";
 
@@ -42,10 +43,13 @@ export default function DirectoryPage() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-gray-900 py-20">
         <div className="absolute inset-0 opacity-15">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&h=600&fit=crop&q=80"
             alt=""
-            className="img-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">

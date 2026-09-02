@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
@@ -94,10 +95,13 @@ export default function HotelsPage() {
     <div>
       {/* Hero */}
       <section className="relative h-56 bg-gray-900 overflow-hidden">
-        <img
+        <Image
           src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1400&h=300&fit=crop&q=80"
           alt=""
-          className="img-cover opacity-40"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-40"
         />
         <div className="absolute inset-0 gradient-overlay" />
         <div className="absolute inset-0 flex items-end">
@@ -129,7 +133,13 @@ export default function HotelsPage() {
                   }`}
                 >
                   <div className="relative h-40 overflow-hidden">
-                    <img src={hotelImages[idx % hotelImages.length]} alt={hotel.name} className="img-cover" />
+                    <Image
+                      src={hotelImages[idx % hotelImages.length]}
+                      alt={hotel.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover"
+                    />
                     <div className="absolute top-3 right-3 rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1 shadow-sm">
                       <span className="text-lg font-extrabold text-gray-900">${hotel.pricePerNight}</span>
                       <span className="text-xs text-gray-500">/night</span>

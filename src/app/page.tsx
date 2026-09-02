@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { formatNumber } from "@/lib/format";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
@@ -40,7 +41,14 @@ export default async function Home() {
       {/* ── Hero Section ── */}
       <section className="relative overflow-hidden bg-gray-900 min-h-[85vh] flex items-center">
         <div className="absolute inset-0 opacity-20">
-          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&h=900&fit=crop&q=80" alt="" className="w-full h-full object-cover" />
+          <Image
+            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&h=900&fit=crop&q=80"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
         </div>
         <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-400/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl" />
@@ -127,7 +135,13 @@ export default async function Home() {
                 {/* Image */}
                 {evt.image && (
                   <div className="relative h-44 overflow-hidden">
-                    <img src={evt.image} alt={evt.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <Image
+                      src={evt.image}
+                      alt={evt.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                   </div>
                 )}

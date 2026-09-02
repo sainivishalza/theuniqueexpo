@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { formatNumber } from "@/lib/format";
 
@@ -32,7 +33,21 @@ export default function ExhibitionDetailPage({
   useEffect(() => {
     fetch(`/api/exhibitions/${slug}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data) => setExpo(data.exhibition))
+      .then((data) => {
+        // The API returns the poster/gallery photos as raw base64 (the admin
+        // edit form needs that to resubmit them unchanged) -- for display,
+        // route any of those through the dedicated image endpoints instead,
+        // so the browser gets a real cacheable image request rather than a
+        // multi-hundred-KB string embedded in this page's own JS bundle.
+        const expo = data.exhibition;
+        setExpo({
+          ...expo,
+          image: expo.image?.startsWith("data:") ? `/api/exhibitions/${slug}/image` : expo.image,
+          galleryImages: (expo.galleryImages || []).map((img: string, i: number) =>
+            img?.startsWith("data:") ? `/api/exhibitions/${slug}/gallery/${i}` : img
+          ),
+        });
+      })
       .catch(() => setExpo(null));
   }, [slug]);
 
@@ -93,11 +108,13 @@ export default function ExhibitionDetailPage({
       {/* Poster — shown in full at its own proportions, never cropped or shrunk to illegibility */}
       {expo.image && (
         <section className="relative bg-gray-950 py-8 md:py-10 overflow-hidden">
-          <img
+          <Image
             src={expo.image}
             alt=""
             aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover blur-3xl scale-110 opacity-25"
+            fill
+            sizes="100vw"
+            className="object-cover blur-3xl scale-110 opacity-25"
           />
           <div className="relative mx-auto max-w-4xl px-6 flex justify-center">
             <button
@@ -106,10 +123,14 @@ export default function ExhibitionDetailPage({
               className="relative group cursor-zoom-in"
               aria-label="View full-size poster"
             >
-              <img
+              <Image
                 src={expo.image}
                 alt={expo.title}
+                width={1200}
+                height={900}
+                sizes="(max-width: 768px) 100vw, 800px"
                 className="max-w-full max-h-[75vh] w-auto h-auto rounded-xl shadow-2xl"
+                priority
               />
               <div className="absolute inset-0 rounded-xl bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity w-12 h-12 rounded-full bg-white/90 flex items-center justify-center text-2xl">
@@ -180,7 +201,13 @@ export default function ExhibitionDetailPage({
                         onClick={() => setLightboxIndex(allImages.indexOf(img))}
                         className="relative aspect-video rounded-xl overflow-hidden bg-gray-100 group"
                       >
-                        <img src={img} alt={`${expo.title} photo ${i + 1}`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        <Image
+                          src={img}
+                          alt={`${expo.title} photo ${i + 1}`}
+                          fill
+                          sizes="(max-width: 640px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform"
+                        />
                       </button>
                     ))}
                   </div>
@@ -247,10 +274,12 @@ export default function ExhibitionDetailPage({
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
                 <h3 className="text-lg font-bold text-gray-900 mb-3">Hotels Nearby</h3>
                 <div className="relative h-32 rounded-xl overflow-hidden mb-4">
-                  <img
+                  <Image
                     src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=200&fit=crop&q=80"
                     alt="Hotels"
-                    className="img-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 400px"
+                    className="object-cover"
                   />
                   <div className="absolute inset-0 gradient-overlay-light" />
                   <div className="absolute bottom-2 left-3 text-xs font-semibold text-white bg-black/40 backdrop-blur-sm rounded px-2 py-1">
@@ -329,9 +358,12 @@ export default function ExhibitionDetailPage({
               ‹
             </button>
           )}
-          <img
+          <Image
             src={allImages[lightboxIndex]}
             alt={`${expo.title} photo ${lightboxIndex + 1}`}
+            width={1200}
+            height={900}
+            sizes="100vw"
             className="max-w-full max-h-[85vh] w-auto h-auto rounded-xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />

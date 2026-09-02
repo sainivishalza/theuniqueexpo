@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { businessTours, getTourBySlug } from "@/lib/tours";
 import { formatNumber } from "@/lib/format";
@@ -31,7 +32,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ slu
   return (
     <div>
       <section className="relative h-80 overflow-hidden bg-gray-900">
-        <img src={tour.image} alt={tour.title} className="img-cover" />
+        <Image src={tour.image} alt={tour.title} fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 gradient-overlay" />
         <div className="absolute inset-0 flex items-end">
           <div className="mx-auto max-w-7xl px-6 pb-8 w-full">

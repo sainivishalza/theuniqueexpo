@@ -1,9 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { mockExhibitorProfiles } from "@/lib/booths";
+
+interface ReviewSummary {
+  average: number;
+  count: number;
+}
 
 const avatarColors = [
   "from-emerald-500 to-emerald-600",
@@ -17,11 +22,20 @@ const avatarColors = [
 export default function DirectoryPage() {
   const [search, setSearch] = useState("");
   const [industry, setIndustry] = useState("");
+  const [reviewSummaries, setReviewSummaries] = useState<Record<string, ReviewSummary>>({});
 
   const industries = useMemo(
     () => [...new Set(mockExhibitorProfiles.map((e) => e.industry))].sort(),
     []
   );
+
+  useEffect(() => {
+    const slugs = mockExhibitorProfiles.map((e) => e.slug).join(",");
+    fetch(`/api/exhibitors/reviews-summary?slugs=${encodeURIComponent(slugs)}`)
+      .then((res) => (res.ok ? res.json() : { summaries: {} }))
+      .then((data) => setReviewSummaries(data.summaries || {}))
+      .catch(() => {});
+  }, []);
 
   const filtered = useMemo(() => {
     return mockExhibitorProfiles.filter((e) => {
@@ -124,6 +138,11 @@ export default function DirectoryPage() {
                       <p className="text-sm text-gray-500 mt-0.5">
                         {ex.industry} • {ex.country}
                       </p>
+                      {reviewSummaries[ex.slug]?.count > 0 && (
+                        <p className="text-xs text-amber-600 font-semibold mt-1">
+                          ★ {reviewSummaries[ex.slug].average} ({reviewSummaries[ex.slug].count} review{reviewSummaries[ex.slug].count === 1 ? "" : "s"})
+                        </p>
+                      )}
                     </div>
                   </div>
                   <p className="mt-4 text-sm text-gray-600 line-clamp-2 leading-relaxed">

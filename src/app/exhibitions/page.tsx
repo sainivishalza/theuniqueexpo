@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatNumber } from "@/lib/format";
+import FavoriteButton from "@/components/FavoriteButton";
 
 interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -135,6 +136,7 @@ export default function ExhibitionsPage() {
                     className="object-contain group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 gradient-overlay" />
+                  <FavoriteButton exhibitionId={expo.id} className="absolute top-4 right-4 z-10 w-9 h-9 text-lg shadow-md" />
                   <div className="absolute top-4 left-4 flex gap-2">
                     <span className="rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold text-gray-900 shadow-sm">
                       {expo.industry}

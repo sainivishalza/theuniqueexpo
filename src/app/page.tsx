@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { formatNumber } from "@/lib/format";
+import FavoriteButton from "@/components/FavoriteButton";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 
 // How many of the soonest upcoming exhibitions to feature on the homepage.
@@ -135,6 +136,7 @@ export default async function Home() {
                 {/* Image */}
                 {evt.image && (
                   <div className="relative h-44 overflow-hidden">
+                    <FavoriteButton exhibitionId={evt.id} className="absolute top-3 right-3 z-10 w-9 h-9 text-lg shadow-md" />
                     <Image
                       src={evt.image}
                       alt={evt.title}

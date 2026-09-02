@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 import { listTours } from "@/lib/server/tours-repo";
-import { getAllTours } from "@/lib/tours";
+import { getAllToursData } from "@/lib/tours";
 import { mockExhibitorProfiles } from "@/lib/booths";
 import { routing } from "@/i18n/routing";
 
@@ -62,7 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Sitemap generation shouldn't take the whole site down if the DB is briefly unreachable.
   }
 
-  const tourEntries: MetadataRoute.Sitemap = getAllTours().flatMap((tour) =>
+  const tourEntries: MetadataRoute.Sitemap = getAllToursData().flatMap((tour) =>
     localizedEntries(
       `/services/${tour.type === "business" ? "business-tours" : "china-tours"}/${tour.slug}`,
       now

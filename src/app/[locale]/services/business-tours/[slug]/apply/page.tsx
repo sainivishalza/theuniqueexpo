@@ -1,9 +1,9 @@
 "use client";
 import { use, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { businessTours } from "@/lib/tours";
+import { businessToursData, localizeTour } from "@/lib/tours";
 
 const TOUR_SERVICE_KEYS = [
   "purchaseOfTickets",
@@ -18,6 +18,7 @@ const TOUR_SERVICE_KEYS = [
 
 export default function ApplyPage({ params }: { params: Promise<{ slug: string }> }) {
   const t = useTranslations("serviceTourApplyPage");
+  const locale = useLocale();
   const TOUR_SERVICES = TOUR_SERVICE_KEYS.map((key) => t(`services.${key}`));
   const { slug } = use(params);
   const { user } = useAuth();
@@ -29,7 +30,8 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
     services: [] as string[], specialRequests: "",
   });
 
-  const tour = businessTours.find((t) => t.slug === slug);
+  const tourData = businessToursData.find((d) => d.slug === slug);
+  const tour = tourData ? localizeTour(tourData, locale) : undefined;
 
   const toggleService = (s: string) => {
     setForm((prev) => ({

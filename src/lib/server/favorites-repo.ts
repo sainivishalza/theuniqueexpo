@@ -9,10 +9,11 @@ export async function listFavoriteIds(userId: number): Promise<string[]> {
 // Joined with the exhibitions table (same image-endpoint rewrite as
 // listExhibitions) so a saved-exhibitions view doesn't need a second
 // round trip or embed raw base64 posters.
-export async function listFavoriteExhibitions(userId: number) {
+export async function listFavoriteExhibitions(userId: number, locale?: string) {
   const [rows] = await pool.query(
     `SELECT e.id, e.slug, e.title, e.start_date, e.end_date, e.venue, e.city, e.country, e.industry,
-            e.description, e.highlights, e.exhibitors, e.visitors, e.organizer, e.website, e.color,
+            e.description, e.highlights, e.description_ru, e.description_zh, e.highlights_ru, e.highlights_zh,
+            e.exhibitors, e.visitors, e.organizer, e.website, e.color,
             e.registration_enabled, e.registration_form_schema, e.updated_at,
             IF(LEFT(e.image, 5) = 'data:', CONCAT('/api/exhibitions/', e.slug, '/image?v=', UNIX_TIMESTAMP(e.updated_at)), e.image) AS image
      FROM exhibition_favorites f
@@ -21,7 +22,7 @@ export async function listFavoriteExhibitions(userId: number) {
      ORDER BY f.created_at DESC`,
     [userId]
   );
-  return (rows as any[]).map(mapExhibitionRow);
+  return (rows as any[]).map((row) => mapExhibitionRow(row, locale));
 }
 
 export async function addFavorite(userId: number, exhibitionId: number) {

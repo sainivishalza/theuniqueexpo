@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -16,6 +16,7 @@ interface Exhibition {
 
 export default function ExhibitionsPage() {
   const t = useTranslations("exhibitionsPage");
+  const locale = useLocale();
   const dateFilterLabels: Record<string, string> = {
     all: t("allDates"),
     upcoming: t("upcoming"),
@@ -28,11 +29,11 @@ export default function ExhibitionsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/exhibitions")
+    fetch(`/api/exhibitions?locale=${locale}`)
       .then((res) => res.json())
       .then((data) => setExhibitions(data.exhibitions || []))
       .finally(() => setLoading(false));
-  }, []);
+  }, [locale]);
 
   const industries = useMemo(() => [...new Set(exhibitions.map((e) => e.industry))].sort(), [exhibitions]);
   const cities = useMemo(() => [...new Set(exhibitions.map((e) => e.city))].sort(), [exhibitions]);

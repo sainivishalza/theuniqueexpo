@@ -2,7 +2,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { businessTours, chinaTours } from "@/lib/tours";
+import { businessToursData as businessTours, chinaToursData as chinaTours } from "@/lib/tours";
 
 export default function AdminToursPage() {
   const t = useTranslations("adminServiceTours");
@@ -33,7 +33,7 @@ export default function AdminToursPage() {
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {businessTours.map((t2) => (
                   <tr key={t2.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{t2.title}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{t2.title.en}</td>
                     <td className="px-6 py-4 text-gray-500">{t2.city}</td>
                     <td className="px-6 py-4 text-gray-500">{t2.dates}</td>
                     <td className="px-6 py-4 font-semibold text-gray-900">${t2.price}</td>
@@ -55,7 +55,7 @@ export default function AdminToursPage() {
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {chinaTours.map((t2) => (
                   <tr key={t2.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{t2.title}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{t2.title.en}</td>
                     <td className="px-6 py-4 text-gray-500">{t2.city}</td>
                     <td className="px-6 py-4 text-gray-500">{t2.dates}</td>
                     <td className="px-6 py-4 font-semibold text-gray-900">${t2.price}</td>

@@ -2,21 +2,22 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { chinaTours, getTourBySlug } from "@/lib/tours";
+import { chinaToursData, getTourDataBySlug, localizeTour } from "@/lib/tours";
 import { formatNumber } from "@/lib/format";
 
 export function generateStaticParams() {
-  return chinaTours.map((t) => ({ slug: t.slug }));
+  return chinaToursData.map((t) => ({ slug: t.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const tour = getTourBySlug(slug);
-  if (!tour) return { title: "Tour not found" };
+  const { slug, locale } = await params;
+  const tourData = getTourDataBySlug(slug);
+  if (!tourData) return { title: "Tour not found" };
+  const tour = localizeTour(tourData, locale);
   return {
     title: tour.title,
     description: tour.description,
@@ -25,11 +26,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function TourDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function TourDetailPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { slug, locale } = await params;
   const t = await getTranslations("serviceTourDetailPage");
-  const tour = getTourBySlug(slug);
-  if (!tour) return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{t("notFound")}</p></div>;
+  const tourData = getTourDataBySlug(slug);
+  if (!tourData) return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{t("notFound")}</p></div>;
+  const tour = localizeTour(tourData, locale);
 
   return (
     <div>

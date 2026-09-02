@@ -19,6 +19,10 @@ interface Exhibition {
   industry: string;
   description: string;
   highlights: string[];
+  descriptionRu: string;
+  descriptionZh: string;
+  highlightsRu: string[];
+  highlightsZh: string[];
   exhibitors: number;
   visitors: string;
   organizer: string;
@@ -32,7 +36,8 @@ const MAX_GALLERY_IMAGES = 10;
 
 const EMPTY_FORM = {
   slug: "", title: "", startDate: "", endDate: "", venue: "", city: "", country: "",
-  industry: "", description: "", highlights: "", exhibitors: 0, visitors: "", organizer: "",
+  industry: "", description: "", highlights: "", descriptionRu: "", descriptionZh: "",
+  highlightsRu: "", highlightsZh: "", exhibitors: 0, visitors: "", organizer: "",
   website: "", color: "#059669", image: "", galleryImages: [] as string[],
 };
 
@@ -80,7 +85,10 @@ export default function AdminExhibitionsPage() {
     setForm({
       slug: expo.slug, title: expo.title, startDate: expo.startDate, endDate: expo.endDate,
       venue: expo.venue, city: expo.city, country: expo.country, industry: expo.industry,
-      description: expo.description, highlights: expo.highlights.join("\n"), exhibitors: expo.exhibitors,
+      description: expo.description, highlights: expo.highlights.join("\n"),
+      descriptionRu: expo.descriptionRu || "", descriptionZh: expo.descriptionZh || "",
+      highlightsRu: (expo.highlightsRu || []).join("\n"), highlightsZh: (expo.highlightsZh || []).join("\n"),
+      exhibitors: expo.exhibitors,
       visitors: expo.visitors, organizer: expo.organizer, website: expo.website, color: expo.color,
       image: expo.image || "", galleryImages: [],
     });
@@ -134,6 +142,8 @@ export default function AdminExhibitionsPage() {
       ...form,
       exhibitors: Number(form.exhibitors) || 0,
       highlights: form.highlights.split("\n").map((h) => h.trim()).filter(Boolean),
+      highlightsRu: form.highlightsRu.split("\n").map((h) => h.trim()).filter(Boolean),
+      highlightsZh: form.highlightsZh.split("\n").map((h) => h.trim()).filter(Boolean),
     };
     try {
       const url = editingId ? `/api/admin/exhibitions/${editingId}` : "/api/admin/exhibitions";
@@ -396,6 +406,48 @@ export default function AdminExhibitionsPage() {
                 value={form.highlights}
                 onChange={(e) => setForm({ ...form, highlights: e.target.value })}
               />
+            </div>
+            <div className="mt-6 rounded-xl border border-gray-100 bg-gray-50 p-4">
+              <h4 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-3">{t("translationsOptional")}</h4>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("descriptionRu")}</label>
+                  <textarea
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    rows={3}
+                    value={form.descriptionRu}
+                    onChange={(e) => setForm({ ...form, descriptionRu: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("descriptionZh")}</label>
+                  <textarea
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    rows={3}
+                    value={form.descriptionZh}
+                    onChange={(e) => setForm({ ...form, descriptionZh: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("highlightsRu")}</label>
+                  <textarea
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    rows={4}
+                    value={form.highlightsRu}
+                    onChange={(e) => setForm({ ...form, highlightsRu: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("highlightsZh")}</label>
+                  <textarea
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    rows={4}
+                    value={form.highlightsZh}
+                    onChange={(e) => setForm({ ...form, highlightsZh: e.target.value })}
+                  />
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-gray-400">{t("translationsHint")}</p>
             </div>
             <div className="mt-5 flex gap-3">
               <button

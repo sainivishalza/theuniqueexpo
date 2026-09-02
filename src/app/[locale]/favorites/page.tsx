@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -22,17 +22,18 @@ interface Exhibition {
 
 export default function FavoritesPage() {
   const t = useTranslations("favoritesPage");
+  const locale = useLocale();
   const { user, loading: authLoading } = useAuth();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
-    fetch("/api/favorites")
+    fetch(`/api/favorites?locale=${locale}`)
       .then((res) => (res.ok ? res.json() : { exhibitions: [] }))
       .then((data) => setExhibitions(data.exhibitions || []))
       .finally(() => setLoading(false));
-  }, [user]);
+  }, [user, locale]);
 
   if (authLoading) return null;
 

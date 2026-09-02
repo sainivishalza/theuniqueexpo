@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -29,7 +29,8 @@ const INDUSTRY_KEYS = [
 
 export default async function Home() {
   const t = await getTranslations("home");
-  const exhibitions = await listExhibitions();
+  const locale = await getLocale();
+  const exhibitions = await listExhibitions(locale);
   const featured = exhibitions.slice(0, FEATURED_COUNT);
 
   const stats = [

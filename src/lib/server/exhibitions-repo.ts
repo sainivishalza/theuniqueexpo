@@ -11,6 +11,12 @@ export interface ExhibitionInput {
   industry: string;
   description: string;
   highlights: string[];
+  // Optional translations of description/highlights. Blank/omitted falls
+  // back to the English fields above when serving that locale.
+  descriptionRu?: string;
+  descriptionZh?: string;
+  highlightsRu?: string[];
+  highlightsZh?: string[];
   exhibitors: number;
   visitors: string;
   organizer: string;
@@ -57,7 +63,22 @@ function safeParseJson(text: any): any {
   }
 }
 
-export function mapExhibitionRow(row: any) {
+// Picks the description/highlights for the requested locale, falling back
+// to English whenever a translation hasn't been filled in yet -- admins
+// add exhibitions in English first and translate them over time.
+export function mapExhibitionRow(row: any, locale?: string) {
+  const descriptionRu = row.description_ru || "";
+  const descriptionZh = row.description_zh || "";
+  const highlightsRu = safeParseArray(row.highlights_ru);
+  const highlightsZh = safeParseArray(row.highlights_zh);
+  const description =
+    (locale === "ru" && descriptionRu) ||
+    (locale === "zh" && descriptionZh) ||
+    row.description;
+  const highlights =
+    (locale === "ru" && highlightsRu.length > 0 && highlightsRu) ||
+    (locale === "zh" && highlightsZh.length > 0 && highlightsZh) ||
+    safeParseArray(row.highlights);
   return {
     id: String(row.id),
     slug: row.slug,
@@ -69,8 +90,12 @@ export function mapExhibitionRow(row: any) {
     city: row.city,
     country: row.country,
     industry: row.industry,
-    description: row.description,
-    highlights: safeParseArray(row.highlights),
+    description,
+    highlights,
+    descriptionRu,
+    descriptionZh,
+    highlightsRu,
+    highlightsZh,
     exhibitors: row.exhibitors,
     visitors: row.visitors,
     organizer: row.organizer,
@@ -92,24 +117,25 @@ export function mapExhibitionRow(row: any) {
 // the hundreds of KB each -- 20+ of those turned every list fetch into a
 // multi-megabyte payload). Point at the dedicated image endpoint instead;
 // plain external URLs (short, already cheap) pass through unchanged.
-export async function listExhibitions() {
+export async function listExhibitions(locale?: string) {
   const [rows] = await pool.query(
     `SELECT id, slug, title, start_date, end_date, venue, city, country, industry, description,
-            highlights, exhibitors, visitors, organizer, website, color, registration_enabled, registration_form_schema,
+            highlights, description_ru, description_zh, highlights_ru, highlights_zh,
+            exhibitors, visitors, organizer, website, color, registration_enabled, registration_form_schema,
             updated_at,
             IF(LEFT(image, 5) = 'data:', CONCAT('/api/exhibitions/', slug, '/image?v=', UNIX_TIMESTAMP(updated_at)), image) AS image
      FROM exhibitions ORDER BY start_date ASC`
   );
-  return (rows as any[]).map(mapExhibitionRow);
+  return (rows as any[]).map((row) => mapExhibitionRow(row, locale));
 }
 
-export async function getExhibitionBySlugOrId(slugOrId: string) {
+export async function getExhibitionBySlugOrId(slugOrId: string, locale?: string) {
   const [rows] = await pool.query(
     "SELECT * FROM exhibitions WHERE slug = ? OR id = ? LIMIT 1",
     [slugOrId, Number(slugOrId) || 0]
   );
   const row = (rows as any[])[0];
-  return row ? mapExhibitionRow(row) : null;
+  return row ? mapExhibitionRow(row, locale) : null;
 }
 
 // Targeted lookup for the dedicated image-serving route -- avoids pulling
@@ -138,12 +164,15 @@ export async function getExhibitionGalleryImageValue(slugOrId: string, index: nu
 
 export async function createExhibition(input: ExhibitionInput) {
   const [result] = await pool.query(
-    `INSERT INTO exhibitions (slug, title, start_date, end_date, venue, city, country, industry, description, highlights, exhibitors, visitors, organizer, website, color, image, gallery_images)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO exhibitions (slug, title, start_date, end_date, venue, city, country, industry, description, highlights, description_ru, description_zh, highlights_ru, highlights_zh, exhibitors, visitors, organizer, website, color, image, gallery_images)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.slug, input.title, input.startDate, input.endDate, input.venue, input.city, input.country,
-      input.industry, input.description, JSON.stringify(input.highlights || []), input.exhibitors,
-      input.visitors, input.organizer, input.website, input.color, input.image || "",
+      input.industry, input.description, JSON.stringify(input.highlights || []),
+      input.descriptionRu || null, input.descriptionZh || null,
+      input.highlightsRu && input.highlightsRu.length ? JSON.stringify(input.highlightsRu) : null,
+      input.highlightsZh && input.highlightsZh.length ? JSON.stringify(input.highlightsZh) : null,
+      input.exhibitors, input.visitors, input.organizer, input.website, input.color, input.image || "",
       JSON.stringify(input.galleryImages || []),
     ]
   );
@@ -152,12 +181,15 @@ export async function createExhibition(input: ExhibitionInput) {
 
 export async function updateExhibition(id: number, input: ExhibitionInput) {
   await pool.query(
-    `UPDATE exhibitions SET slug=?, title=?, start_date=?, end_date=?, venue=?, city=?, country=?, industry=?, description=?, highlights=?, exhibitors=?, visitors=?, organizer=?, website=?, color=?, image=?, gallery_images=?
+    `UPDATE exhibitions SET slug=?, title=?, start_date=?, end_date=?, venue=?, city=?, country=?, industry=?, description=?, highlights=?, description_ru=?, description_zh=?, highlights_ru=?, highlights_zh=?, exhibitors=?, visitors=?, organizer=?, website=?, color=?, image=?, gallery_images=?
      WHERE id=?`,
     [
       input.slug, input.title, input.startDate, input.endDate, input.venue, input.city, input.country,
-      input.industry, input.description, JSON.stringify(input.highlights || []), input.exhibitors,
-      input.visitors, input.organizer, input.website, input.color, input.image || "",
+      input.industry, input.description, JSON.stringify(input.highlights || []),
+      input.descriptionRu || null, input.descriptionZh || null,
+      input.highlightsRu && input.highlightsRu.length ? JSON.stringify(input.highlightsRu) : null,
+      input.highlightsZh && input.highlightsZh.length ? JSON.stringify(input.highlightsZh) : null,
+      input.exhibitors, input.visitors, input.organizer, input.website, input.color, input.image || "",
       JSON.stringify(input.galleryImages || []), id,
     ]
   );

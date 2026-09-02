@@ -4,10 +4,10 @@ import { getTourBySlugOrId } from "@/lib/server/tours-repo";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const tour = await getTourBySlugOrId(slug);
+  const { slug, locale } = await params;
+  const tour = await getTourBySlugOrId(slug, locale);
   if (!tour) {
     return { title: "Tour not found" };
   }

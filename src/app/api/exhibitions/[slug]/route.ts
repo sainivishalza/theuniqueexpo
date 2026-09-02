@@ -4,6 +4,7 @@ import { mapExhibitionRow } from "@/lib/server/exhibitions-repo";
 
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const locale = new URL(request.url).searchParams.get("locale") || undefined;
   const [rows] = await pool.query("SELECT * FROM exhibitions WHERE slug = ? OR id = ? LIMIT 1", [slug, Number(slug) || 0]);
   const exhibition = (rows as any[])[0];
   if (!exhibition) {
@@ -13,7 +14,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   // doesn't re-fetch the same exhibition four times; admin's edit-open
   // flow tolerates a few seconds of staleness here.
   return NextResponse.json(
-    { exhibition: mapExhibitionRow(exhibition) },
+    { exhibition: mapExhibitionRow(exhibition, locale) },
     { headers: { "Cache-Control": "public, max-age=20, stale-while-revalidate=60" } }
   );
 }

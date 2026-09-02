@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 interface Tour {
@@ -13,15 +13,16 @@ interface Tour {
 
 export default function ToursPage() {
   const t = useTranslations("toursPage");
+  const locale = useLocale();
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/tours")
+    fetch(`/api/tours?locale=${locale}`)
       .then((res) => res.json())
       .then((data) => setTours(data.tours || []))
       .finally(() => setLoading(false));
-  }, []);
+  }, [locale]);
 
   return (
     <div>

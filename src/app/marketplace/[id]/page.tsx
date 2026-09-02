@@ -157,6 +157,21 @@ export default function RFQDetailPage() {
                   )}
                 </div>
 
+                {!user && (
+                  <div className="mb-6 rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-sm text-gray-700 flex items-center justify-between gap-3 flex-wrap">
+                    <span>Are you a supplier? Log in to submit a quotation for this request.</span>
+                    <Link href="/login" className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700 transition-colors whitespace-nowrap">
+                      Log in to quote
+                    </Link>
+                  </div>
+                )}
+
+                {user && user.role !== "exhibitor" && (
+                  <div className="mb-6 rounded-xl bg-gray-50 border border-gray-200 p-4 text-sm text-gray-500">
+                    Only supplier (exhibitor) accounts can submit quotes. Register as an exhibitor to respond to buy requests.
+                  </div>
+                )}
+
                 {showQuoteForm && (
                   <form onSubmit={handleSubmitQuote} className="mb-6 rounded-xl border border-gray-200 p-5 space-y-3 bg-gray-50">
                     <div className="grid grid-cols-2 gap-3">

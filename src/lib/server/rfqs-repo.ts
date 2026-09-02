@@ -42,6 +42,12 @@ export async function listRfqs() {
   return (rows as any[]).map(mapRfqRow);
 }
 
+export async function getRfqById(id: number) {
+  const [rows] = await pool.query("SELECT * FROM rfqs WHERE id = ? LIMIT 1", [id]);
+  const row = (rows as any[])[0];
+  return row ? mapRfqRow(row) : null;
+}
+
 export async function listQuotesForRfq(rfqId: number) {
   const [rows] = await pool.query("SELECT * FROM quotes WHERE rfq_id = ? ORDER BY created_at ASC", [rfqId]);
   return (rows as any[]).map(mapQuoteRow);
@@ -76,4 +82,28 @@ export async function createRfq(input: {
     [input.title, input.product, input.description, input.quantity, input.targetPrice, input.deadline || null, input.category, input.buyerId || null, input.buyerName]
   );
   return (result as any).insertId;
+}
+
+export async function createQuote(input: {
+  rfqId: number; exhibitorId?: number; exhibitorName: string; price: string; leadTime: string; notes: string;
+}) {
+  const [result] = await pool.query(
+    `INSERT INTO quotes (rfq_id, exhibitor_id, exhibitor_name, price, lead_time, notes, status)
+     VALUES (?, ?, ?, ?, ?, ?, 'submitted')`,
+    [input.rfqId, input.exhibitorId || null, input.exhibitorName, input.price, input.leadTime, input.notes]
+  );
+  // A quote just came in -- surface that on the RFQ itself so buyers (and
+  // admin) see "quotes received" instead of a request that still looks
+  // untouched. Only advances a still-open request; doesn't override
+  // awarded/closed/draft.
+  await pool.query("UPDATE rfqs SET status = 'quotes_received' WHERE id = ? AND status = 'open'", [input.rfqId]);
+  return (result as any).insertId;
+}
+
+export async function updateQuoteStatus(id: number, status: string) {
+  await pool.query("UPDATE quotes SET status = ? WHERE id = ?", [status, id]);
+}
+
+export async function deleteQuote(id: number) {
+  await pool.query("DELETE FROM quotes WHERE id = ?", [id]);
 }

@@ -2,10 +2,19 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
-import { getRFQById, getQuotesForRFQ, createQuote } from "@/lib/rfq";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { mockExhibitorProfiles } from "@/lib/booths";
+
+interface RFQ {
+  id: string; title: string; product: string; description: string; quantity: string;
+  targetPrice: string; deadline: string; category: string; buyerId: string;
+  buyerName: string; status: string; createdAt: string;
+}
+
+interface Quote {
+  id: string; rfqId: string; exhibitorId: string; exhibitorName: string;
+  price: string; leadTime: string; notes: string; status: string; createdAt: string;
+}
 
 const STATUS_STYLES: Record<string, string> = {
   open: "bg-green-100 text-green-700 border border-green-200",
@@ -17,14 +26,33 @@ const STATUS_STYLES: Record<string, string> = {
 export default function RFQDetailPage() {
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "";
-  const rfq = getRFQById(id);
-  const quotes = getQuotesForRFQ(id);
   const { user } = useAuth();
+
+  const [rfq, setRfq] = useState<RFQ | null | undefined>(undefined);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
   const [showQuoteForm, setShowQuoteForm] = useState(false);
   const [quotePrice, setQuotePrice] = useState("");
   const [quoteLeadTime, setQuoteLeadTime] = useState("");
   const [quoteNotes, setQuoteNotes] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [quoteError, setQuoteError] = useState("");
   const [quoteSubmitted, setQuoteSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    fetch(`/api/rfqs/${id}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data) => setRfq(data.rfq))
+      .catch(() => setRfq(null));
+    fetch(`/api/rfqs/${id}/quotes`)
+      .then((res) => (res.ok ? res.json() : { quotes: [] }))
+      .then((data) => setQuotes(data.quotes || []))
+      .catch(() => {});
+  }, [id]);
+
+  if (rfq === undefined) {
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">Loading...</div>;
+  }
 
   if (!rfq) {
     return (
@@ -38,18 +66,38 @@ export default function RFQDetailPage() {
     );
   }
 
-  const handleSubmitQuote = (e: React.FormEvent) => {
+  const alreadyQuoted = quoteSubmitted || quotes.some((q) => q.exhibitorId === String(user?.id));
+
+  async function handleSubmitQuote(e: React.FormEvent) {
     e.preventDefault();
     if (!user || !quotePrice || !quoteLeadTime) return;
-    const profile = mockExhibitorProfiles.find((p) => p.id === String(user.id));
-    createQuote({
-      rfqId: rfq.id, exhibitorId: String(user.id),
-      exhibitorName: profile?.name || user.name || user.email,
-      price: quotePrice, leadTime: quoteLeadTime, notes: quoteNotes,
-    });
-    setQuoteSubmitted(true);
-    setShowQuoteForm(false);
-  };
+    setSubmitting(true);
+    setQuoteError("");
+    try {
+      const res = await fetch(`/api/rfqs/${id}/quotes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ price: quotePrice, leadTime: quoteLeadTime, notes: quoteNotes }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to submit quote");
+      // Reflect the new quote immediately without a full refetch.
+      setQuotes((prev) => [
+        ...prev,
+        {
+          id: String(data.id), rfqId: id, exhibitorId: String(user.id), exhibitorName: user.name,
+          price: quotePrice, leadTime: quoteLeadTime, notes: quoteNotes, status: "submitted",
+          createdAt: new Date().toISOString().split("T")[0],
+        },
+      ]);
+      setQuoteSubmitted(true);
+      setShowQuoteForm(false);
+    } catch (err: any) {
+      setQuoteError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <div>
@@ -99,7 +147,7 @@ export default function RFQDetailPage() {
               <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-bold text-gray-900">Quotes ({quotes.length})</h2>
-                  {user?.role === "exhibitor" && !quoteSubmitted && (
+                  {user?.role === "exhibitor" && !alreadyQuoted && (
                     <button
                       onClick={() => setShowQuoteForm(!showQuoteForm)}
                       className="rounded-xl gradient-brand px-5 py-2 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all"
@@ -125,8 +173,9 @@ export default function RFQDetailPage() {
                       <label className="block text-xs font-semibold text-gray-600 mb-1">Notes</label>
                       <textarea rows={3} placeholder="Additional details, MOQ, certifications..." value={quoteNotes} onChange={(e) => setQuoteNotes(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none resize-none" />
                     </div>
-                    <button type="submit" className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all">
-                      Submit Quote
+                    {quoteError && <div className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{quoteError}</div>}
+                    <button type="submit" disabled={submitting} className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all disabled:opacity-50">
+                      {submitting ? "Submitting..." : "Submit Quote"}
                     </button>
                   </form>
                 )}

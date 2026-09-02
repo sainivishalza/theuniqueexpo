@@ -1,8 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { getRFQs } from "@/lib/rfq";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
+
+interface RFQ {
+  id: string; title: string; product: string; description: string; quantity: string;
+  targetPrice: string; deadline: string; category: string; buyerId: string;
+  buyerName: string; status: string; createdAt: string;
+}
 
 const STATUS_STYLES: Record<string, string> = {
   open: "bg-green-100 text-green-700 border-green-200",
@@ -12,8 +18,16 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 export default function MarketplacePage() {
-  const rfqs = getRFQs();
+  const [rfqs, setRfqs] = useState<RFQ[]>([]);
+  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+
+  useEffect(() => {
+    fetch("/api/rfqs")
+      .then((res) => res.json())
+      .then((data) => setRfqs(data.rfqs || []))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div>
@@ -73,7 +87,9 @@ export default function MarketplacePage() {
           </div>
 
           <div className="space-y-4">
-            {rfqs.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-20 text-gray-400">Loading buy requests...</div>
+            ) : rfqs.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
                 <div className="text-5xl mb-4">📋</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">No buy requests yet</h3>

@@ -202,6 +202,7 @@ $MYSQL < schema-migrations/009-fix-poster-content.sql
 $MYSQL < schema-migrations/010-exhibitions-updated-at.sql
 $MYSQL < schema-migrations/011-messaging-favorites-reviews.sql
 $MYSQL < schema-migrations/012-tours.sql
+$MYSQL < schema-migrations/013-exhibition-tour-i18n-content.sql
 
 echo "Installing dependencies and building ..."
 npm install

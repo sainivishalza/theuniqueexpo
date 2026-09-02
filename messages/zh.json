@@ -965,6 +965,296 @@
     "email": "邮箱",
     "phone": "电话"
   },
+  "servicesPage": {
+    "heroTitle": "我们的服务",
+    "heroSubtitle": "无论是参展、参观还是在中国开展业务,您所需要的一切——从旅行团、签证到搬迁与咨询服务。",
+    "marketsWeCoverTitle": "我们覆盖的市场",
+    "marketsWeCoverSubtitle": "我们的业务覆盖中国所有主要贸易枢纽和展会城市——覆盖全国15多个市场。",
+    "viewAllExhibitions": "查看所有展会 →",
+    "marketAreas": {
+      "linyi": { "city": "临沂", "desc": "贸易与物流枢纽" },
+      "guzhen": { "city": "古镇", "desc": "中国灯饰之都" },
+      "shenzhen": { "city": "深圳", "desc": "电子科技中心" },
+      "dongguan": { "city": "东莞", "desc": "制造业中心" },
+      "wuxi": { "city": "无锡", "desc": "工业与机械" },
+      "hongKong": { "city": "香港", "desc": "全球采购展会" },
+      "beijing": { "city": "北京", "desc": "服务贸易" },
+      "shanghai": { "city": "上海", "desc": "家具与设计" },
+      "nanning": { "city": "南宁", "desc": "中国-东盟博览会" },
+      "guangzhou": { "city": "广州", "desc": "美容与化妆品" },
+      "weifang": { "city": "潍坊", "desc": "农业机械" },
+      "taizhou": { "city": "台州", "desc": "塑料与模具" },
+      "hangzhou": { "city": "杭州", "desc": "云计算与人工智能" },
+      "macao": { "city": "澳门", "desc": "贸易与投资" },
+      "shantou": { "city": "汕头", "desc": "中国玩具之都" }
+    },
+    "moreFeatures": "还有 {count} 项",
+    "whyChooseTitle": "为什么选择The Unique Expo的服务?",
+    "whyChooseSubtitle": "我们负责后勤事务,让您专注于业务发展。",
+    "benefits": {
+      "endToEnd": { "title": "全程服务", "desc": "从签证到工厂参观,我们全程负责" },
+      "experience": { "title": "15年以上经验", "desc": "深耕中国贸易与展会领域" },
+      "network": { "title": "可信赖网络", "desc": "遍布中国的500多家认证合作伙伴" },
+      "support": { "title": "24/7 支持", "desc": "全程提供多语言支持" }
+    },
+    "businessTours": {
+      "title": "商务考察团",
+      "description": "前往中国顶级贸易展会的全包式商务考察团服务。我们负责机票、酒店、展会注册、陪同、翻译及工厂参观。",
+      "features": [
+        "往返机票",
+        "酒店住宿(3-5星级)",
+        "展会注册及证件",
+        "签证文件支持",
+        "专业陪同与导游",
+        "中英文翻译",
+        "工厂与仓库参观",
+        "机场接送及后勤安排"
+      ],
+      "cta": "预订商务考察团"
+    },
+    "chinaTours": {
+      "title": "中国之旅",
+      "description": "精心策划的旅游套餐,涵盖中国主要城市、贸易枢纽及文化地标。非常适合首次到访者及回头客。",
+      "features": [
+        "城市导览(北京、上海、广州、深圳)",
+        "贸易枢纽参观(义乌、临沂)",
+        "文化体验与观光",
+        "制造区工厂参观",
+        "当地美食之旅",
+        "购物区与批发市场",
+        "灵活的5-14天行程",
+        "团体与私人游选项"
+      ],
+      "cta": "探索中国之旅"
+    },
+    "visaSetup": {
+      "title": "公司注册与签证",
+      "description": "全程协助在中国开展业务注册,并为贸易活动获取合适的签证。",
+      "features": [
+        "中国公司注册(外商独资企业、合资企业、代表处)",
+        "商务签证(M签证)申请支持",
+        "工作许可与Z签证办理",
+        "贸易许可证申请",
+        "银行开户协助",
+        "法律咨询与合规",
+        "注册地址服务",
+        "年度申报与税务咨询"
+      ],
+      "cta": "立即开始"
+    },
+    "moving": {
+      "title": "搬迁协助",
+      "description": "为迁入或迁出中国的企业和个人提供全面的搬迁支持。我们负责物流、文件及安家事宜。",
+      "features": [
+        "国际货运代理",
+        "清关与文件办理",
+        "办公室搬迁服务",
+        "住宅搬迁支持",
+        "临时仓储解决方案",
+        "保险与责任保障",
+        "安家服务(银行、电话卡、住房)",
+        "宠物运输协助"
+      ],
+      "cta": "申请搬迁报价"
+    },
+    "consultation": {
+      "title": "中国业务咨询",
+      "description": "关于在中国开展业务的一对一专家咨询——市场准入、采购、法律、文化及贸易合规指导。",
+      "features": [
+        "市场准入战略咨询",
+        "供应商寻源与核实",
+        "产品寻源与质量检验",
+        "法律与法规合规",
+        "文化礼仪与谈判技巧",
+        "贸易合规与海关指导",
+        "知识产权保护",
+        "长期顾问服务选项"
+      ],
+      "cta": "预约咨询"
+    },
+    "subsidies": {
+      "title": "交通补贴",
+      "description": "为参加中国各大贸易展会的展商和买家提供政府及主办方支持的交通补贴。",
+      "features": [
+        "展商国内机票补贴",
+        "高铁报销计划",
+        "酒店住宿补贴",
+        "机场接送代金券",
+        "团体旅行优惠计划",
+        "早鸟注册补贴",
+        "展商展位差旅补助",
+        "买家参会支持基金"
+      ],
+      "cta": "查看资格"
+    }
+  },
+  "businessToursPage": {
+    "ourServices": "我们的服务",
+    "title": "商务考察团",
+    "subtitle": "前往中国贸易展会的全包式旅游套餐,包含B2B配对、工厂参观及专业翻译。",
+    "viewDetails": "查看详情 →"
+  },
+  "chinaToursPage": {
+    "ourServices": "我们的服务",
+    "title": "中国之旅",
+    "subtitle": "精心策划的旅游套餐,涵盖中国主要城市、贸易枢纽及文化地标。",
+    "viewDetails": "查看详情 →"
+  },
+  "serviceTourDetailPage": {
+    "notFound": "未找到该行程。",
+    "backToBusinessTours": "← 返回商务考察团",
+    "backToChinaTours": "← 返回中国之旅",
+    "aboutThisTour": "行程介绍",
+    "perPerson": "每人",
+    "groupSize": "团队规模",
+    "duration": "行程时长",
+    "highlights": "亮点",
+    "dayByDayItinerary": "每日行程安排",
+    "bookThisTour": "预订此行程",
+    "usdPerPerson": "美元/人",
+    "applyNow": "立即申请",
+    "included": "包含项目:",
+    "notIncluded": "不包含项目:"
+  },
+  "serviceTourApplyPage": {
+    "loading": "加载中...",
+    "applicationSubmitted": "申请已提交!",
+    "applicationSubmittedHint": "您对<strong>{name}</strong>的行程申请已收到,我们的团队将进行审核并在24-48小时内与您联系。",
+    "backToTours": "← 返回行程列表",
+    "backTo": "← 返回{name}",
+    "applyFor": "申请{name}",
+    "detailsLine": "{dates} • {duration} • ${price} 美元/人",
+    "personalInformation": "个人信息",
+    "fullName": "姓名 *",
+    "email": "邮箱 *",
+    "phone": "电话 *",
+    "company": "公司",
+    "nationality": "国籍 *",
+    "numberOfTravelers": "出行人数 *",
+    "selectServices": "选择服务",
+    "selectServicesHint": "请选择您希望包含在行程套餐中的服务:",
+    "services": {
+      "purchaseOfTickets": "购买机票",
+      "hotelAccommodation": "酒店住宿",
+      "exhibitionRegistration": "展会注册及证件",
+      "visaDocumentationSupport": "签证文件支持",
+      "professionalEscort": "专业陪同与导游",
+      "interpreter": "中英文翻译",
+      "factoryVisits": "工厂与仓库参观",
+      "airportTransfers": "机场接送及后勤安排"
+    },
+    "specialRequests": "特殊需求",
+    "specialRequestsPlaceholder": "任何饮食要求、无障碍需求或特殊请求……",
+    "submitting": "提交中...",
+    "submitApplication": "提交申请",
+    "submissionFailed": "提交失败"
+  },
+  "visaSetupPage": {
+    "ourServices": "我们的服务",
+    "title": "公司注册与签证",
+    "subtitle": "全程协助在中国开展业务注册,并获取合适的签证。",
+    "whatsIncluded": "包含内容:",
+    "pricing": "价格:",
+    "timeline": "办理时长:",
+    "getStarted": "立即开始 →",
+    "process": "办理流程:"
+  },
+  "movingAssistancePage": {
+    "quoteRequested": "报价请求已提交!",
+    "quoteRequestedHint": "我们的搬迁团队将为您准备定制报价,并在24小时内与您联系。",
+    "submitAnother": "再次提交",
+    "ourServices": "我们的服务",
+    "title": "搬迁协助",
+    "subtitle": "为迁入或迁出中国的企业和个人提供全面的搬迁支持。",
+    "whatWeHandle": "我们负责的事项",
+    "handle": {
+      "internationalFreight": { "title": "国际货运", "desc": "海运、空运及陆运,全程可追踪" },
+      "customsClearance": { "title": "清关服务", "desc": "进出口文件办理及合规" },
+      "officeRelocation": { "title": "办公室搬迁", "desc": "完整的办公室搬迁项目管理" },
+      "residentialMoving": { "title": "住宅搬迁", "desc": "含拆包和安置的住宅搬迁服务" },
+      "storageSolutions": { "title": "仓储解决方案", "desc": "短期及长期仓储服务" },
+      "insuranceCoverage": { "title": "保险保障", "desc": "全面的货物及责任保险" },
+      "settlingIn": { "title": "安家服务", "desc": "银行账户、电话卡、住房搜寻" },
+      "petRelocation": { "title": "宠物运输", "desc": "安全的国际宠物运输协助" }
+    },
+    "requestMovingQuote": "申请搬迁报价",
+    "name": "姓名 *",
+    "email": "邮箱 *",
+    "phone": "电话",
+    "company": "公司",
+    "movingType": "搬迁类型 *",
+    "movingTypes": {
+      "office": "办公室搬迁",
+      "residential": "住宅搬迁",
+      "freight": "仅货运",
+      "pet": "宠物运输"
+    },
+    "originCity": "出发城市 *",
+    "originCityPlaceholder": "例如:迪拜,阿联酋",
+    "destinationCity": "目的城市 *",
+    "destinationCityPlaceholder": "例如:深圳,中国",
+    "preferredMoveDate": "预计搬迁日期",
+    "additionalDetails": "补充信息",
+    "additionalDetailsPlaceholder": "预估体积、特殊物品、时间限制……",
+    "submitQuoteRequest": "提交报价请求"
+  },
+  "consultationPage": {
+    "consultationBooked": "咨询已预约!",
+    "consultationBookedHint": "我们的专家将在24小时内确认您的咨询时间,您将收到邮件形式的日历邀请。",
+    "bookAnother": "再次预约",
+    "ourServices": "我们的服务",
+    "title": "中国业务咨询",
+    "subtitle": "关于在中国开展业务的一对一专家咨询——市场准入、采购、法律及贸易合规。",
+    "ourConsultationTopics": "我们的咨询主题",
+    "topics": {
+      "marketEntry": { "title": "市场准入战略", "desc": "竞争对手分析、定价、分销渠道、监管环境" },
+      "supplierSourcing": { "title": "供应商寻源", "desc": "工厂核实、背景调查、样品协调、价格谈判" },
+      "qualityInspection": { "title": "质量检验", "desc": "装运前检验、工厂审核、产品测试协调" },
+      "legalCompliance": { "title": "法律与合规", "desc": "合同审查、知识产权保护、法规合规、争议解决" },
+      "culturalEtiquette": { "title": "文化礼仪", "desc": "谈判技巧、名片礼仪、送礼习俗、餐桌礼仪" },
+      "tradeCompliance": { "title": "贸易合规", "desc": "海关分类、进出口法规、关税优化" },
+      "ipProtectionDetail": { "title": "知识产权保护", "desc": "商标注册、专利申请、在中国的商业机密保护" }
+    },
+    "pricing": "价格",
+    "singleSession": "单次咨询(60分钟)",
+    "packageOf4": "4次咨询套餐",
+    "monthlyRetainer": "月度顾问服务",
+    "freeDiscoveryCall": "免费初步沟通",
+    "free": "免费",
+    "bookAConsultation": "预约咨询",
+    "name": "姓名 *",
+    "email": "邮箱 *",
+    "company": "公司",
+    "topic": "主题 *",
+    "selectATopic": "选择一个主题……",
+    "topicOptions": {
+      "marketEntry": "市场准入战略",
+      "supplierSourcing": "供应商寻源",
+      "qualityInspection": "产品质量检验",
+      "legalCompliance": "法律与合规",
+      "culturalEtiquette": "文化礼仪",
+      "tradeCompliance": "贸易合规",
+      "ipProtection": "知识产权",
+      "generalConsultation": "综合咨询"
+    },
+    "preferredDate": "偏好日期",
+    "questionsToCover": "需要讨论的问题/主题",
+    "questionsPlaceholder": "请告诉我们您的业务需求以及想要讨论的内容……",
+    "bookConsultation": "预约咨询"
+  },
+  "transportSubsidiesPage": {
+    "ourServices": "我们的服务",
+    "title": "交通补贴",
+    "subtitle": "为参加中国各大贸易展会的展商和买家提供政府及主办方支持的交通补贴。",
+    "subsidiesCurrentlyOpen": "目前有 {count} 项补贴开放申请",
+    "statusOpen": "进行中",
+    "statusClosingSoon": "即将截止",
+    "statusClosed": "已结束",
+    "deadline": "截止日期:{date}",
+    "eligibility": "申请资格:",
+    "requiredDocuments": "所需文件:",
+    "howToApply": "申请方式:"
+  },
   "home": {
     "badge": "2026年即将举行的展会共 {count} 场",
     "heroTitleLine1": "全球贸易",

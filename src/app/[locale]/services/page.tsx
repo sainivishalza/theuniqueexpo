@@ -1,28 +1,47 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { serviceCategories } from "@/lib/services";
 
-const marketAreas = [
-  { city: "Linyi", emoji: "📦", desc: "Trade & Logistics Hub", slug: "linyi-20-22-sept" },
-  { city: "Guzhen", emoji: "💡", desc: "Lighting Capital of China", slug: "guzhen-lighting-fair" },
-  { city: "Shenzhen", emoji: "📱", desc: "Electronics & Tech Hub", slug: "cioe-shenzhen" },
-  { city: "Dongguan", emoji: "🏭", desc: "Manufacturing Center", slug: "dongguan-manufacturing" },
-  { city: "Wuxi", emoji: "⚙️", desc: "Industrial & Machinery", slug: "wuxi-industrial" },
-  { city: "Hong Kong", emoji: "🌐", desc: "Global Sourcing Fair", slug: "hk-electronics-fair" },
-  { city: "Beijing", emoji: "🏛️", desc: "Trade in Services", slug: "ciftis-beijing" },
-  { city: "Shanghai", emoji: "🪑", desc: "Furniture & Design", slug: "ciff-shanghai" },
-  { city: "Nanning", emoji: "🤝", desc: "China-ASEAN Expo", slug: "caexpo-nanning" },
-  { city: "Guangzhou", emoji: "💄", desc: "Beauty & Cosmetics", slug: "cibe-guangzhou" },
-  { city: "Weifang", emoji: "🌾", desc: "Agricultural Machinery", slug: "weifang-agriculture" },
-  { city: "Taizhou", emoji: "🔧", desc: "Plastics & Molding", slug: "taizhou-plastics" },
-  { city: "Hangzhou", emoji: "☁️", desc: "Cloud & AI Tech", slug: "apsara-hangzhou" },
-  { city: "Macao", emoji: "🎰", desc: "Trade & Investment", slug: "mif-macao" },
-  { city: "Shantou", emoji: "🧸", desc: "Toy Capital of China", slug: "shantou-toys" },
+const MARKET_AREA_KEYS = [
+  { key: "linyi", emoji: "📦", slug: "linyi-20-22-sept" },
+  { key: "guzhen", emoji: "💡", slug: "guzhen-lighting-fair" },
+  { key: "shenzhen", emoji: "📱", slug: "cioe-shenzhen" },
+  { key: "dongguan", emoji: "🏭", slug: "dongguan-manufacturing" },
+  { key: "wuxi", emoji: "⚙️", slug: "wuxi-industrial" },
+  { key: "hongKong", emoji: "🌐", slug: "hk-electronics-fair" },
+  { key: "beijing", emoji: "🏛️", slug: "ciftis-beijing" },
+  { key: "shanghai", emoji: "🪑", slug: "ciff-shanghai" },
+  { key: "nanning", emoji: "🤝", slug: "caexpo-nanning" },
+  { key: "guangzhou", emoji: "💄", slug: "cibe-guangzhou" },
+  { key: "weifang", emoji: "🌾", slug: "weifang-agriculture" },
+  { key: "taizhou", emoji: "🔧", slug: "taizhou-plastics" },
+  { key: "hangzhou", emoji: "☁️", slug: "apsara-hangzhou" },
+  { key: "macao", emoji: "🎰", slug: "mif-macao" },
+  { key: "shantou", emoji: "🧸", slug: "shantou-toys" },
+];
+
+const BENEFIT_KEYS = [
+  { key: "endToEnd", icon: "🎯" },
+  { key: "experience", icon: "🌍" },
+  { key: "network", icon: "🤝" },
+  { key: "support", icon: "💬" },
 ];
 
 export default function ServicesPage() {
+  const t = useTranslations("servicesPage");
+  const marketAreas = MARKET_AREA_KEYS.map((m) => ({
+    ...m,
+    city: t(`marketAreas.${m.key}.city`),
+    desc: t(`marketAreas.${m.key}.desc`),
+  }));
+  const benefits = BENEFIT_KEYS.map((b) => ({
+    ...b,
+    title: t(`benefits.${b.key}.title`),
+    desc: t(`benefits.${b.key}.desc`),
+  }));
   return (
     <div>
       <section className="relative overflow-hidden bg-gray-900 py-20">
@@ -37,8 +56,8 @@ export default function ServicesPage() {
           />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
-          <h1 className="text-4xl md:text-5xl font-extrabold">Our Services</h1>
-          <p className="mt-3 text-lg text-gray-300 max-w-2xl">Everything you need to exhibit at, attend, or do business in China — from tours and visas to moving and consultation.</p>
+          <h1 className="text-4xl md:text-5xl font-extrabold">{t("heroTitle")}</h1>
+          <p className="mt-3 text-lg text-gray-300 max-w-2xl">{t("heroSubtitle")}</p>
         </div>
       </section>
 
@@ -46,8 +65,8 @@ export default function ServicesPage() {
       <section className="py-16 bg-gradient-to-br from-emerald-600 via-teal-600 to-purple-700">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">Markets We Cover</h2>
-            <p className="text-emerald-100 text-lg max-w-2xl mx-auto">We operate across all major Chinese trade hubs and exhibition cities — covering 15+ markets nationwide.</p>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">{t("marketsWeCoverTitle")}</h2>
+            <p className="text-emerald-100 text-lg max-w-2xl mx-auto">{t("marketsWeCoverSubtitle")}</p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
             {marketAreas.map((m) => (
@@ -60,7 +79,7 @@ export default function ServicesPage() {
           </div>
           <div className="text-center mt-8">
             <Link href="/exhibitions" className="inline-block rounded-xl bg-white px-6 py-3 font-semibold text-emerald-600 hover:bg-emerald-50 transition-colors">
-              View All Exhibitions →
+              {t("viewAllExhibitions")}
             </Link>
           </div>
         </div>
@@ -74,7 +93,7 @@ export default function ServicesPage() {
                 <div className="relative h-48 overflow-hidden">
                   <Image
                     src={svc.image}
-                    alt={svc.title}
+                    alt={t(svc.titleKey)}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -84,18 +103,18 @@ export default function ServicesPage() {
                     <span className="rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1 text-xl shadow-sm">{svc.icon}</span>
                   </div>
                   <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-xl font-bold text-white drop-shadow-lg">{svc.title}</h3>
+                    <h3 className="text-xl font-bold text-white drop-shadow-lg">{t(svc.titleKey)}</h3>
                   </div>
                 </div>
                 <div className="p-6">
-                  <p className="text-sm text-gray-500 mb-4 line-clamp-3">{svc.description}</p>
+                  <p className="text-sm text-gray-500 mb-4 line-clamp-3">{t(svc.descriptionKey)}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {svc.features.slice(0, 4).map((f) => (
-                      <span key={f} className="rounded-lg bg-gray-100 px-2.5 py-1 text-xs text-gray-600">{f}</span>
+                    {svc.featureKeys.slice(0, 4).map((f) => (
+                      <span key={f} className="rounded-lg bg-gray-100 px-2.5 py-1 text-xs text-gray-600">{t(f)}</span>
                     ))}
-                    {svc.features.length > 4 && <span className="rounded-lg bg-gray-100 px-2.5 py-1 text-xs text-gray-400">+{svc.features.length - 4} more</span>}
+                    {svc.featureKeys.length > 4 && <span className="rounded-lg bg-gray-100 px-2.5 py-1 text-xs text-gray-400">{t("moreFeatures", { count: svc.featureKeys.length - 4 })}</span>}
                   </div>
-                  <span className="inline-block rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white group-hover:scale-105 transition-transform">{svc.ctaText} →</span>
+                  <span className="inline-block rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white group-hover:scale-105 transition-transform">{t(svc.ctaKey)} →</span>
                 </div>
               </Link>
             ))}
@@ -105,11 +124,11 @@ export default function ServicesPage() {
 
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-6 text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">Why Choose The Unique Expo Services?</h2>
-          <p className="text-gray-500 max-w-2xl mx-auto mb-12">We handle the logistics so you can focus on growing your business.</p>
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">{t("whyChooseTitle")}</h2>
+          <p className="text-gray-500 max-w-2xl mx-auto mb-12">{t("whyChooseSubtitle")}</p>
           <div className="grid gap-8 md:grid-cols-4">
-            {[{icon:"🎯",title:"End-to-End",desc:"From visa to factory visit, we handle everything"},{icon:"🌍",title:"15+ Years",desc:"Deep expertise in China trade and exhibitions"},{icon:"🤝",title:"Trusted Network",desc:"500+ verified partners across China"},{icon:"💬",title:"24/7 Support",desc:"Multilingual support throughout your journey"}].map((b) => (
-              <div key={b.title} className="text-center">
+            {benefits.map((b) => (
+              <div key={b.key} className="text-center">
                 <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-50 flex items-center justify-center text-3xl mb-4">{b.icon}</div>
                 <h3 className="font-bold text-gray-900 mb-1">{b.title}</h3>
                 <p className="text-sm text-gray-500">{b.desc}</p>

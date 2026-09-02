@@ -965,6 +965,296 @@
     "email": "Email",
     "phone": "Phone"
   },
+  "servicesPage": {
+    "heroTitle": "Our Services",
+    "heroSubtitle": "Everything you need to exhibit at, attend, or do business in China — from tours and visas to moving and consultation.",
+    "marketsWeCoverTitle": "Markets We Cover",
+    "marketsWeCoverSubtitle": "We operate across all major Chinese trade hubs and exhibition cities — covering 15+ markets nationwide.",
+    "viewAllExhibitions": "View All Exhibitions →",
+    "marketAreas": {
+      "linyi": { "city": "Linyi", "desc": "Trade & Logistics Hub" },
+      "guzhen": { "city": "Guzhen", "desc": "Lighting Capital of China" },
+      "shenzhen": { "city": "Shenzhen", "desc": "Electronics & Tech Hub" },
+      "dongguan": { "city": "Dongguan", "desc": "Manufacturing Center" },
+      "wuxi": { "city": "Wuxi", "desc": "Industrial & Machinery" },
+      "hongKong": { "city": "Hong Kong", "desc": "Global Sourcing Fair" },
+      "beijing": { "city": "Beijing", "desc": "Trade in Services" },
+      "shanghai": { "city": "Shanghai", "desc": "Furniture & Design" },
+      "nanning": { "city": "Nanning", "desc": "China-ASEAN Expo" },
+      "guangzhou": { "city": "Guangzhou", "desc": "Beauty & Cosmetics" },
+      "weifang": { "city": "Weifang", "desc": "Agricultural Machinery" },
+      "taizhou": { "city": "Taizhou", "desc": "Plastics & Molding" },
+      "hangzhou": { "city": "Hangzhou", "desc": "Cloud & AI Tech" },
+      "macao": { "city": "Macao", "desc": "Trade & Investment" },
+      "shantou": { "city": "Shantou", "desc": "Toy Capital of China" }
+    },
+    "moreFeatures": "+{count} more",
+    "whyChooseTitle": "Why Choose The Unique Expo Services?",
+    "whyChooseSubtitle": "We handle the logistics so you can focus on growing your business.",
+    "benefits": {
+      "endToEnd": { "title": "End-to-End", "desc": "From visa to factory visit, we handle everything" },
+      "experience": { "title": "15+ Years", "desc": "Deep expertise in China trade and exhibitions" },
+      "network": { "title": "Trusted Network", "desc": "500+ verified partners across China" },
+      "support": { "title": "24/7 Support", "desc": "Multilingual support throughout your journey" }
+    },
+    "businessTours": {
+      "title": "Business Tours",
+      "description": "All-inclusive business tour packages to China's top trade fairs. We handle tickets, hotels, exhibition registration, escorts, interpreters, and factory visits.",
+      "features": [
+        "Round-trip flight tickets",
+        "Hotel accommodation (3-5 star)",
+        "Exhibition registration & passes",
+        "Visa documentation support",
+        "Professional escort & guide",
+        "Mandarin/English interpreter",
+        "Factory & warehouse visits",
+        "Airport transfers & logistics"
+      ],
+      "cta": "Book a Business Tour"
+    },
+    "chinaTours": {
+      "title": "Tours of China",
+      "description": "Curated tour packages covering China's major cities, trade hubs, and cultural landmarks. Perfect for first-time visitors and repeat buyers.",
+      "features": [
+        "Guided city tours (Beijing, Shanghai, Guangzhou, Shenzhen)",
+        "Trade hub visits (Yiwu, Linyi,义乌)",
+        "Cultural experiences & sightseeing",
+        "Factory visits in manufacturing zones",
+        "Local cuisine tours",
+        "Shopping districts & wholesale markets",
+        "Flexible 5-14 day itineraries",
+        "Group & private tour options"
+      ],
+      "cta": "Explore China Tours"
+    },
+    "visaSetup": {
+      "title": "Company Setup & Visas",
+      "description": "End-to-end assistance with setting up a business in China and obtaining the right visas for trade activities.",
+      "features": [
+        "Company registration in China (WFOE, JV, Representative Office)",
+        "Business visa (M-visa) application support",
+        "Work permit & Z-visa processing",
+        "Trade license applications",
+        "Bank account setup assistance",
+        "Legal consultation & compliance",
+        "Registered address services",
+        "Annual filing & tax advisory"
+      ],
+      "cta": "Get Started"
+    },
+    "moving": {
+      "title": "Moving Assistance",
+      "description": "Comprehensive relocation support for businesses and individuals moving to or from China. We handle logistics, paperwork, and settlement.",
+      "features": [
+        "International freight forwarding",
+        "Customs clearance & documentation",
+        "Office relocation services",
+        "Residential moving support",
+        "Temporary storage solutions",
+        "Insurance & liability coverage",
+        "Settling-in services (bank, SIM, housing)",
+        "Pet relocation assistance"
+      ],
+      "cta": "Request Moving Quote"
+    },
+    "consultation": {
+      "title": "Consultation on China",
+      "description": "One-on-one expert consultations on doing business in China — market entry, sourcing, legal, cultural, and trade compliance guidance.",
+      "features": [
+        "Market entry strategy consulting",
+        "Supplier sourcing & verification",
+        "Product sourcing & quality inspection",
+        "Legal & regulatory compliance",
+        "Cultural etiquette & negotiation tips",
+        "Trade compliance & customs guidance",
+        "Intellectual property protection",
+        "Ongoing advisory retainer options"
+      ],
+      "cta": "Book Consultation"
+    },
+    "subsidies": {
+      "title": "Transport Subsidies",
+      "description": "Government and organizer-backed transport subsidies for exhibitors and buyers attending major trade fairs across China.",
+      "features": [
+        "Domestic flight subsidies for exhibitors",
+        "High-speed rail reimbursement programs",
+        "Hotel accommodation subsidies",
+        "Airport transfer vouchers",
+        "Group travel discount programs",
+        "Early-bird registration subsidies",
+        "Exhibitor booth travel grants",
+        "Buyer attendance support funds"
+      ],
+      "cta": "Check Eligibility"
+    }
+  },
+  "businessToursPage": {
+    "ourServices": "Our Services",
+    "title": "Business Tours",
+    "subtitle": "All-inclusive tour packages to China trade fairs with B2B matchmaking, factory visits, and professional interpreters.",
+    "viewDetails": "View Details →"
+  },
+  "chinaToursPage": {
+    "ourServices": "Our Services",
+    "title": "Tours of China",
+    "subtitle": "Curated tour packages covering China major cities, trade hubs, and cultural landmarks.",
+    "viewDetails": "View Details →"
+  },
+  "serviceTourDetailPage": {
+    "notFound": "Tour not found.",
+    "backToBusinessTours": "← Back to Business Tours",
+    "backToChinaTours": "← Back to China Tours",
+    "aboutThisTour": "About This Tour",
+    "perPerson": "per person",
+    "groupSize": "group size",
+    "duration": "duration",
+    "highlights": "Highlights",
+    "dayByDayItinerary": "Day-by-Day Itinerary",
+    "bookThisTour": "Book This Tour",
+    "usdPerPerson": "USD/person",
+    "applyNow": "Apply Now",
+    "included": "Included:",
+    "notIncluded": "Not Included:"
+  },
+  "serviceTourApplyPage": {
+    "loading": "Loading...",
+    "applicationSubmitted": "Application Submitted!",
+    "applicationSubmittedHint": "Your tour application for <strong>{name}</strong> has been received. Our team will review it and contact you within 24-48 hours.",
+    "backToTours": "← Back to Tours",
+    "backTo": "← Back to {name}",
+    "applyFor": "Apply for {name}",
+    "detailsLine": "{dates} • {duration} • ${price} USD/person",
+    "personalInformation": "Personal Information",
+    "fullName": "Full Name *",
+    "email": "Email *",
+    "phone": "Phone *",
+    "company": "Company",
+    "nationality": "Nationality *",
+    "numberOfTravelers": "Number of Travelers *",
+    "selectServices": "Select Services",
+    "selectServicesHint": "Choose the services you need included in your tour package:",
+    "services": {
+      "purchaseOfTickets": "Purchase of tickets (flights)",
+      "hotelAccommodation": "Hotel accommodation",
+      "exhibitionRegistration": "Exhibition registration & passes",
+      "visaDocumentationSupport": "Visa documentation support",
+      "professionalEscort": "Professional escort & guide",
+      "interpreter": "Mandarin/English interpreter",
+      "factoryVisits": "Factory & warehouse visits",
+      "airportTransfers": "Airport transfers & logistics"
+    },
+    "specialRequests": "Special Requests",
+    "specialRequestsPlaceholder": "Any dietary requirements, accessibility needs, or special requests...",
+    "submitting": "Submitting...",
+    "submitApplication": "Submit Application",
+    "submissionFailed": "Submission failed"
+  },
+  "visaSetupPage": {
+    "ourServices": "Our Services",
+    "title": "Company Setup & Visas",
+    "subtitle": "End-to-end assistance with setting up a business in China and obtaining the right visas.",
+    "whatsIncluded": "What's Included:",
+    "pricing": "Pricing:",
+    "timeline": "Timeline:",
+    "getStarted": "Get Started →",
+    "process": "Process:"
+  },
+  "movingAssistancePage": {
+    "quoteRequested": "Quote Requested!",
+    "quoteRequestedHint": "Our moving team will prepare a custom quote and contact you within 24 hours.",
+    "submitAnother": "Submit Another",
+    "ourServices": "Our Services",
+    "title": "Moving Assistance",
+    "subtitle": "Comprehensive relocation support for businesses and individuals moving to or from China.",
+    "whatWeHandle": "What We Handle",
+    "handle": {
+      "internationalFreight": { "title": "International Freight", "desc": "Sea, air, and land shipping with full tracking" },
+      "customsClearance": { "title": "Customs Clearance", "desc": "Import/export documentation and compliance" },
+      "officeRelocation": { "title": "Office Relocation", "desc": "Complete office move project management" },
+      "residentialMoving": { "title": "Residential Moving", "desc": "Home relocation with unpacking and setup" },
+      "storageSolutions": { "title": "Storage Solutions", "desc": "Short and long-term warehouse storage" },
+      "insuranceCoverage": { "title": "Insurance Coverage", "desc": "Comprehensive cargo and liability insurance" },
+      "settlingIn": { "title": "Settling-In Services", "desc": "Bank account, SIM card, housing search" },
+      "petRelocation": { "title": "Pet Relocation", "desc": "Safe international pet transport assistance" }
+    },
+    "requestMovingQuote": "Request Moving Quote",
+    "name": "Name *",
+    "email": "Email *",
+    "phone": "Phone",
+    "company": "Company",
+    "movingType": "Moving Type *",
+    "movingTypes": {
+      "office": "Office Relocation",
+      "residential": "Residential Moving",
+      "freight": "Freight Only",
+      "pet": "Pet Relocation"
+    },
+    "originCity": "Origin City *",
+    "originCityPlaceholder": "e.g. Dubai, UAE",
+    "destinationCity": "Destination City *",
+    "destinationCityPlaceholder": "e.g. Shenzhen, China",
+    "preferredMoveDate": "Preferred Move Date",
+    "additionalDetails": "Additional Details",
+    "additionalDetailsPlaceholder": "Volume estimate, special items, timeline constraints...",
+    "submitQuoteRequest": "Submit Quote Request"
+  },
+  "consultationPage": {
+    "consultationBooked": "Consultation Booked!",
+    "consultationBookedHint": "Our expert will confirm your consultation slot within 24 hours. You'll receive a calendar invite via email.",
+    "bookAnother": "Book Another",
+    "ourServices": "Our Services",
+    "title": "Consultation on China",
+    "subtitle": "One-on-one expert sessions on doing business in China — market entry, sourcing, legal, and trade compliance.",
+    "ourConsultationTopics": "Our Consultation Topics",
+    "topics": {
+      "marketEntry": { "title": "Market Entry Strategy", "desc": "Competitor analysis, pricing, distribution channels, regulatory landscape" },
+      "supplierSourcing": { "title": "Supplier Sourcing", "desc": "Factory verification, background checks, sample coordination, price negotiation" },
+      "qualityInspection": { "title": "Quality Inspection", "desc": "Pre-shipment inspection, factory audits, product testing coordination" },
+      "legalCompliance": { "title": "Legal & Compliance", "desc": "Contract review, IP protection, regulatory compliance, dispute resolution" },
+      "culturalEtiquette": { "title": "Cultural Etiquette", "desc": "Negotiation tactics, business card protocol, gift-giving, dining customs" },
+      "tradeCompliance": { "title": "Trade Compliance", "desc": "Customs classification, import/export regulations, tariff optimization" },
+      "ipProtectionDetail": { "title": "IP Protection", "desc": "Trademark registration, patent filing, trade secret protection in China" }
+    },
+    "pricing": "Pricing",
+    "singleSession": "Single Session (60 min)",
+    "packageOf4": "Package of 4 Sessions",
+    "monthlyRetainer": "Monthly Retainer",
+    "freeDiscoveryCall": "Free Discovery Call",
+    "free": "FREE",
+    "bookAConsultation": "Book a Consultation",
+    "name": "Name *",
+    "email": "Email *",
+    "company": "Company",
+    "topic": "Topic *",
+    "selectATopic": "Select a topic...",
+    "topicOptions": {
+      "marketEntry": "Market Entry Strategy",
+      "supplierSourcing": "Supplier Sourcing",
+      "qualityInspection": "Product Quality Inspection",
+      "legalCompliance": "Legal & Compliance",
+      "culturalEtiquette": "Cultural Etiquette",
+      "tradeCompliance": "Trade Compliance",
+      "ipProtection": "Intellectual Property",
+      "generalConsultation": "General Consultation"
+    },
+    "preferredDate": "Preferred Date",
+    "questionsToCover": "Questions / Topics to Cover",
+    "questionsPlaceholder": "Tell us about your business needs and what you'd like to discuss...",
+    "bookConsultation": "Book Consultation"
+  },
+  "transportSubsidiesPage": {
+    "ourServices": "Our Services",
+    "title": "Transport Subsidies",
+    "subtitle": "Government and organizer-backed transport subsidies for exhibitors and buyers attending major trade fairs across China.",
+    "subsidiesCurrentlyOpen": "{count} subsidies currently open",
+    "statusOpen": "Open",
+    "statusClosingSoon": "Closing Soon",
+    "statusClosed": "Closed",
+    "deadline": "Deadline: {date}",
+    "eligibility": "Eligibility:",
+    "requiredDocuments": "Required Documents:",
+    "howToApply": "How to Apply:"
+  },
   "home": {
     "badge": "{count} Upcoming Exhibitions in 2026",
     "heroTitleLine1": "Where Global",

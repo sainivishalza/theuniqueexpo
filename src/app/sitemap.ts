@@ -3,6 +3,7 @@ import { listExhibitions } from "@/lib/server/exhibitions-repo";
 import { listTours } from "@/lib/server/tours-repo";
 import { getAllTours } from "@/lib/tours";
 import { mockExhibitorProfiles } from "@/lib/booths";
+import { routing } from "@/i18n/routing";
 
 const SITE_URL = "https://theuniqueexpo.com";
 
@@ -31,43 +32,54 @@ const STATIC_ROUTES = [
   "/register",
 ];
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((path) => ({
-    url: `${SITE_URL}${path}`,
-    lastModified: new Date(),
+// Every page now lives under a /<locale> prefix (see src/i18n/routing.ts) --
+// emit one sitemap entry per locale for each path, each carrying hreflang
+// alternates pointing at the other locales of the same path.
+function localizedEntries(path: string, lastModified: Date): MetadataRoute.Sitemap {
+  const languages = Object.fromEntries(
+    routing.locales.map((locale) => [locale, `${SITE_URL}/${locale}${path}`])
+  );
+  return routing.locales.map((locale) => ({
+    url: `${SITE_URL}/${locale}${path}`,
+    lastModified,
+    alternates: { languages },
   }));
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const now = new Date();
+  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.flatMap((path) =>
+    localizedEntries(path, now)
+  );
 
   let exhibitionEntries: MetadataRoute.Sitemap = [];
   try {
     const exhibitions = await listExhibitions();
-    exhibitionEntries = exhibitions.map((expo) => ({
-      url: `${SITE_URL}/exhibitions/${expo.slug}`,
-      lastModified: new Date(),
-    }));
+    exhibitionEntries = exhibitions.flatMap((expo) =>
+      localizedEntries(`/exhibitions/${expo.slug}`, now)
+    );
   } catch {
     // Sitemap generation shouldn't take the whole site down if the DB is briefly unreachable.
   }
 
-  const tourEntries: MetadataRoute.Sitemap = getAllTours().map((tour) => ({
-    url: `${SITE_URL}/services/${tour.type === "business" ? "business-tours" : "china-tours"}/${tour.slug}`,
-    lastModified: new Date(),
-  }));
+  const tourEntries: MetadataRoute.Sitemap = getAllTours().flatMap((tour) =>
+    localizedEntries(
+      `/services/${tour.type === "business" ? "business-tours" : "china-tours"}/${tour.slug}`,
+      now
+    )
+  );
 
   let dbTourEntries: MetadataRoute.Sitemap = [];
   try {
     const dbTours = await listTours();
-    dbTourEntries = dbTours.map((tour) => ({
-      url: `${SITE_URL}/tours/${tour.slug}`,
-      lastModified: new Date(),
-    }));
+    dbTourEntries = dbTours.flatMap((tour) => localizedEntries(`/tours/${tour.slug}`, now));
   } catch {
     // Same reasoning as exhibitions above.
   }
 
-  const exhibitorEntries: MetadataRoute.Sitemap = mockExhibitorProfiles.map((profile) => ({
-    url: `${SITE_URL}/exhibitor/${profile.slug || profile.id}`,
-    lastModified: new Date(),
-  }));
+  const exhibitorEntries: MetadataRoute.Sitemap = mockExhibitorProfiles.flatMap((profile) =>
+    localizedEntries(`/exhibitor/${profile.slug || profile.id}`, now)
+  );
 
   return [...staticEntries, ...exhibitionEntries, ...tourEntries, ...dbTourEntries, ...exhibitorEntries];
 }

@@ -1,48 +1,51 @@
 import Logo from "@/components/Logo";
-import Link from "next/link";
-
-const footerLinks = {
-  Platform: [
-    { label: "Browse Exhibitions", href: "/exhibitions" },
-    { label: "Our Services", href: "/services" },
-    { label: "Business Tours", href: "/services/business-tours" },
-    { label: "China Tours", href: "/services/china-tours" },
-    { label: "Exhibitor Directory", href: "/directory" },
-    { label: "RFQ Marketplace", href: "/marketplace" },
-    { label: "Partner Program", href: "/register" },
-  ],
-  Company: [
-    { label: "About Us", href: "/about" },
-    { label: "Contact", href: "/contact" },
-    { label: "Careers", href: "/careers" },
-    { label: "Blog", href: "/blog" },
-  ],
-  Resources: [
-    { label: "Help Center", href: "/help" },
-    { label: "Exhibition Guide", href: "/exhibition-guide" },
-    { label: "Booth Setup Tips", href: "/booth-setup-tips" },
-    { label: "API Documentation", href: "/api-documentation" },
-  ],
-};
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 export default function Footer() {
+  const t = useTranslations("footer");
+
+  const footerLinks = {
+    [t("columns.platform")]: [
+      { label: t("links.browseExhibitions"), href: "/exhibitions" },
+      { label: t("links.ourServices"), href: "/services" },
+      { label: t("links.businessTours"), href: "/services/business-tours" },
+      { label: t("links.chinaTours"), href: "/services/china-tours" },
+      { label: t("links.exhibitorDirectory"), href: "/directory" },
+      { label: t("links.rfqMarketplace"), href: "/marketplace" },
+      { label: t("links.partnerProgram"), href: "/register" },
+    ],
+    [t("columns.company")]: [
+      { label: t("links.aboutUs"), href: "/about" },
+      { label: t("links.contact"), href: "/contact" },
+      { label: t("links.careers"), href: "/careers" },
+      { label: t("links.blog"), href: "/blog" },
+    ],
+    [t("columns.resources")]: [
+      { label: t("links.helpCenter"), href: "/help" },
+      { label: t("links.exhibitionGuide"), href: "/exhibition-guide" },
+      { label: t("links.boothSetupTips"), href: "/booth-setup-tips" },
+      { label: t("links.apiDocumentation"), href: "/api-documentation" },
+    ],
+  };
+
   return (
     <footer className="bg-gray-900 text-gray-300">
       {/* Newsletter */}
       <div className="border-b border-gray-800">
         <div className="mx-auto max-w-7xl px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-xl font-bold text-white">Stay Updated</h3>
-            <p className="text-sm text-gray-400 mt-1">Get the latest exhibition news and exclusive early-bird offers.</p>
+            <h3 className="text-xl font-bold text-white">{t("newsletterTitle")}</h3>
+            <p className="text-sm text-gray-400 mt-1">{t("newsletterSubtitle")}</p>
           </div>
           <form className="flex gap-2 w-full md:w-auto" onSubmit={(e) => e.preventDefault()}>
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder={t("emailPlaceholder")}
               className="flex-1 md:w-72 rounded-xl bg-gray-800 border border-gray-700 px-4 py-3 text-sm text-white placeholder-gray-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
             />
             <button className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity whitespace-nowrap">
-              Subscribe
+              {t("subscribe")}
             </button>
           </form>
         </div>
@@ -56,8 +59,7 @@ export default function Footer() {
             <Logo size="default" />
           </div>
           <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
-            The global B2B exhibition, trade-fair &amp; sourcing platform connecting buyers
-            with exhibitors worldwide.
+            {t("brandBlurb")}
           </p>
           {/* Social icons */}
           <div className="flex gap-3 mt-5">
@@ -93,11 +95,11 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-gray-800">
         <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
-          <span>© {new Date().getFullYear()} The Unique Expo. All rights reserved.</span>
+          <span>{t("copyright", { year: new Date().getFullYear() })}</span>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+            <a href="#" className="hover:text-white transition-colors">{t("privacyPolicy")}</a>
+            <a href="#" className="hover:text-white transition-colors">{t("termsOfService")}</a>
+            <a href="#" className="hover:text-white transition-colors">{t("cookiePolicy")}</a>
           </div>
         </div>
       </div>

@@ -1,0 +1,166 @@
+{
+  "nav": {
+    "exhibitions": "展会",
+    "directory": "企业目录",
+    "tours": "旅游",
+    "marketplace": "采购市场",
+    "services": "服务",
+    "messages": "消息",
+    "dashboard": "控制台",
+    "logout": "退出登录",
+    "login": "登录",
+    "register": "注册"
+  },
+  "footer": {
+    "newsletterTitle": "获取最新资讯",
+    "newsletterSubtitle": "获取最新展会资讯及独家早鸟优惠。",
+    "emailPlaceholder": "请输入您的邮箱",
+    "subscribe": "订阅",
+    "brandBlurb": "全球领先的 B2B 展会、贸易博览会与采购平台,连接全球买家与展商。",
+    "columns": {
+      "platform": "平台",
+      "company": "公司",
+      "resources": "资源"
+    },
+    "links": {
+      "browseExhibitions": "浏览展会",
+      "ourServices": "我们的服务",
+      "businessTours": "商务考察团",
+      "chinaTours": "中国旅游团",
+      "exhibitorDirectory": "展商目录",
+      "rfqMarketplace": "询价采购市场",
+      "partnerProgram": "合作伙伴计划",
+      "aboutUs": "关于我们",
+      "contact": "联系我们",
+      "careers": "招聘信息",
+      "blog": "博客",
+      "helpCenter": "帮助中心",
+      "exhibitionGuide": "展会指南",
+      "boothSetupTips": "展位搭建技巧",
+      "apiDocumentation": "API 文档"
+    },
+    "copyright": "© {year} The Unique Expo. 保留所有权利。",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款",
+    "cookiePolicy": "Cookie 政策"
+  },
+  "about": {
+    "ourStory": "我们的故事",
+    "ourMission": "我们的使命",
+    "ourVision": "我们的愿景"
+  },
+  "exhibitionsPage": {
+    "title": "展会",
+    "subtitle": "探索全球顶级贸易博览会与展会。",
+    "filter": "筛选:",
+    "allIndustries": "所有行业",
+    "allCities": "所有城市",
+    "allDates": "所有日期",
+    "upcoming": "即将举行",
+    "past": "已结束",
+    "count": "{count, plural, other {共 # 场展会}}",
+    "loading": "正在加载展会...",
+    "viewDetails": "查看详情 →",
+    "noResultsTitle": "未找到相关展会",
+    "noResultsSubtitle": "请尝试调整筛选条件以查找活动。"
+  },
+  "toursPage": {
+    "title": "旅游",
+    "subtitle": "畅游中国及周边地区——告诉我们同行人数和您的兴趣,我们将为您定制行程。",
+    "loading": "正在加载旅游线路...",
+    "perPerson": "/ 人",
+    "viewDetails": "查看详情 →",
+    "noResultsTitle": "暂无旅游线路",
+    "noResultsSubtitle": "请稍后再来查看最新旅游线路。"
+  },
+  "marketplacePage": {
+    "title": "采购市场",
+    "subtitle": "浏览来自全球认证买家的公开采购需求。",
+    "postBuyRequest": "发布采购需求",
+    "stats": {
+      "openRfqs": "进行中的询价",
+      "totalRequests": "需求总数",
+      "activeBuyers": "活跃买家"
+    },
+    "buyRequests": "采购需求",
+    "newRfq": "+ 新建询价",
+    "loadingBuyRequests": "正在加载采购需求...",
+    "noResultsTitle": "暂无采购需求",
+    "noResultsSubtitle": "成为第一个发布需求、寻找供应商的人吧。",
+    "postFirstRfq": "发布您的第一个需求",
+    "status": {
+      "open": "进行中",
+      "quotesReceived": "已收到报价",
+      "awarded": "已确定供应商",
+      "closed": "已关闭"
+    },
+    "postedBy": "发布者:{name} • {category}",
+    "qty": "数量:{value}",
+    "target": "目标价格:{value}",
+    "deadline": "截止日期:{value}",
+    "viewDetails": "查看详情 →"
+  },
+  "directoryPage": {
+    "title": "展商目录",
+    "subtitle": "在所有展会中搜索经过认证的供应商和展商。",
+    "searchPlaceholder": "按名称、产品或国家搜索...",
+    "allIndustries": "所有行业",
+    "count": "{count, plural, other {共 # 家展商}}",
+    "noResultsTitle": "未找到相关展商",
+    "noResultsSubtitle": "请尝试更换搜索词或筛选条件。",
+    "verified": "✓ 已认证",
+    "ratingLine": "★ {average}({count, plural, other {# 条评价}})",
+    "moreProducts": "+{count} 更多"
+  },
+  "home": {
+    "badge": "2026年即将举行的展会共 {count} 场",
+    "heroTitleLine1": "全球贸易",
+    "heroTitleLine2": "在此发生",
+    "heroSubtitle": "发现优质展会,联系全球买家与展商,借助全球领先的 B2B 贸易平台发展您的业务。",
+    "browseExhibitions": "浏览展会",
+    "ourServices": "我们的服务",
+    "stats": {
+      "exhibitions": "大型展会",
+      "exhibitors": "参展商",
+      "visitors": "全球观众",
+      "markets": "中国市场"
+    },
+    "featuredBadge": "🎪 精选展会",
+    "featuredTitle": "即将举行的展会",
+    "featuredSubtitle": "不要错过这些世界级贸易盛会。注册成为受邀买家,享受专属权益。",
+    "highlights": "亮点",
+    "exhibitorsSuffix": "+ 家展商",
+    "viewDetails": "查看详情 →",
+    "viewAll": "查看全部 {count} 场展会",
+    "industryBadge": "按行业浏览",
+    "industryTitle": "找到您的行业",
+    "industrySubtitle": "探索与您业务最相关行业的各类展会。",
+    "eventsSuffix": "+ 场展会",
+    "industries": {
+      "electronics": "电子产品",
+      "digitalTrade": "数字贸易",
+      "lighting": "照明",
+      "furniture": "家具",
+      "manufacturing": "制造业",
+      "energy": "能源",
+      "tradeInvestment": "贸易与投资",
+      "healthBeauty": "健康美容",
+      "logistics": "物流",
+      "hospitality": "酒店与餐饮",
+      "toysGifts": "玩具礼品",
+      "agriculture": "农业"
+    },
+    "processBadge": "简单流程",
+    "processTitle": "The Unique Expo 使用流程",
+    "step": "第 {number} 步",
+    "steps": {
+      "discover": { "title": "发现展会", "desc": "按行业、日期和地点浏览全球贸易博览会,找到最适合您业务的展会。" },
+      "registerBuyer": { "title": "注册成为买家", "desc": "申请受邀买家计划,获取差旅补贴、酒店住宿和贵宾通道。" },
+      "connect": { "title": "洽谈并达成合作", "desc": "与展商面对面交流,安排一对一会面,现场洽谈并达成合作。" }
+    },
+    "ctaTitle": "准备好发展您的业务了吗?",
+    "ctaSubtitle": "加入成千上万的展商和买家,通过 The Unique Expo 发现商机、注册成为受邀买家,并在中国的世界级贸易展会上达成合作。",
+    "getStarted": "免费开始",
+    "exploreServices": "探索我们的服务"
+  }
+}

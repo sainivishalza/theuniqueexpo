@@ -80,6 +80,10 @@ export function mapExhibitionRow(row: any) {
     galleryImages: safeParseArray(row.gallery_images),
     registrationEnabled: row.registration_enabled === undefined ? true : !!row.registration_enabled,
     registrationFormSchema: safeParseJson(row.registration_form_schema),
+    // Cache-busting value for the image/gallery endpoints below -- their
+    // URL is otherwise identical before and after an admin re-uploads a
+    // poster, so browsers/CDN would keep serving the old cached bytes.
+    updatedAt: row.updated_at ? Math.floor(new Date(row.updated_at).getTime() / 1000) : 0,
   };
 }
 
@@ -92,7 +96,8 @@ export async function listExhibitions() {
   const [rows] = await pool.query(
     `SELECT id, slug, title, start_date, end_date, venue, city, country, industry, description,
             highlights, exhibitors, visitors, organizer, website, color, registration_enabled, registration_form_schema,
-            IF(LEFT(image, 5) = 'data:', CONCAT('/api/exhibitions/', slug, '/image'), image) AS image
+            updated_at,
+            IF(LEFT(image, 5) = 'data:', CONCAT('/api/exhibitions/', slug, '/image?v=', UNIX_TIMESTAMP(updated_at)), image) AS image
      FROM exhibitions ORDER BY start_date ASC`
   );
   return (rows as any[]).map(mapExhibitionRow);

@@ -40,11 +40,15 @@ export default function ExhibitionDetailPage({
         // so the browser gets a real cacheable image request rather than a
         // multi-hundred-KB string embedded in this page's own JS bundle.
         const expo = data.exhibition;
+        // Append updatedAt as a cache-busting ?v= so a re-uploaded image
+        // gets a new URL instead of colliding with the old cached one.
         setExpo({
           ...expo,
-          image: expo.image?.startsWith("data:") ? `/api/exhibitions/${slug}/image` : expo.image,
+          image: expo.image?.startsWith("data:")
+            ? `/api/exhibitions/${slug}/image?v=${expo.updatedAt}`
+            : expo.image,
           galleryImages: (expo.galleryImages || []).map((img: string, i: number) =>
-            img?.startsWith("data:") ? `/api/exhibitions/${slug}/gallery/${i}` : img
+            img?.startsWith("data:") ? `/api/exhibitions/${slug}/gallery/${i}?v=${expo.updatedAt}` : img
           ),
         });
       })

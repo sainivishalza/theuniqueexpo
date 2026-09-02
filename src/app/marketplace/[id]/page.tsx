@@ -222,6 +222,14 @@ export default function RFQDetailPage() {
                           <div><span className="text-gray-400">Lead Time</span><p className="font-bold text-gray-900">{q.leadTime}</p></div>
                         </div>
                         {q.notes && <p className="text-sm text-gray-500 mt-2">{q.notes}</p>}
+                        {user && (String(user.id) === rfq.buyerId || String(user.id) === q.exhibitorId) && (
+                          <Link
+                            href={`/messages/${q.id}`}
+                            className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:underline"
+                          >
+                            💬 {String(user.id) === rfq.buyerId ? "Message Supplier" : "Message Buyer"}
+                          </Link>
+                        )}
                       </div>
                     ))
                   )}

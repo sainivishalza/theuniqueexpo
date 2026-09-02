@@ -42,6 +42,12 @@ export default function NavBar() {
             <>
               <div className="w-px h-5 bg-gray-200 mx-1" />
               <Link
+                href="/messages"
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors"
+              >
+                Messages
+              </Link>
+              <Link
                 href="/dashboard"
                 className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors"
               >
@@ -104,6 +110,7 @@ export default function NavBar() {
           <Link href="/marketplace" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>Marketplace</Link>
           {user ? (
             <>
+              <Link href="/messages" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>Messages</Link>
               <Link href="/dashboard" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>Dashboard</Link>
               <button onClick={() => { logout(); setMobileOpen(false); }} className="block py-2.5 text-sm font-medium text-red-500 hover:text-red-700">Logout</button>
             </>

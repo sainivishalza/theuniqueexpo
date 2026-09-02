@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { mockExhibitorProfiles } from "@/lib/booths";
+import ExhibitorReviews from "@/components/ExhibitorReviews";
 
 const avatarColors = [
   "from-emerald-500 to-emerald-600",
@@ -104,6 +105,8 @@ export default function ExhibitorProfilePage() {
                   ))}
                 </div>
               </div>
+
+              <ExhibitorReviews slug={profile.slug} />
             </div>
 
             {/* Sidebar */}

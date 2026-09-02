@@ -33,6 +33,13 @@ const actions = [
     color: "from-orange-500 to-red-500",
   },
   {
+    title: "Saved Exhibitions",
+    description: "Exhibitions you've bookmarked for later",
+    href: "/favorites",
+    icon: "❤️",
+    color: "from-red-400 to-pink-500",
+  },
+  {
     title: "Saved Suppliers",
     description: "Your bookmarked exhibitor profiles",
     icon: "⭐",

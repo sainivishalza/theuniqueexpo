@@ -1,10 +1,12 @@
 "use client";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { businessTours } from "@/lib/tours";
 import { formatNumber } from "@/lib/format";
 
 export default function BusinessToursPage() {
+  const t = useTranslations("businessToursPage");
   return (
     <div>
       <section className="relative overflow-hidden bg-gray-900 py-20">
@@ -19,9 +21,9 @@ export default function BusinessToursPage() {
           />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
-          <p className="text-emerald-300 font-semibold mb-2">Our Services</p>
-          <h1 className="text-4xl md:text-5xl font-extrabold">Business Tours</h1>
-          <p className="mt-3 text-lg text-gray-300 max-w-2xl">All-inclusive tour packages to China trade fairs with B2B matchmaking, factory visits, and professional interpreters.</p>
+          <p className="text-emerald-300 font-semibold mb-2">{t("ourServices")}</p>
+          <h1 className="text-4xl md:text-5xl font-extrabold">{t("title")}</h1>
+          <p className="mt-3 text-lg text-gray-300 max-w-2xl">{t("subtitle")}</p>
         </div>
       </section>
       <section className="py-12 bg-gray-50">
@@ -51,7 +53,7 @@ export default function BusinessToursPage() {
                   <p className="text-sm text-gray-400 line-clamp-2 mb-4">{tour.description}</p>
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                     <div className="text-xl font-extrabold text-gray-900">${formatNumber(tour.price)} <span className="text-sm font-normal text-gray-400">USD</span></div>
-                    <span className="text-sm font-semibold text-emerald-600 group-hover:translate-x-1 transition-transform">View Details →</span>
+                    <span className="text-sm font-semibold text-emerald-600 group-hover:translate-x-1 transition-transform">{t("viewDetails")}</span>
                   </div>
                 </div>
               </Link>

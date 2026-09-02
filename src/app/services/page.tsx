@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { serviceCategories } from "@/lib/services";
 
@@ -26,7 +27,14 @@ export default function ServicesPage() {
     <div>
       <section className="relative overflow-hidden bg-gray-900 py-20">
         <div className="absolute inset-0 opacity-15">
-          <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&h=600&fit=crop&q=80" alt="" className="img-cover" />
+          <Image
+            src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&h=600&fit=crop&q=80"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
           <h1 className="text-4xl md:text-5xl font-extrabold">Our Services</h1>
@@ -64,7 +72,13 @@ export default function ServicesPage() {
             {serviceCategories.map((svc) => (
               <Link key={svc.id} href={svc.slug === "business-tours" || svc.slug === "china-tours" ? "/services/" + svc.slug : svc.slug === "transport-subsidies" ? "/services/transport-subsidies" : "/services/" + svc.slug} className="group block rounded-2xl overflow-hidden bg-white shadow-md shadow-gray-200/50 card-hover">
                 <div className="relative h-48 overflow-hidden">
-                  <img src={svc.image} alt={svc.title} className="img-cover group-hover:scale-105 transition-transform duration-500" />
+                  <Image
+                    src={svc.image}
+                    alt={svc.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                   <div className="absolute inset-0 gradient-overlay" />
                   <div className="absolute top-4 left-4">
                     <span className="rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1 text-xl shadow-sm">{svc.icon}</span>

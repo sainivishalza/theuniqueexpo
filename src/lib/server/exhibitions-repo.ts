@@ -118,6 +118,19 @@ export async function getExhibitionImageValue(slugOrId: string): Promise<string 
   return row ? row.image : null;
 }
 
+// Targeted lookup for the dedicated gallery-image-serving route -- same
+// reasoning as getExhibitionImageValue above.
+export async function getExhibitionGalleryImageValue(slugOrId: string, index: number): Promise<string | null> {
+  const [rows] = await pool.query(
+    "SELECT gallery_images FROM exhibitions WHERE slug = ? OR id = ? LIMIT 1",
+    [slugOrId, Number(slugOrId) || 0]
+  );
+  const row = (rows as any[])[0];
+  if (!row) return null;
+  const images = safeParseArray(row.gallery_images);
+  return images[index] || null;
+}
+
 export async function createExhibition(input: ExhibitionInput) {
   const [result] = await pool.query(
     `INSERT INTO exhibitions (slug, title, start_date, end_date, venue, city, country, industry, description, highlights, exhibitors, visitors, organizer, website, color, image, gallery_images)

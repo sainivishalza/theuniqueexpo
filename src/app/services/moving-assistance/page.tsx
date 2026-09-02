@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function MovingAssistancePage() {
   const [submitted, setSubmitted] = useState(false);
@@ -21,7 +22,9 @@ export default function MovingAssistancePage() {
   return (
     <div>
       <section className="relative overflow-hidden bg-gray-900 py-20">
-        <div className="absolute inset-0 opacity-15"><img src="https://images.unsplash.com/photo-1600518464441-9154a4dea21b?w=1600&h=600&fit=crop&q=80" alt="" className="img-cover" /></div>
+        <div className="absolute inset-0 opacity-15">
+          <Image src="https://images.unsplash.com/photo-1600518464441-9154a4dea21b?w=1600&h=600&fit=crop&q=80" alt="" fill priority sizes="100vw" className="object-cover" />
+        </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
           <p className="text-emerald-300 font-semibold mb-2">Our Services</p>
           <h1 className="text-4xl md:text-5xl font-extrabold">Moving Assistance</h1>

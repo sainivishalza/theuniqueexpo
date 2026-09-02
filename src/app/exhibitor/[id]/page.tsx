@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { mockExhibitorProfiles } from "@/lib/booths";
 
@@ -36,10 +37,13 @@ export default function ExhibitorProfilePage() {
     <div>
       {/* Hero */}
       <section className="relative h-56 bg-gray-900 overflow-hidden">
-        <img
+        <Image
           src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&h=300&fit=crop&q=80"
           alt=""
-          className="img-cover opacity-30"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover opacity-30"
         />
         <div className="absolute inset-0 gradient-overlay" />
       </section>

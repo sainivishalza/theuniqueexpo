@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { subsidies, getOpenSubsidies } from "@/lib/subsidies";
 
 export default function SubsidiesPage() {
@@ -7,7 +8,9 @@ export default function SubsidiesPage() {
   return (
     <div>
       <section className="relative overflow-hidden bg-gray-900 py-20">
-        <div className="absolute inset-0 opacity-15"><img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1600&h=600&fit=crop&q=80" alt="" className="img-cover" /></div>
+        <div className="absolute inset-0 opacity-15">
+          <Image src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1600&h=600&fit=crop&q=80" alt="" fill priority sizes="100vw" className="object-cover" />
+        </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
           <p className="text-emerald-300 font-semibold mb-2">Our Services</p>
           <h1 className="text-4xl md:text-5xl font-extrabold">Transport Subsidies</h1>

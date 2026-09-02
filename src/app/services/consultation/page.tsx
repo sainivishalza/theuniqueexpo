@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 const TOPICS = ["Market Entry Strategy", "Supplier Sourcing", "Product Quality Inspection", "Legal & Compliance", "Cultural Etiquette", "Trade Compliance", "Intellectual Property", "General Consultation"];
@@ -23,7 +24,9 @@ export default function ConsultationPage() {
   return (
     <div>
       <section className="relative overflow-hidden bg-gray-900 py-20">
-        <div className="absolute inset-0 opacity-15"><img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1600&h=600&fit=crop&q=80" alt="" className="img-cover" /></div>
+        <div className="absolute inset-0 opacity-15">
+          <Image src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1600&h=600&fit=crop&q=80" alt="" fill priority sizes="100vw" className="object-cover" />
+        </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
           <p className="text-emerald-300 font-semibold mb-2">Our Services</p>
           <h1 className="text-4xl md:text-5xl font-extrabold">Consultation on China</h1>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { formatNumber } from "@/lib/format";
 
@@ -41,10 +42,13 @@ export default function ExhibitionsPage() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-gray-900 py-20">
         <div className="absolute inset-0 opacity-15">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&h=600&fit=crop&q=80"
             alt=""
-            className="img-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
@@ -114,17 +118,21 @@ export default function ExhibitionsPage() {
                 {/* Image */}
                 <div className="relative h-52 overflow-hidden bg-gray-900">
                   {/* Blurred backdrop fills the frame regardless of the poster's aspect ratio */}
-                  <img
+                  <Image
                     src={expo.image}
                     alt=""
                     aria-hidden="true"
-                    className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-60 group-hover:scale-125 transition-transform duration-500"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover blur-2xl scale-110 opacity-60 group-hover:scale-125 transition-transform duration-500"
                   />
                   {/* Full poster, never cropped, so any text/details stay readable */}
-                  <img
+                  <Image
                     src={expo.image}
                     alt={expo.title}
-                    className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-contain group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 gradient-overlay" />
                   <div className="absolute top-4 left-4 flex gap-2">

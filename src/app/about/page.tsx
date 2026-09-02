@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getAboutContent } from "@/lib/server/about-content-repo";
 
 // Content only changes via the admin panel -- cache the rendered page and
@@ -26,10 +27,14 @@ export default async function AboutPage() {
       {content.heroImage && (
         <section className="relative bg-gray-950 py-8 md:py-10 overflow-hidden">
           <div className="relative mx-auto max-w-4xl px-6 flex justify-center">
-            <img
+            <Image
               src={content.heroImage}
               alt={content.heading}
+              width={1200}
+              height={800}
+              sizes="(max-width: 768px) 100vw, 800px"
               className="max-w-full max-h-[60vh] w-auto h-auto rounded-xl shadow-2xl"
+              priority
             />
           </div>
         </section>

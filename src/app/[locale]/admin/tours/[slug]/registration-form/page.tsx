@@ -1,5 +1,6 @@
 "use client";
 import { use, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -11,16 +12,18 @@ import {
 
 interface TourSummary { id: string; title: string; slug: string; }
 
-const TYPE_LABELS: Record<CustomFieldType, string> = {
-  text: "Short answer",
-  textarea: "Paragraph",
-  radio: "Single choice",
-  checkbox: "Multiple choice",
-  file: "File upload",
-};
-
 export default function TourRegistrationFormBuilderPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
+  const t = useTranslations("adminTourRegForm");
+  const tb = useTranslations("adminRegFormBuilder");
+  const ta = useTranslations("adminCommon");
+  const TYPE_LABELS: Record<CustomFieldType, string> = {
+    text: tb("types.text"),
+    textarea: tb("types.textarea"),
+    radio: tb("types.radio"),
+    checkbox: tb("types.checkbox"),
+    file: tb("types.file"),
+  };
   const { user, loading: authLoading } = useAuth();
   const [tour, setTour] = useState<TourSummary | null>(null);
   const [enabled, setEnabled] = useState(true);
@@ -83,7 +86,7 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Save failed");
+      if (!res.ok) throw new Error(data.error || tb("saveFailed"));
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err: any) {
@@ -95,32 +98,32 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
 
   if (authLoading) return null;
   if (!user || user.role !== "admin") {
-    return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">Admin access required.</p></div>;
+    return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{ta("accessRequired")}</p></div>;
   }
 
   return (
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-4xl px-6">
-          <Link href="/admin/tours" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">← Back to Tours</Link>
-          <h1 className="text-3xl font-extrabold text-white">{tour ? `${tour.title} — Registration Form` : "Registration Form"}</h1>
-          <p className="mt-1 text-emerald-200/80">Control whether registration is open, and what this tour asks travelers when they register.</p>
+          <Link href="/admin/tours" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToTours")}</Link>
+          <h1 className="text-3xl font-extrabold text-white">{tour ? t("titleWithName", { name: tour.title }) : t("title")}</h1>
+          <p className="mt-1 text-emerald-200/80">{t("subtitle")}</p>
         </div>
       </section>
 
       <section className="py-10 bg-gray-50">
         <div className="mx-auto max-w-4xl px-6 space-y-6">
           {loading ? (
-            <p className="text-center text-gray-500 py-10">Loading...</p>
+            <p className="text-center text-gray-500 py-10">{ta("loading")}</p>
           ) : error && !tour ? (
             <p className="text-center text-red-600 py-10">{error}</p>
           ) : (
             <>
               <div className="bg-white rounded-2xl p-6 shadow-sm flex items-center justify-between">
                 <div>
-                  <h2 className="font-bold text-gray-900">Registration Status</h2>
+                  <h2 className="font-bold text-gray-900">{tb("registrationStatus")}</h2>
                   <p className="text-sm text-gray-500 mt-1">
-                    {enabled ? "Travelers can register for this tour." : "Registration is closed — the \"Register\" button is hidden."}
+                    {enabled ? t("enabledHint") : t("disabledHint")}
                   </p>
                 </div>
                 <button
@@ -132,27 +135,27 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
               </div>
 
               <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h2 className="font-bold text-gray-900 mb-4">Registration Questions</h2>
+                <h2 className="font-bold text-gray-900 mb-4">{t("registrationQuestions")}</h2>
                 <div className="space-y-4">
                   {fields.length === 0 && (
-                    <p className="text-sm text-gray-400 text-center py-6">No fields yet — add your first question below.</p>
+                    <p className="text-sm text-gray-400 text-center py-6">{tb("noFieldsYet")}</p>
                   )}
                   {fields.map((field, index) => (
                     <div key={field.id} className="rounded-xl border border-gray-200 p-4 space-y-3">
                       <div className="flex items-start gap-3">
                         <div className="flex-1 grid gap-3 md:grid-cols-2">
                           <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1">Question / Label</label>
+                            <label className="block text-xs font-semibold text-gray-500 mb-1">{tb("questionLabel")}</label>
                             <input
                               type="text"
                               value={field.label}
                               onChange={(e) => updateField(field.id, { label: e.target.value })}
-                              placeholder="e.g. How many people are traveling?"
+                              placeholder={t("questionPlaceholder")}
                               className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1">Field Type</label>
+                            <label className="block text-xs font-semibold text-gray-500 mb-1">{tb("fieldType")}</label>
                             <select
                               value={field.type}
                               onChange={(e) => {
@@ -175,7 +178,7 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
 
                       {isChoiceType(field.type) && (
                         <div>
-                          <label className="block text-xs font-semibold text-gray-500 mb-1">Options (one per line)</label>
+                          <label className="block text-xs font-semibold text-gray-500 mb-1">{tb("optionsHint")}</label>
                           <textarea
                             value={(field.options || []).join("\n")}
                             onChange={(e) => updateField(field.id, { options: e.target.value.split("\n") })}
@@ -194,9 +197,9 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
                             onChange={(e) => updateField(field.id, { required: e.target.checked })}
                             className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
                           />
-                          Required
+                          {tb("required")}
                         </label>
-                        <button onClick={() => removeField(field.id)} className="text-xs font-semibold text-red-600 hover:underline">Remove field</button>
+                        <button onClick={() => removeField(field.id)} className="text-xs font-semibold text-red-600 hover:underline">{tb("removeField")}</button>
                       </div>
                     </div>
                   ))}
@@ -204,19 +207,19 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
                     onClick={addField}
                     className="w-full rounded-xl border-2 border-dashed border-gray-300 py-3 text-sm font-semibold text-gray-500 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
                   >
-                    + Add Field
+                    {tb("addField")}
                   </button>
                 </div>
               </div>
 
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-              {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">Saved.</div>}
+              {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{tb("saved")}</div>}
               <button
                 onClick={handleSave}
                 disabled={saving}
                 className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50"
               >
-                {saving ? "Saving..." : "Save Registration Form"}
+                {saving ? ta("saving") : tb("saveRegistrationForm")}
               </button>
             </>
           )}

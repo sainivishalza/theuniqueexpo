@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import { slugify } from "@/lib/slugify";
@@ -36,6 +37,8 @@ const EMPTY_FORM = {
 };
 
 export default function AdminExhibitionsPage() {
+  const t = useTranslations("adminExhibitionsCrud");
+  const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +67,7 @@ export default function AdminExhibitionsPage() {
     try {
       const res = await fetch("/api/admin/exhibitions");
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to load exhibitions");
+      if (!res.ok) throw new Error(data.error || t("loadFailed"));
       setExhibitions(data.exhibitions);
     } catch (err: any) {
       setError(err.message);
@@ -122,7 +125,7 @@ export default function AdminExhibitionsPage() {
 
   async function handleSave() {
     if (!form.title || !form.slug || !form.startDate || !form.endDate) {
-      setFormError("Title, slug, start date, and end date are required.");
+      setFormError(t("requiredFieldsError"));
       return;
     }
     setSaving(true);
@@ -141,7 +144,7 @@ export default function AdminExhibitionsPage() {
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Save failed");
+      if (!res.ok) throw new Error(data.error || t("saveFailed"));
       closeForm();
       await loadExhibitions();
     } catch (err: any) {
@@ -155,18 +158,18 @@ export default function AdminExhibitionsPage() {
     setImageError("");
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setImageError("Please choose an image file.");
+      setImageError(t("chooseImageFile"));
       return;
     }
     if (file.size > 8 * 1024 * 1024) {
-      setImageError("Image is too large. Please choose one under 8 MB.");
+      setImageError(t("imageTooLarge"));
       return;
     }
     try {
       const dataUrl = await readDocumentAsDataUrl(file);
       setForm((prev) => ({ ...prev, image: dataUrl }));
     } catch {
-      setImageError("Couldn't read that file. Please try again.");
+      setImageError(t("couldNotReadFile"));
     }
   }
 
@@ -179,7 +182,7 @@ export default function AdminExhibitionsPage() {
     if (!files || files.length === 0) return;
     const remaining = MAX_GALLERY_IMAGES - form.galleryImages.length;
     if (remaining <= 0) {
-      setGalleryError(`You can add up to ${MAX_GALLERY_IMAGES} additional photos.`);
+      setGalleryError(t("galleryLimit", { max: MAX_GALLERY_IMAGES }));
       return;
     }
     const picked = Array.from(files).slice(0, remaining);
@@ -188,17 +191,17 @@ export default function AdminExhibitionsPage() {
       const results: string[] = [];
       for (const file of picked) {
         if (!file.type.startsWith("image/")) {
-          setGalleryError("Please choose image files only.");
+          setGalleryError(t("chooseImageFilesOnly"));
           continue;
         }
         if (file.size > 8 * 1024 * 1024) {
-          setGalleryError("One or more images were too large (over 8 MB) and were skipped.");
+          setGalleryError(t("galleryTooLarge"));
           continue;
         }
         try {
           results.push(await readDocumentAsDataUrl(file));
         } catch {
-          setGalleryError("Couldn't read one of the files. Please try again.");
+          setGalleryError(t("couldNotReadOneFile"));
         }
       }
       if (results.length > 0) {
@@ -214,13 +217,13 @@ export default function AdminExhibitionsPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Delete this exhibition? This cannot be undone.")) return;
+    if (!confirm(t("confirmDelete"))) return;
     setDeletingId(id);
     try {
       const res = await fetch(`/api/admin/exhibitions/${id}`, { method: "DELETE" });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Delete failed");
+        throw new Error(data.error || t("deleteFailed"));
       }
       setExhibitions((prev) => prev.filter((e) => e.id !== id));
     } catch (err: any) {
@@ -235,7 +238,7 @@ export default function AdminExhibitionsPage() {
   if (!user || user.role !== "admin") {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <p className="text-gray-500">Access denied. Admin only.</p>
+        <p className="text-gray-500">{t("accessDenied")}</p>
       </div>
     );
   }
@@ -248,15 +251,15 @@ export default function AdminExhibitionsPage() {
         <div className="mx-auto max-w-7xl px-6">
           <Link href="/admin" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-            Back to admin
+            {t("backToAdmin")}
           </Link>
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-extrabold text-white">Exhibition Management</h1>
+            <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
             <button
               onClick={openNew}
               className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
             >
-              + New Exhibition
+              {t("newExhibition")}
             </button>
           </div>
         </div>
@@ -265,16 +268,16 @@ export default function AdminExhibitionsPage() {
       {showForm && (
         <section className="py-8 bg-white border-b border-gray-200">
           <div className="mx-auto max-w-4xl px-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{editingId ? "Edit Exhibition" : "New Exhibition"}</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">{editingId ? t("editExhibition") : t("newExhibitionHeading")}</h2>
             {formError && <div className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{formError}</div>}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field
-                label="Title"
+                label={t("fields.title")}
                 value={form.title}
                 onChange={(v) => setForm((f) => ({ ...f, title: v, slug: slugTouched ? f.slug : slugify(v) }))}
               />
               <Field
-                label="Slug"
+                label={t("fields.slug")}
                 value={form.slug}
                 onChange={(v) => {
                   setSlugTouched(true);
@@ -282,21 +285,21 @@ export default function AdminExhibitionsPage() {
                 }}
                 placeholder="my-exhibition-2026"
               />
-              <Field label="Start Date" type="date" value={form.startDate} onChange={(v) => setForm({ ...form, startDate: v })} />
-              <Field label="End Date" type="date" value={form.endDate} onChange={(v) => setForm({ ...form, endDate: v })} />
-              <Field label="Venue" value={form.venue} onChange={(v) => setForm({ ...form, venue: v })} />
-              <Field label="City" value={form.city} onChange={(v) => setForm({ ...form, city: v })} />
-              <Field label="Country" value={form.country} onChange={(v) => setForm({ ...form, country: v })} />
-              <Field label="Industry" value={form.industry} onChange={(v) => setForm({ ...form, industry: v })} />
-              <Field label="Exhibitors (count)" type="number" value={String(form.exhibitors)} onChange={(v) => setForm({ ...form, exhibitors: Number(v) })} />
-              <Field label="Visitors" value={form.visitors} onChange={(v) => setForm({ ...form, visitors: v })} placeholder="30,000+" />
-              <Field label="Organizer" value={form.organizer} onChange={(v) => setForm({ ...form, organizer: v })} />
-              <Field label="Website" value={form.website} onChange={(v) => setForm({ ...form, website: v })} />
-              <Field label="Accent Color" type="color" value={form.color} onChange={(v) => setForm({ ...form, color: v })} />
+              <Field label={t("fields.startDate")} type="date" value={form.startDate} onChange={(v) => setForm({ ...form, startDate: v })} />
+              <Field label={t("fields.endDate")} type="date" value={form.endDate} onChange={(v) => setForm({ ...form, endDate: v })} />
+              <Field label={t("fields.venue")} value={form.venue} onChange={(v) => setForm({ ...form, venue: v })} />
+              <Field label={t("fields.city")} value={form.city} onChange={(v) => setForm({ ...form, city: v })} />
+              <Field label={t("fields.country")} value={form.country} onChange={(v) => setForm({ ...form, country: v })} />
+              <Field label={t("fields.industry")} value={form.industry} onChange={(v) => setForm({ ...form, industry: v })} />
+              <Field label={t("fields.exhibitors")} type="number" value={String(form.exhibitors)} onChange={(v) => setForm({ ...form, exhibitors: Number(v) })} />
+              <Field label={t("fields.visitors")} value={form.visitors} onChange={(v) => setForm({ ...form, visitors: v })} placeholder="30,000+" />
+              <Field label={t("fields.organizer")} value={form.organizer} onChange={(v) => setForm({ ...form, organizer: v })} />
+              <Field label={t("fields.website")} value={form.website} onChange={(v) => setForm({ ...form, website: v })} />
+              <Field label={t("fields.accentColor")} type="color" value={form.color} onChange={(v) => setForm({ ...form, color: v })} />
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Hero Image</label>
-              <p className="text-xs text-gray-500 mb-2">Paste an image URL, or upload your own poster below — whichever you set last is used.</p>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("heroImage")}</label>
+              <p className="text-xs text-gray-500 mb-2">{t("heroImageHint")}</p>
               <div className="flex gap-4 items-start">
                 <div className="relative w-32 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-900 border border-gray-200">
                   {form.image && (
@@ -310,13 +313,13 @@ export default function AdminExhibitionsPage() {
                   <input
                     type="text"
                     value={form.image.startsWith("data:") ? "" : form.image}
-                    placeholder={form.image.startsWith("data:") ? "Uploaded image set — paste a URL to replace it" : "https://..."}
+                    placeholder={form.image.startsWith("data:") ? t("uploadedImageSet") : "https://..."}
                     onChange={(e) => setForm({ ...form, image: e.target.value })}
                     className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                   <div className="flex items-center gap-3">
                     <label className="cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-                      Upload poster image
+                      {t("uploadPosterImage")}
                       <input
                         type="file"
                         accept="image/*"
@@ -330,7 +333,7 @@ export default function AdminExhibitionsPage() {
                         onClick={() => setForm((prev) => ({ ...prev, image: "" }))}
                         className="text-xs font-semibold text-red-600 hover:underline"
                       >
-                        Remove image
+                        {t("removeImage")}
                       </button>
                     )}
                   </div>
@@ -339,8 +342,8 @@ export default function AdminExhibitionsPage() {
               </div>
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Additional Photos</label>
-              <p className="text-xs text-gray-500 mb-2">Shown as a gallery on the exhibition's own page, below the hero image above. Up to {MAX_GALLERY_IMAGES} photos.</p>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("additionalPhotos")}</label>
+              <p className="text-xs text-gray-500 mb-2">{t("additionalPhotosHint", { max: MAX_GALLERY_IMAGES })}</p>
               {form.galleryImages.length > 0 && (
                 <div className="mb-3 grid grid-cols-3 sm:grid-cols-4 gap-3">
                   {form.galleryImages.map((img, i) => (
@@ -360,7 +363,7 @@ export default function AdminExhibitionsPage() {
               )}
               {form.galleryImages.length < MAX_GALLERY_IMAGES && (
                 <label className="cursor-pointer inline-block rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-                  {galleryUploading ? "Uploading..." : "Add photos"}
+                  {galleryUploading ? t("uploading") : t("addPhotos")}
                   <input
                     type="file"
                     accept="image/*"
@@ -377,7 +380,7 @@ export default function AdminExhibitionsPage() {
               {galleryError && <p className="mt-1 text-xs text-red-600">{galleryError}</p>}
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("description")}</label>
               <textarea
                 className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={3}
@@ -386,7 +389,7 @@ export default function AdminExhibitionsPage() {
               />
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Highlights (one per line)</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("highlights")}</label>
               <textarea
                 className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={4}
@@ -400,13 +403,13 @@ export default function AdminExhibitionsPage() {
                 disabled={saving}
                 className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md disabled:opacity-50"
               >
-                {saving ? "Saving..." : editingId ? "Save Changes" : "Create Exhibition"}
+                {saving ? ta("saving") : editingId ? t("saveChanges") : t("createExhibition")}
               </button>
               <button
                 onClick={closeForm}
                 className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
               >
-                Cancel
+                {ta("cancel")}
               </button>
             </div>
           </div>
@@ -415,7 +418,7 @@ export default function AdminExhibitionsPage() {
 
       <section className="py-10 bg-gray-50">
         <div className="mx-auto max-w-7xl px-6 space-y-4">
-          {loading && <p className="text-gray-500 text-center py-10">Loading exhibitions...</p>}
+          {loading && <p className="text-gray-500 text-center py-10">{t("loadingExhibitions")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
           {!loading && !error && exhibitions.map((expo) => (
             <div key={expo.id} className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl bg-white p-5 shadow-sm border border-gray-100 card-hover">
@@ -425,26 +428,26 @@ export default function AdminExhibitionsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h2 className="font-bold text-gray-900 truncate">{expo.title}</h2>
-                  <p className="text-sm text-gray-500">{expo.startDate} → {expo.endDate} • {expo.city} • {expo.exhibitors} exhibitors</p>
+                  <p className="text-sm text-gray-500">{t("summaryLine", { start: expo.startDate, end: expo.endDate, city: expo.city, count: expo.exhibitors })}</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Link href={`/exhibitions/${expo.slug}`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">View</Link>
-                <Link href={`/admin/exhibitions/${expo.slug}/registrations`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">Registrations</Link>
-                <Link href={`/admin/exhibitions/${expo.slug}/registration-form`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">Registration Form</Link>
-                <button onClick={() => openEdit(expo)} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">Edit</button>
+                <Link href={`/exhibitions/${expo.slug}`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("view")}</Link>
+                <Link href={`/admin/exhibitions/${expo.slug}/registrations`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("registrations")}</Link>
+                <Link href={`/admin/exhibitions/${expo.slug}/registration-form`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("registrationForm")}</Link>
+                <button onClick={() => openEdit(expo)} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("editButton")}</button>
                 <button
                   onClick={() => handleDelete(expo.id)}
                   disabled={deletingId === expo.id}
                   className="rounded-xl border border-red-200 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
                 >
-                  {deletingId === expo.id ? "Deleting..." : "Delete"}
+                  {deletingId === expo.id ? t("deleting") : ta("delete")}
                 </button>
               </div>
             </div>
           ))}
           {!loading && !error && exhibitions.length === 0 && (
-            <p className="text-center text-gray-500 py-10">No exhibitions yet. Create one to get started.</p>
+            <p className="text-center text-gray-500 py-10">{t("noExhibitionsYet")}</p>
           )}
         </div>
       </section>

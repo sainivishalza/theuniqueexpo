@@ -1,10 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { DEFAULT_ABOUT_CONTENT, type AboutContent, type AboutStat } from "@/lib/about-content";
 
 export default function AdminAboutPage() {
+  const t = useTranslations("adminAbout");
+  const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [content, setContent] = useState<AboutContent>(DEFAULT_ABOUT_CONTENT);
   const [loading, setLoading] = useState(true);
@@ -54,7 +57,7 @@ export default function AdminAboutPage() {
         body: JSON.stringify(content),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Save failed");
+      if (!res.ok) throw new Error(data.error || t("saveFailed"));
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err: any) {
@@ -66,17 +69,17 @@ export default function AdminAboutPage() {
 
   if (authLoading) return null;
   if (!user || user.role !== "admin") {
-    return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">Admin access required.</p></div>;
+    return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{ta("accessRequired")}</p></div>;
   }
 
   return (
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-4xl px-6">
-          <Link href="/admin" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">← Back to Admin</Link>
-          <h1 className="text-3xl font-extrabold text-white">About Us Page</h1>
+          <Link href="/admin" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{ta("backToAdmin")}</Link>
+          <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
           <p className="mt-1 text-emerald-200/80">
-            Edit what visitors see on <Link href="/about" target="_blank" className="underline hover:text-white">the public About Us page</Link>.
+            {t.rich("subtitle", { link: (chunks) => <Link href="/about" target="_blank" className="underline hover:text-white">{chunks}</Link> })}
           </p>
         </div>
       </section>
@@ -84,13 +87,13 @@ export default function AdminAboutPage() {
       <section className="py-10 bg-gray-50">
         <div className="mx-auto max-w-4xl px-6 space-y-6">
           {loading ? (
-            <p className="text-center text-gray-500 py-10">Loading...</p>
+            <p className="text-center text-gray-500 py-10">{ta("loading")}</p>
           ) : (
             <>
               <div className="bg-white rounded-2xl p-6 shadow-sm space-y-5">
-                <h2 className="font-bold text-gray-900">Header</h2>
+                <h2 className="font-bold text-gray-900">{t("header")}</h2>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Heading</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heading")}</label>
                   <input
                     type="text"
                     value={content.heading}
@@ -99,7 +102,7 @@ export default function AdminAboutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Tagline</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("tagline")}</label>
                   <input
                     type="text"
                     value={content.tagline}
@@ -108,7 +111,7 @@ export default function AdminAboutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Hero Image URL (optional)</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heroImageUrl")}</label>
                   <input
                     type="text"
                     value={content.heroImage}
@@ -120,8 +123,8 @@ export default function AdminAboutPage() {
               </div>
 
               <div className="bg-white rounded-2xl p-6 shadow-sm space-y-3">
-                <h2 className="font-bold text-gray-900">Our Story</h2>
-                <p className="text-xs text-gray-400">Separate paragraphs with a blank line.</p>
+                <h2 className="font-bold text-gray-900">{t("ourStory")}</h2>
+                <p className="text-xs text-gray-400">{t("storyHint")}</p>
                 <textarea
                   value={content.story}
                   onChange={(e) => update({ story: e.target.value })}
@@ -132,7 +135,7 @@ export default function AdminAboutPage() {
 
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="bg-white rounded-2xl p-6 shadow-sm space-y-3">
-                  <h2 className="font-bold text-gray-900">Mission</h2>
+                  <h2 className="font-bold text-gray-900">{t("mission")}</h2>
                   <textarea
                     value={content.mission}
                     onChange={(e) => update({ mission: e.target.value })}
@@ -141,7 +144,7 @@ export default function AdminAboutPage() {
                   />
                 </div>
                 <div className="bg-white rounded-2xl p-6 shadow-sm space-y-3">
-                  <h2 className="font-bold text-gray-900">Vision</h2>
+                  <h2 className="font-bold text-gray-900">{t("vision")}</h2>
                   <textarea
                     value={content.vision}
                     onChange={(e) => update({ vision: e.target.value })}
@@ -152,7 +155,7 @@ export default function AdminAboutPage() {
               </div>
 
               <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
-                <h2 className="font-bold text-gray-900">Stats</h2>
+                <h2 className="font-bold text-gray-900">{t("stats")}</h2>
                 {content.stats.map((stat, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <input
@@ -169,25 +172,25 @@ export default function AdminAboutPage() {
                       placeholder="Exhibitions Supported"
                       className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm"
                     />
-                    <button onClick={() => removeStat(i)} className="text-xs font-semibold text-red-600 hover:underline whitespace-nowrap">Remove</button>
+                    <button onClick={() => removeStat(i)} className="text-xs font-semibold text-red-600 hover:underline whitespace-nowrap">{ta("delete")}</button>
                   </div>
                 ))}
                 <button
                   onClick={addStat}
                   className="w-full rounded-xl border-2 border-dashed border-gray-300 py-2.5 text-sm font-semibold text-gray-500 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
                 >
-                  + Add Stat
+                  {t("addStat")}
                 </button>
               </div>
 
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-              {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">Saved.</div>}
+              {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{t("saved")}</div>}
               <button
                 onClick={handleSave}
                 disabled={saving}
                 className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50"
               >
-                {saving ? "Saving..." : "Save About Page"}
+                {saving ? ta("saving") : t("saveButton")}
               </button>
             </>
           )}

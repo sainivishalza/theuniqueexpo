@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 
@@ -30,6 +31,7 @@ const STATUSES = ["draft", "open", "quotes_received", "awarded", "closed"];
 const QUOTE_STATUSES = ["submitted", "accepted", "rejected"];
 
 export default function AdminRFQsPage() {
+  const t = useTranslations("adminRfqs");
   const { user, loading: authLoading } = useAuth();
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ export default function AdminRFQsPage() {
     fetch("/api/rfqs")
       .then((res) => res.json())
       .then((data) => setRfqs(data.rfqs))
-      .catch(() => setError("Failed to load RFQs"))
+      .catch(() => setError(t("loadFailed")))
       .finally(() => setLoading(false));
   }, [user]);
 
@@ -57,7 +59,7 @@ export default function AdminRFQsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
-      if (!res.ok) throw new Error((await res.json()).error || "Update failed");
+      if (!res.ok) throw new Error((await res.json()).error || t("updateFailed"));
       setRfqs((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
     } catch (err: any) {
       alert(err.message);
@@ -67,10 +69,10 @@ export default function AdminRFQsPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Delete this RFQ?")) return;
+    if (!confirm(t("confirmDeleteRfq"))) return;
     try {
       const res = await fetch(`/api/admin/rfqs/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error((await res.json()).error || "Delete failed");
+      if (!res.ok) throw new Error((await res.json()).error || t("deleteFailed"));
       setRfqs((prev) => prev.filter((r) => r.id !== id));
     } catch (err: any) {
       alert(err.message);
@@ -104,7 +106,7 @@ export default function AdminRFQsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
-      if (!res.ok) throw new Error((await res.json()).error || "Update failed");
+      if (!res.ok) throw new Error((await res.json()).error || t("updateFailed"));
       setQuotesByRfq((prev) => ({
         ...prev,
         [rfqId]: prev[rfqId].map((q) => (q.id === quoteId ? { ...q, status } : q)),
@@ -117,10 +119,10 @@ export default function AdminRFQsPage() {
   }
 
   async function handleQuoteDelete(rfqId: string, quoteId: string) {
-    if (!confirm("Delete this quote?")) return;
+    if (!confirm(t("confirmDeleteQuote"))) return;
     try {
       const res = await fetch(`/api/admin/quotes/${quoteId}`, { method: "DELETE" });
-      if (!res.ok) throw new Error((await res.json()).error || "Delete failed");
+      if (!res.ok) throw new Error((await res.json()).error || t("deleteFailed"));
       setQuotesByRfq((prev) => ({
         ...prev,
         [rfqId]: prev[rfqId].filter((q) => q.id !== quoteId),
@@ -135,7 +137,7 @@ export default function AdminRFQsPage() {
   if (!user || user.role !== "admin") {
     return (
       <main className="flex min-h-[calc(100vh-52px)] items-center justify-center">
-        <p className="text-gray-500">Access denied. Admin only.</p>
+        <p className="text-gray-500">{t("accessDenied")}</p>
       </main>
     );
   }
@@ -143,15 +145,15 @@ export default function AdminRFQsPage() {
   return (
     <main className="mx-auto max-w-5xl px-6 py-10">
       <Link href="/admin" className="text-sm text-gray-500 hover:underline">
-        ← Back to admin
+        {t("backToAdmin")}
       </Link>
 
-      <h1 className="mt-4 text-2xl font-bold">RFQ Review</h1>
+      <h1 className="mt-4 text-2xl font-bold">{t("title")}</h1>
       <p className="mt-1 text-sm text-gray-500">
-        All buy requests. Update status or remove listings.
+        {t("subtitle")}
       </p>
 
-      {loading && <p className="mt-10 text-center text-gray-400">Loading...</p>}
+      {loading && <p className="mt-10 text-center text-gray-400">{t("loading")}</p>}
       {error && <p className="mt-10 text-center text-red-600">{error}</p>}
 
       <div className="mt-6 space-y-4">
@@ -161,7 +163,7 @@ export default function AdminRFQsPage() {
               <div className="min-w-0">
                 <h2 className="font-semibold">{rfq.title}</h2>
                 <p className="text-sm text-gray-500">
-                  {rfq.category} • Posted by {rfq.buyerName} • {rfq.createdAt}
+                  {t("rfqMeta", { category: rfq.category, buyer: rfq.buyerName, date: rfq.createdAt })}
                 </p>
               </div>
               <div className="flex items-center gap-2 flex-wrap sm:flex-shrink-0">
@@ -172,35 +174,35 @@ export default function AdminRFQsPage() {
                   className="rounded-full border border-gray-200 px-2 py-1 text-xs font-medium disabled:opacity-50"
                 >
                   {STATUSES.map((s) => (
-                    <option key={s} value={s}>{s.replace("_", " ")}</option>
+                    <option key={s} value={s}>{t(`rfqStatuses.${s}`)}</option>
                   ))}
                 </select>
                 <button
                   onClick={() => handleDelete(rfq.id)}
                   className="text-xs font-medium text-red-600 hover:underline"
                 >
-                  Delete
+                  {t("delete")}
                 </button>
               </div>
             </div>
 
             <div className="mt-3 flex items-center gap-4 text-xs text-gray-400">
-              <span>Qty: {rfq.quantity}</span>
-              <span>Target: {rfq.targetPrice}</span>
+              <span>{t("qty", { value: rfq.quantity })}</span>
+              <span>{t("target", { value: rfq.targetPrice })}</span>
               <button
                 onClick={() => toggleQuotes(rfq.id)}
                 className="font-medium text-emerald-600 hover:underline"
               >
-                {expandedId === rfq.id ? "Hide quotes" : "View quotes"}
+                {expandedId === rfq.id ? t("hideQuotes") : t("viewQuotes")}
                 {quotesByRfq[rfq.id] ? ` (${quotesByRfq[rfq.id].length})` : ""}
               </button>
             </div>
 
             {expandedId === rfq.id && (
               <div className="mt-4 border-t border-gray-100 pt-4 space-y-3">
-                {quotesLoading === rfq.id && <p className="text-xs text-gray-400">Loading quotes...</p>}
+                {quotesLoading === rfq.id && <p className="text-xs text-gray-400">{t("loadingQuotes")}</p>}
                 {quotesLoading !== rfq.id && quotesByRfq[rfq.id]?.length === 0 && (
-                  <p className="text-xs text-gray-400">No quotes submitted yet.</p>
+                  <p className="text-xs text-gray-400">{t("noQuotes")}</p>
                 )}
                 {quotesByRfq[rfq.id]?.map((q) => (
                   <div key={q.id} className="rounded-lg bg-gray-50 border border-gray-100 p-4">
@@ -208,7 +210,7 @@ export default function AdminRFQsPage() {
                       <div className="min-w-0">
                         <p className="font-semibold text-sm">{q.exhibitorName}</p>
                         <p className="text-xs text-gray-500">
-                          Price: {q.price} • Lead time: {q.leadTime} • {q.createdAt}
+                          {t("quoteMeta", { price: q.price, leadTime: q.leadTime, date: q.createdAt })}
                         </p>
                         {q.notes && <p className="mt-1 text-xs text-gray-500">{q.notes}</p>}
                       </div>
@@ -220,14 +222,14 @@ export default function AdminRFQsPage() {
                           className="rounded-full border border-gray-200 px-2 py-1 text-xs font-medium disabled:opacity-50"
                         >
                           {QUOTE_STATUSES.map((s) => (
-                            <option key={s} value={s}>{s}</option>
+                            <option key={s} value={s}>{t(`quoteStatuses.${s}`)}</option>
                           ))}
                         </select>
                         <button
                           onClick={() => handleQuoteDelete(rfq.id, q.id)}
                           className="text-xs font-medium text-red-600 hover:underline"
                         >
-                          Delete
+                          {t("delete")}
                         </button>
                       </div>
                     </div>
@@ -238,7 +240,7 @@ export default function AdminRFQsPage() {
           </div>
         ))}
         {!loading && !error && rfqs.length === 0 && (
-          <p className="text-center text-gray-400 py-10">No RFQs yet.</p>
+          <p className="text-center text-gray-400 py-10">{t("noRfqs")}</p>
         )}
       </div>
     </main>

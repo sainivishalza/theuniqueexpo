@@ -12,7 +12,7 @@ const nextConfig = {
     // rejects local image srcs with a query string unless explicitly
     // allowed here. `search` is intentionally omitted so any ?v= value
     // matches, since it changes on every re-upload.
-    localPatterns: [{ pathname: "/api/exhibitions/**" }],
+    localPatterns: [{ pathname: "/api/exhibitions/**" }, { pathname: "/api/tours/**" }],
   },
   experimental: {
     // Defaults to os.cpus().length - 1, which on shared hosting reports the
@@ -41,7 +41,19 @@ const nextConfig = {
         ],
       },
       {
+        source: "/tours/:slug/register",
+        headers: [
+          { key: "Cache-Control", value: "no-store, must-revalidate" },
+        ],
+      },
+      {
         source: "/api/expo-registrations/:path*",
+        headers: [
+          { key: "Cache-Control", value: "no-store, must-revalidate" },
+        ],
+      },
+      {
+        source: "/api/tour-registrations/:path*",
         headers: [
           { key: "Cache-Control", value: "no-store, must-revalidate" },
         ],

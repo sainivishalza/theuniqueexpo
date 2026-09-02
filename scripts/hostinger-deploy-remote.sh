@@ -167,9 +167,16 @@ set -a
 source .env.local
 set +a
 
+# Without an explicit client charset, the mysql CLI here defaults to
+# latin1 -- multi-byte UTF-8 content (em dashes, curly quotes, non-Latin
+# text) in a migration's INSERT statements gets mangled into mojibake on
+# the way in, even though the tables themselves are utf8mb4. Applies to
+# mysqldump too, so a restored backup doesn't inherit the same corruption.
+MYSQL="mysql --default-character-set=utf8mb4 -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME"
+
 BACKUP_FILE=~/theuniqueexpo-backup-$(date +%Y%m%d-%H%M%S).sql
 echo "Backing up database to $BACKUP_FILE ..."
-mysqldump -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$BACKUP_FILE"
+mysqldump --default-character-set=utf8mb4 -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$BACKUP_FILE"
 ls -lh "$BACKUP_FILE"
 
 if ! git diff --quiet || ! git diff --cached --quiet; then
@@ -184,16 +191,17 @@ git checkout "$DEPLOY_REF"
 git pull origin "$DEPLOY_REF"
 
 echo "Applying new migrations ..."
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < schema-migrations/002-expo-registrations.sql
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < schema-migrations/003-reset-admin-password.sql
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < schema-migrations/004-custom-registration-forms.sql
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < schema-migrations/005-about-content.sql
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < schema-migrations/006-site-pages.sql
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < schema-migrations/007-fix-malformed-slugs.sql
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < schema-migrations/008-exhibition-gallery-images.sql
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < schema-migrations/009-fix-poster-content.sql
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < schema-migrations/010-exhibitions-updated-at.sql
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < schema-migrations/011-messaging-favorites-reviews.sql
+$MYSQL < schema-migrations/002-expo-registrations.sql
+$MYSQL < schema-migrations/003-reset-admin-password.sql
+$MYSQL < schema-migrations/004-custom-registration-forms.sql
+$MYSQL < schema-migrations/005-about-content.sql
+$MYSQL < schema-migrations/006-site-pages.sql
+$MYSQL < schema-migrations/007-fix-malformed-slugs.sql
+$MYSQL < schema-migrations/008-exhibition-gallery-images.sql
+$MYSQL < schema-migrations/009-fix-poster-content.sql
+$MYSQL < schema-migrations/010-exhibitions-updated-at.sql
+$MYSQL < schema-migrations/011-messaging-favorites-reviews.sql
+$MYSQL < schema-migrations/012-tours.sql
 
 echo "Installing dependencies and building ..."
 npm install
@@ -223,6 +231,6 @@ echo "  /exhibitions/global-ocean-city-food-expo-2026/register -> $(curl -s -o /
 echo "  /api/expo-registrations/me -> $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/expo-registrations/me)"
 echo "  /api/exhibitions -> $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/exhibitions)"
 echo "  --- direct DB check: exhibitions row count ---"
-mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -e "SELECT COUNT(*) AS exhibitions_count FROM exhibitions;" 2>&1
+$MYSQL -e "SELECT COUNT(*) AS exhibitions_count FROM exhibitions;" 2>&1
 
 echo "Backup saved at: $BACKUP_FILE (keep this until you've confirmed everything works)"

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
+import { listTours } from "@/lib/server/tours-repo";
 import { getAllTours } from "@/lib/tours";
 import { mockExhibitorProfiles } from "@/lib/booths";
 
@@ -9,6 +10,7 @@ const STATIC_ROUTES = [
   "",
   "/exhibitions",
   "/directory",
+  "/tours",
   "/marketplace",
   "/about",
   "/contact",
@@ -51,10 +53,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
   }));
 
+  let dbTourEntries: MetadataRoute.Sitemap = [];
+  try {
+    const dbTours = await listTours();
+    dbTourEntries = dbTours.map((tour) => ({
+      url: `${SITE_URL}/tours/${tour.slug}`,
+      lastModified: new Date(),
+    }));
+  } catch {
+    // Same reasoning as exhibitions above.
+  }
+
   const exhibitorEntries: MetadataRoute.Sitemap = mockExhibitorProfiles.map((profile) => ({
     url: `${SITE_URL}/exhibitor/${profile.slug || profile.id}`,
     lastModified: new Date(),
   }));
 
-  return [...staticEntries, ...exhibitionEntries, ...tourEntries, ...exhibitorEntries];
+  return [...staticEntries, ...exhibitionEntries, ...tourEntries, ...dbTourEntries, ...exhibitorEntries];
 }

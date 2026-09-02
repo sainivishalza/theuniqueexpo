@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 
 interface RFQ {
@@ -24,6 +25,7 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 export default function RFQDetailPage() {
+  const t = useTranslations("rfqDetailPage");
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "";
   const { user } = useAuth();
@@ -38,6 +40,14 @@ export default function RFQDetailPage() {
   const [quoteError, setQuoteError] = useState("");
   const [quoteSubmitted, setQuoteSubmitted] = useState(false);
 
+  const STATUS_LABELS: Record<string, string> = {
+    open: t("statuses.open"),
+    quotes_received: t("statuses.quotesReceived"),
+    awarded: t("statuses.awarded"),
+    closed: t("statuses.closed"),
+    submitted: t("statuses.submitted"),
+  };
+
   useEffect(() => {
     if (!id) return;
     fetch(`/api/rfqs/${id}`)
@@ -51,7 +61,7 @@ export default function RFQDetailPage() {
   }, [id]);
 
   if (rfq === undefined) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">Loading...</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
   }
 
   if (!rfq) {
@@ -59,8 +69,8 @@ export default function RFQDetailPage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-4">📋</div>
-          <h1 className="text-xl font-bold text-gray-900">RFQ not found</h1>
-          <Link href="/marketplace" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">Back to marketplace →</Link>
+          <h1 className="text-xl font-bold text-gray-900">{t("notFound")}</h1>
+          <Link href="/marketplace" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("backToMarketplace")}</Link>
         </div>
       </div>
     );
@@ -80,7 +90,7 @@ export default function RFQDetailPage() {
         body: JSON.stringify({ price: quotePrice, leadTime: quoteLeadTime, notes: quoteNotes }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to submit quote");
+      if (!res.ok) throw new Error(data.error || t("failedToSubmitQuote"));
       // Reflect the new quote immediately without a full refetch.
       setQuotes((prev) => [
         ...prev,
@@ -105,15 +115,15 @@ export default function RFQDetailPage() {
         <div className="mx-auto max-w-4xl px-6">
           <Link href="/marketplace" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-            Back to marketplace
+            {t("backToMarketplaceShort")}
           </Link>
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-3xl font-extrabold text-white">{rfq.title}</h1>
-              <p className="mt-2 text-gray-400">Posted by {rfq.buyerName} • {rfq.category}</p>
+              <p className="mt-2 text-gray-400">{t("postedBy", { name: rfq.buyerName, category: rfq.category })}</p>
             </div>
             <span className={`rounded-xl px-3 py-1.5 text-xs font-bold ${STATUS_STYLES[rfq.status]}`}>
-              {rfq.status.replace("_", " ")}
+              {STATUS_LABELS[rfq.status] || rfq.status.replace("_", " ")}
             </span>
           </div>
         </div>
@@ -126,13 +136,13 @@ export default function RFQDetailPage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Details */}
               <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">Request Details</h2>
+                <h2 className="text-lg font-bold text-gray-900 mb-4">{t("requestDetails")}</h2>
                 <p className="text-gray-600 leading-relaxed mb-6">{rfq.description}</p>
                 <div className="grid grid-cols-3 gap-4">
                   {[
-                    { label: "Quantity", value: rfq.quantity, icon: "📦" },
-                    { label: "Target Price", value: rfq.targetPrice || "Flexible", icon: "💰" },
-                    { label: "Deadline", value: rfq.deadline || "Flexible", icon: "📅" },
+                    { label: t("quantity"), value: rfq.quantity, icon: "📦" },
+                    { label: t("targetPrice"), value: rfq.targetPrice || t("flexible"), icon: "💰" },
+                    { label: t("deadline"), value: rfq.deadline || t("flexible"), icon: "📅" },
                   ].map((s) => (
                     <div key={s.label} className="p-4 rounded-xl bg-gray-50 border border-gray-100 text-center">
                       <div className="text-xl mb-1">{s.icon}</div>
@@ -146,29 +156,29 @@ export default function RFQDetailPage() {
               {/* Quotes */}
               <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-bold text-gray-900">Quotes ({quotes.length})</h2>
+                  <h2 className="text-lg font-bold text-gray-900">{t("quotesCount", { count: quotes.length })}</h2>
                   {user?.role === "exhibitor" && !alreadyQuoted && (
                     <button
                       onClick={() => setShowQuoteForm(!showQuoteForm)}
                       className="rounded-xl gradient-brand px-5 py-2 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all"
                     >
-                      Submit Quote
+                      {t("submitQuote")}
                     </button>
                   )}
                 </div>
 
                 {!user && (
                   <div className="mb-6 rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-sm text-gray-700 flex items-center justify-between gap-3 flex-wrap">
-                    <span>Are you a supplier? Log in to submit a quotation for this request.</span>
+                    <span>{t("areYouASupplier")}</span>
                     <Link href="/login" className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700 transition-colors whitespace-nowrap">
-                      Log in to quote
+                      {t("logInToQuote")}
                     </Link>
                   </div>
                 )}
 
                 {user && user.role !== "exhibitor" && (
                   <div className="mb-6 rounded-xl bg-gray-50 border border-gray-200 p-4 text-sm text-gray-500">
-                    Only supplier (exhibitor) accounts can submit quotes. Register as an exhibitor to respond to buy requests.
+                    {t("onlySupplierAccounts")}
                   </div>
                 )}
 
@@ -176,28 +186,28 @@ export default function RFQDetailPage() {
                   <form onSubmit={handleSubmitQuote} className="mb-6 rounded-xl border border-gray-200 p-5 space-y-3 bg-gray-50">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">Price</label>
-                        <input type="text" placeholder="e.g. $28/unit" value={quotePrice} onChange={(e) => setQuotePrice(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none" required />
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">{t("price")}</label>
+                        <input type="text" placeholder={t("pricePlaceholder")} value={quotePrice} onChange={(e) => setQuotePrice(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none" required />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">Lead Time</label>
-                        <input type="text" placeholder="e.g. 30 days" value={quoteLeadTime} onChange={(e) => setQuoteLeadTime(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none" required />
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">{t("leadTime")}</label>
+                        <input type="text" placeholder={t("leadTimePlaceholder")} value={quoteLeadTime} onChange={(e) => setQuoteLeadTime(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none" required />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-1">Notes</label>
-                      <textarea rows={3} placeholder="Additional details, MOQ, certifications..." value={quoteNotes} onChange={(e) => setQuoteNotes(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none resize-none" />
+                      <label className="block text-xs font-semibold text-gray-600 mb-1">{t("notes")}</label>
+                      <textarea rows={3} placeholder={t("notesPlaceholder")} value={quoteNotes} onChange={(e) => setQuoteNotes(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none resize-none" />
                     </div>
                     {quoteError && <div className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{quoteError}</div>}
                     <button type="submit" disabled={submitting} className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all disabled:opacity-50">
-                      {submitting ? "Submitting..." : "Submit Quote"}
+                      {submitting ? t("submitting") : t("submitQuote")}
                     </button>
                   </form>
                 )}
 
                 {quoteSubmitted && (
                   <div className="mb-6 rounded-xl bg-green-50 border border-green-200 p-4 text-sm text-green-700 font-medium">
-                    ✅ Your quote has been submitted successfully!
+                    {t("quoteSubmittedSuccess")}
                   </div>
                 )}
 
@@ -205,7 +215,7 @@ export default function RFQDetailPage() {
                   {quotes.length === 0 ? (
                     <div className="py-12 text-center">
                       <div className="text-4xl mb-3">💬</div>
-                      <p className="text-gray-400 font-medium">No quotes yet. Be the first to respond!</p>
+                      <p className="text-gray-400 font-medium">{t("noQuotesYet")}</p>
                     </div>
                   ) : (
                     quotes.map((q) => (
@@ -213,13 +223,13 @@ export default function RFQDetailPage() {
                         <div className="flex items-start justify-between mb-3">
                           <div>
                             <h3 className="font-bold text-gray-900">{q.exhibitorName}</h3>
-                            <p className="text-xs text-gray-400">Submitted {q.createdAt}</p>
+                            <p className="text-xs text-gray-400">{t("submittedOn", { date: q.createdAt })}</p>
                           </div>
-                          <span className="rounded-lg bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">{q.status}</span>
+                          <span className="rounded-lg bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">{STATUS_LABELS[q.status] || q.status}</span>
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm mb-2">
-                          <div><span className="text-gray-400">Price</span><p className="font-bold text-gray-900">{q.price}</p></div>
-                          <div><span className="text-gray-400">Lead Time</span><p className="font-bold text-gray-900">{q.leadTime}</p></div>
+                          <div><span className="text-gray-400">{t("price")}</span><p className="font-bold text-gray-900">{q.price}</p></div>
+                          <div><span className="text-gray-400">{t("leadTime")}</span><p className="font-bold text-gray-900">{q.leadTime}</p></div>
                         </div>
                         {q.notes && <p className="text-sm text-gray-500 mt-2">{q.notes}</p>}
                         {user && (String(user.id) === rfq.buyerId || String(user.id) === q.exhibitorId) && (
@@ -227,7 +237,7 @@ export default function RFQDetailPage() {
                             href={`/messages/${q.id}`}
                             className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:underline"
                           >
-                            💬 {String(user.id) === rfq.buyerId ? "Message Supplier" : "Message Buyer"}
+                            💬 {String(user.id) === rfq.buyerId ? t("messageSupplier") : t("messageBuyer")}
                           </Link>
                         )}
                       </div>
@@ -240,11 +250,11 @@ export default function RFQDetailPage() {
             {/* Sidebar */}
             <div className="space-y-6">
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-sm font-bold text-gray-900 mb-3">Request Info</h3>
+                <h3 className="text-sm font-bold text-gray-900 mb-3">{t("requestInfo")}</h3>
                 <div className="space-y-3 text-sm">
-                  <div className="flex justify-between"><span className="text-gray-500">Category</span><span className="font-semibold">{rfq.category}</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Status</span><span className="font-semibold capitalize">{rfq.status.replace("_", " ")}</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Quotes</span><span className="font-semibold">{quotes.length}</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">{t("category")}</span><span className="font-semibold">{rfq.category}</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">{t("status")}</span><span className="font-semibold capitalize">{STATUS_LABELS[rfq.status] || rfq.status.replace("_", " ")}</span></div>
+                  <div className="flex justify-between"><span className="text-gray-500">{t("quotes")}</span><span className="font-semibold">{quotes.length}</span></div>
                 </div>
               </div>
             </div>

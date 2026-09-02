@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 
@@ -32,6 +33,7 @@ function Stars({ value, onSelect }: { value: number; onSelect?: (n: number) => v
 }
 
 export default function ExhibitorReviews({ slug }: { slug: string }) {
+  const t = useTranslations("exhibitorReviews");
   const { user } = useAuth();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [summary, setSummary] = useState({ average: 0, count: 0 });
@@ -89,7 +91,7 @@ export default function ExhibitorReviews({ slug }: { slug: string }) {
   return (
     <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-xl font-bold text-gray-900">Reviews</h2>
+        <h2 className="text-xl font-bold text-gray-900">{t("reviews")}</h2>
         {summary.count > 0 && (
           <div className="flex items-center gap-2">
             <Stars value={Math.round(summary.average)} />
@@ -102,7 +104,7 @@ export default function ExhibitorReviews({ slug }: { slug: string }) {
         <form onSubmit={handleSubmit} className="mb-6 rounded-xl border border-gray-200 p-5 bg-gray-50 space-y-3">
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">
-              {myReview ? "Update your rating" : "Rate this supplier"}
+              {myReview ? t("updateYourRating") : t("rateThisSupplier")}
             </label>
             <Stars value={rating} onSelect={setRating} />
           </div>
@@ -110,7 +112,7 @@ export default function ExhibitorReviews({ slug }: { slug: string }) {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             rows={2}
-            placeholder="Share your experience working with this supplier..."
+            placeholder={t("shareYourExperience")}
             className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none resize-none"
           />
           <button
@@ -118,18 +120,18 @@ export default function ExhibitorReviews({ slug }: { slug: string }) {
             disabled={!rating || submitting}
             className="rounded-xl gradient-brand px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
           >
-            {submitting ? "Saving..." : myReview ? "Update Review" : "Submit Review"}
+            {submitting ? t("saving") : myReview ? t("updateReview") : t("submitReview")}
           </button>
         </form>
       ) : (
         <div className="mb-6 rounded-xl bg-gray-50 border border-gray-200 p-4 text-sm text-gray-500">
-          <Link href="/login" className="text-emerald-600 hover:underline font-semibold">Log in</Link> to leave a review.
+          <Link href="/login" className="text-emerald-600 hover:underline font-semibold">{t("logIn")}</Link> {t("toLeaveAReview")}
         </div>
       )}
 
       <div className="space-y-4">
         {!loading && reviews.length === 0 && (
-          <p className="text-sm text-gray-400 text-center py-6">No reviews yet. Be the first to share your experience.</p>
+          <p className="text-sm text-gray-400 text-center py-6">{t("noReviewsYet")}</p>
         )}
         {reviews.map((r) => (
           <div key={r.id} className="border-b border-gray-100 pb-4 last:border-0 last:pb-0">

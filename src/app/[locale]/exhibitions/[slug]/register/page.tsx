@@ -1,5 +1,6 @@
 "use client";
 import { use, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -40,12 +41,12 @@ const EMPTY_FORM: Omit<ExpoRegistrationInput, "exhibitionId"> = {
   docOrderList: "",
 };
 
-const DOCUMENT_FIELDS: { key: keyof typeof EMPTY_FORM; label: string; required: boolean }[] = [
-  { key: "docPassportFront", label: "Passport Front Page", required: true },
-  { key: "docBusinessCard", label: "Business Card", required: true },
-  { key: "docVisaPage", label: "Visa Page", required: true },
-  { key: "docBusinessLicense", label: "Business License", required: true },
-  { key: "docOrderList", label: "Order List (if any)", required: false },
+const DOCUMENT_FIELD_KEYS: { key: keyof typeof EMPTY_FORM; labelKey: string; required: boolean }[] = [
+  { key: "docPassportFront", labelKey: "passportFrontPage", required: true },
+  { key: "docBusinessCard", labelKey: "businessCard", required: true },
+  { key: "docVisaPage", labelKey: "visaPage", required: true },
+  { key: "docBusinessLicense", labelKey: "businessLicense", required: true },
+  { key: "docOrderList", labelKey: "orderList", required: false },
 ];
 
 // Without this, a genuinely dead connection leaves the submit button
@@ -63,6 +64,8 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs = 6
 
 export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
+  const t = useTranslations("expoRegisterPage");
+  const DOCUMENT_FIELDS = DOCUMENT_FIELD_KEYS.map((d) => ({ ...d, label: t(`documents.${d.labelKey}`) }));
   const { user, loading: authLoading, setUser } = useAuth();
   const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -125,14 +128,14 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
     setFileErrors((prev) => ({ ...prev, [key]: "" }));
     if (!file) return;
     if (file.size > 8 * 1024 * 1024) {
-      setFileErrors((prev) => ({ ...prev, [key]: "File is too large. Please choose one under 8 MB." }));
+      setFileErrors((prev) => ({ ...prev, [key]: t("fileTooLarge") }));
       return;
     }
     try {
       const dataUrl = await readDocumentAsDataUrl(file);
       setForm((f) => ({ ...f, [key]: dataUrl }));
     } catch {
-      setFileErrors((prev) => ({ ...prev, [key]: "Couldn't read that file. Please try again." }));
+      setFileErrors((prev) => ({ ...prev, [key]: t("couldNotReadFile") }));
     }
   }
 
@@ -140,14 +143,14 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
     setCustomFileErrors((prev) => ({ ...prev, [fieldId]: "" }));
     if (!file) return;
     if (file.size > 8 * 1024 * 1024) {
-      setCustomFileErrors((prev) => ({ ...prev, [fieldId]: "File is too large. Please choose one under 8 MB." }));
+      setCustomFileErrors((prev) => ({ ...prev, [fieldId]: t("fileTooLarge") }));
       return;
     }
     try {
       const dataUrl = await readDocumentAsDataUrl(file);
       setCustomAnswers((a) => ({ ...a, [fieldId]: dataUrl }));
     } catch {
-      setCustomFileErrors((prev) => ({ ...prev, [fieldId]: "Couldn't read that file. Please try again." }));
+      setCustomFileErrors((prev) => ({ ...prev, [fieldId]: t("couldNotReadFile") }));
     }
   }
 
@@ -184,12 +187,12 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       const data = await res.json();
       if (!res.ok) {
         if (data.accountExists) setAccountExists(true);
-        throw new Error(data.error || "Registration failed");
+        throw new Error(data.error || t("registrationFailed"));
       }
       if (data.user) setUser(data.user);
       setSubmitted(true);
     } catch (err: any) {
-      setError(err.name === "AbortError" ? "This is taking too long. Please check your connection and try again." : err.message);
+      setError(err.name === "AbortError" ? t("timeoutError") : err.message);
     } finally {
       setSubmitting(false);
     }
@@ -218,27 +221,27 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       const data = await res.json();
       if (!res.ok) {
         if (data.accountExists) setAccountExists(true);
-        throw new Error(data.error || "Registration failed");
+        throw new Error(data.error || t("registrationFailed"));
       }
       if (data.user) setUser(data.user);
       setSubmitted(true);
     } catch (err: any) {
-      setError(err.name === "AbortError" ? "This is taking too long. Please check your connection and try again." : err.message);
+      setError(err.name === "AbortError" ? t("timeoutError") : err.message);
     } finally {
       setSubmitting(false);
     }
   }
 
   if (expo === undefined || authLoading) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">Loading...</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
   }
   if (!expo) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900">Exhibition not found</h1>
-          <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">Browse all exhibitions →</Link>
+          <h1 className="text-2xl font-bold text-gray-900">{t("notFound")}</h1>
+          <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">{t("browseAll")}</Link>
         </div>
       </div>
     );
@@ -248,9 +251,9 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
           <div className="text-5xl mb-4">🚫</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Registration is closed</h1>
-          <p className="text-gray-500 mb-6">Registration for <strong>{expo.title}</strong> is not currently open.</p>
-          <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">← Back to {expo.title}</Link>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("registrationClosed")}</h1>
+          <p className="text-gray-500 mb-6">{t.rich("registrationClosedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
+          <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("backTo", { name: expo.title })}</Link>
         </div>
       </div>
     );
@@ -260,9 +263,9 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
           <div className="text-6xl mb-4">✅</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Registration Submitted!</h1>
-          <p className="text-gray-500 mb-6">Your registration for <strong>{expo.title}</strong> has been received. Our team will review it shortly.</p>
-          <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">← Back to {expo.title}</Link>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("registrationSubmitted")}</h1>
+          <p className="text-gray-500 mb-6">{t.rich("registrationSubmittedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
+          <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("backTo", { name: expo.title })}</Link>
         </div>
       </div>
     );
@@ -273,19 +276,19 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
     return (
       <div className="py-12 bg-gray-50 min-h-screen">
         <div className="mx-auto max-w-3xl px-6">
-          <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">← Back to {expo.title}</Link>
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Register for {expo.title}</h1>
-          <p className="text-gray-500 mb-8">{expo.dates} • Registration is required separately for each exhibition.</p>
+          <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">{t("backTo", { name: expo.title })}</Link>
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{t("registerFor", { name: expo.title })}</h1>
+          <p className="text-gray-500 mb-8">{t("datesLine", { dates: expo.dates })}</p>
 
           <form onSubmit={(e) => handleCustomSubmit(e, customSchema)} className="space-y-6">
             {!user && (
               <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
-                <h2 className="text-xl font-bold text-gray-900">Your Account</h2>
-                <p className="text-sm text-gray-500">We'll set up your free account with these details so you can track your registration — no separate sign-up step needed.</p>
+                <h2 className="text-xl font-bold text-gray-900">{t("yourAccount")}</h2>
+                <p className="text-sm text-gray-500">{t("yourAccountHint")}</p>
                 <div className="grid gap-5 md:grid-cols-2">
-                  <TextField label="Full Name" required value={accountName} onChange={setAccountName} />
-                  <TextField label="Email" type="email" required value={accountEmail} onChange={setAccountEmail} />
-                  <TextField label="Password" type="password" required value={password} onChange={setPassword} placeholder="At least 6 characters" />
+                  <TextField label={t("fullName")} required value={accountName} onChange={setAccountName} />
+                  <TextField label={t("email")} type="email" required value={accountEmail} onChange={setAccountEmail} />
+                  <TextField label={t("password")} type="password" required value={password} onChange={setPassword} placeholder={t("passwordPlaceholder")} />
                 </div>
               </div>
             )}
@@ -307,11 +310,11 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
             {error && (
               <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
                 {error}{" "}
-                {accountExists && <Link href="/login" className="underline font-semibold">Sign in</Link>}
+                {accountExists && <Link href="/login" className="underline font-semibold">{t("signIn")}</Link>}
               </div>
             )}
             <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
-              {submitting ? "Submitting..." : "Submit Registration"}
+              {submitting ? t("submitting") : t("submitRegistration")}
             </button>
           </form>
         </div>
@@ -322,19 +325,19 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
   return (
     <div className="py-12 bg-gray-50 min-h-screen">
       <div className="mx-auto max-w-3xl px-6">
-        <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">← Back to {expo.title}</Link>
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Register for {expo.title}</h1>
-        <p className="text-gray-500 mb-8">{expo.dates} • Registration is required separately for each exhibition.</p>
+        <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">{t("backTo", { name: expo.title })}</Link>
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{t("registerFor", { name: expo.title })}</h1>
+        <p className="text-gray-500 mb-8">{t("datesLine", { dates: expo.dates })}</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Registration type */}
           <div className="bg-white rounded-2xl p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Registering as</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">{t("registeringAs")}</h2>
             <div className="grid grid-cols-2 gap-3">
-              {(["buyer", "visitor"] as RegistrationType[]).map((t) => (
-                <button key={t} type="button" onClick={() => setForm({ ...form, registrationType: t })}
-                  className={`p-4 rounded-xl border-2 text-center font-semibold capitalize transition-all ${form.registrationType === t ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
-                  {t}
+              {(["buyer", "visitor"] as RegistrationType[]).map((rt) => (
+                <button key={rt} type="button" onClick={() => setForm({ ...form, registrationType: rt })}
+                  className={`p-4 rounded-xl border-2 text-center font-semibold capitalize transition-all ${form.registrationType === rt ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
+                  {t(`roles.${rt}`)}
                 </button>
               ))}
             </div>
@@ -342,58 +345,58 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
 
           {/* Personal details */}
           <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
-            <h2 className="text-xl font-bold text-gray-900">Personal Information</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t("personalInformation")}</h2>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Gender *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("genderRequired")}</label>
               <div className="flex gap-3">
                 {(["male", "female"] as Gender[]).map((g) => (
                   <label key={g} className={`flex-1 text-center capitalize p-3 rounded-xl border cursor-pointer ${form.gender === g ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-gray-200 text-gray-600"}`}>
                     <input type="radio" name="gender" className="hidden" checked={form.gender === g} onChange={() => setForm({ ...form, gender: g })} />
-                    {g}
+                    {t(`genders.${g}`)}
                   </label>
                 ))}
               </div>
             </div>
             <div className="grid gap-5 md:grid-cols-2">
-              <TextField label="Full Name" required value={form.fullName} onChange={(v) => setForm({ ...form, fullName: v })} />
-              <SelectField label="Nationality" required value={form.nationality} onChange={(v) => setForm({ ...form, nationality: v })} options={NATIONALITIES as unknown as string[]} placeholder="Select nationality" />
-              <TextField label="Passport Number" required value={form.passportNumber} onChange={(v) => setForm({ ...form, passportNumber: v })} />
-              <TextField label="Phone Number" type="tel" required value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
-              <TextField label="Email" type="email" required value={form.email} onChange={(v) => setForm({ ...form, email: v })} />
+              <TextField label={t("fullName")} required value={form.fullName} onChange={(v) => setForm({ ...form, fullName: v })} />
+              <SelectField label={t("nationality")} required value={form.nationality} onChange={(v) => setForm({ ...form, nationality: v })} options={NATIONALITIES as unknown as string[]} placeholder={t("selectNationality")} />
+              <TextField label={t("passportNumber")} required value={form.passportNumber} onChange={(v) => setForm({ ...form, passportNumber: v })} />
+              <TextField label={t("phoneNumber")} type="tel" required value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
+              <TextField label={t("email")} type="email" required value={form.email} onChange={(v) => setForm({ ...form, email: v })} />
               {!user && (
-                <TextField label="Password" type="password" required value={password} onChange={setPassword} placeholder="At least 6 characters — creates your free account" />
+                <TextField label={t("password")} type="password" required value={password} onChange={setPassword} placeholder={t("passwordCreatesAccount")} />
               )}
             </div>
           </div>
 
           {/* Company details */}
           <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
-            <h2 className="text-xl font-bold text-gray-900">Company Information</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t("companyInformation")}</h2>
             <div className="grid gap-5 md:grid-cols-2">
-              <TextField label="Company Name" required value={form.companyName} onChange={(v) => setForm({ ...form, companyName: v })} />
-              <TextField label="Company Website" value={form.companyWebsite} onChange={(v) => setForm({ ...form, companyWebsite: v })} placeholder="Optional" />
+              <TextField label={t("companyName")} required value={form.companyName} onChange={(v) => setForm({ ...form, companyName: v })} />
+              <TextField label={t("companyWebsite")} value={form.companyWebsite} onChange={(v) => setForm({ ...form, companyWebsite: v })} placeholder={t("optional")} />
             </div>
-            <OptionGroup label="Company Type" required options={COMPANY_TYPES as unknown as string[]} value={form.companyType} onChange={(v) => setForm({ ...form, companyType: v })} />
+            <OptionGroup label={t("companyType")} required options={COMPANY_TYPES as unknown as string[]} value={form.companyType} onChange={(v) => setForm({ ...form, companyType: v })} />
             {form.companyType === "Other" && (
-              <TextField label="Please specify your company nature" required value={form.companyTypeOther} onChange={(v) => setForm({ ...form, companyTypeOther: v })} />
+              <TextField label={t("pleaseSpecifyCompanyNature")} required value={form.companyTypeOther} onChange={(v) => setForm({ ...form, companyTypeOther: v })} />
             )}
-            <OptionGroup label="Company Scale (Staff)" required options={COMPANY_SCALES as unknown as string[]} value={form.companyScale} onChange={(v) => setForm({ ...form, companyScale: v })} />
+            <OptionGroup label={t("companyScale")} required options={COMPANY_SCALES as unknown as string[]} value={form.companyScale} onChange={(v) => setForm({ ...form, companyScale: v })} />
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Brief Company Introduction</label>
-              <textarea value={form.companyIntro} onChange={(e) => setForm({ ...form, companyIntro: e.target.value })} rows={3} placeholder="Optional" className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" />
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("companyIntro")}</label>
+              <textarea value={form.companyIntro} onChange={(e) => setForm({ ...form, companyIntro: e.target.value })} rows={3} placeholder={t("optional")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" />
             </div>
           </div>
 
           {/* Visit details */}
           <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
-            <h2 className="text-xl font-bold text-gray-900">Visit Details</h2>
-            <OptionGroup label="Purpose of Visit" required options={PURPOSES_OF_VISIT as unknown as string[]} value={form.purposeOfVisit} onChange={(v) => setForm({ ...form, purposeOfVisit: v })} />
-            <OptionGroup label="Where Did You Get This Event Information" required options={INFO_SOURCES as unknown as string[]} value={form.infoSource} onChange={(v) => setForm({ ...form, infoSource: v })} />
+            <h2 className="text-xl font-bold text-gray-900">{t("visitDetails")}</h2>
+            <OptionGroup label={t("purposeOfVisit")} required options={PURPOSES_OF_VISIT as unknown as string[]} value={form.purposeOfVisit} onChange={(v) => setForm({ ...form, purposeOfVisit: v })} />
+            <OptionGroup label={t("infoSource")} required options={INFO_SOURCES as unknown as string[]} value={form.infoSource} onChange={(v) => setForm({ ...form, infoSource: v })} />
             {form.infoSource === "Other" && (
-              <TextField label="Please specify" required value={form.infoSourceOther} onChange={(v) => setForm({ ...form, infoSourceOther: v })} />
+              <TextField label={t("pleaseSpecify")} required value={form.infoSourceOther} onChange={(v) => setForm({ ...form, infoSourceOther: v })} />
             )}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">What is Your Exporting Market? *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t("exportingMarketRequired")}</label>
               <div className="grid gap-3 md:grid-cols-2">
                 {EXPORTING_MARKETS.map((m) => (
                   <label key={m} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${form.exportingMarkets.includes(m) ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-gray-300"}`}>
@@ -404,7 +407,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
               </div>
               {form.exportingMarkets.includes("Other") && (
                 <div className="mt-3">
-                  <TextField label="Please specify" required value={form.exportingMarketOther} onChange={(v) => setForm({ ...form, exportingMarketOther: v })} />
+                  <TextField label={t("pleaseSpecify")} required value={form.exportingMarketOther} onChange={(v) => setForm({ ...form, exportingMarketOther: v })} />
                 </div>
               )}
             </div>
@@ -412,8 +415,8 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
 
           {/* Documents */}
           <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
-            <h2 className="text-xl font-bold text-gray-900">Upload Documents</h2>
-            <p className="text-sm text-gray-500">Passport, business card, visa page, and business license are required. If you registered with us before, we've reused your previously uploaded copies — upload a new file only to replace one.</p>
+            <h2 className="text-xl font-bold text-gray-900">{t("uploadDocuments")}</h2>
+            <p className="text-sm text-gray-500">{t("uploadDocumentsHint")}</p>
             <div className="grid gap-4 md:grid-cols-2">
               {DOCUMENT_FIELDS.map(({ key, label, required }) => {
                 const value = form[key] as string;
@@ -424,10 +427,10 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
                     {value && (isImage ? (
                       <img src={value} alt="" className="h-20 w-full object-contain mb-2 rounded-lg bg-gray-50" />
                     ) : (
-                      <div className="h-20 w-full flex items-center justify-center mb-2 rounded-lg bg-gray-50 text-sm text-gray-500">📄 File attached</div>
+                      <div className="h-20 w-full flex items-center justify-center mb-2 rounded-lg bg-gray-50 text-sm text-gray-500">{t("fileAttached")}</div>
                     ))}
                     <label className="cursor-pointer inline-block rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                      {value ? "Replace file" : "Choose file"}
+                      {value ? t("replaceFile") : t("chooseFile")}
                       <input type="file" accept="image/*,application/pdf" className="hidden" onChange={(e) => handleFile(key, e.target.files?.[0] || null)} />
                     </label>
                     {fileErrors[key] && <p className="mt-1 text-xs text-red-600">{fileErrors[key]}</p>}
@@ -440,11 +443,11 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
           {error && (
             <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}{" "}
-              {accountExists && <Link href="/login" className="underline font-semibold">Sign in</Link>}
+              {accountExists && <Link href="/login" className="underline font-semibold">{t("signIn")}</Link>}
             </div>
           )}
           <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
-            {submitting ? "Submitting..." : "Submit Registration"}
+            {submitting ? t("submitting") : t("submitRegistration")}
           </button>
         </form>
       </div>
@@ -483,6 +486,7 @@ function CustomField({
   onFile: (file: File | null) => void;
   fileError?: string;
 }) {
+  const t = useTranslations("expoRegisterPage");
   if (field.type === "text") {
     return <TextField label={field.label} required={field.required} value={(value as string) || ""} onChange={onChange} />;
   }
@@ -533,10 +537,10 @@ function CustomField({
       {fileValue && (isImage ? (
         <img src={fileValue} alt="" className="h-20 w-full object-contain mb-2 rounded-lg bg-gray-50" />
       ) : (
-        <div className="h-20 w-full flex items-center justify-center mb-2 rounded-lg bg-gray-50 text-sm text-gray-500">📄 File attached</div>
+        <div className="h-20 w-full flex items-center justify-center mb-2 rounded-lg bg-gray-50 text-sm text-gray-500">{t("fileAttached")}</div>
       ))}
       <label className="cursor-pointer inline-block rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-        {fileValue ? "Replace file" : "Choose file"}
+        {fileValue ? t("replaceFile") : t("chooseFile")}
         <input type="file" accept="image/*,application/pdf" className="hidden" onChange={(e) => onFile(e.target.files?.[0] || null)} />
       </label>
       {fileError && <p className="mt-1 text-xs text-red-600">{fileError}</p>}

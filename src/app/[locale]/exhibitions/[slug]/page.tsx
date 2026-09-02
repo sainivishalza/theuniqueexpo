@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -28,6 +29,7 @@ export default function ExhibitionDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  const t = useTranslations("exhibitionDetail");
   const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
@@ -57,7 +59,7 @@ export default function ExhibitionDetailPage({
   }, [slug]);
 
   if (expo === undefined) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">Loading...</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
   }
 
   if (!expo) {
@@ -65,9 +67,9 @@ export default function ExhibitionDetailPage({
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900">Exhibition not found</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t("notFound")}</h1>
           <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">
-            Browse all exhibitions →
+            {t("browseAll")}
           </Link>
         </div>
       </div>
@@ -94,7 +96,7 @@ export default function ExhibitionDetailPage({
             </span>
             {isUpcoming && (
               <span className="rounded-lg bg-green-500/90 px-3 py-1 text-sm font-bold text-white">
-                Upcoming
+                {t("upcoming")}
               </span>
             )}
           </div>
@@ -129,7 +131,7 @@ export default function ExhibitionDetailPage({
               type="button"
               onClick={() => setLightboxIndex(0)}
               className="relative group cursor-zoom-in"
-              aria-label="View full-size poster"
+              aria-label={t("viewFullSizePoster")}
             >
               <Image
                 src={expo.image}
@@ -154,10 +156,10 @@ export default function ExhibitionDetailPage({
       <section className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { label: "Exhibitors", value: formatNumber(expo.exhibitors) + "+", icon: "🏢" },
-            { label: "Visitors", value: expo.visitors, icon: "👥" },
-            { label: "Venue", value: expo.city, icon: "📍" },
-            { label: "Duration", value: expo.dates, icon: "📅" },
+            { label: t("stats.exhibitors"), value: formatNumber(expo.exhibitors) + "+", icon: "🏢" },
+            { label: t("stats.visitors"), value: expo.visitors, icon: "👥" },
+            { label: t("stats.venue"), value: expo.city, icon: "📍" },
+            { label: t("stats.duration"), value: expo.dates, icon: "📅" },
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-lg">{s.icon}</div>
@@ -178,13 +180,13 @@ export default function ExhibitionDetailPage({
             <div className="lg:col-span-2 space-y-8">
               {/* About */}
               <div className="rounded-2xl bg-white p-8 shadow-sm">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">About This Exhibition</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("aboutThisExhibition")}</h2>
                 <p className="text-gray-600 leading-relaxed whitespace-pre-line">{expo.description}</p>
               </div>
 
               {/* Highlights */}
               <div className="rounded-2xl bg-white p-8 shadow-sm">
-                <h2 className="text-2xl font-bold text-gray-900 mb-5">Event Highlights</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("eventHighlights")}</h2>
                 <div className="grid gap-4 md:grid-cols-2">
                   {expo.highlights.map((h, i) => (
                     <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100">
@@ -200,7 +202,7 @@ export default function ExhibitionDetailPage({
               {/* Photo gallery */}
               {expo.galleryImages && expo.galleryImages.length > 0 && (
                 <div className="rounded-2xl bg-white p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-5">Photo Gallery</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("photoGallery")}</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {expo.galleryImages.map((img, i) => (
                       <button
@@ -224,7 +226,7 @@ export default function ExhibitionDetailPage({
 
               {/* Exhibitor preview */}
               <div className="rounded-2xl bg-white p-8 shadow-sm">
-                <h2 className="text-2xl font-bold text-gray-900 mb-5">Featured Exhibitors</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("featuredExhibitors")}</h2>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
                   {exhibitorLogos.map((e) => (
                     <div key={e.name} className="flex flex-col items-center gap-2 group cursor-pointer">
@@ -239,7 +241,7 @@ export default function ExhibitionDetailPage({
                   href="/directory"
                   className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 hover:underline"
                 >
-                  View all exhibitors →
+                  {t("viewAllExhibitors")}
                 </Link>
               </div>
             </div>
@@ -249,38 +251,38 @@ export default function ExhibitionDetailPage({
               {/* Buyer/Visitor registration CTA */}
               {expo.registrationEnabled && (
                 <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">Register to Attend</h3>
-                  <p className="text-sm text-gray-500 mb-5">Buyers and visitors must register separately for this exhibition.</p>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{t("registerToAttend")}</h3>
+                  <p className="text-sm text-gray-500 mb-5">{t("registerToAttendHint")}</p>
                   <Link
                     href={`/exhibitions/${expo.slug}/register`}
                     className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
                   >
-                    Register as Buyer / Visitor
+                    {t("registerAsBuyerVisitor")}
                   </Link>
                 </div>
               )}
 
               {/* Booking CTA */}
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Book Your Booth</h3>
-                <p className="text-sm text-gray-500 mb-5">Secure your space at this premier exhibition. Booths start from $2,500.</p>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">{t("bookYourBooth")}</h3>
+                <p className="text-sm text-gray-500 mb-5">{t("bookYourBoothHint")}</p>
                 {isUpcoming ? (
                   <Link
                     href={`/exhibitions/${expo.slug}/floor-plan`}
                     className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:shadow-emerald-500/30 hover:scale-[1.02] transition-all duration-200"
                   >
-                    View Floor Plan & Book
+                    {t("viewFloorPlanAndBook")}
                   </Link>
                 ) : (
                   <div className="block w-full text-center rounded-xl bg-gray-200 py-3 text-sm font-semibold text-gray-500">
-                    This exhibition has ended
+                    {t("exhibitionEnded")}
                   </div>
                 )}
               </div>
 
               {/* Hotels */}
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">Hotels Nearby</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-3">{t("hotelsNearby")}</h3>
                 <div className="relative h-32 rounded-xl overflow-hidden mb-4">
                   <Image
                     src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=200&fit=crop&q=80"
@@ -291,20 +293,20 @@ export default function ExhibitionDetailPage({
                   />
                   <div className="absolute inset-0 gradient-overlay-light" />
                   <div className="absolute bottom-2 left-3 text-xs font-semibold text-white bg-black/40 backdrop-blur-sm rounded px-2 py-1">
-                    12 partner hotels
+                    {t("partnerHotels")}
                   </div>
                 </div>
                 <Link
                   href={`/exhibitions/${expo.slug}/hotels`}
                   className="block w-full text-center rounded-xl border border-gray-200 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                  Browse Hotels
+                  {t("browseHotels")}
                 </Link>
               </div>
 
               {/* Share */}
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">Share This Event</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-3">{t("shareThisEvent")}</h3>
                 <div className="flex gap-2">
                   {["𝕏", "in", "f", "✉"].map((icon, i) => (
                     <button
@@ -319,7 +321,7 @@ export default function ExhibitionDetailPage({
 
               {/* Organizer */}
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-sm font-bold text-gray-900 mb-2">Organized by</h3>
+                <h3 className="text-sm font-bold text-gray-900 mb-2">{t("organizedBy")}</h3>
                 <p className="text-sm text-gray-500">{expo.organizer}</p>
                 <a
                   href={expo.website}
@@ -327,7 +329,7 @@ export default function ExhibitionDetailPage({
                   rel="noopener noreferrer"
                   className="mt-3 block text-center rounded-xl border border-gray-200 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
                 >
-                  Official Website ↗
+                  {t("officialWebsite")}
                 </a>
               </div>
             </div>
@@ -349,7 +351,7 @@ export default function ExhibitionDetailPage({
             type="button"
             onClick={() => setLightboxIndex(null)}
             className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
-            aria-label="Close"
+            aria-label={t("close")}
           >
             ×
           </button>
@@ -361,7 +363,7 @@ export default function ExhibitionDetailPage({
                 setLightboxIndex((i) => (i === null ? null : (i - 1 + allImages.length) % allImages.length));
               }}
               className="absolute left-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
-              aria-label="Previous photo"
+              aria-label={t("previousPhoto")}
             >
               ‹
             </button>
@@ -383,7 +385,7 @@ export default function ExhibitionDetailPage({
                 setLightboxIndex((i) => (i === null ? null : (i + 1) % allImages.length));
               }}
               className="absolute right-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
-              aria-label="Next photo"
+              aria-label={t("nextPhoto")}
             >
               ›
             </button>

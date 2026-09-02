@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { mockExhibitorProfiles } from "@/lib/booths";
 import ExhibitorReviews from "@/components/ExhibitorReviews";
@@ -16,6 +17,7 @@ const avatarColors = [
 ];
 
 export default function ExhibitorProfilePage() {
+  const t = useTranslations("exhibitorProfilePage");
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "";
   const profile = mockExhibitorProfiles.find((p) => p.id === id || p.slug === id);
@@ -25,8 +27,8 @@ export default function ExhibitorProfilePage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900">Exhibitor not found</h1>
-          <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">Browse exhibitions →</Link>
+          <h1 className="text-2xl font-bold text-gray-900">{t("notFound")}</h1>
+          <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">{t("browseExhibitions")}</Link>
         </div>
       </div>
     );
@@ -60,7 +62,7 @@ export default function ExhibitorProfilePage() {
               <div className="flex items-center gap-3">
                 <h1 className="text-3xl font-extrabold text-gray-900">{profile.name}</h1>
                 <span className="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-700 border border-green-200">
-                  ✓ Verified Supplier
+                  {t("verifiedSupplier")}
                 </span>
               </div>
               <p className="text-gray-500 mt-1">{profile.industry} • {profile.country}</p>
@@ -77,13 +79,13 @@ export default function ExhibitorProfilePage() {
             <div className="lg:col-span-2 space-y-8">
               {/* About */}
               <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">About</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">{t("about")}</h2>
                 <p className="text-gray-600 leading-relaxed">{profile.description}</p>
               </div>
 
               {/* Products */}
               <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
-                <h2 className="text-xl font-bold text-gray-900 mb-5">Products & Services</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-5">{t("productsAndServices")}</h2>
                 <div className="grid grid-cols-2 gap-3">
                   {profile.products.map((p) => (
                     <div key={p} className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
@@ -96,7 +98,7 @@ export default function ExhibitorProfilePage() {
 
               {/* Certifications */}
               <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
-                <h2 className="text-xl font-bold text-gray-900 mb-5">Certifications</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-5">{t("certifications")}</h2>
                 <div className="flex flex-wrap gap-2">
                   {profile.certifications.map((c) => (
                     <span key={c} className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700">
@@ -113,39 +115,39 @@ export default function ExhibitorProfilePage() {
             <div className="space-y-6">
               {/* Actions */}
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Connect</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">{t("connect")}</h3>
                 <Link
                   href="/register"
                   className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
                 >
-                  Request Meeting
+                  {t("requestMeeting")}
                 </Link>
                 <Link
                   href="/marketplace/new"
                   className="mt-3 block w-full text-center rounded-xl border border-gray-200 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                  Send RFQ
+                  {t("sendRfq")}
                 </Link>
               </div>
 
               {/* Quick facts */}
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-sm font-bold text-gray-900 mb-4">Quick Facts</h3>
+                <h3 className="text-sm font-bold text-gray-900 mb-4">{t("quickFacts")}</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Industry</span>
+                    <span className="text-gray-500">{t("industry")}</span>
                     <span className="font-semibold text-gray-900">{profile.industry}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Country</span>
+                    <span className="text-gray-500">{t("country")}</span>
                     <span className="font-semibold text-gray-900">{profile.country}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Products</span>
+                    <span className="text-gray-500">{t("products")}</span>
                     <span className="font-semibold text-gray-900">{profile.products.length}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Certs</span>
+                    <span className="text-gray-500">{t("certs")}</span>
                     <span className="font-semibold text-gray-900">{profile.certifications.length}</span>
                   </div>
                 </div>
@@ -153,7 +155,7 @@ export default function ExhibitorProfilePage() {
 
               {/* Share */}
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-sm font-bold text-gray-900 mb-3">Share Profile</h3>
+                <h3 className="text-sm font-bold text-gray-900 mb-3">{t("shareProfile")}</h3>
                 <div className="flex gap-2">
                   {["𝕏", "in", "f", "✉"].map((icon, i) => (
                     <button key={i} className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors text-sm">

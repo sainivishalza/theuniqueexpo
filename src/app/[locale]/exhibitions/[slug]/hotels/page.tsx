@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 
 interface Exhibition {
@@ -25,6 +26,7 @@ const hotelImages = [
 ];
 
 export default function HotelsPage() {
+  const t = useTranslations("hotelsPage");
   const params = useParams();
   const slug = typeof params.slug === "string" ? params.slug : "";
   const { user } = useAuth();
@@ -54,13 +56,13 @@ export default function HotelsPage() {
   }, [expo]);
 
   if (expo === undefined) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">Loading...</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
   }
 
   if (!expo) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <p className="text-gray-500">Exhibition not found.</p>
+        <p className="text-gray-500">{t("notFound")}</p>
       </div>
     );
   }
@@ -82,7 +84,7 @@ export default function HotelsPage() {
           rooms,
         }),
       });
-      if (!res.ok) throw new Error((await res.json()).error || "Booking failed");
+      if (!res.ok) throw new Error((await res.json()).error || t("bookingFailed"));
       setSubmitted(true);
     } catch (err: any) {
       setError(err.message);
@@ -108,10 +110,10 @@ export default function HotelsPage() {
           <div className="mx-auto max-w-7xl px-6 pb-6 w-full">
             <Link href={`/exhibitions/${slug}`} className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-2">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-              Back to {expo.title}
+              {t("backTo", { name: expo.title })}
             </Link>
-            <h1 className="text-3xl font-extrabold text-white">Hotels Near {expo.city}</h1>
-            <p className="mt-1 text-gray-300">Curated hotels with negotiated rates for attendees.</p>
+            <h1 className="text-3xl font-extrabold text-white">{t("hotelsNear", { city: expo.city })}</h1>
+            <p className="mt-1 text-gray-300">{t("subtitle")}</p>
           </div>
         </div>
       </section>
@@ -121,7 +123,7 @@ export default function HotelsPage() {
           {hotels.length === 0 ? (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">🏨</div>
-              <h3 className="text-xl font-bold text-gray-900">No hotels listed yet</h3>
+              <h3 className="text-xl font-bold text-gray-900">{t("noHotels")}</h3>
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -142,7 +144,7 @@ export default function HotelsPage() {
                     />
                     <div className="absolute top-3 right-3 rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1 shadow-sm">
                       <span className="text-lg font-extrabold text-gray-900">${hotel.pricePerNight}</span>
-                      <span className="text-xs text-gray-500">/night</span>
+                      <span className="text-xs text-gray-500">{t("perNight")}</span>
                     </div>
                   </div>
                   <div className="p-5">
@@ -165,7 +167,7 @@ export default function HotelsPage() {
                           : "border border-gray-200 text-gray-700 hover:bg-gray-50"
                       }`}
                     >
-                      {selectedHotel?.id === hotel.id ? "✓ Selected" : "Select Hotel"}
+                      {selectedHotel?.id === hotel.id ? t("selectedCheck") : t("selectHotel")}
                     </button>
                   </div>
                 </div>
@@ -176,40 +178,40 @@ export default function HotelsPage() {
           {/* Booking form */}
           {selectedHotel && (
             <div className="mt-10 rounded-2xl bg-white p-8 shadow-sm border border-gray-100 max-w-2xl mx-auto">
-              <h2 className="text-xl font-bold text-gray-900 mb-5">Book {selectedHotel.name}</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-5">{t("bookHotel", { name: selectedHotel.name })}</h2>
               {submitted ? (
                 <div className="rounded-xl bg-green-50 border border-green-200 p-6 text-center">
                   <div className="text-4xl mb-3">✅</div>
-                  <h3 className="font-bold text-green-800">Booking Request Submitted!</h3>
-                  <p className="text-sm text-green-600 mt-1">We&apos;ll confirm within 24 hours.</p>
+                  <h3 className="font-bold text-green-800">{t("bookingSubmitted")}</h3>
+                  <p className="text-sm text-green-600 mt-1">{t("bookingSubmittedHint")}</p>
                 </div>
               ) : user ? (
                 <form onSubmit={handleBook} className="space-y-4">
                   {error && <div className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</div>}
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">Check-in</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t("checkIn")}</label>
                       <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" required />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">Check-out</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t("checkOut")}</label>
                       <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" required />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">Rooms</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t("rooms")}</label>
                       <select value={rooms} onChange={(e) => setRooms(Number(e.target.value))} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none">
                         {[1, 2, 3, 4, 5].map((n) => (
-                          <option key={n} value={n}>{n} room{n > 1 ? "s" : ""}</option>
+                          <option key={n} value={n}>{t("roomCount", { count: n })}</option>
                         ))}
                       </select>
                     </div>
                   </div>
                   <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 disabled:opacity-50">
-                    {submitting ? "Submitting..." : "Submit Booking Request"}
+                    {submitting ? t("submitting") : t("submitBookingRequest")}
                   </button>
                 </form>
               ) : (
-                <Link href="/login" className="text-sm font-semibold text-emerald-600 hover:underline">Log in to book →</Link>
+                <Link href="/login" className="text-sm font-semibold text-emerald-600 hover:underline">{t("logInToBook")}</Link>
               )}
             </div>
           )}

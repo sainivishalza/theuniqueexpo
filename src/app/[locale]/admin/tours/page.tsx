@@ -293,7 +293,7 @@ export default function AdminToursPage() {
                   {form.image && (
                     <>
                       <img src={form.image} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-60" />
-                      <img src={form.image} alt="Preview" className="absolute inset-0 w-full h-full object-contain" />
+                      <img src={form.image} alt={ta("preview")} className="absolute inset-0 w-full h-full object-contain" />
                     </>
                   )}
                 </div>

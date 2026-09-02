@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 
@@ -32,6 +33,7 @@ export default function FavoriteButton({
   initialSaved?: boolean;
   onChange?: (saved: boolean) => void;
 }) {
+  const t = useTranslations("favoriteButton");
   const { user } = useAuth();
   const router = useRouter();
   const [saved, setSaved] = useState(!!initialSaved);
@@ -76,12 +78,12 @@ export default function FavoriteButton({
     <button
       type="button"
       onClick={toggle}
-      aria-label={saved ? "Remove from saved exhibitions" : "Save exhibition"}
+      aria-label={saved ? t("removeFromSaved") : t("saveExhibition")}
       aria-pressed={saved}
       className={`flex items-center justify-center gap-1.5 transition-colors ${showLabel ? "rounded-xl px-4 py-2 text-sm font-semibold" : "rounded-full"} ${saved ? "bg-red-500 text-white" : "bg-white/90 text-gray-700 hover:bg-white"} ${className}`}
     >
       {saved ? "❤️" : "🤍"}
-      {showLabel && <span>{saved ? "Saved" : "Save"}</span>}
+      {showLabel && <span>{saved ? t("saved") : t("save")}</span>}
     </button>
   );
 }

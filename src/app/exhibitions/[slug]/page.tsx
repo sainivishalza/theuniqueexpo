@@ -150,7 +150,7 @@ export default function ExhibitionDetailPage({
               {/* About */}
               <div className="rounded-2xl bg-white p-8 shadow-sm">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">About This Exhibition</h2>
-                <p className="text-gray-600 leading-relaxed">{expo.description}</p>
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">{expo.description}</p>
               </div>
 
               {/* Highlights */}

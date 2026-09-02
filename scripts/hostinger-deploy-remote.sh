@@ -205,6 +205,14 @@ $MYSQL < schema-migrations/012-tours.sql
 
 echo "Installing dependencies and building ..."
 npm install
+# Next's incremental type-checking cache under .next/dev/types is not fully
+# invalidated by a route restructure (e.g. moving pages under a new
+# directory segment) -- it can keep referencing page paths that no longer
+# exist, failing the build's typecheck step with false "Cannot find module"
+# errors even though `tsc --noEmit` passes cleanly against the real source.
+# A stale .next from a previous deploy is never valid to keep; always
+# rebuild it from scratch.
+rm -rf .next
 # The host can't load Next's native SWC binary (GLIBC mismatch), so it falls
 # back to a WASM build using Rust's rayon thread pool, which by default also
 # sizes itself off the host's (misreported) CPU count and can hit the same

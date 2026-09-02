@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 interface Tour {
@@ -12,6 +13,7 @@ interface Tour {
 }
 
 export default function TourDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const t = useTranslations("tourDetail");
   const { slug } = use(params);
   const [tour, setTour] = useState<Tour | null | undefined>(undefined);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -39,7 +41,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
   }, [slug]);
 
   if (tour === undefined) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">Loading...</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
   }
 
   if (!tour) {
@@ -47,9 +49,9 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900">Tour not found</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t("notFound")}</h1>
           <Link href="/tours" className="mt-4 inline-block text-emerald-600 hover:underline">
-            Browse all tours →
+            {t("browseAll")}
           </Link>
         </div>
       </div>
@@ -99,7 +101,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
               type="button"
               onClick={() => setLightboxIndex(0)}
               className="relative group cursor-zoom-in"
-              aria-label="View full-size photo"
+              aria-label={t("viewFullSizePhoto")}
             >
               <Image
                 src={tour.image}
@@ -124,10 +126,10 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
       <section className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { label: "Price", value: `${tour.currency}${tour.price} / person`, icon: "💰" },
-            { label: "Duration", value: tour.duration, icon: "📅" },
-            { label: "Group Size", value: tour.groupSize, icon: "👥" },
-            { label: "Route", value: `${tour.departureCity} → ${tour.destination}`, icon: "🧭" },
+            { label: t("stats.price"), value: t("pricePerPerson", { currency: tour.currency, price: tour.price }), icon: "💰" },
+            { label: t("stats.duration"), value: tour.duration, icon: "📅" },
+            { label: t("stats.groupSize"), value: tour.groupSize, icon: "👥" },
+            { label: t("stats.route"), value: `${tour.departureCity} → ${tour.destination}`, icon: "🧭" },
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-lg">{s.icon}</div>
@@ -146,13 +148,13 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
           <div className="grid gap-8 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-8">
               <div className="rounded-2xl bg-white p-8 shadow-sm">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">About This Tour</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("aboutThisTour")}</h2>
                 <p className="text-gray-600 leading-relaxed whitespace-pre-line">{tour.description}</p>
               </div>
 
               {tour.highlights.length > 0 && (
                 <div className="rounded-2xl bg-white p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-5">Tour Highlights</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("tourHighlights")}</h2>
                   <div className="grid gap-4 md:grid-cols-2">
                     {tour.highlights.map((h, i) => (
                       <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100">
@@ -168,7 +170,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
 
               {tour.galleryImages && tour.galleryImages.length > 0 && (
                 <div className="rounded-2xl bg-white p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-5">Photo Gallery</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("photoGallery")}</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {tour.galleryImages.map((img, i) => (
                       <button
@@ -194,28 +196,28 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
             {/* Sidebar */}
             <div className="space-y-6">
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Book This Tour</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{t("bookThisTour")}</h3>
                 <p className="text-sm text-gray-500 mb-5">
                   {tour.registrationEnabled
-                    ? "Tell us about your group and interests, and we'll tailor the itinerary."
-                    : "Registration for this tour is currently closed."}
+                    ? t("bookThisTourHint")
+                    : t("registrationClosed")}
                 </p>
                 {tour.registrationEnabled ? (
                   <Link
                     href={`/tours/${tour.slug}/register`}
                     className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
                   >
-                    Register for This Tour
+                    {t("registerForThisTour")}
                   </Link>
                 ) : (
                   <div className="block w-full text-center rounded-xl bg-gray-200 py-3 text-sm font-semibold text-gray-500">
-                    Registration closed
+                    {t("registrationClosed")}
                   </div>
                 )}
               </div>
 
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-sm font-bold text-gray-900 mb-2">Organized by</h3>
+                <h3 className="text-sm font-bold text-gray-900 mb-2">{t("organizedBy")}</h3>
                 <p className="text-sm text-gray-500">{tour.organizer}</p>
               </div>
             </div>
@@ -233,7 +235,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
             type="button"
             onClick={() => setLightboxIndex(null)}
             className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
-            aria-label="Close"
+            aria-label={t("close")}
           >
             ×
           </button>
@@ -245,7 +247,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
                 setLightboxIndex((i) => (i === null ? null : (i - 1 + allImages.length) % allImages.length));
               }}
               className="absolute left-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
-              aria-label="Previous photo"
+              aria-label={t("previousPhoto")}
             >
               ‹
             </button>
@@ -267,7 +269,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
                 setLightboxIndex((i) => (i === null ? null : (i + 1) % allImages.length));
               }}
               className="absolute right-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
-              aria-label="Next photo"
+              aria-label={t("nextPhoto")}
             >
               ›
             </button>

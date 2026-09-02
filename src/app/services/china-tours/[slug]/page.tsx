@@ -1,9 +1,26 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { businessTours, getTourBySlug } from "@/lib/tours";
 import { formatNumber } from "@/lib/format";
 
 export function generateStaticParams() {
   return businessTours.map((t) => ({ slug: t.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const tour = getTourBySlug(slug);
+  if (!tour) return { title: "Tour not found" };
+  return {
+    title: tour.title,
+    description: tour.description,
+    openGraph: { title: tour.title, description: tour.description, images: [{ url: tour.image }] },
+    twitter: { title: tour.title, description: tour.description, images: [{ url: tour.image }] },
+  };
 }
 
 export default async function TourDetailPage({ params }: { params: Promise<{ slug: string }> }) {

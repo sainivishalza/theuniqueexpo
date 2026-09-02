@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { getAboutContent } from "@/lib/server/about-content-repo";
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
 export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getAboutContent();
+  return { title: content.heading, description: content.tagline };
+}
 
 export default async function AboutPage() {
   const content = await getAboutContent();

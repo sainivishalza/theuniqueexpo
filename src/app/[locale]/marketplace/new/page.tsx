@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 
 const CATEGORIES = [
   "Consumer Goods", "Electronics", "Industrial", "Automotive",
@@ -42,8 +43,8 @@ export default function NewRFQPage() {
       if (!res.ok) throw new Error((await res.json()).error || t("failedToPostRequest"));
       setSubmitted(true);
       setTimeout(() => router.push("/marketplace"), 1500);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(errorMessage(err, "Something went wrong"));
       setSubmitting(false);
     }
   };

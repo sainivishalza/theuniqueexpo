@@ -3,6 +3,7 @@ import { use, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 import type { ExpoRegistration } from "@/lib/expo-registrations";
 import type { CustomFormField } from "@/lib/custom-registration-form";
 
@@ -70,9 +71,9 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
         body: JSON.stringify({ status }),
       });
       if (!res.ok) throw new Error((await res.json()).error || tr("updateFailed"));
-      setRegistrations((prev) => prev.map((r) => (r.id === id ? { ...r, status: status as any } : r)));
-    } catch (err: any) {
-      alert(err.message);
+      setRegistrations((prev) => prev.map((r) => (r.id === id ? { ...r, status: status as RegistrationSummary["status"] } : r)));
+    } catch (err) {
+      alert(errorMessage(err, "Something went wrong"));
     } finally {
       setUpdatingId(null);
     }
@@ -85,8 +86,8 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || tr("loadDetailFailed"));
       setDetail(data.registration);
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      alert(errorMessage(err, "Something went wrong"));
     } finally {
       setDetailLoading(false);
     }

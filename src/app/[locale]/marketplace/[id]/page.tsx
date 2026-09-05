@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 
 interface RFQ {
   id: string; title: string; product: string; description: string; quantity: string;
@@ -102,8 +103,8 @@ export default function RFQDetailPage() {
       ]);
       setQuoteSubmitted(true);
       setShowQuoteForm(false);
-    } catch (err: any) {
-      setQuoteError(err.message);
+    } catch (err) {
+      setQuoteError(errorMessage(err, "Something went wrong"));
     } finally {
       setSubmitting(false);
     }

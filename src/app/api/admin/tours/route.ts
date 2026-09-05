@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
+import { isDuplicateEntryError } from "@/lib/db";
 import { listTours, createTour } from "@/lib/server/tours-repo";
 import { slugify } from "@/lib/slugify";
 
@@ -27,8 +28,8 @@ export async function POST(request: Request) {
   try {
     const id = await createTour(body);
     return NextResponse.json({ id }, { status: 201 });
-  } catch (err: any) {
-    if (err.code === "ER_DUP_ENTRY") {
+  } catch (err) {
+    if (isDuplicateEntryError(err)) {
       return NextResponse.json({ error: "A tour with that slug already exists" }, { status: 409 });
     }
     console.error("Create tour error:", err);

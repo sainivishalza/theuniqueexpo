@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
+import { isDuplicateEntryError } from "@/lib/db";
 import { updateTour, deleteTour } from "@/lib/server/tours-repo";
 import { slugify } from "@/lib/slugify";
 
@@ -20,8 +21,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   try {
     await updateTour(Number(id), body);
     return NextResponse.json({ ok: true });
-  } catch (err: any) {
-    if (err.code === "ER_DUP_ENTRY") {
+  } catch (err) {
+    if (isDuplicateEntryError(err)) {
       return NextResponse.json({ error: "A tour with that slug already exists" }, { status: 409 });
     }
     console.error("Update tour error:", err);

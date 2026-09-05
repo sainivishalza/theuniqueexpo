@@ -13,7 +13,7 @@ import { validateCustomAnswers } from "@/lib/custom-registration-form";
 export async function POST(request: Request) {
   try {
     return await handlePost(request);
-  } catch (err: any) {
+  } catch (err) {
     console.error("Expo registration error:", err);
     return NextResponse.json({ error: "Registration failed. Please try again." }, { status: 500 });
   }

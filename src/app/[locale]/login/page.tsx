@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 import Logo from "@/components/Logo";
 
 export default function LoginPage() {
@@ -23,8 +24,8 @@ export default function LoginPage() {
     try {
       await login(email, password);
       router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.message || t("loginFailed"));
+    } catch (err) {
+      setError(errorMessage(err, t("loginFailed")));
     } finally {
       setLoading(false);
     }

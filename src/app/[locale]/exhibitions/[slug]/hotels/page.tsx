@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 
 interface Exhibition {
   id: string; slug: string; title: string; city: string;
@@ -86,8 +87,8 @@ export default function HotelsPage() {
       });
       if (!res.ok) throw new Error((await res.json()).error || t("bookingFailed"));
       setSubmitted(true);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(errorMessage(err, "Something went wrong"));
     } finally {
       setSubmitting(false);
     }

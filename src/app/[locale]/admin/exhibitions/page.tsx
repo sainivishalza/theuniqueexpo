@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import { slugify } from "@/lib/slugify";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
+import { errorMessage } from "@/lib/format";
 
 interface Exhibition {
   id: string;
@@ -74,8 +75,8 @@ export default function AdminExhibitionsPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || t("loadFailed"));
       setExhibitions(data.exhibitions);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(errorMessage(err, "Something went wrong"));
     } finally {
       setLoading(false);
     }
@@ -157,8 +158,8 @@ export default function AdminExhibitionsPage() {
       if (!res.ok) throw new Error(data.error || t("saveFailed"));
       closeForm();
       await loadExhibitions();
-    } catch (err: any) {
-      setFormError(err.message);
+    } catch (err) {
+      setFormError(errorMessage(err, "Something went wrong"));
     } finally {
       setSaving(false);
     }
@@ -236,8 +237,8 @@ export default function AdminExhibitionsPage() {
         throw new Error(data.error || t("deleteFailed"));
       }
       setExhibitions((prev) => prev.filter((e) => e.id !== id));
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      alert(errorMessage(err, "Something went wrong"));
     } finally {
       setDeletingId(null);
     }

@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import { slugify } from "@/lib/slugify";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
+import { errorMessage } from "@/lib/format";
 
 interface Tour {
   id: string;
@@ -71,8 +72,8 @@ export default function AdminToursPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || t("loadFailed"));
       setTours(data.tours);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(errorMessage(err, "Something went wrong"));
     } finally {
       setLoading(false);
     }
@@ -150,8 +151,8 @@ export default function AdminToursPage() {
       if (!res.ok) throw new Error(data.error || t("saveFailed"));
       closeForm();
       await loadTours();
-    } catch (err: any) {
-      setFormError(err.message);
+    } catch (err) {
+      setFormError(errorMessage(err, "Something went wrong"));
     } finally {
       setSaving(false);
     }
@@ -225,8 +226,8 @@ export default function AdminToursPage() {
         throw new Error(data.error || t("deleteFailed"));
       }
       setTours((prev) => prev.filter((t) => t.id !== id));
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      alert(errorMessage(err, "Something went wrong"));
     } finally {
       setDeletingId(null);
     }

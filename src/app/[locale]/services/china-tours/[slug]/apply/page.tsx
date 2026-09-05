@@ -3,6 +3,7 @@ import { use, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 import { chinaToursData, localizeTour } from "@/lib/tours";
 
 const TOUR_SERVICE_KEYS = [
@@ -57,8 +58,8 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
       });
       if (!res.ok) throw new Error((await res.json()).error || t("submissionFailed"));
       setSubmitted(true);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(errorMessage(err, "Something went wrong"));
     } finally {
       setSubmitting(false);
     }

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 import { DEFAULT_ABOUT_CONTENT, type AboutContent, type AboutStat } from "@/lib/about-content";
 
 export default function AdminAboutPage() {
@@ -60,8 +61,8 @@ export default function AdminAboutPage() {
       if (!res.ok) throw new Error(data.error || t("saveFailed"));
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(errorMessage(err, "Something went wrong"));
     } finally {
       setSaving(false);
     }

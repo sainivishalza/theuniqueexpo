@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
+import { errorMessage } from "@/lib/format";
 
 interface Booking {
   id: string;
@@ -45,8 +46,8 @@ export default function AdminHotelsPage() {
       });
       if (!res.ok) throw new Error((await res.json()).error || t("updateFailed"));
       setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      alert(errorMessage(err, "Something went wrong"));
     } finally {
       setUpdatingId(null);
     }

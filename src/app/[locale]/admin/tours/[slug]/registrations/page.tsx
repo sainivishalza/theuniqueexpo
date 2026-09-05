@@ -3,6 +3,7 @@ import { use, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 import type { CustomFormField } from "@/lib/custom-registration-form";
 
 interface Tour { id: string; slug: string; title: string; }
@@ -74,8 +75,8 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
       });
       if (!res.ok) throw new Error((await res.json()).error || tr("updateFailed"));
       setRegistrations((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      alert(errorMessage(err, "Something went wrong"));
     } finally {
       setUpdatingId(null);
     }
@@ -88,8 +89,8 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || tr("loadDetailFailed"));
       setDetail(data.registration);
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      alert(errorMessage(err, "Something went wrong"));
     } finally {
       setDetailLoading(false);
     }

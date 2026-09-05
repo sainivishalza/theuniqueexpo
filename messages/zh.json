@@ -522,6 +522,14 @@
       "consultationRequests": {
         "title": "咨询请求",
         "description": "查看并安排咨询预约。"
+      },
+      "subsidyApplications": {
+        "title": "补贴申请",
+        "description": "查看补贴协助申请请求。"
+      },
+      "movingQuotes": {
+        "title": "搬迁报价申请",
+        "description": "查看搬迁报价申请请求。"
       }
     }
   },
@@ -1528,7 +1536,9 @@
     "preferredMoveDate": "预计搬迁日期",
     "additionalDetails": "补充信息",
     "additionalDetailsPlaceholder": "预估体积、特殊物品、时间限制……",
-    "submitQuoteRequest": "提交报价请求"
+    "submitQuoteRequest": "提交报价请求",
+    "requestFailed": "提交失败,请重试。",
+    "submitting": "提交中..."
   },
   "consultationPage": {
     "consultationBooked": "咨询已预约!",
@@ -1608,7 +1618,19 @@
     "deadline": "截止日期:{date}",
     "eligibility": "申请资格:",
     "requiredDocuments": "所需文件:",
-    "howToApply": "申请方式:"
+    "howToApply": "申请方式:",
+    "requestFailed": "提交失败,请重试。",
+    "assistanceRequested": "协助申请已提交!我们会尽快与您联系。",
+    "assistanceFormHint": "留下您的信息,我们的团队将协助您完成该补贴的申请。",
+    "name": "姓名 *",
+    "email": "邮箱 *",
+    "company": "公司",
+    "message": "留言",
+    "messagePlaceholder": "任何问题或需要我们了解的细节...",
+    "submitting": "提交中...",
+    "submitAssistanceRequest": "提交申请",
+    "requestAssistance": "申请协助",
+    "cancel": "取消"
   },
   "home": {
     "badge": "2026年即将举行的展会共 {count} 场",
@@ -1888,5 +1910,34 @@
     "logIn": "登录",
     "toLeaveAReview": "后可发表点评。",
     "noReviewsYet": "暂无点评，快来抢占第一个吧。"
+  },
+  "adminMovingQuotes": {
+    "backToServicesAdmin": "← 返回服务管理",
+    "title": "搬迁报价申请",
+    "requestsReceived": "已收到 {count} 条申请",
+    "updateFailed": "更新失败",
+    "noResultsTitle": "暂无搬迁报价申请",
+    "noResultsSubtitle": "用户提交后,搬迁报价申请将显示在此处。",
+    "route": "路线",
+    "movingType": "搬迁类型",
+    "statuses": {
+      "pending": "待处理",
+      "quoted": "已报价",
+      "completed": "已完成"
+    }
+  },
+  "adminSubsidyApplications": {
+    "backToServicesAdmin": "← 返回服务管理",
+    "title": "补贴申请",
+    "requestsReceived": "已收到 {count} 条申请",
+    "updateFailed": "更新失败",
+    "noResultsTitle": "暂无补贴申请",
+    "noResultsSubtitle": "用户提交后,补贴协助申请将显示在此处。",
+    "subsidy": "补贴项目",
+    "statuses": {
+      "pending": "待处理",
+      "in-progress": "处理中",
+      "completed": "已完成"
+    }
   }
 }

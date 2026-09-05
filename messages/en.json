@@ -522,6 +522,14 @@
       "consultationRequests": {
         "title": "Consultation Requests",
         "description": "Review and schedule consultation bookings."
+      },
+      "subsidyApplications": {
+        "title": "Subsidy Applications",
+        "description": "Review subsidy application assistance requests."
+      },
+      "movingQuotes": {
+        "title": "Moving Quote Requests",
+        "description": "Review relocation quote requests."
       }
     }
   },
@@ -1528,7 +1536,9 @@
     "preferredMoveDate": "Preferred Move Date",
     "additionalDetails": "Additional Details",
     "additionalDetailsPlaceholder": "Volume estimate, special items, timeline constraints...",
-    "submitQuoteRequest": "Submit Quote Request"
+    "submitQuoteRequest": "Submit Quote Request",
+    "requestFailed": "Request failed. Please try again.",
+    "submitting": "Submitting..."
   },
   "consultationPage": {
     "consultationBooked": "Consultation Booked!",
@@ -1608,7 +1618,19 @@
     "deadline": "Deadline: {date}",
     "eligibility": "Eligibility:",
     "requiredDocuments": "Required Documents:",
-    "howToApply": "How to Apply:"
+    "howToApply": "How to Apply:",
+    "requestFailed": "Request failed. Please try again.",
+    "assistanceRequested": "Assistance request sent! Our team will be in touch shortly.",
+    "assistanceFormHint": "Leave your details and our team will help you complete this subsidy application.",
+    "name": "Name *",
+    "email": "Email *",
+    "company": "Company",
+    "message": "Message",
+    "messagePlaceholder": "Any questions or details we should know...",
+    "submitting": "Submitting...",
+    "submitAssistanceRequest": "Submit Request",
+    "requestAssistance": "Request Application Assistance",
+    "cancel": "Cancel"
   },
   "home": {
     "badge": "{count} Upcoming Exhibitions in 2026",
@@ -1888,5 +1910,34 @@
     "logIn": "Log in",
     "toLeaveAReview": " to leave a review.",
     "noReviewsYet": "No reviews yet. Be the first to share your experience."
+  },
+  "adminMovingQuotes": {
+    "backToServicesAdmin": "← Back to Services Admin",
+    "title": "Moving Quote Requests",
+    "requestsReceived": "{count} requests received",
+    "updateFailed": "Update failed",
+    "noResultsTitle": "No moving quote requests yet",
+    "noResultsSubtitle": "Moving quote requests will appear here once users submit them.",
+    "route": "Route",
+    "movingType": "Moving Type",
+    "statuses": {
+      "pending": "pending",
+      "quoted": "quoted",
+      "completed": "completed"
+    }
+  },
+  "adminSubsidyApplications": {
+    "backToServicesAdmin": "← Back to Services Admin",
+    "title": "Subsidy Applications",
+    "requestsReceived": "{count} requests received",
+    "updateFailed": "Update failed",
+    "noResultsTitle": "No subsidy applications yet",
+    "noResultsSubtitle": "Subsidy application assistance requests will appear here once users submit them.",
+    "subsidy": "Subsidy",
+    "statuses": {
+      "pending": "pending",
+      "in-progress": "in progress",
+      "completed": "completed"
+    }
   }
 }

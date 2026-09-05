@@ -204,6 +204,7 @@ $MYSQL < schema-migrations/011-messaging-favorites-reviews.sql
 $MYSQL < schema-migrations/012-tours.sql
 $MYSQL < schema-migrations/013-exhibition-tour-i18n-content.sql
 $MYSQL < schema-migrations/014-events-blog-tour-reviews.sql
+$MYSQL < schema-migrations/015-moving-subsidy-applications.sql
 
 echo "Installing dependencies and building ..."
 npm install

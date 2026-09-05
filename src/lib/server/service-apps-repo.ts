@@ -113,3 +113,76 @@ export async function createConsultationBooking(input: {
 export async function updateConsultationStatus(id: number, status: string) {
   await pool.query("UPDATE consultation_bookings SET status = ? WHERE id = ?", [status, id]);
 }
+
+function mapMovingQuoteRow(row: RowDataPacket) {
+  return {
+    id: String(row.id),
+    userId: row.user_id ? String(row.user_id) : "",
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    company: row.company,
+    movingType: row.moving_type,
+    originCity: row.origin_city,
+    destinationCity: row.destination_city,
+    preferredDate: row.preferred_date,
+    details: row.details,
+    status: row.status,
+    createdAt: row.created_at,
+  };
+}
+
+export async function listMovingQuotes() {
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM moving_quotes ORDER BY created_at DESC");
+  return rows.map(mapMovingQuoteRow);
+}
+
+export async function createMovingQuote(input: {
+  userId?: number; name: string; email: string; phone: string; company: string;
+  movingType: string; originCity: string; destinationCity: string; preferredDate: string; details: string;
+}) {
+  const [result] = await pool.query<ResultSetHeader>(
+    `INSERT INTO moving_quotes (user_id, name, email, phone, company, moving_type, origin_city, destination_city, preferred_date, details, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+    [input.userId || null, input.name, input.email, input.phone || "", input.company || "", input.movingType, input.originCity, input.destinationCity, input.preferredDate || null, input.details || ""]
+  );
+  return result.insertId;
+}
+
+export async function updateMovingQuoteStatus(id: number, status: string) {
+  await pool.query("UPDATE moving_quotes SET status = ? WHERE id = ?", [status, id]);
+}
+
+function mapSubsidyApplicationRow(row: RowDataPacket) {
+  return {
+    id: String(row.id),
+    userId: row.user_id ? String(row.user_id) : "",
+    subsidyId: row.subsidy_id,
+    name: row.name,
+    email: row.email,
+    company: row.company,
+    message: row.message,
+    status: row.status,
+    createdAt: row.created_at,
+  };
+}
+
+export async function listSubsidyApplications() {
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM subsidy_applications ORDER BY created_at DESC");
+  return rows.map(mapSubsidyApplicationRow);
+}
+
+export async function createSubsidyApplication(input: {
+  userId?: number; subsidyId: string; name: string; email: string; company: string; message: string;
+}) {
+  const [result] = await pool.query<ResultSetHeader>(
+    `INSERT INTO subsidy_applications (user_id, subsidy_id, name, email, company, message, status)
+     VALUES (?, ?, ?, ?, ?, ?, 'pending')`,
+    [input.userId || null, input.subsidyId, input.name, input.email, input.company || "", input.message || ""]
+  );
+  return result.insertId;
+}
+
+export async function updateSubsidyApplicationStatus(id: number, status: string) {
+  await pool.query("UPDATE subsidy_applications SET status = ? WHERE id = ?", [status, id]);
+}

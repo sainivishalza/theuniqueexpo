@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { errorMessage } from "@/lib/format";
 
 const HANDLE_KEYS = [
   { key: "internationalFreight", icon: "🚢" },
@@ -17,9 +18,32 @@ const HANDLE_KEYS = [
 export default function MovingAssistancePage() {
   const t = useTranslations("movingAssistancePage");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", type: "office", origin: "", destination: "", date: "", details: "" });
 
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); setSubmitted(true); };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch("/api/moving-quotes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name, email: form.email, phone: form.phone, company: form.company,
+          movingType: form.type, originCity: form.origin, destinationCity: form.destination,
+          preferredDate: form.date, details: form.details,
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || t("requestFailed"));
+      setSubmitted(true);
+    } catch (err) {
+      setError(errorMessage(err, t("requestFailed")));
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (submitted) return (
     <div className="min-h-[60vh] flex items-center justify-center">
@@ -80,7 +104,8 @@ export default function MovingAssistancePage() {
                 </div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("preferredMoveDate")}</label><input type="date" value={form.date} onChange={(e) => setForm({...form, date: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("additionalDetails")}</label><textarea value={form.details} onChange={(e) => setForm({...form, details: e.target.value})} rows={3} placeholder={t("additionalDetailsPlaceholder")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
-                <button type="submit" className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity">{t("submitQuoteRequest")}</button>
+                {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+                <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">{submitting ? t("submitting") : t("submitQuoteRequest")}</button>
               </form>
             </div>
           </div>

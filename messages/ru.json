@@ -522,6 +522,14 @@
       "consultationRequests": {
         "title": "Запросы на консультацию",
         "description": "Просматривайте и планируйте консультации."
+      },
+      "subsidyApplications": {
+        "title": "Заявки на субсидии",
+        "description": "Просмотр запросов на помощь с субсидиями."
+      },
+      "movingQuotes": {
+        "title": "Заявки на переезд",
+        "description": "Просмотр запросов на расчёт стоимости переезда."
       }
     }
   },
@@ -1528,7 +1536,9 @@
     "preferredMoveDate": "Желаемая дата переезда",
     "additionalDetails": "Дополнительная информация",
     "additionalDetailsPlaceholder": "Оценка объёма, особые вещи, ограничения по срокам...",
-    "submitQuoteRequest": "Отправить запрос на расчёт"
+    "submitQuoteRequest": "Отправить запрос на расчёт",
+    "requestFailed": "Не удалось отправить запрос. Попробуйте снова.",
+    "submitting": "Отправка..."
   },
   "consultationPage": {
     "consultationBooked": "Консультация забронирована!",
@@ -1608,7 +1618,19 @@
     "deadline": "Срок: {date}",
     "eligibility": "Право на участие:",
     "requiredDocuments": "Необходимые документы:",
-    "howToApply": "Как подать заявку:"
+    "howToApply": "Как подать заявку:",
+    "requestFailed": "Не удалось отправить запрос. Попробуйте снова.",
+    "assistanceRequested": "Запрос на помощь отправлен! Мы свяжемся с вами в ближайшее время.",
+    "assistanceFormHint": "Оставьте свои данные, и наша команда поможет вам подать заявку на эту субсидию.",
+    "name": "Имя *",
+    "email": "Email *",
+    "company": "Компания",
+    "message": "Сообщение",
+    "messagePlaceholder": "Любые вопросы или детали, которые нам следует знать...",
+    "submitting": "Отправка...",
+    "submitAssistanceRequest": "Отправить запрос",
+    "requestAssistance": "Запросить помощь с подачей заявки",
+    "cancel": "Отмена"
   },
   "home": {
     "badge": "{count} предстоящих выставок в 2026 году",
@@ -1888,5 +1910,34 @@
     "logIn": "Войдите",
     "toLeaveAReview": ", чтобы оставить отзыв.",
     "noReviewsYet": "Пока нет отзывов. Будьте первым, кто поделится впечатлениями."
+  },
+  "adminMovingQuotes": {
+    "backToServicesAdmin": "← Назад в управление услугами",
+    "title": "Заявки на переезд",
+    "requestsReceived": "Получено запросов: {count}",
+    "updateFailed": "Не удалось обновить",
+    "noResultsTitle": "Заявок на переезд пока нет",
+    "noResultsSubtitle": "Заявки на переезд появятся здесь после отправки формы пользователями.",
+    "route": "Маршрут",
+    "movingType": "Тип переезда",
+    "statuses": {
+      "pending": "в ожидании",
+      "quoted": "рассчитано",
+      "completed": "завершено"
+    }
+  },
+  "adminSubsidyApplications": {
+    "backToServicesAdmin": "← Назад в управление услугами",
+    "title": "Заявки на субсидии",
+    "requestsReceived": "Получено запросов: {count}",
+    "updateFailed": "Не удалось обновить",
+    "noResultsTitle": "Заявок на субсидии пока нет",
+    "noResultsSubtitle": "Запросы на помощь с субсидиями появятся здесь после отправки формы пользователями.",
+    "subsidy": "Субсидия",
+    "statuses": {
+      "pending": "в ожидании",
+      "in-progress": "в обработке",
+      "completed": "завершено"
+    }
   }
 }

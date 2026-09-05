@@ -11,13 +11,15 @@ const SECTION_KEYS = [
   { key: "tourApplications", href: "/admin/services/tour-applications", icon: "📝", color: "from-purple-500 to-purple-600" },
   { key: "visaApplications", href: "/admin/services/visa-applications", icon: "📋", color: "from-emerald-500 to-green-600" },
   { key: "transportSubsidies", href: "/admin/services/subsidies", icon: "🚌", color: "from-cyan-500 to-teal-600" },
+  { key: "subsidyApplications", href: "/admin/services/subsidy-applications", icon: "🎫", color: "from-sky-500 to-blue-600" },
+  { key: "movingQuotes", href: "/admin/services/moving-quotes", icon: "📦", color: "from-indigo-500 to-violet-600" },
   { key: "consultationRequests", href: "/admin/services/consultations", icon: "💬", color: "from-orange-500 to-red-500" },
 ];
 
 export default function AdminServicesPage() {
   const t = useTranslations("adminServicesHome");
   const { user } = useAuth();
-  const [counts, setCounts] = useState({ tourApps: 0, visaApps: 0, consultations: 0 });
+  const [counts, setCounts] = useState({ tourApps: 0, visaApps: 0, consultations: 0, subsidyApps: 0, movingQuotes: 0 });
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -25,11 +27,15 @@ export default function AdminServicesPage() {
       fetch("/api/admin/tour-applications").then((r) => r.json()),
       fetch("/api/admin/visa-applications").then((r) => r.json()),
       fetch("/api/admin/consultations").then((r) => r.json()),
-    ]).then(([tourData, visaData, consultData]) => {
+      fetch("/api/admin/subsidy-applications").then((r) => r.json()),
+      fetch("/api/admin/moving-quotes").then((r) => r.json()),
+    ]).then(([tourData, visaData, consultData, subsidyData, movingData]) => {
       setCounts({
         tourApps: (tourData.applications || []).length,
         visaApps: (visaData.applications || []).length,
         consultations: (consultData.bookings || []).length,
+        subsidyApps: (subsidyData.applications || []).length,
+        movingQuotes: (movingData.quotes || []).length,
       });
     });
   }, [user]);
@@ -41,6 +47,8 @@ export default function AdminServicesPage() {
     tourApplications: counts.tourApps,
     visaApplications: counts.visaApps,
     transportSubsidies: subsidies.length,
+    subsidyApplications: counts.subsidyApps,
+    movingQuotes: counts.movingQuotes,
     consultationRequests: counts.consultations,
   };
   const sections = SECTION_KEYS.map((s) => ({

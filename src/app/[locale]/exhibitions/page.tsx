@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -22,9 +23,11 @@ export default function ExhibitionsPage() {
     upcoming: t("upcoming"),
     past: t("past"),
   };
+  const searchParams = useSearchParams();
+  const initialView = searchParams.get("view");
   const [industry, setIndustry] = useState("All");
   const [city, setCity] = useState("All");
-  const [dateFilter, setDateFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState(initialView === "past" || initialView === "upcoming" ? initialView : "all");
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
 

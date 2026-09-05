@@ -24,7 +24,6 @@ export interface SitePageDef {
 export const SITE_PAGES: SitePageDef[] = [
   { slug: "contact", navLabel: "Contact", path: "/contact" },
   { slug: "careers", navLabel: "Careers", path: "/careers" },
-  { slug: "blog", navLabel: "Blog", path: "/blog" },
   { slug: "help-center", navLabel: "Help Center", path: "/help" },
   { slug: "exhibition-guide", navLabel: "Exhibition Guide", path: "/exhibition-guide" },
   { slug: "booth-setup-tips", navLabel: "Booth Setup Tips", path: "/booth-setup-tips" },
@@ -72,19 +71,6 @@ export const DEFAULT_SITE_PAGE_CONTENT: Record<string, SitePageContent> = {
       { title: "Frontend Engineer — Remote", description: "Build and improve the platform buyers and exhibitors use every day." },
     ],
     contactEmail: "careers@theuniqueexpo.com",
-    contactPhone: "",
-  },
-  blog: {
-    heading: "The Unique Expo Blog",
-    tagline: "Insights, guides, and updates from the world of B2B trade fairs.",
-    body: "New posts from our team on exhibition prep, sourcing strategy, and what's changing across the industries we cover.",
-    itemsLabel: "Recent Posts",
-    items: [
-      { title: "5 Tips for First-Time Exhibitors", description: "What to prepare before your first trade fair booth." },
-      { title: "How to Prepare for CIFF Shanghai 2026", description: "A buyer's checklist for the furniture industry's biggest fair." },
-      { title: "Understanding Trade Fair Visa Requirements", description: "A quick guide to visa support for international visitors." },
-    ],
-    contactEmail: "",
     contactPhone: "",
   },
   "help-center": {

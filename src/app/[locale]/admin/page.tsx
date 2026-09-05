@@ -8,6 +8,8 @@ import { useAuth } from "@/lib/auth-context";
 const SECTION_KEYS = [
   { key: "exhibitionManagement", href: "/admin/exhibitions", icon: "🎪", color: "from-emerald-500 to-emerald-600" },
   { key: "tourManagement", href: "/admin/tours", icon: "🧳", color: "from-cyan-500 to-blue-600" },
+  { key: "eventManagement", href: "/admin/events", icon: "🎉", color: "from-pink-500 to-rose-600" },
+  { key: "blogManagement", href: "/admin/blog", icon: "📰", color: "from-indigo-500 to-purple-600" },
   { key: "rfqReview", href: "/admin/rfqs", icon: "📋", color: "from-purple-500 to-purple-600" },
   { key: "hotelBookings", href: "/admin/hotels", icon: "🏨", color: "from-amber-500 to-yellow-600" },
   { key: "servicesManagement", href: "/admin/services", icon: "🛠️", color: "from-violet-500 to-purple-600" },

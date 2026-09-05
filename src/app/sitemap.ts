@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 import { listTours } from "@/lib/server/tours-repo";
+import { listEvents } from "@/lib/server/events-repo";
+import { listPublishedPosts } from "@/lib/server/blog-repo";
 import { getAllToursData } from "@/lib/tours";
 import { mockExhibitorProfiles } from "@/lib/booths";
 import { routing } from "@/i18n/routing";
@@ -17,6 +19,8 @@ const STATIC_ROUTES = [
   "/contact",
   "/careers",
   "/blog",
+  "/events",
+  "/relocation",
   "/help",
   "/exhibition-guide",
   "/booth-setup-tips",
@@ -81,5 +85,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     localizedEntries(`/exhibitor/${profile.slug || profile.id}`, now)
   );
 
-  return [...staticEntries, ...exhibitionEntries, ...tourEntries, ...dbTourEntries, ...exhibitorEntries];
+  let eventEntries: MetadataRoute.Sitemap = [];
+  try {
+    const events = await listEvents();
+    eventEntries = events.flatMap((event) => localizedEntries(`/events/${event.slug}`, now));
+  } catch {
+    // Same reasoning as exhibitions above.
+  }
+
+  let blogEntries: MetadataRoute.Sitemap = [];
+  try {
+    const posts = await listPublishedPosts();
+    blogEntries = posts.flatMap((post) => localizedEntries(`/blog/${post.slug}`, now));
+  } catch {
+    // Same reasoning as exhibitions above.
+  }
+
+  return [
+    ...staticEntries, ...exhibitionEntries, ...tourEntries, ...dbTourEntries,
+    ...exhibitorEntries, ...eventEntries, ...blogEntries,
+  ];
 }

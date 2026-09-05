@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { errorMessage } from "@/lib/format";
 
 const TOPIC_KEYS = ["marketEntry", "supplierSourcing", "qualityInspection", "legalCompliance", "culturalEtiquette", "tradeCompliance", "ipProtection", "generalConsultation"];
 
@@ -9,8 +10,31 @@ export default function ConsultationPage() {
   const t = useTranslations("consultationPage");
   const TOPICS = TOPIC_KEYS.map((key) => t(`topicOptions.${key}`));
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({ name: "", email: "", company: "", topic: "", date: "", questions: "" });
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); setSubmitted(true); };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch("/api/consultation-bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name, email: form.email, company: form.company,
+          topic: form.topic, preferredDate: form.date, questions: form.questions,
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || t("requestFailed"));
+      setSubmitted(true);
+    } catch (err) {
+      setError(errorMessage(err, t("requestFailed")));
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (submitted) return (
     <div className="min-h-[60vh] flex items-center justify-center">
@@ -73,7 +97,8 @@ export default function ConsultationPage() {
                 </div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("preferredDate")}</label><input type="date" value={form.date} onChange={(e) => setForm({...form, date: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("questionsToCover")}</label><textarea value={form.questions} onChange={(e) => setForm({...form, questions: e.target.value})} rows={4} placeholder={t("questionsPlaceholder")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
-                <button type="submit" className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity">{t("bookConsultation")}</button>
+                {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+                <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">{submitting ? t("booking") : t("bookConsultation")}</button>
               </form>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import ReviewsSection from "@/components/ReviewsSection";
 
 interface Tour {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -192,6 +193,10 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
                   </div>
                 </div>
               )}
+
+              <div id="reviews">
+                <ReviewsSection apiBasePath={`/api/tours/${tour.slug}/reviews`} kind="tour" />
+              </div>
             </div>
 
             {/* Sidebar */}

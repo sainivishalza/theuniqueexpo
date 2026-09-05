@@ -1,31 +1,46 @@
-"use client";
-
-import { use, useEffect, useState } from "react";
+import type { Metadata } from "next";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { renderMarkdown } from "@/lib/markdown";
+import { getPublishedPostBySlug } from "@/lib/server/blog-repo";
 
-interface Post {
-  id: string; slug: string; category: string; title: string; excerpt: string;
-  content: string; coverImage: string; publishedAt: string | null;
+// Content only changes via the admin panel -- cache the rendered page and
+// revalidate in the background instead of hitting the DB on every request.
+export const revalidate = 60;
+
+const SITE_URL = "https://www.theuniqueexpo.com";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPublishedPostBySlug(slug);
+  if (!post) return { title: "Post not found" };
+  return {
+    title: post.title,
+    description: post.excerpt,
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.excerpt,
+      images: post.coverImage ? [{ url: post.coverImage }] : undefined,
+      publishedTime: post.publishedAt || undefined,
+    },
+    twitter: { card: "summary_large_image", title: post.title, description: post.excerpt },
+  };
 }
 
-export default function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
-  const t = useTranslations("blogPostPage");
-  const { slug } = use(params);
-  const [post, setPost] = useState<Post | null | undefined>(undefined);
-
-  useEffect(() => {
-    fetch(`/api/blog/${slug}`)
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data) => setPost(data.post))
-      .catch(() => setPost(null));
-  }, [slug]);
-
-  if (post === undefined) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
-  }
+export default async function BlogPostPage({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const { slug } = await params;
+  const t = await getTranslations("blogPostPage");
+  const post = await getPublishedPostBySlug(slug);
 
   if (!post) {
     return (
@@ -39,8 +54,24 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
     );
   }
 
+  // BlogPosting schema -- readers and AI answer engines both use this to
+  // attribute the article to a real author instead of an anonymous page.
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    url: `${SITE_URL}/blog/${post.slug}`,
+    ...(post.publishedAt && { datePublished: post.publishedAt }),
+    ...(post.coverImage && { image: post.coverImage }),
+    ...(post.authorName && { author: { "@type": "Person", name: post.authorName, ...(post.authorBio && { description: post.authorBio }) } }),
+  };
+  const schemaJson = JSON.stringify(schema).replace(/</g, "\\u003c");
+
   return (
     <div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaJson }} />
+
       <section className="bg-gray-900 py-12">
         <div className="mx-auto max-w-3xl px-6 text-white">
           <Link href={`/blog?category=${post.category}`} className="text-sm text-emerald-300 hover:underline font-semibold uppercase tracking-wide">
@@ -72,6 +103,20 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             className="rounded-2xl bg-white p-8 shadow-sm text-gray-700"
             dangerouslySetInnerHTML={{ __html: renderMarkdown(post.content) }}
           />
+
+          {post.authorName && (
+            <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full gradient-brand flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                {post.authorName.charAt(0)}
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{t("writtenBy")}</p>
+                <p className="font-bold text-gray-900">{post.authorName}</p>
+                {post.authorBio && <p className="text-sm text-gray-500 mt-1">{post.authorBio}</p>}
+              </div>
+            </div>
+          )}
+
           <Link href="/blog" className="mt-6 inline-block text-sm font-semibold text-emerald-600 hover:underline">
             {t("browseAll")}
           </Link>

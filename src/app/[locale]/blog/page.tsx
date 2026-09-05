@@ -1,32 +1,29 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import type { Metadata } from "next";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { listPublishedPosts, type BlogCategory } from "@/lib/server/blog-repo";
 
-interface Post {
-  id: string; slug: string; category: string; title: string; excerpt: string;
-  coverImage: string; publishedAt: string | null;
+// Content only changes via the admin panel -- cache the rendered page and
+// revalidate in the background instead of hitting the DB on every request.
+export const revalidate = 60;
+
+const CATEGORIES: BlogCategory[] = ["life-in-china", "relocation-tips", "exhibition-reviews"];
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("blogPage");
+  return { title: t("title"), description: t("subtitle") };
 }
 
-const CATEGORIES = ["life-in-china", "relocation-tips", "exhibition-reviews"] as const;
-
-export default function BlogPage() {
-  const t = useTranslations("blogPage");
-  const searchParams = useSearchParams();
-  const category = searchParams.get("category") || "";
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    fetch(`/api/blog${category ? `?category=${category}` : ""}`)
-      .then((res) => res.json())
-      .then((data) => setPosts(data.posts || []))
-      .finally(() => setLoading(false));
-  }, [category]);
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const t = await getTranslations("blogPage");
+  const { category: categoryParam } = await searchParams;
+  const category = CATEGORIES.includes(categoryParam as BlogCategory) ? (categoryParam as BlogCategory) : undefined;
+  const posts = await listPublishedPosts(category);
 
   return (
     <div>
@@ -56,8 +53,6 @@ export default function BlogPage() {
               </Link>
             ))}
           </div>
-
-          {loading && <p className="text-center py-20 text-gray-400">{t("loading")}</p>}
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
@@ -91,7 +86,7 @@ export default function BlogPage() {
             ))}
           </div>
 
-          {!loading && posts.length === 0 && (
+          {posts.length === 0 && (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">📝</div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">{t("noResultsTitle")}</h3>

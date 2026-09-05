@@ -11,6 +11,8 @@ export interface BlogPostInput {
   excerpt: string;
   content: string;
   coverImage?: string;
+  authorName?: string;
+  authorBio?: string;
   published: boolean;
 }
 
@@ -23,6 +25,8 @@ function mapBlogPostRow(row: RowDataPacket) {
     excerpt: row.excerpt,
     content: row.content,
     coverImage: row.cover_image,
+    authorName: row.author_name || "",
+    authorBio: row.author_bio || "",
     published: !!row.published,
     publishedAt: row.published_at ? toIsoTimestamp(row.published_at) : null,
     createdAt: toIsoTimestamp(row.created_at),
@@ -69,11 +73,11 @@ export async function getPostById(id: number) {
 
 export async function createPost(input: BlogPostInput) {
   const [result] = await pool.query<ResultSetHeader>(
-    `INSERT INTO blog_posts (slug, category, title, excerpt, content, cover_image, published, published_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO blog_posts (slug, category, title, excerpt, content, cover_image, author_name, author_bio, published, published_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.slug, input.category, input.title, input.excerpt, input.content, input.coverImage || "",
-      input.published, input.published ? new Date() : null,
+      input.authorName || "", input.authorBio || "", input.published, input.published ? new Date() : null,
     ]
   );
   return result.insertId;
@@ -85,11 +89,11 @@ export async function updatePost(id: number, input: BlogPostInput) {
   // an already-published post (or a still-draft one) shouldn't bump it.
   const publishedAt = input.published && !existing?.publishedAt ? new Date() : undefined;
   await pool.query(
-    `UPDATE blog_posts SET slug=?, category=?, title=?, excerpt=?, content=?, cover_image=?, published=?${publishedAt ? ", published_at=?" : ""}
+    `UPDATE blog_posts SET slug=?, category=?, title=?, excerpt=?, content=?, cover_image=?, author_name=?, author_bio=?, published=?${publishedAt ? ", published_at=?" : ""}
      WHERE id=?`,
     publishedAt
-      ? [input.slug, input.category, input.title, input.excerpt, input.content, input.coverImage || "", input.published, publishedAt, id]
-      : [input.slug, input.category, input.title, input.excerpt, input.content, input.coverImage || "", input.published, id]
+      ? [input.slug, input.category, input.title, input.excerpt, input.content, input.coverImage || "", input.authorName || "", input.authorBio || "", input.published, publishedAt, id]
+      : [input.slug, input.category, input.title, input.excerpt, input.content, input.coverImage || "", input.authorName || "", input.authorBio || "", input.published, id]
   );
 }
 

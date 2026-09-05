@@ -15,13 +15,16 @@ interface Post {
   excerpt: string;
   content: string;
   coverImage: string;
+  authorName: string;
+  authorBio: string;
   published: boolean;
 }
 
 const CATEGORIES = ["life-in-china", "relocation-tips", "exhibition-reviews"];
 
 const EMPTY_FORM = {
-  slug: "", category: "life-in-china", title: "", excerpt: "", content: "", coverImage: "", published: false,
+  slug: "", category: "life-in-china", title: "", excerpt: "", content: "", coverImage: "",
+  authorName: "", authorBio: "", published: false,
 };
 
 export default function AdminBlogPage() {
@@ -62,7 +65,8 @@ export default function AdminBlogPage() {
   function openEdit(post: Post) {
     setForm({
       slug: post.slug, category: post.category, title: post.title, excerpt: post.excerpt,
-      content: post.content, coverImage: post.coverImage || "", published: post.published,
+      content: post.content, coverImage: post.coverImage || "",
+      authorName: post.authorName || "", authorBio: post.authorBio || "", published: post.published,
     });
     setFormError("");
     setEditingId(post.id);
@@ -186,6 +190,8 @@ export default function AdminBlogPage() {
                 </select>
               </div>
               <Field label={t("fields.coverImageUrl")} value={form.coverImage} onChange={(v) => setForm({ ...form, coverImage: v })} placeholder="https://..." />
+              <Field label={t("fields.authorName")} value={form.authorName} onChange={(v) => setForm({ ...form, authorName: v })} placeholder="Vishal Saini" />
+              <Field label={t("fields.authorBio")} value={form.authorBio} onChange={(v) => setForm({ ...form, authorBio: v })} placeholder={t("fields.authorBioPlaceholder")} />
             </div>
             <div className="mt-4">
               <label className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.excerpt")}</label>

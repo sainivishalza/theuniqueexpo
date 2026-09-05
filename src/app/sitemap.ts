@@ -7,7 +7,7 @@ import { getAllToursData } from "@/lib/tours";
 import { mockExhibitorProfiles } from "@/lib/booths";
 import { routing } from "@/i18n/routing";
 
-const SITE_URL = "https://theuniqueexpo.com";
+const SITE_URL = "https://www.theuniqueexpo.com";
 
 const STATIC_ROUTES = [
   "",

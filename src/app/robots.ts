@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 
-const SITE_URL = "https://theuniqueexpo.com";
+const SITE_URL = "https://www.theuniqueexpo.com";
 
 export default function robots(): MetadataRoute.Robots {
   // Every page lives under a /<locale> prefix (see src/i18n/routing.ts),

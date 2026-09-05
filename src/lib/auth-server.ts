@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import type { NextResponse } from "next/server";
+import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
 
 const envSecret = process.env.JWT_SECRET;
@@ -15,6 +16,12 @@ export interface SessionUser {
   email: string;
   role: string;
   country: string;
+}
+
+interface SessionTokenPayload {
+  id: number;
+  email: string;
+  role: string;
 }
 
 function signSessionToken(user: Pick<SessionUser, "id" | "email" | "role">): string {
@@ -41,21 +48,20 @@ export async function createUserAccount(
   country: string
 ): Promise<{ user: SessionUser; token: string }> {
   const passwordHash = await bcrypt.hash(password, 10);
-  const [result] = await pool.query(
+  const [result] = await pool.query<ResultSetHeader>(
     "INSERT INTO users (name, email, password_hash, role, country) VALUES (?, ?, ?, ?, ?)",
     [name, email, passwordHash, role, country || ""]
   );
-  const id = (result as any).insertId;
-  const user: SessionUser = { id, name, email, role, country: country || "" };
+  const user: SessionUser = { id: result.insertId, name, email, role, country: country || "" };
   return { user, token: signSessionToken(user) };
 }
 
 export async function verifyUserPassword(email: string, password: string): Promise<SessionUser | null> {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT id, name, email, role, country, password_hash FROM users WHERE email = ?",
     [email]
   );
-  const row = (rows as any[])[0];
+  const row = rows[0];
   if (!row) return null;
   const valid = await bcrypt.compare(password, row.password_hash);
   if (!valid) return null;
@@ -68,10 +74,12 @@ export async function getSessionUser(request: Request): Promise<SessionUser | nu
     const tokenMatch = cookieHeader.match(/token=([^;]+)/);
     if (!tokenMatch) return null;
 
-    const decoded = jwt.verify(tokenMatch[1], JWT_SECRET) as any;
-    const [rows] = await pool.query("SELECT id, name, email, role, country FROM users WHERE id = ?", [decoded.id]);
-    const users = rows as SessionUser[];
-    return users[0] || null;
+    const decoded = jwt.verify(tokenMatch[1], JWT_SECRET) as SessionTokenPayload;
+    const [rows] = await pool.query<RowDataPacket[]>(
+      "SELECT id, name, email, role, country FROM users WHERE id = ?",
+      [decoded.id]
+    );
+    return (rows[0] as SessionUser | undefined) || null;
   } catch {
     return null;
   }

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { createUserAccount, setSessionCookie } from "@/lib/auth-server";
 
@@ -19,8 +20,8 @@ export async function POST(request: Request) {
     }
 
     // Check if user already exists
-    const [existing] = await pool.query("SELECT id FROM users WHERE email = ?", [email]);
-    if ((existing as any[]).length > 0) {
+    const [existing] = await pool.query<RowDataPacket[]>("SELECT id FROM users WHERE email = ?", [email]);
+    if (existing.length > 0) {
       return NextResponse.json({ error: "Email already registered" }, { status: 409 });
     }
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { JWT_SECRET } from "@/lib/auth-server";
 
@@ -13,8 +14,7 @@ export async function POST(request: Request) {
     }
 
     // Find user
-    const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
-    const users = rows as any[];
+    const [users] = await pool.query<RowDataPacket[]>("SELECT * FROM users WHERE email = ?", [email]);
     if (users.length === 0) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }

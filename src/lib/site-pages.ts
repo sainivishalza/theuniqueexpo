@@ -142,19 +142,23 @@ export const DEFAULT_SITE_PAGE_CONTENT: Record<string, SitePageContent> = {
   },
 };
 
-export function normalizeSitePageContent(slug: string, input: any): SitePageContent {
+function isSitePageItem(value: unknown): value is SitePageItem {
+  const record = value as Record<string, unknown> | null;
+  return !!record && typeof record.title === "string" && typeof record.description === "string";
+}
+
+export function normalizeSitePageContent(slug: string, input: unknown): SitePageContent {
   const fallback = DEFAULT_SITE_PAGE_CONTENT[slug] || EMPTY_CONTENT;
+  const record = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
   return {
-    heading: typeof input?.heading === "string" ? input.heading : fallback.heading,
-    tagline: typeof input?.tagline === "string" ? input.tagline : fallback.tagline,
-    body: typeof input?.body === "string" ? input.body : fallback.body,
-    itemsLabel: typeof input?.itemsLabel === "string" ? input.itemsLabel : fallback.itemsLabel,
-    items: Array.isArray(input?.items)
-      ? input.items
-          .filter((i: any) => i && typeof i.title === "string" && typeof i.description === "string")
-          .map((i: any) => ({ title: i.title, description: i.description }))
+    heading: typeof record.heading === "string" ? record.heading : fallback.heading,
+    tagline: typeof record.tagline === "string" ? record.tagline : fallback.tagline,
+    body: typeof record.body === "string" ? record.body : fallback.body,
+    itemsLabel: typeof record.itemsLabel === "string" ? record.itemsLabel : fallback.itemsLabel,
+    items: Array.isArray(record.items)
+      ? record.items.filter(isSitePageItem).map((i) => ({ title: i.title, description: i.description }))
       : fallback.items,
-    contactEmail: typeof input?.contactEmail === "string" ? input.contactEmail : fallback.contactEmail,
-    contactPhone: typeof input?.contactPhone === "string" ? input.contactPhone : fallback.contactPhone,
+    contactEmail: typeof record.contactEmail === "string" ? record.contactEmail : fallback.contactEmail,
+    contactPhone: typeof record.contactPhone === "string" ? record.contactPhone : fallback.contactPhone,
   };
 }

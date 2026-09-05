@@ -30,11 +30,15 @@ export default function AdminPage() {
       fetch("/api/rfqs").then((r) => r.json()),
       fetch("/api/admin/hotel-bookings").then((r) => r.json()),
     ])
-      .then(([exhibitionsData, rfqsData, bookingsData]) => {
+      .then(([exhibitionsData, rfqsData, bookingsData]: [
+        { exhibitions?: unknown[] },
+        { rfqs?: { status: string }[] },
+        { bookings?: unknown[] },
+      ]) => {
         const rfqs = rfqsData.rfqs || [];
         setStats({
           exhibitions: (exhibitionsData.exhibitions || []).length,
-          openRfqs: rfqs.filter((r: any) => r.status === "open").length,
+          openRfqs: rfqs.filter((r) => r.status === "open").length,
           hotelBookings: (bookingsData.bookings || []).length,
           totalRfqs: rfqs.length,
         });

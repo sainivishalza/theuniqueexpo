@@ -1,19 +1,11 @@
+import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
+import { safeParseJson } from "@/lib/server/db-helpers";
 import { DEFAULT_ABOUT_CONTENT, normalizeAboutContent, type AboutContent } from "@/lib/about-content";
 
-function safeParseJson(value: any): any {
-  if (!value) return null;
-  if (typeof value === "object") return value;
-  try {
-    return JSON.parse(value);
-  } catch {
-    return null;
-  }
-}
-
 export async function getAboutContent(): Promise<AboutContent> {
-  const [rows] = await pool.query("SELECT content FROM about_content WHERE id = 1 LIMIT 1");
-  const row = (rows as any[])[0];
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT content FROM about_content WHERE id = 1 LIMIT 1");
+  const row = rows[0];
   if (!row) return DEFAULT_ABOUT_CONTENT;
   return normalizeAboutContent(safeParseJson(row.content));
 }

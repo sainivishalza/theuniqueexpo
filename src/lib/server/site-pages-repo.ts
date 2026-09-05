@@ -1,19 +1,11 @@
+import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
+import { safeParseJson } from "@/lib/server/db-helpers";
 import { DEFAULT_SITE_PAGE_CONTENT, normalizeSitePageContent, type SitePageContent } from "@/lib/site-pages";
 
-function safeParseJson(value: any): any {
-  if (!value) return null;
-  if (typeof value === "object") return value;
-  try {
-    return JSON.parse(value);
-  } catch {
-    return null;
-  }
-}
-
 export async function getSitePage(slug: string): Promise<SitePageContent> {
-  const [rows] = await pool.query("SELECT content FROM site_pages WHERE slug = ? LIMIT 1", [slug]);
-  const row = (rows as any[])[0];
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT content FROM site_pages WHERE slug = ? LIMIT 1", [slug]);
+  const row = rows[0];
   if (!row) return DEFAULT_SITE_PAGE_CONTENT[slug] || normalizeSitePageContent(slug, null);
   return normalizeSitePageContent(slug, safeParseJson(row.content));
 }

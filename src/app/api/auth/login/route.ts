@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import pool from "@/lib/db";
-
-const JWT_SECRET = process.env.JWT_SECRET || "theuniqueexpo-secret-key-change-in-production";
+import { JWT_SECRET } from "@/lib/auth-server";
 
 export async function POST(request: Request) {
   try {

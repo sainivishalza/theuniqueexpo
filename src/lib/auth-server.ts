@@ -3,7 +3,11 @@ import bcrypt from "bcryptjs";
 import type { NextResponse } from "next/server";
 import pool from "@/lib/db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "theuniqueexpo-secret-key-change-in-production";
+const envSecret = process.env.JWT_SECRET;
+if (!envSecret) {
+  throw new Error("JWT_SECRET environment variable must be set");
+}
+export const JWT_SECRET = envSecret;
 
 export interface SessionUser {
   id: number;

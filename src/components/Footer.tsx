@@ -11,6 +11,8 @@ export default function Footer() {
       { label: t("links.ourServices"), href: "/services" },
       { label: t("links.businessTours"), href: "/services/business-tours" },
       { label: t("links.chinaTours"), href: "/services/china-tours" },
+      { label: t("links.events"), href: "/events" },
+      { label: t("links.relocation"), href: "/relocation" },
       { label: t("links.exhibitorDirectory"), href: "/directory" },
       { label: t("links.rfqMarketplace"), href: "/marketplace" },
       { label: t("links.partnerProgram"), href: "/register" },

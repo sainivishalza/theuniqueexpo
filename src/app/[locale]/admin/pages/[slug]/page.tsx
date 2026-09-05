@@ -3,6 +3,7 @@ import { use, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 import { SITE_PAGES, isValidSitePageSlug, type SitePageContent, type SitePageItem } from "@/lib/site-pages";
 
 const EMPTY_CONTENT: SitePageContent = {
@@ -64,8 +65,8 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
       if (!res.ok) throw new Error(data.error || t("saveFailed"));
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(errorMessage(err, "Something went wrong"));
     } finally {
       setSaving(false);
     }

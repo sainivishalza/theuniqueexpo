@@ -8,6 +8,8 @@ import { useAuth } from "@/lib/auth-context";
 const SECTION_KEYS = [
   { key: "exhibitionManagement", href: "/admin/exhibitions", icon: "🎪", color: "from-emerald-500 to-emerald-600" },
   { key: "tourManagement", href: "/admin/tours", icon: "🧳", color: "from-cyan-500 to-blue-600" },
+  { key: "eventManagement", href: "/admin/events", icon: "🎉", color: "from-pink-500 to-rose-600" },
+  { key: "blogManagement", href: "/admin/blog", icon: "📰", color: "from-indigo-500 to-purple-600" },
   { key: "rfqReview", href: "/admin/rfqs", icon: "📋", color: "from-purple-500 to-purple-600" },
   { key: "hotelBookings", href: "/admin/hotels", icon: "🏨", color: "from-amber-500 to-yellow-600" },
   { key: "servicesManagement", href: "/admin/services", icon: "🛠️", color: "from-violet-500 to-purple-600" },
@@ -30,11 +32,15 @@ export default function AdminPage() {
       fetch("/api/rfqs").then((r) => r.json()),
       fetch("/api/admin/hotel-bookings").then((r) => r.json()),
     ])
-      .then(([exhibitionsData, rfqsData, bookingsData]) => {
+      .then(([exhibitionsData, rfqsData, bookingsData]: [
+        { exhibitions?: unknown[] },
+        { rfqs?: { status: string }[] },
+        { bookings?: unknown[] },
+      ]) => {
         const rfqs = rfqsData.rfqs || [];
         setStats({
           exhibitions: (exhibitionsData.exhibitions || []).length,
-          openRfqs: rfqs.filter((r: any) => r.status === "open").length,
+          openRfqs: rfqs.filter((r) => r.status === "open").length,
           hotelBookings: (bookingsData.bookings || []).length,
           totalRfqs: rfqs.length,
         });

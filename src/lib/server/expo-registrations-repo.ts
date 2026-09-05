@@ -1,28 +1,9 @@
+import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
+import { safeParseArray, safeParseJson, stripFileAnswers } from "@/lib/server/db-helpers";
 import type { ExpoRegistration, ExpoRegistrationInput } from "@/lib/expo-registrations";
 
-function safeParseArray(text: any): string[] {
-  if (!text) return [];
-  if (Array.isArray(text)) return text;
-  try {
-    const parsed = JSON.parse(text);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function safeParseJson(text: any): any {
-  if (!text) return null;
-  if (typeof text === "object") return text;
-  try {
-    return JSON.parse(text);
-  } catch {
-    return null;
-  }
-}
-
-function mapRow(row: any): ExpoRegistration {
+function mapRow(row: RowDataPacket): ExpoRegistration {
   return {
     id: String(row.id),
     userId: String(row.user_id),
@@ -52,29 +33,13 @@ function mapRow(row: any): ExpoRegistration {
     docOrderList: row.doc_order_list,
     status: row.status,
     createdAt: row.created_at,
-    customAnswers: safeParseJson(row.custom_answers),
+    customAnswers: safeParseJson(row.custom_answers) as Record<string, unknown> | null,
     formSchemaSnapshot: safeParseJson(row.form_schema_snapshot),
   };
 }
 
-// Custom-answer file uploads carry the same large base64 blobs as the
-// default form's document fields, which the summary row otherwise omits —
-// strip them here too, keyed off the field types in the schema snapshot.
-function stripFileAnswers(customAnswers: any, formSchemaSnapshot: any) {
-  if (!customAnswers || !Array.isArray(formSchemaSnapshot)) return customAnswers;
-  const fileFieldIds = new Set(
-    formSchemaSnapshot.filter((f: any) => f.type === "file").map((f: any) => f.id)
-  );
-  if (fileFieldIds.size === 0) return customAnswers;
-  const stripped: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(customAnswers)) {
-    stripped[key] = fileFieldIds.has(key) ? (value ? true : value) : value;
-  }
-  return stripped;
-}
-
 // Lightweight row for admin list views — omits the large base64 document blobs.
-function mapSummaryRow(row: any) {
+function mapSummaryRow(row: RowDataPacket) {
   const formSchemaSnapshot = safeParseJson(row.form_schema_snapshot);
   return {
     id: String(row.id),
@@ -100,7 +65,7 @@ function mapSummaryRow(row: any) {
 }
 
 export async function createExpoRegistration(userId: number, input: ExpoRegistrationInput) {
-  const [result] = await pool.query(
+  const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO expo_registrations
       (exhibition_id, user_id, registration_type, gender, full_name, nationality, passport_number,
        company_name, company_website, phone, email, company_type, company_type_other, company_scale,
@@ -117,7 +82,7 @@ export async function createExpoRegistration(userId: number, input: ExpoRegistra
       input.docOrderList || null,
     ]
   );
-  return (result as any).insertId;
+  return result.insertId;
 }
 
 export async function createCustomExpoRegistration(
@@ -126,44 +91,44 @@ export async function createCustomExpoRegistration(
   customAnswers: Record<string, unknown>,
   formSchemaSnapshot: unknown
 ) {
-  const [result] = await pool.query(
+  const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO expo_registrations (exhibition_id, user_id, custom_answers, form_schema_snapshot, status)
      VALUES (?, ?, ?, ?, 'pending')`,
     [exhibitionId, userId, JSON.stringify(customAnswers || {}), JSON.stringify(formSchemaSnapshot || [])]
   );
-  return (result as any).insertId;
+  return result.insertId;
 }
 
 export async function findExistingRegistration(exhibitionId: number, userId: number) {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT id FROM expo_registrations WHERE exhibition_id = ? AND user_id = ? LIMIT 1",
     [exhibitionId, userId]
   );
-  return (rows as any[])[0] || null;
+  return rows[0] || null;
 }
 
 // Only considers default-schema registrations — custom-form submissions
 // don't carry fields the default form's prefill logic understands.
 export async function getLatestRegistrationForUser(userId: number): Promise<ExpoRegistration | null> {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT * FROM expo_registrations WHERE user_id = ? AND custom_answers IS NULL ORDER BY created_at DESC LIMIT 1",
     [userId]
   );
-  const row = (rows as any[])[0];
+  const row = rows[0];
   return row ? mapRow(row) : null;
 }
 
 export async function listRegistrationsForExhibition(exhibitionId: number) {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT * FROM expo_registrations WHERE exhibition_id = ? ORDER BY created_at DESC",
     [exhibitionId]
   );
-  return (rows as any[]).map(mapSummaryRow);
+  return rows.map(mapSummaryRow);
 }
 
 export async function getRegistrationById(id: number): Promise<ExpoRegistration | null> {
-  const [rows] = await pool.query("SELECT * FROM expo_registrations WHERE id = ? LIMIT 1", [id]);
-  const row = (rows as any[])[0];
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM expo_registrations WHERE id = ? LIMIT 1", [id]);
+  const row = rows[0];
   return row ? mapRow(row) : null;
 }
 

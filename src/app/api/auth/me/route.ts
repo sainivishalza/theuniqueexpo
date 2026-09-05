@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
+import { JWT_SECRET } from "@/lib/auth-server";
 
-const JWT_SECRET = process.env.JWT_SECRET || "theuniqueexpo-secret-key-change-in-production";
+interface DecodedToken {
+  id: number;
+}
 
 export async function GET(request: Request) {
   try {
@@ -12,9 +16,11 @@ export async function GET(request: Request) {
       return NextResponse.json({ user: null }, { status: 401 });
     }
 
-    const decoded = jwt.verify(tokenMatch[1], JWT_SECRET) as any;
-    const [rows] = await pool.query("SELECT id, name, email, role, country FROM users WHERE id = ?", [decoded.id]);
-    const users = rows as any[];
+    const decoded = jwt.verify(tokenMatch[1], JWT_SECRET) as DecodedToken;
+    const [users] = await pool.query<RowDataPacket[]>(
+      "SELECT id, name, email, role, country FROM users WHERE id = ?",
+      [decoded.id]
+    );
 
     if (users.length === 0) {
       return NextResponse.json({ user: null }, { status: 401 });

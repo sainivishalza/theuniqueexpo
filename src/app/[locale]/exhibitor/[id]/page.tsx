@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { mockExhibitorProfiles } from "@/lib/booths";
-import ExhibitorReviews from "@/components/ExhibitorReviews";
+import ReviewsSection from "@/components/ReviewsSection";
 
 const avatarColors = [
   "from-emerald-500 to-emerald-600",
@@ -108,7 +108,7 @@ export default function ExhibitorProfilePage() {
                 </div>
               </div>
 
-              <ExhibitorReviews slug={profile.slug} />
+              <ReviewsSection apiBasePath={`/api/exhibitors/${profile.slug}/reviews`} kind="supplier" />
             </div>
 
             {/* Sidebar */}

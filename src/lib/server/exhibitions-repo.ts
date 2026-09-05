@@ -1,4 +1,7 @@
+import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
+import { toDateOnlyString, formatDateRange, safeParseArray, safeParseJson } from "@/lib/server/db-helpers";
+import type { CustomFormSchema } from "@/lib/custom-registration-form";
 
 export interface ExhibitionInput {
   slug: string;
@@ -26,47 +29,10 @@ export interface ExhibitionInput {
   galleryImages?: string[];
 }
 
-function toDateStr(d: any) {
-  if (!d) return "";
-  const date = d instanceof Date ? d : new Date(d);
-  return date.toISOString().split("T")[0];
-}
-
-function formatDates(start: any, end: any) {
-  const s = new Date(start);
-  const e = new Date(end);
-  const opts: Intl.DateTimeFormatOptions = { month: "long", day: "numeric" };
-  if (s.getMonth() === e.getMonth()) {
-    return `${s.toLocaleDateString("en-US", opts)}–${e.getDate()}, ${e.getFullYear()}`;
-  }
-  return `${s.toLocaleDateString("en-US", opts)} – ${e.toLocaleDateString("en-US", opts)}, ${e.getFullYear()}`;
-}
-
-function safeParseArray(text: any): string[] {
-  if (!text) return [];
-  if (Array.isArray(text)) return text;
-  try {
-    const parsed = JSON.parse(text);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function safeParseJson(text: any): any {
-  if (!text) return null;
-  if (typeof text === "object") return text;
-  try {
-    return JSON.parse(text);
-  } catch {
-    return null;
-  }
-}
-
 // Picks the description/highlights for the requested locale, falling back
 // to English whenever a translation hasn't been filled in yet -- admins
 // add exhibitions in English first and translate them over time.
-export function mapExhibitionRow(row: any, locale?: string) {
+export function mapExhibitionRow(row: RowDataPacket, locale?: string) {
   const descriptionRu = row.description_ru || "";
   const descriptionZh = row.description_zh || "";
   const highlightsRu = safeParseArray(row.highlights_ru);
@@ -83,9 +49,9 @@ export function mapExhibitionRow(row: any, locale?: string) {
     id: String(row.id),
     slug: row.slug,
     title: row.title,
-    dates: formatDates(row.start_date, row.end_date),
-    startDate: toDateStr(row.start_date),
-    endDate: toDateStr(row.end_date),
+    dates: formatDateRange(row.start_date, row.end_date),
+    startDate: toDateOnlyString(row.start_date),
+    endDate: toDateOnlyString(row.end_date),
     venue: row.venue,
     city: row.city,
     country: row.country,
@@ -104,7 +70,7 @@ export function mapExhibitionRow(row: any, locale?: string) {
     image: row.image,
     galleryImages: safeParseArray(row.gallery_images),
     registrationEnabled: row.registration_enabled === undefined ? true : !!row.registration_enabled,
-    registrationFormSchema: safeParseJson(row.registration_form_schema),
+    registrationFormSchema: safeParseJson(row.registration_form_schema) as CustomFormSchema | null,
     // Cache-busting value for the image/gallery endpoints below -- their
     // URL is otherwise identical before and after an admin re-uploads a
     // poster, so browsers/CDN would keep serving the old cached bytes.
@@ -118,7 +84,7 @@ export function mapExhibitionRow(row: any, locale?: string) {
 // multi-megabyte payload). Point at the dedicated image endpoint instead;
 // plain external URLs (short, already cheap) pass through unchanged.
 export async function listExhibitions(locale?: string) {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT id, slug, title, start_date, end_date, venue, city, country, industry, description,
             highlights, description_ru, description_zh, highlights_ru, highlights_zh,
             exhibitors, visitors, organizer, website, color, registration_enabled, registration_form_schema,
@@ -126,44 +92,44 @@ export async function listExhibitions(locale?: string) {
             IF(LEFT(image, 5) = 'data:', CONCAT('/api/exhibitions/', slug, '/image?v=', UNIX_TIMESTAMP(updated_at)), image) AS image
      FROM exhibitions ORDER BY start_date ASC`
   );
-  return (rows as any[]).map((row) => mapExhibitionRow(row, locale));
+  return rows.map((row) => mapExhibitionRow(row, locale));
 }
 
 export async function getExhibitionBySlugOrId(slugOrId: string, locale?: string) {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT * FROM exhibitions WHERE slug = ? OR id = ? LIMIT 1",
     [slugOrId, Number(slugOrId) || 0]
   );
-  const row = (rows as any[])[0];
+  const row = rows[0];
   return row ? mapExhibitionRow(row, locale) : null;
 }
 
 // Targeted lookup for the dedicated image-serving route -- avoids pulling
 // every other column just to read the (potentially huge) image value.
 export async function getExhibitionImageValue(slugOrId: string): Promise<string | null> {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT image FROM exhibitions WHERE slug = ? OR id = ? LIMIT 1",
     [slugOrId, Number(slugOrId) || 0]
   );
-  const row = (rows as any[])[0];
+  const row = rows[0];
   return row ? row.image : null;
 }
 
 // Targeted lookup for the dedicated gallery-image-serving route -- same
 // reasoning as getExhibitionImageValue above.
 export async function getExhibitionGalleryImageValue(slugOrId: string, index: number): Promise<string | null> {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT gallery_images FROM exhibitions WHERE slug = ? OR id = ? LIMIT 1",
     [slugOrId, Number(slugOrId) || 0]
   );
-  const row = (rows as any[])[0];
+  const row = rows[0];
   if (!row) return null;
   const images = safeParseArray(row.gallery_images);
   return images[index] || null;
 }
 
 export async function createExhibition(input: ExhibitionInput) {
-  const [result] = await pool.query(
+  const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO exhibitions (slug, title, start_date, end_date, venue, city, country, industry, description, highlights, description_ru, description_zh, highlights_ru, highlights_zh, exhibitors, visitors, organizer, website, color, image, gallery_images)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
@@ -176,7 +142,7 @@ export async function createExhibition(input: ExhibitionInput) {
       JSON.stringify(input.galleryImages || []),
     ]
   );
-  return (result as any).insertId;
+  return result.insertId;
 }
 
 export async function updateExhibition(id: number, input: ExhibitionInput) {

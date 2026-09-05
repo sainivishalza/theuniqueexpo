@@ -26,3 +26,10 @@ const pool = mysql.createPool({
 });
 
 export default pool;
+
+// mysql2 throws plain Error objects with a `code` property for driver-level
+// errors (see https://github.com/sidorares/node-mysql2#error-handling) --
+// there's no typed error class to narrow to, so check the property directly.
+export function isDuplicateEntryError(err: unknown): boolean {
+  return typeof err === "object" && err !== null && (err as { code?: unknown }).code === "ER_DUP_ENTRY";
+}

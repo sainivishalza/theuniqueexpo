@@ -9,7 +9,31 @@
     "dashboard": "控制台",
     "logout": "退出登录",
     "login": "登录",
-    "register": "注册"
+    "register": "注册",
+    "events": "活动",
+    "relocation": "移居服务",
+    "blog": "博客",
+    "about": "关于我们",
+    "contact": "联系我们",
+    "exhibitionsMenu": {
+      "calendar": "展会日历",
+      "participation": "参展报名",
+      "pastExhibitions": "往届展会"
+    },
+    "toursMenu": {
+      "tourRoutes": "旅游路线",
+      "howToBook": "预订方式",
+      "reviews": "点评"
+    },
+    "eventsMenu": {
+      "upcomingEvents": "即将举行",
+      "pastEvents": "往期活动"
+    },
+    "blogMenu": {
+      "lifeInChina": "在中国的生活",
+      "relocationTips": "移居贴士",
+      "exhibitionReviews": "展会点评"
+    }
   },
   "footer": {
     "newsletterTitle": "获取最新资讯",
@@ -37,7 +61,9 @@
       "helpCenter": "帮助中心",
       "exhibitionGuide": "展会指南",
       "boothSetupTips": "展位搭建技巧",
-      "apiDocumentation": "API 文档"
+      "apiDocumentation": "API 文档",
+      "events": "活动",
+      "relocation": "移居服务"
     },
     "copyright": "© {year} The Unique Expo. 保留所有权利。",
     "privacyPolicy": "隐私政策",
@@ -71,7 +97,23 @@
     "perPerson": "/ 人",
     "viewDetails": "查看详情 →",
     "noResultsTitle": "暂无旅游线路",
-    "noResultsSubtitle": "请稍后再来查看最新旅游线路。"
+    "noResultsSubtitle": "请稍后再来查看最新旅游线路。",
+    "travelerReviews": "旅客点评",
+    "howToBook": "预订流程",
+    "howToBookSteps": {
+      "browse": {
+        "title": "浏览旅行团",
+        "desc": "选择符合您时间与兴趣的路线。"
+      },
+      "register": {
+        "title": "提交信息",
+        "desc": "告诉我们您的团队情况，以便我们量身定制行程。"
+      },
+      "confirm": {
+        "title": "获得确认",
+        "desc": "我们的旅行团队将审核并确认您的预订。"
+      }
+    }
   },
   "marketplacePage": {
     "title": "采购市场",
@@ -117,7 +159,11 @@
     "heroTitleLine2": "独特之处",
     "heroTitleLine3": "携手共赢",
     "heroSubtitle": "一个平台畅享 20+ 场全球展会、商务考察、签证服务与 B2B 精准对接。",
-    "stats": { "exhibitions": "场展会", "tours": "个旅游线路", "services": "项服务" },
+    "stats": {
+      "exhibitions": "场展会",
+      "tours": "个旅游线路",
+      "services": "项服务"
+    },
     "welcomeBack": "欢迎回来",
     "signInSubtitle": "登录您的账户以继续。",
     "email": "邮箱",
@@ -131,16 +177,33 @@
   },
   "registerPage": {
     "roles": {
-      "buyer": { "label": "买家", "desc": "寻找产品与供应商" },
-      "exhibitor": { "label": "展商", "desc": "在展会上展示产品" },
-      "visitor": { "label": "观众", "desc": "参观展会,探索市场" },
-      "partner": { "label": "合作伙伴", "desc": "推荐客户,赚取佣金" }
+      "buyer": {
+        "label": "买家",
+        "desc": "寻找产品与供应商"
+      },
+      "exhibitor": {
+        "label": "展商",
+        "desc": "在展会上展示产品"
+      },
+      "visitor": {
+        "label": "观众",
+        "desc": "参观展会,探索市场"
+      },
+      "partner": {
+        "label": "合作伙伴",
+        "desc": "推荐客户,赚取佣金"
+      }
     },
     "heroTitleLine1": "加入全球",
     "heroTitleLine2": "贸易",
     "heroTitleLine3": "社区",
     "heroSubtitle": "创建免费账户,与全球展商、买家及贸易专业人士建立联系。",
-    "stats": { "users": "用户", "countries": "国家", "freeValue": "免费", "freeLabel": "加入" },
+    "stats": {
+      "users": "用户",
+      "countries": "国家",
+      "freeValue": "免费",
+      "freeLabel": "加入"
+    },
     "createAccount": "创建您的账户",
     "createAccountSubtitle": "只需不到 60 秒。",
     "iAmA": "我的身份是...",
@@ -164,13 +227,34 @@
     "title": "观众控制台",
     "welcome": "欢迎回来{name}。去探索、参与、建立联系吧。",
     "features": {
-      "browseExhibitions": { "title": "浏览展会", "description": "您附近的近期活动" },
-      "visitPlanner": { "title": "参观规划", "description": "规划您的展会行程" },
-      "savedExhibitions": { "title": "收藏的展会", "description": "您收藏的展会" },
-      "savedExhibitors": { "title": "收藏的展商", "description": "您收藏的展商资料" },
-      "myRegistrations": { "title": "我的报名", "description": "您将参加的活动" },
-      "messages": { "title": "消息", "description": "与展商的对话" },
-      "content": { "title": "内容", "description": "杂志文章与视频" }
+      "browseExhibitions": {
+        "title": "浏览展会",
+        "description": "您附近的近期活动"
+      },
+      "visitPlanner": {
+        "title": "参观规划",
+        "description": "规划您的展会行程"
+      },
+      "savedExhibitions": {
+        "title": "收藏的展会",
+        "description": "您收藏的展会"
+      },
+      "savedExhibitors": {
+        "title": "收藏的展商",
+        "description": "您收藏的展商资料"
+      },
+      "myRegistrations": {
+        "title": "我的报名",
+        "description": "您将参加的活动"
+      },
+      "messages": {
+        "title": "消息",
+        "description": "与展商的对话"
+      },
+      "content": {
+        "title": "内容",
+        "description": "杂志文章与视频"
+      }
     }
   },
   "buyerDashboard": {
@@ -184,13 +268,34 @@
     },
     "quickActions": "快捷操作",
     "actions": {
-      "browseExhibitions": { "title": "浏览展会", "description": "发现全球即将举行的贸易展会" },
-      "exhibitorDirectory": { "title": "展商目录", "description": "按行业搜索认证供应商" },
-      "postBuyRequest": { "title": "发布采购需求", "description": "获取合格供应商的报价" },
-      "marketplace": { "title": "采购市场", "description": "查看公开询价及已提交报价" },
-      "savedExhibitions": { "title": "收藏的展会", "description": "稍后查看的收藏展会" },
-      "savedSuppliers": { "title": "收藏的供应商", "description": "您收藏的展商资料" },
-      "meetings": { "title": "会面安排", "description": "即将到来的会面请求" }
+      "browseExhibitions": {
+        "title": "浏览展会",
+        "description": "发现全球即将举行的贸易展会"
+      },
+      "exhibitorDirectory": {
+        "title": "展商目录",
+        "description": "按行业搜索认证供应商"
+      },
+      "postBuyRequest": {
+        "title": "发布采购需求",
+        "description": "获取合格供应商的报价"
+      },
+      "marketplace": {
+        "title": "采购市场",
+        "description": "查看公开询价及已提交报价"
+      },
+      "savedExhibitions": {
+        "title": "收藏的展会",
+        "description": "稍后查看的收藏展会"
+      },
+      "savedSuppliers": {
+        "title": "收藏的供应商",
+        "description": "您收藏的展商资料"
+      },
+      "meetings": {
+        "title": "会面安排",
+        "description": "即将到来的会面请求"
+      }
     }
   },
   "exhibitorDashboard": {
@@ -214,23 +319,45 @@
     "browseExhibitions": "浏览展会",
     "boothLabel": "展位 {id}",
     "bookedOn": "预订于 {date}",
-    "statuses": { "confirmed": "已确认", "pending": "待处理", "rejected": "已拒绝" }
+    "statuses": {
+      "confirmed": "已确认",
+      "pending": "待处理",
+      "rejected": "已拒绝"
+    }
   },
   "partnerDashboard": {
     "title": "合作伙伴控制台",
     "welcome": "欢迎回来{name}。追踪您的推荐与收益。",
-    "stats": { "referrals": "推荐人数", "commission": "佣金", "conversion": "转化率" },
+    "stats": {
+      "referrals": "推荐人数",
+      "commission": "佣金",
+      "conversion": "转化率"
+    },
     "referralLinkTitle": "您的推荐链接",
     "referralLinkSubtitle": "将此链接分享给潜在展商和买家,注册情况将自动追踪。",
     "copyLink": "复制链接",
     "referredUsers": "已推荐用户({count})",
     "noReferralsTitle": "暂无推荐记录",
     "noReferralsSubtitle": "分享您的链接,开始赚取佣金。",
-    "columns": { "name": "姓名", "email": "邮箱", "date": "日期", "status": "状态", "commission": "佣金" },
-    "statuses": { "signedUp": "已注册", "bookedBooth": "已预订展位", "postedRfq": "已发布询价" },
+    "columns": {
+      "name": "姓名",
+      "email": "邮箱",
+      "date": "日期",
+      "status": "状态",
+      "commission": "佣金"
+    },
+    "statuses": {
+      "signedUp": "已注册",
+      "bookedBooth": "已预订展位",
+      "postedRfq": "已发布询价"
+    },
     "marketingKit": "营销资料包",
     "marketingKitSubtitle": "下载资料,在您所在地区推广 The Unique Expo。",
-    "materials": { "pitchDeck": "宣传手册(PDF)", "bannerPack": "横幅素材包", "brochure": "宣传册" }
+    "materials": {
+      "pitchDeck": "宣传手册(PDF)",
+      "bannerPack": "横幅素材包",
+      "brochure": "宣传册"
+    }
   },
   "favoritesPage": {
     "loginPrompt": "登录后查看您收藏的展会",
@@ -301,21 +428,58 @@
       "totalRfqs": "询价总数"
     },
     "sections": {
-      "exhibitionManagement": { "title": "展会管理", "description": "创建、编辑和管理展会信息及展位平面图。" },
-      "tourManagement": { "title": "旅游管理", "description": "创建、编辑旅游线路及其报名表单。" },
-      "rfqReview": { "title": "询价审核", "description": "查看并审核所有采购需求和已提交的报价。" },
-      "hotelBookings": { "title": "酒店预订", "description": "查看并确认买家的酒店预订请求。" },
-      "servicesManagement": { "title": "服务管理", "description": "管理旅游、申请、补贴及咨询。" },
-      "aboutUsPage": { "title": "关于我们页面", "description": "编辑向访客展示的公司故事、使命、愿景及数据。" },
-      "websitePages": { "title": "网站页面", "description": "编辑联系我们、招聘信息、博客、帮助中心等页面。" },
-      "userManagement": { "title": "用户管理", "description": "管理用户账户、角色及认证状态。" }
+      "exhibitionManagement": {
+        "title": "展会管理",
+        "description": "创建、编辑和管理展会信息及展位平面图。"
+      },
+      "tourManagement": {
+        "title": "旅游管理",
+        "description": "创建、编辑旅游线路及其报名表单。"
+      },
+      "rfqReview": {
+        "title": "询价审核",
+        "description": "查看并审核所有采购需求和已提交的报价。"
+      },
+      "hotelBookings": {
+        "title": "酒店预订",
+        "description": "查看并确认买家的酒店预订请求。"
+      },
+      "servicesManagement": {
+        "title": "服务管理",
+        "description": "管理旅游、申请、补贴及咨询。"
+      },
+      "aboutUsPage": {
+        "title": "关于我们页面",
+        "description": "编辑向访客展示的公司故事、使命、愿景及数据。"
+      },
+      "websitePages": {
+        "title": "网站页面",
+        "description": "编辑联系我们、招聘信息、博客、帮助中心等页面。"
+      },
+      "userManagement": {
+        "title": "用户管理",
+        "description": "管理用户账户、角色及认证状态。"
+      },
+      "eventManagement": {
+        "title": "活动管理",
+        "description": "创建并管理社交、徒步和文化聚会活动。"
+      },
+      "blogManagement": {
+        "title": "博客管理",
+        "description": "撰写并发布关于在中国生活、移居和展会的文章。"
+      }
     }
   },
   "adminSubsidies": {
     "backToServicesAdmin": "← 返回服务管理",
     "title": "交通补贴",
     "subsidiesConfigured": "已配置 {count} 项补贴",
-    "columns": { "subsidy": "补贴项目", "exhibition": "展会", "amount": "金额", "deadline": "截止日期" }
+    "columns": {
+      "subsidy": "补贴项目",
+      "exhibition": "展会",
+      "amount": "金额",
+      "deadline": "截止日期"
+    }
   },
   "adminServiceTours": {
     "backToServicesAdmin": "← 返回服务管理",
@@ -323,7 +487,12 @@
     "toursSummary": "{business} 个商务考察团 + {china} 个中国旅游团",
     "businessTours": "商务考察团",
     "chinaTours": "中国旅游团",
-    "columns": { "tour": "线路", "city": "城市", "dates": "日期", "price": "价格" },
+    "columns": {
+      "tour": "线路",
+      "city": "城市",
+      "dates": "日期",
+      "price": "价格"
+    },
     "view": "查看 →"
   },
   "adminServicesHome": {
@@ -334,11 +503,26 @@
     "subtitle": "管理旅游、申请、补贴及咨询。",
     "items": "{count} 项",
     "sections": {
-      "businessTours": { "title": "商务考察团", "description": "管理与展会关联的旅游套餐。" },
-      "tourApplications": { "title": "旅游申请", "description": "查看并管理旅游预订申请。" },
-      "visaApplications": { "title": "签证及注册申请", "description": "查看公司注册及签证申请。" },
-      "transportSubsidies": { "title": "交通补贴", "description": "管理展会差旅补贴。" },
-      "consultationRequests": { "title": "咨询请求", "description": "查看并安排咨询预约。" }
+      "businessTours": {
+        "title": "商务考察团",
+        "description": "管理与展会关联的旅游套餐。"
+      },
+      "tourApplications": {
+        "title": "旅游申请",
+        "description": "查看并管理旅游预订申请。"
+      },
+      "visaApplications": {
+        "title": "签证及注册申请",
+        "description": "查看公司注册及签证申请。"
+      },
+      "transportSubsidies": {
+        "title": "交通补贴",
+        "description": "管理展会差旅补贴。"
+      },
+      "consultationRequests": {
+        "title": "咨询请求",
+        "description": "查看并安排咨询预约。"
+      }
     }
   },
   "adminConsultations": {
@@ -349,7 +533,11 @@
     "noResultsTitle": "暂无咨询请求",
     "noResultsSubtitle": "用户提交后,咨询预约将显示在此处。",
     "topic": "主题",
-    "statuses": { "pending": "待处理", "scheduled": "已安排", "completed": "已完成" }
+    "statuses": {
+      "pending": "待处理",
+      "scheduled": "已安排",
+      "completed": "已完成"
+    }
   },
   "adminVisaApplications": {
     "backToServicesAdmin": "← 返回服务管理",
@@ -359,7 +547,12 @@
     "noResultsTitle": "暂无申请",
     "noResultsSubtitle": "签证及公司注册申请将显示在此处。",
     "service": "服务项目",
-    "statuses": { "pending": "待处理", "in-progress": "处理中", "completed": "已完成", "rejected": "已拒绝" }
+    "statuses": {
+      "pending": "待处理",
+      "in-progress": "处理中",
+      "completed": "已完成",
+      "rejected": "已拒绝"
+    }
   },
   "adminTourApplications": {
     "backToServicesAdmin": "← 返回服务管理",
@@ -372,7 +565,11 @@
     "travelers": "出行人数",
     "services": "服务",
     "servicesCount": "{count} 项服务",
-    "statuses": { "pending": "待处理", "confirmed": "已确认", "cancelled": "已取消" }
+    "statuses": {
+      "pending": "待处理",
+      "confirmed": "已确认",
+      "cancelled": "已取消"
+    }
   },
   "adminHotels": {
     "loadFailed": "加载预订失败",
@@ -384,7 +581,11 @@
     "loading": "加载中...",
     "noResults": "暂无酒店预订。",
     "bookingSummary": "{user} • {checkIn} 至 {checkOut} • {rooms} 间房",
-    "statuses": { "pending": "待处理", "confirmed": "已确认", "cancelled": "已取消" },
+    "statuses": {
+      "pending": "待处理",
+      "confirmed": "已确认",
+      "cancelled": "已取消"
+    },
     "confirm": "确认",
     "cancel": "取消"
   },
@@ -409,8 +610,18 @@
     "noQuotes": "暂无报价。",
     "quoteMeta": "价格:{price} • 交货期:{leadTime} • {date}",
     "noRfqs": "暂无询价单。",
-    "rfqStatuses": { "draft": "草稿", "open": "进行中", "quotes_received": "已收到报价", "awarded": "已确定供应商", "closed": "已关闭" },
-    "quoteStatuses": { "submitted": "已提交", "accepted": "已接受", "rejected": "已拒绝" }
+    "rfqStatuses": {
+      "draft": "草稿",
+      "open": "进行中",
+      "quotes_received": "已收到报价",
+      "awarded": "已确定供应商",
+      "closed": "已关闭"
+    },
+    "quoteStatuses": {
+      "submitted": "已提交",
+      "accepted": "已接受",
+      "rejected": "已拒绝"
+    }
   },
   "adminAbout": {
     "saveFailed": "保存失败",
@@ -450,7 +661,13 @@
     "saveButton": "保存{name}"
   },
   "adminRegFormBuilder": {
-    "types": { "text": "简答", "textarea": "多行文本", "radio": "单选", "checkbox": "多选", "file": "文件上传" },
+    "types": {
+      "text": "简答",
+      "textarea": "多行文本",
+      "radio": "单选",
+      "checkbox": "多选",
+      "file": "文件上传"
+    },
     "saveFailed": "保存失败",
     "registrationStatus": "报名状态",
     "noFieldsYet": "暂无字段——请在下方添加第一个问题。",
@@ -493,7 +710,11 @@
     "registrationNumber": "报名 #{id}",
     "view": "查看",
     "viewFile": "📄 查看文件",
-    "statuses": { "pending": "待处理", "approved": "已批准", "rejected": "已拒绝" }
+    "statuses": {
+      "pending": "待处理",
+      "approved": "已批准",
+      "rejected": "已拒绝"
+    }
   },
   "adminTourRegistrations": {
     "backToTours": "← 返回旅游管理",
@@ -673,7 +894,12 @@
     "browseAll": "浏览所有展会 →",
     "upcoming": "即将举行",
     "viewFullSizePoster": "查看海报大图",
-    "stats": { "exhibitors": "展商", "visitors": "观众", "venue": "场馆", "duration": "展期" },
+    "stats": {
+      "exhibitors": "展商",
+      "visitors": "观众",
+      "venue": "场馆",
+      "duration": "展期"
+    },
     "aboutThisExhibition": "关于本展会",
     "eventHighlights": "展会亮点",
     "photoGallery": "照片图库",
@@ -717,10 +943,16 @@
     "submitting": "提交中...",
     "submitRegistration": "提交报名",
     "registeringAs": "报名身份",
-    "roles": { "buyer": "买家", "visitor": "观众" },
+    "roles": {
+      "buyer": "买家",
+      "visitor": "观众"
+    },
     "personalInformation": "个人信息",
     "genderRequired": "性别 *",
-    "genders": { "male": "男", "female": "女" },
+    "genders": {
+      "male": "男",
+      "female": "女"
+    },
     "nationality": "国籍",
     "selectNationality": "选择国籍",
     "passportNumber": "护照号码",
@@ -763,7 +995,11 @@
     "backTo": "返回{name}",
     "title": "平面图与展位选择",
     "subtitle": "点击可预订的展位进行选择和预订。",
-    "sizes": { "platinum": "白金展位", "gold": "黄金展位", "standard": "标准展位" },
+    "sizes": {
+      "platinum": "白金展位",
+      "gold": "黄金展位",
+      "standard": "标准展位"
+    },
     "booked": "已预订",
     "selected": "已选择",
     "hallMap": "展厅平面图",
@@ -814,7 +1050,11 @@
     "viewMyProfile": "查看我的资料",
     "backToFloorPlan": "← 返回平面图",
     "bookBoothTitle": "预订展位 {boothId}",
-    "steps": { "details": "详情", "payment": "支付", "confirm": "确认" },
+    "steps": {
+      "details": "详情",
+      "payment": "支付",
+      "confirm": "确认"
+    },
     "bookingSummary": "预订摘要",
     "exhibition": "展会",
     "booth": "展位",
@@ -836,7 +1076,12 @@
     "notFound": "未找到该行程",
     "browseAll": "浏览所有行程 →",
     "viewFullSizePhoto": "查看全尺寸照片",
-    "stats": { "price": "价格", "duration": "行程时长", "groupSize": "团队规模", "route": "路线" },
+    "stats": {
+      "price": "价格",
+      "duration": "行程时长",
+      "groupSize": "团队规模",
+      "route": "路线"
+    },
     "pricePerPerson": "{currency}{price} / 人",
     "aboutThisTour": "行程介绍",
     "tourHighlights": "行程亮点",
@@ -884,7 +1129,13 @@
     "backToMarketplace": "返回市场 →",
     "backToMarketplaceShort": "返回市场",
     "postedBy": "发布者:{name} • {category}",
-    "statuses": { "open": "进行中", "quotesReceived": "已收到报价", "awarded": "已成交", "closed": "已关闭", "submitted": "已提交" },
+    "statuses": {
+      "open": "进行中",
+      "quotesReceived": "已收到报价",
+      "awarded": "已成交",
+      "closed": "已关闭",
+      "submitted": "已提交"
+    },
     "requestDetails": "需求详情",
     "quantity": "数量",
     "targetPrice": "目标价格",
@@ -955,18 +1206,6 @@
     "certs": "认证数量",
     "shareProfile": "分享资料"
   },
-  "exhibitorReviews": {
-    "reviews": "评价",
-    "updateYourRating": "更新您的评分",
-    "rateThisSupplier": "为该供应商评分",
-    "shareYourExperience": "分享您与该供应商合作的体验……",
-    "saving": "保存中...",
-    "updateReview": "更新评价",
-    "submitReview": "提交评价",
-    "logIn": "登录",
-    "toLeaveAReview": "以留下评价。",
-    "noReviewsYet": "暂无评价,快来分享您的体验吧。"
-  },
   "favoriteButton": {
     "removeFromSaved": "从收藏的展会中移除",
     "saveExhibition": "收藏该展会",
@@ -984,30 +1223,87 @@
     "marketsWeCoverSubtitle": "我们的业务覆盖中国所有主要贸易枢纽和展会城市——覆盖全国15多个市场。",
     "viewAllExhibitions": "查看所有展会 →",
     "marketAreas": {
-      "linyi": { "city": "临沂", "desc": "贸易与物流枢纽" },
-      "guzhen": { "city": "古镇", "desc": "中国灯饰之都" },
-      "shenzhen": { "city": "深圳", "desc": "电子科技中心" },
-      "dongguan": { "city": "东莞", "desc": "制造业中心" },
-      "wuxi": { "city": "无锡", "desc": "工业与机械" },
-      "hongKong": { "city": "香港", "desc": "全球采购展会" },
-      "beijing": { "city": "北京", "desc": "服务贸易" },
-      "shanghai": { "city": "上海", "desc": "家具与设计" },
-      "nanning": { "city": "南宁", "desc": "中国-东盟博览会" },
-      "guangzhou": { "city": "广州", "desc": "美容与化妆品" },
-      "weifang": { "city": "潍坊", "desc": "农业机械" },
-      "taizhou": { "city": "台州", "desc": "塑料与模具" },
-      "hangzhou": { "city": "杭州", "desc": "云计算与人工智能" },
-      "macao": { "city": "澳门", "desc": "贸易与投资" },
-      "shantou": { "city": "汕头", "desc": "中国玩具之都" }
+      "linyi": {
+        "city": "临沂",
+        "desc": "贸易与物流枢纽"
+      },
+      "guzhen": {
+        "city": "古镇",
+        "desc": "中国灯饰之都"
+      },
+      "shenzhen": {
+        "city": "深圳",
+        "desc": "电子科技中心"
+      },
+      "dongguan": {
+        "city": "东莞",
+        "desc": "制造业中心"
+      },
+      "wuxi": {
+        "city": "无锡",
+        "desc": "工业与机械"
+      },
+      "hongKong": {
+        "city": "香港",
+        "desc": "全球采购展会"
+      },
+      "beijing": {
+        "city": "北京",
+        "desc": "服务贸易"
+      },
+      "shanghai": {
+        "city": "上海",
+        "desc": "家具与设计"
+      },
+      "nanning": {
+        "city": "南宁",
+        "desc": "中国-东盟博览会"
+      },
+      "guangzhou": {
+        "city": "广州",
+        "desc": "美容与化妆品"
+      },
+      "weifang": {
+        "city": "潍坊",
+        "desc": "农业机械"
+      },
+      "taizhou": {
+        "city": "台州",
+        "desc": "塑料与模具"
+      },
+      "hangzhou": {
+        "city": "杭州",
+        "desc": "云计算与人工智能"
+      },
+      "macao": {
+        "city": "澳门",
+        "desc": "贸易与投资"
+      },
+      "shantou": {
+        "city": "汕头",
+        "desc": "中国玩具之都"
+      }
     },
     "moreFeatures": "还有 {count} 项",
     "whyChooseTitle": "为什么选择The Unique Expo的服务?",
     "whyChooseSubtitle": "我们负责后勤事务,让您专注于业务发展。",
     "benefits": {
-      "endToEnd": { "title": "全程服务", "desc": "从签证到工厂参观,我们全程负责" },
-      "experience": { "title": "15年以上经验", "desc": "深耕中国贸易与展会领域" },
-      "network": { "title": "可信赖网络", "desc": "遍布中国的500多家认证合作伙伴" },
-      "support": { "title": "24/7 支持", "desc": "全程提供多语言支持" }
+      "endToEnd": {
+        "title": "全程服务",
+        "desc": "从签证到工厂参观,我们全程负责"
+      },
+      "experience": {
+        "title": "15年以上经验",
+        "desc": "深耕中国贸易与展会领域"
+      },
+      "network": {
+        "title": "可信赖网络",
+        "desc": "遍布中国的500多家认证合作伙伴"
+      },
+      "support": {
+        "title": "24/7 支持",
+        "desc": "全程提供多语言支持"
+      }
     },
     "businessTours": {
       "title": "商务考察团",
@@ -1180,14 +1476,38 @@
     "subtitle": "为迁入或迁出中国的企业和个人提供全面的搬迁支持。",
     "whatWeHandle": "我们负责的事项",
     "handle": {
-      "internationalFreight": { "title": "国际货运", "desc": "海运、空运及陆运,全程可追踪" },
-      "customsClearance": { "title": "清关服务", "desc": "进出口文件办理及合规" },
-      "officeRelocation": { "title": "办公室搬迁", "desc": "完整的办公室搬迁项目管理" },
-      "residentialMoving": { "title": "住宅搬迁", "desc": "含拆包和安置的住宅搬迁服务" },
-      "storageSolutions": { "title": "仓储解决方案", "desc": "短期及长期仓储服务" },
-      "insuranceCoverage": { "title": "保险保障", "desc": "全面的货物及责任保险" },
-      "settlingIn": { "title": "安家服务", "desc": "银行账户、电话卡、住房搜寻" },
-      "petRelocation": { "title": "宠物运输", "desc": "安全的国际宠物运输协助" }
+      "internationalFreight": {
+        "title": "国际货运",
+        "desc": "海运、空运及陆运,全程可追踪"
+      },
+      "customsClearance": {
+        "title": "清关服务",
+        "desc": "进出口文件办理及合规"
+      },
+      "officeRelocation": {
+        "title": "办公室搬迁",
+        "desc": "完整的办公室搬迁项目管理"
+      },
+      "residentialMoving": {
+        "title": "住宅搬迁",
+        "desc": "含拆包和安置的住宅搬迁服务"
+      },
+      "storageSolutions": {
+        "title": "仓储解决方案",
+        "desc": "短期及长期仓储服务"
+      },
+      "insuranceCoverage": {
+        "title": "保险保障",
+        "desc": "全面的货物及责任保险"
+      },
+      "settlingIn": {
+        "title": "安家服务",
+        "desc": "银行账户、电话卡、住房搜寻"
+      },
+      "petRelocation": {
+        "title": "宠物运输",
+        "desc": "安全的国际宠物运输协助"
+      }
     },
     "requestMovingQuote": "申请搬迁报价",
     "name": "姓名 *",
@@ -1219,13 +1539,34 @@
     "subtitle": "关于在中国开展业务的一对一专家咨询——市场准入、采购、法律及贸易合规。",
     "ourConsultationTopics": "我们的咨询主题",
     "topics": {
-      "marketEntry": { "title": "市场准入战略", "desc": "竞争对手分析、定价、分销渠道、监管环境" },
-      "supplierSourcing": { "title": "供应商寻源", "desc": "工厂核实、背景调查、样品协调、价格谈判" },
-      "qualityInspection": { "title": "质量检验", "desc": "装运前检验、工厂审核、产品测试协调" },
-      "legalCompliance": { "title": "法律与合规", "desc": "合同审查、知识产权保护、法规合规、争议解决" },
-      "culturalEtiquette": { "title": "文化礼仪", "desc": "谈判技巧、名片礼仪、送礼习俗、餐桌礼仪" },
-      "tradeCompliance": { "title": "贸易合规", "desc": "海关分类、进出口法规、关税优化" },
-      "ipProtectionDetail": { "title": "知识产权保护", "desc": "商标注册、专利申请、在中国的商业机密保护" }
+      "marketEntry": {
+        "title": "市场准入战略",
+        "desc": "竞争对手分析、定价、分销渠道、监管环境"
+      },
+      "supplierSourcing": {
+        "title": "供应商寻源",
+        "desc": "工厂核实、背景调查、样品协调、价格谈判"
+      },
+      "qualityInspection": {
+        "title": "质量检验",
+        "desc": "装运前检验、工厂审核、产品测试协调"
+      },
+      "legalCompliance": {
+        "title": "法律与合规",
+        "desc": "合同审查、知识产权保护、法规合规、争议解决"
+      },
+      "culturalEtiquette": {
+        "title": "文化礼仪",
+        "desc": "谈判技巧、名片礼仪、送礼习俗、餐桌礼仪"
+      },
+      "tradeCompliance": {
+        "title": "贸易合规",
+        "desc": "海关分类、进出口法规、关税优化"
+      },
+      "ipProtectionDetail": {
+        "title": "知识产权保护",
+        "desc": "商标注册、专利申请、在中国的商业机密保护"
+      }
     },
     "pricing": "价格",
     "singleSession": "单次咨询(60分钟)",
@@ -1252,7 +1593,9 @@
     "preferredDate": "偏好日期",
     "questionsToCover": "需要讨论的问题/主题",
     "questionsPlaceholder": "请告诉我们您的业务需求以及想要讨论的内容……",
-    "bookConsultation": "预约咨询"
+    "bookConsultation": "预约咨询",
+    "requestFailed": "提交失败，请重试。",
+    "booking": "提交中..."
   },
   "transportSubsidiesPage": {
     "ourServices": "我们的服务",
@@ -1309,13 +1652,241 @@
     "processTitle": "The Unique Expo 使用流程",
     "step": "第 {number} 步",
     "steps": {
-      "discover": { "title": "发现展会", "desc": "按行业、日期和地点浏览全球贸易博览会,找到最适合您业务的展会。" },
-      "registerBuyer": { "title": "注册成为买家", "desc": "申请受邀买家计划,获取差旅补贴、酒店住宿和贵宾通道。" },
-      "connect": { "title": "洽谈并达成合作", "desc": "与展商面对面交流,安排一对一会面,现场洽谈并达成合作。" }
+      "discover": {
+        "title": "发现展会",
+        "desc": "按行业、日期和地点浏览全球贸易博览会,找到最适合您业务的展会。"
+      },
+      "registerBuyer": {
+        "title": "注册成为买家",
+        "desc": "申请受邀买家计划,获取差旅补贴、酒店住宿和贵宾通道。"
+      },
+      "connect": {
+        "title": "洽谈并达成合作",
+        "desc": "与展商面对面交流,安排一对一会面,现场洽谈并达成合作。"
+      }
     },
     "ctaTitle": "准备好发展您的业务了吗?",
     "ctaSubtitle": "加入成千上万的展商和买家,通过 The Unique Expo 发现商机、注册成为受邀买家,并在中国的世界级贸易展会上达成合作。",
     "getStarted": "免费开始",
     "exploreServices": "探索我们的服务"
+  },
+  "eventsPage": {
+    "title": "活动",
+    "subtitle": "在广州及其他城市举办的社交、徒步、野餐和文化聚会活动。",
+    "upcoming": "即将举行",
+    "past": "往期活动",
+    "loading": "正在加载活动...",
+    "free": "免费",
+    "viewDetails": "查看详情 →",
+    "noResultsTitle": "暂无活动",
+    "noResultsSubtitle": "请稍后查看即将举行的聚会活动。",
+    "categories": {
+      "networking": "社交",
+      "hiking": "徒步",
+      "picnic": "野餐",
+      "cultural": "文化",
+      "other": "其他"
+    }
+  },
+  "eventDetailPage": {
+    "loading": "加载中...",
+    "notFound": "未找到活动",
+    "browseAll": "浏览所有活动 →",
+    "categories": {
+      "networking": "社交",
+      "hiking": "徒步",
+      "picnic": "野餐",
+      "cultural": "文化",
+      "other": "其他"
+    },
+    "aboutThisEvent": "活动详情",
+    "dateAndTime": "日期与时间",
+    "location": "地点",
+    "price": "价格",
+    "free": "免费",
+    "registrationSubmitted": "报名成功！",
+    "registrationClosed": "报名已截止",
+    "submitting": "提交中...",
+    "registerForThisEvent": "报名参加",
+    "logInToRegister": "登录后报名",
+    "registrationFailed": "报名失败"
+  },
+  "adminEventsCrud": {
+    "loadFailed": "加载活动失败",
+    "saveFailed": "保存活动失败",
+    "deleteFailed": "删除活动失败",
+    "title": "活动管理",
+    "newEvent": "+ 新建活动",
+    "editEvent": "编辑活动",
+    "newEventHeading": "新建活动",
+    "requiredFieldsError": "标题、Slug 和活动日期为必填项",
+    "fields": {
+      "title": "标题",
+      "slug": "Slug",
+      "category": "类别",
+      "city": "城市",
+      "venue": "场地",
+      "eventDate": "活动日期",
+      "startTime": "开始时间",
+      "endTime": "结束时间",
+      "price": "价格",
+      "pricePlaceholder": "例如：免费 或 ¥50",
+      "capacity": "人数上限",
+      "imageUrl": "图片链接",
+      "description": "描述"
+    },
+    "categories": {
+      "networking": "社交",
+      "hiking": "徒步",
+      "picnic": "野餐",
+      "cultural": "文化",
+      "other": "其他"
+    },
+    "saveChanges": "保存更改",
+    "createEvent": "创建活动",
+    "loadingEvents": "正在加载活动...",
+    "view": "查看",
+    "registrations": "报名列表",
+    "editButton": "编辑",
+    "deleting": "删除中...",
+    "noEventsYet": "暂无活动。",
+    "accessDenied": "需要管理员权限。",
+    "confirmDelete": "确定删除此活动？"
+  },
+  "adminEventRegistrations": {
+    "backToEvents": "← 返回活动列表",
+    "titleWithName": "报名列表：{name}",
+    "title": "活动报名",
+    "registeredCount": "已报名 {count} 人",
+    "updateFailed": "更新状态失败",
+    "noResultsTitle": "暂无报名",
+    "noResultsSubtitle": "有人报名后将显示在这里。",
+    "statuses": {
+      "pending": "待处理",
+      "confirmed": "已确认",
+      "cancelled": "已取消"
+    }
+  },
+  "blogPage": {
+    "title": "博客",
+    "subtitle": "在中国的生活、移居贴士与展会见解。",
+    "allPosts": "全部文章",
+    "categories": {
+      "life-in-china": "在中国的生活",
+      "relocation-tips": "移居贴士",
+      "exhibition-reviews": "展会点评"
+    },
+    "loading": "正在加载文章...",
+    "noResultsTitle": "暂无文章",
+    "noResultsSubtitle": "请稍后查看新文章。"
+  },
+  "blogPostPage": {
+    "loading": "加载中...",
+    "notFound": "未找到文章",
+    "browseAll": "← 浏览所有文章",
+    "categories": {
+      "life-in-china": "在中国的生活",
+      "relocation-tips": "移居贴士",
+      "exhibition-reviews": "展会点评"
+    }
+  },
+  "adminBlogCrud": {
+    "loadFailed": "加载文章失败",
+    "saveFailed": "保存文章失败",
+    "deleteFailed": "删除文章失败",
+    "title": "博客管理",
+    "newPost": "+ 新建文章",
+    "editPost": "编辑文章",
+    "newPostHeading": "新建文章",
+    "requiredFieldsError": "标题、Slug 和正文为必填项",
+    "fields": {
+      "title": "标题",
+      "slug": "Slug",
+      "category": "类别",
+      "coverImageUrl": "封面图片链接",
+      "excerpt": "摘要",
+      "excerptPlaceholder": "在文章列表中显示的简短摘要...",
+      "content": "正文",
+      "contentHint": "支持基础 Markdown：**加粗**、*斜体*、# 标题、- 列表、[链接](https://...)",
+      "published": "已发布（在公开博客中可见）"
+    },
+    "categories": {
+      "life-in-china": "在中国的生活",
+      "relocation-tips": "移居贴士",
+      "exhibition-reviews": "展会点评"
+    },
+    "saveChanges": "保存更改",
+    "createPost": "创建文章",
+    "loadingPosts": "正在加载文章...",
+    "view": "查看",
+    "editButton": "编辑",
+    "deleting": "删除中...",
+    "publishedBadge": "已发布",
+    "draftBadge": "草稿",
+    "noPostsYet": "暂无文章。",
+    "accessDenied": "需要管理员权限。",
+    "confirmDelete": "确定删除此文章？"
+  },
+  "relocationPage": {
+    "title": "移居服务",
+    "subtitle": "为您移居中国提供住房、学校、签证与安家支持。",
+    "whatWeHelpWith": "我们提供的帮助",
+    "topics": {
+      "housing": {
+        "title": "住房",
+        "desc": "帮您找房、看懂租约并与房东协商。"
+      },
+      "schools": {
+        "title": "学校",
+        "desc": "为您的孩子提供国际学校与本地学校的选择建议。"
+      },
+      "visas": {
+        "title": "签证与证件",
+        "desc": "工作签证、居留签证、家属签证及相关手续办理。"
+      },
+      "adaptation": {
+        "title": "文化适应",
+        "desc": "关于日常生活、银行业务与本地习俗的实用指导。"
+      }
+    },
+    "moreDetail": "如需详细的签证办理信息，请查看<visaLink>签证与证件服务</visaLink>；关于实际搬迁事宜，请查看<movingLink>搬迁协助</movingLink>。",
+    "requestConsultation": "预约咨询",
+    "name": "姓名",
+    "email": "邮箱",
+    "topic": "咨询主题",
+    "topicOptions": {
+      "housing": "住房",
+      "schools": "学校",
+      "visas": "签证与证件",
+      "adaptation": "文化适应",
+      "other": "其他"
+    },
+    "preferredDate": "希望日期",
+    "tellUsMore": "详细说明",
+    "tellUsMorePlaceholder": "您需要哪些方面的帮助？",
+    "submitting": "提交中...",
+    "submitRequest": "提交请求",
+    "requestFailed": "提交失败，请重试。",
+    "requestReceived": "请求已收到！",
+    "requestReceivedHint": "我们会尽快与您联系，安排咨询时间。",
+    "submitAnother": "提交另一个请求"
+  },
+  "reviews": {
+    "reviews": "点评",
+    "updateYourRating": "修改评分",
+    "rateThis": {
+      "supplier": "为该供应商评分",
+      "tour": "为该旅行团评分"
+    },
+    "shareYourExperience": {
+      "supplier": "分享您与该供应商合作的体验...",
+      "tour": "分享您参加此旅行团的体验..."
+    },
+    "saving": "保存中...",
+    "updateReview": "更新点评",
+    "submitReview": "提交点评",
+    "logIn": "登录",
+    "toLeaveAReview": "后可发表点评。",
+    "noReviewsYet": "暂无点评，快来抢占第一个吧。"
   }
 }

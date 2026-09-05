@@ -3,6 +3,7 @@ import { use, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage, isAbortError } from "@/lib/format";
 import { validateCustomAnswers, type CustomFormField, type CustomFormSchema } from "@/lib/custom-registration-form";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 
@@ -97,8 +98,8 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
       }
       if (data.user) setUser(data.user);
       setSubmitted(true);
-    } catch (err: any) {
-      setError(err.name === "AbortError" ? t("timeoutError") : err.message);
+    } catch (err) {
+      setError(isAbortError(err) ? t("timeoutError") : errorMessage(err, "Something went wrong"));
     } finally {
       setSubmitting(false);
     }

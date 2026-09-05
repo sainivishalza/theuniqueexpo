@@ -24,7 +24,6 @@ export interface SitePageDef {
 export const SITE_PAGES: SitePageDef[] = [
   { slug: "contact", navLabel: "Contact", path: "/contact" },
   { slug: "careers", navLabel: "Careers", path: "/careers" },
-  { slug: "blog", navLabel: "Blog", path: "/blog" },
   { slug: "help-center", navLabel: "Help Center", path: "/help" },
   { slug: "exhibition-guide", navLabel: "Exhibition Guide", path: "/exhibition-guide" },
   { slug: "booth-setup-tips", navLabel: "Booth Setup Tips", path: "/booth-setup-tips" },
@@ -72,19 +71,6 @@ export const DEFAULT_SITE_PAGE_CONTENT: Record<string, SitePageContent> = {
       { title: "Frontend Engineer — Remote", description: "Build and improve the platform buyers and exhibitors use every day." },
     ],
     contactEmail: "careers@theuniqueexpo.com",
-    contactPhone: "",
-  },
-  blog: {
-    heading: "The Unique Expo Blog",
-    tagline: "Insights, guides, and updates from the world of B2B trade fairs.",
-    body: "New posts from our team on exhibition prep, sourcing strategy, and what's changing across the industries we cover.",
-    itemsLabel: "Recent Posts",
-    items: [
-      { title: "5 Tips for First-Time Exhibitors", description: "What to prepare before your first trade fair booth." },
-      { title: "How to Prepare for CIFF Shanghai 2026", description: "A buyer's checklist for the furniture industry's biggest fair." },
-      { title: "Understanding Trade Fair Visa Requirements", description: "A quick guide to visa support for international visitors." },
-    ],
-    contactEmail: "",
     contactPhone: "",
   },
   "help-center": {
@@ -142,19 +128,23 @@ export const DEFAULT_SITE_PAGE_CONTENT: Record<string, SitePageContent> = {
   },
 };
 
-export function normalizeSitePageContent(slug: string, input: any): SitePageContent {
+function isSitePageItem(value: unknown): value is SitePageItem {
+  const record = value as Record<string, unknown> | null;
+  return !!record && typeof record.title === "string" && typeof record.description === "string";
+}
+
+export function normalizeSitePageContent(slug: string, input: unknown): SitePageContent {
   const fallback = DEFAULT_SITE_PAGE_CONTENT[slug] || EMPTY_CONTENT;
+  const record = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
   return {
-    heading: typeof input?.heading === "string" ? input.heading : fallback.heading,
-    tagline: typeof input?.tagline === "string" ? input.tagline : fallback.tagline,
-    body: typeof input?.body === "string" ? input.body : fallback.body,
-    itemsLabel: typeof input?.itemsLabel === "string" ? input.itemsLabel : fallback.itemsLabel,
-    items: Array.isArray(input?.items)
-      ? input.items
-          .filter((i: any) => i && typeof i.title === "string" && typeof i.description === "string")
-          .map((i: any) => ({ title: i.title, description: i.description }))
+    heading: typeof record.heading === "string" ? record.heading : fallback.heading,
+    tagline: typeof record.tagline === "string" ? record.tagline : fallback.tagline,
+    body: typeof record.body === "string" ? record.body : fallback.body,
+    itemsLabel: typeof record.itemsLabel === "string" ? record.itemsLabel : fallback.itemsLabel,
+    items: Array.isArray(record.items)
+      ? record.items.filter(isSitePageItem).map((i) => ({ title: i.title, description: i.description }))
       : fallback.items,
-    contactEmail: typeof input?.contactEmail === "string" ? input.contactEmail : fallback.contactEmail,
-    contactPhone: typeof input?.contactPhone === "string" ? input.contactPhone : fallback.contactPhone,
+    contactEmail: typeof record.contactEmail === "string" ? record.contactEmail : fallback.contactEmail,
+    contactPhone: typeof record.contactPhone === "string" ? record.contactPhone : fallback.contactPhone,
   };
 }

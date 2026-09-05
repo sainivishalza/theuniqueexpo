@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { useAuth, type UserRole } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 import Logo from "@/components/Logo";
 
 const ROLE_KEYS: { value: UserRole; icon: string }[] = [
@@ -34,8 +35,8 @@ export default function RegisterPage() {
     try {
       await register(form.name, form.email, form.password, form.role, form.country);
       router.push("/dashboard/" + form.role);
-    } catch (err: any) {
-      setError(err.message || t("registrationFailed"));
+    } catch (err) {
+      setError(errorMessage(err, t("registrationFailed")));
     } finally {
       setLoading(false);
     }

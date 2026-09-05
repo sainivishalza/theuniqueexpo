@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 
 interface Consultation {
   id: string; name: string; email: string; topic: string; status: string; createdAt: string;
@@ -36,8 +37,8 @@ export default function AdminConsultationsPage() {
       });
       if (!res.ok) throw new Error((await res.json()).error || t("updateFailed"));
       setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      alert(errorMessage(err, "Something went wrong"));
     } finally {
       setUpdatingId(null);
     }

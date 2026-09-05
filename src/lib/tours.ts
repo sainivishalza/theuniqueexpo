@@ -33,25 +33,9 @@ export interface Tour {
   image: string; exhibitionSlug?: string;
 }
 
-export interface TourApplication {
-  id: string; tourId: string; userId: string;
-  name: string; email: string; phone: string;
-  company: string; nationality: string;
-  travelers: number; services: string[];
-  specialRequests: string;
-  status: "pending" | "confirmed" | "cancelled";
-  createdAt: string;
-}
-
-const tourApplications: TourApplication[] = [];
-export function getTourApplications() { return tourApplications; }
-export function submitTourApplication(app: any): TourApplication {
-  const n = {...app, id: "ta-"+Date.now(), status: "pending", createdAt: new Date().toISOString()};
-  tourApplications.push(n); return n;
-}
-
 function pick(text: LocalizedText, locale: string): string {
-  return (text as any)[locale] || text.en;
+  if (locale === "ru" || locale === "zh") return text[locale] || text.en;
+  return text.en;
 }
 
 export function localizeTour(tour: LocalizedTourData, locale: string): Tour {

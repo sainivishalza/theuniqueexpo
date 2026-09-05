@@ -3,6 +3,7 @@ import { use, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage, isAbortError } from "@/lib/format";
 import {
   COMPANY_TYPES, COMPANY_SCALES, PURPOSES_OF_VISIT, INFO_SOURCES, EXPORTING_MARKETS, NATIONALITIES,
   type RegistrationType, type Gender, type ExpoRegistrationInput,
@@ -191,8 +192,8 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       }
       if (data.user) setUser(data.user);
       setSubmitted(true);
-    } catch (err: any) {
-      setError(err.name === "AbortError" ? t("timeoutError") : err.message);
+    } catch (err) {
+      setError(isAbortError(err) ? t("timeoutError") : errorMessage(err, "Something went wrong"));
     } finally {
       setSubmitting(false);
     }
@@ -225,8 +226,8 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       }
       if (data.user) setUser(data.user);
       setSubmitted(true);
-    } catch (err: any) {
-      setError(err.name === "AbortError" ? t("timeoutError") : err.message);
+    } catch (err) {
+      setError(isAbortError(err) ? t("timeoutError") : errorMessage(err, "Something went wrong"));
     } finally {
       setSubmitting(false);
     }

@@ -32,8 +32,10 @@ function Stars({ value, onSelect }: { value: number; onSelect?: (n: number) => v
   );
 }
 
-export default function ExhibitorReviews({ slug }: { slug: string }) {
-  const t = useTranslations("exhibitorReviews");
+// Shared by exhibitor profiles and tour detail pages -- same rating/review
+// UI, pointed at whichever entity's /reviews API the caller passes in.
+export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: string; kind: "supplier" | "tour" }) {
+  const t = useTranslations("reviews");
   const { user } = useAuth();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [summary, setSummary] = useState({ average: 0, count: 0 });
@@ -44,7 +46,7 @@ export default function ExhibitorReviews({ slug }: { slug: string }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/exhibitors/${slug}/reviews`)
+    fetch(apiBasePath)
       .then((res) => (res.ok ? res.json() : { reviews: [], summary: { average: 0, count: 0 }, myReview: null }))
       .then((data) => {
         setReviews(data.reviews || []);
@@ -56,14 +58,14 @@ export default function ExhibitorReviews({ slug }: { slug: string }) {
         }
       })
       .finally(() => setLoading(false));
-  }, [slug]);
+  }, [apiBasePath]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!rating) return;
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/exhibitors/${slug}/reviews`, {
+      const res = await fetch(apiBasePath, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rating, comment }),
@@ -104,7 +106,7 @@ export default function ExhibitorReviews({ slug }: { slug: string }) {
         <form onSubmit={handleSubmit} className="mb-6 rounded-xl border border-gray-200 p-5 bg-gray-50 space-y-3">
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">
-              {myReview ? t("updateYourRating") : t("rateThisSupplier")}
+              {myReview ? t("updateYourRating") : t(`rateThis.${kind}`)}
             </label>
             <Stars value={rating} onSelect={setRating} />
           </div>
@@ -112,7 +114,7 @@ export default function ExhibitorReviews({ slug }: { slug: string }) {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             rows={2}
-            placeholder={t("shareYourExperience")}
+            placeholder={t(`shareYourExperience.${kind}`)}
             className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none resize-none"
           />
           <button
@@ -125,7 +127,7 @@ export default function ExhibitorReviews({ slug }: { slug: string }) {
         </form>
       ) : (
         <div className="mb-6 rounded-xl bg-gray-50 border border-gray-200 p-4 text-sm text-gray-500">
-          <Link href="/login" className="text-emerald-600 hover:underline font-semibold">{t("logIn")}</Link> {t("toLeaveAReview")}
+          <Link href="/login" className="text-emerald-600 hover:underline font-semibold">{t("logIn")}</Link>{t("toLeaveAReview")}
         </div>
       )}
 

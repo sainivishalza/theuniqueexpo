@@ -33,18 +33,22 @@ export const DEFAULT_ABOUT_CONTENT: AboutContent = {
   heroImage: "",
 };
 
-export function normalizeAboutContent(input: any): AboutContent {
+function isAboutStat(value: unknown): value is AboutStat {
+  const record = value as Record<string, unknown> | null;
+  return !!record && typeof record.label === "string" && typeof record.value === "string";
+}
+
+export function normalizeAboutContent(input: unknown): AboutContent {
+  const record = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
   return {
-    heading: typeof input?.heading === "string" ? input.heading : DEFAULT_ABOUT_CONTENT.heading,
-    tagline: typeof input?.tagline === "string" ? input.tagline : DEFAULT_ABOUT_CONTENT.tagline,
-    story: typeof input?.story === "string" ? input.story : DEFAULT_ABOUT_CONTENT.story,
-    mission: typeof input?.mission === "string" ? input.mission : DEFAULT_ABOUT_CONTENT.mission,
-    vision: typeof input?.vision === "string" ? input.vision : DEFAULT_ABOUT_CONTENT.vision,
-    stats: Array.isArray(input?.stats)
-      ? input.stats
-          .filter((s: any) => s && typeof s.label === "string" && typeof s.value === "string")
-          .map((s: any) => ({ label: s.label, value: s.value }))
+    heading: typeof record.heading === "string" ? record.heading : DEFAULT_ABOUT_CONTENT.heading,
+    tagline: typeof record.tagline === "string" ? record.tagline : DEFAULT_ABOUT_CONTENT.tagline,
+    story: typeof record.story === "string" ? record.story : DEFAULT_ABOUT_CONTENT.story,
+    mission: typeof record.mission === "string" ? record.mission : DEFAULT_ABOUT_CONTENT.mission,
+    vision: typeof record.vision === "string" ? record.vision : DEFAULT_ABOUT_CONTENT.vision,
+    stats: Array.isArray(record.stats)
+      ? record.stats.filter(isAboutStat).map((s) => ({ label: s.label, value: s.value }))
       : DEFAULT_ABOUT_CONTENT.stats,
-    heroImage: typeof input?.heroImage === "string" ? input.heroImage : "",
+    heroImage: typeof record.heroImage === "string" ? record.heroImage : "",
   };
 }

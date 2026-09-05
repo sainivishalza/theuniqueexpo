@@ -9,7 +9,31 @@
     "dashboard": "Dashboard",
     "logout": "Logout",
     "login": "Login",
-    "register": "Register"
+    "register": "Register",
+    "events": "Events",
+    "relocation": "Relocation",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact",
+    "exhibitionsMenu": {
+      "calendar": "Calendar",
+      "participation": "Participation",
+      "pastExhibitions": "Past Exhibitions"
+    },
+    "toursMenu": {
+      "tourRoutes": "Tour Routes",
+      "howToBook": "How to Book",
+      "reviews": "Reviews"
+    },
+    "eventsMenu": {
+      "upcomingEvents": "Upcoming Events",
+      "pastEvents": "Past Events"
+    },
+    "blogMenu": {
+      "lifeInChina": "Life in China",
+      "relocationTips": "Relocation Tips",
+      "exhibitionReviews": "Exhibition Reviews"
+    }
   },
   "footer": {
     "newsletterTitle": "Stay Updated",
@@ -37,7 +61,9 @@
       "helpCenter": "Help Center",
       "exhibitionGuide": "Exhibition Guide",
       "boothSetupTips": "Booth Setup Tips",
-      "apiDocumentation": "API Documentation"
+      "apiDocumentation": "API Documentation",
+      "events": "Events",
+      "relocation": "Relocation"
     },
     "copyright": "© {year} The Unique Expo. All rights reserved.",
     "privacyPolicy": "Privacy Policy",
@@ -71,7 +97,23 @@
     "perPerson": "/ person",
     "viewDetails": "View Details →",
     "noResultsTitle": "No tours yet",
-    "noResultsSubtitle": "Check back soon for upcoming travel tours."
+    "noResultsSubtitle": "Check back soon for upcoming travel tours.",
+    "travelerReviews": "Traveler Reviews",
+    "howToBook": "How Booking Works",
+    "howToBookSteps": {
+      "browse": {
+        "title": "Browse tours",
+        "desc": "Pick a route that matches your dates and interests."
+      },
+      "register": {
+        "title": "Submit your details",
+        "desc": "Tell us about your group so we can tailor the trip."
+      },
+      "confirm": {
+        "title": "Get confirmation",
+        "desc": "Our travel team reviews and confirms your booking."
+      }
+    }
   },
   "marketplacePage": {
     "title": "Procurement Marketplace",
@@ -117,7 +159,11 @@
     "heroTitleLine2": "Something",
     "heroTitleLine3": "Unique Together",
     "heroSubtitle": "Access 20+ global exhibitions, business tours, visa services, and B2B matchmaking — all in one platform.",
-    "stats": { "exhibitions": "Exhibitions", "tours": "Tours", "services": "Services" },
+    "stats": {
+      "exhibitions": "Exhibitions",
+      "tours": "Tours",
+      "services": "Services"
+    },
     "welcomeBack": "Welcome back",
     "signInSubtitle": "Sign in to your account to continue.",
     "email": "Email",
@@ -131,16 +177,33 @@
   },
   "registerPage": {
     "roles": {
-      "buyer": { "label": "Buyer", "desc": "Source products & find suppliers" },
-      "exhibitor": { "label": "Exhibitor", "desc": "Showcase products at exhibitions" },
-      "visitor": { "label": "Visitor", "desc": "Attend exhibitions & explore" },
-      "partner": { "label": "Partner", "desc": "Refer clients & earn commissions" }
+      "buyer": {
+        "label": "Buyer",
+        "desc": "Source products & find suppliers"
+      },
+      "exhibitor": {
+        "label": "Exhibitor",
+        "desc": "Showcase products at exhibitions"
+      },
+      "visitor": {
+        "label": "Visitor",
+        "desc": "Attend exhibitions & explore"
+      },
+      "partner": {
+        "label": "Partner",
+        "desc": "Refer clients & earn commissions"
+      }
     },
     "heroTitleLine1": "Join the",
     "heroTitleLine2": "Global Trade",
     "heroTitleLine3": "Community",
     "heroSubtitle": "Create your free account and start connecting with exhibitors, buyers, and trade professionals worldwide.",
-    "stats": { "users": "Users", "countries": "Countries", "freeValue": "Free", "freeLabel": "To join" },
+    "stats": {
+      "users": "Users",
+      "countries": "Countries",
+      "freeValue": "Free",
+      "freeLabel": "To join"
+    },
     "createAccount": "Create your account",
     "createAccountSubtitle": "It takes less than 60 seconds.",
     "iAmA": "I am a...",
@@ -164,13 +227,34 @@
     "title": "Visitor Dashboard",
     "welcome": "Welcome back{name}. Explore, attend, connect.",
     "features": {
-      "browseExhibitions": { "title": "Browse Exhibitions", "description": "Upcoming events near you" },
-      "visitPlanner": { "title": "Visit Planner", "description": "Build your show-day itinerary" },
-      "savedExhibitions": { "title": "Saved Exhibitions", "description": "Exhibitions you've bookmarked" },
-      "savedExhibitors": { "title": "Saved Exhibitors", "description": "Your bookmarked profiles" },
-      "myRegistrations": { "title": "My Registrations", "description": "Events you're attending" },
-      "messages": { "title": "Messages", "description": "Conversations with exhibitors" },
-      "content": { "title": "Content", "description": "Magazine articles and videos" }
+      "browseExhibitions": {
+        "title": "Browse Exhibitions",
+        "description": "Upcoming events near you"
+      },
+      "visitPlanner": {
+        "title": "Visit Planner",
+        "description": "Build your show-day itinerary"
+      },
+      "savedExhibitions": {
+        "title": "Saved Exhibitions",
+        "description": "Exhibitions you've bookmarked"
+      },
+      "savedExhibitors": {
+        "title": "Saved Exhibitors",
+        "description": "Your bookmarked profiles"
+      },
+      "myRegistrations": {
+        "title": "My Registrations",
+        "description": "Events you're attending"
+      },
+      "messages": {
+        "title": "Messages",
+        "description": "Conversations with exhibitors"
+      },
+      "content": {
+        "title": "Content",
+        "description": "Magazine articles and videos"
+      }
     }
   },
   "buyerDashboard": {
@@ -184,13 +268,34 @@
     },
     "quickActions": "Quick Actions",
     "actions": {
-      "browseExhibitions": { "title": "Browse Exhibitions", "description": "Discover upcoming trade shows worldwide" },
-      "exhibitorDirectory": { "title": "Exhibitor Directory", "description": "Search verified suppliers by industry" },
-      "postBuyRequest": { "title": "Post Buy Request", "description": "Get quotes from qualified suppliers" },
-      "marketplace": { "title": "Marketplace", "description": "View open RFQs and submitted quotes" },
-      "savedExhibitions": { "title": "Saved Exhibitions", "description": "Exhibitions you've bookmarked for later" },
-      "savedSuppliers": { "title": "Saved Suppliers", "description": "Your bookmarked exhibitor profiles" },
-      "meetings": { "title": "Meetings", "description": "Upcoming meeting requests" }
+      "browseExhibitions": {
+        "title": "Browse Exhibitions",
+        "description": "Discover upcoming trade shows worldwide"
+      },
+      "exhibitorDirectory": {
+        "title": "Exhibitor Directory",
+        "description": "Search verified suppliers by industry"
+      },
+      "postBuyRequest": {
+        "title": "Post Buy Request",
+        "description": "Get quotes from qualified suppliers"
+      },
+      "marketplace": {
+        "title": "Marketplace",
+        "description": "View open RFQs and submitted quotes"
+      },
+      "savedExhibitions": {
+        "title": "Saved Exhibitions",
+        "description": "Exhibitions you've bookmarked for later"
+      },
+      "savedSuppliers": {
+        "title": "Saved Suppliers",
+        "description": "Your bookmarked exhibitor profiles"
+      },
+      "meetings": {
+        "title": "Meetings",
+        "description": "Upcoming meeting requests"
+      }
     }
   },
   "exhibitorDashboard": {
@@ -214,23 +319,45 @@
     "browseExhibitions": "Browse Exhibitions",
     "boothLabel": "Booth {id}",
     "bookedOn": "Booked {date}",
-    "statuses": { "confirmed": "confirmed", "pending": "pending", "rejected": "rejected" }
+    "statuses": {
+      "confirmed": "confirmed",
+      "pending": "pending",
+      "rejected": "rejected"
+    }
   },
   "partnerDashboard": {
     "title": "Partner Dashboard",
     "welcome": "Welcome back{name}. Track your referrals and earnings.",
-    "stats": { "referrals": "Referrals", "commission": "Commission", "conversion": "Conversion" },
+    "stats": {
+      "referrals": "Referrals",
+      "commission": "Commission",
+      "conversion": "Conversion"
+    },
     "referralLinkTitle": "Your Referral Link",
     "referralLinkSubtitle": "Share this with potential exhibitors and buyers. Signups are tracked automatically.",
     "copyLink": "Copy Link",
     "referredUsers": "Referred Users ({count})",
     "noReferralsTitle": "No referrals yet",
     "noReferralsSubtitle": "Share your link to start earning commissions.",
-    "columns": { "name": "Name", "email": "Email", "date": "Date", "status": "Status", "commission": "Commission" },
-    "statuses": { "signedUp": "Signed Up", "bookedBooth": "Booked Booth", "postedRfq": "Posted RFQ" },
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "date": "Date",
+      "status": "Status",
+      "commission": "Commission"
+    },
+    "statuses": {
+      "signedUp": "Signed Up",
+      "bookedBooth": "Booked Booth",
+      "postedRfq": "Posted RFQ"
+    },
     "marketingKit": "Marketing Kit",
     "marketingKitSubtitle": "Download materials to promote The Unique Expo in your region.",
-    "materials": { "pitchDeck": "Pitch Deck (PDF)", "bannerPack": "Banner Pack", "brochure": "Brochure" }
+    "materials": {
+      "pitchDeck": "Pitch Deck (PDF)",
+      "bannerPack": "Banner Pack",
+      "brochure": "Brochure"
+    }
   },
   "favoritesPage": {
     "loginPrompt": "Log in to see your saved exhibitions",
@@ -301,21 +428,58 @@
       "totalRfqs": "Total RFQs"
     },
     "sections": {
-      "exhibitionManagement": { "title": "Exhibition Management", "description": "Create, edit, and manage exhibition listings and floor plans." },
-      "tourManagement": { "title": "Tour Management", "description": "Create, edit, and manage travel tours and their registration forms." },
-      "rfqReview": { "title": "RFQ Review", "description": "View and moderate all buy requests and submitted quotes." },
-      "hotelBookings": { "title": "Hotel Bookings", "description": "Review and confirm hotel booking requests from buyers." },
-      "servicesManagement": { "title": "Services Management", "description": "Manage tours, applications, subsidies, and consultations." },
-      "aboutUsPage": { "title": "About Us Page", "description": "Edit the company story, mission, vision, and stats shown to visitors." },
-      "websitePages": { "title": "Website Pages", "description": "Edit Contact, Careers, Blog, Help Center, and other footer pages." },
-      "userManagement": { "title": "User Management", "description": "Manage user accounts, roles, and verification status." }
+      "exhibitionManagement": {
+        "title": "Exhibition Management",
+        "description": "Create, edit, and manage exhibition listings and floor plans."
+      },
+      "tourManagement": {
+        "title": "Tour Management",
+        "description": "Create, edit, and manage travel tours and their registration forms."
+      },
+      "rfqReview": {
+        "title": "RFQ Review",
+        "description": "View and moderate all buy requests and submitted quotes."
+      },
+      "hotelBookings": {
+        "title": "Hotel Bookings",
+        "description": "Review and confirm hotel booking requests from buyers."
+      },
+      "servicesManagement": {
+        "title": "Services Management",
+        "description": "Manage tours, applications, subsidies, and consultations."
+      },
+      "aboutUsPage": {
+        "title": "About Us Page",
+        "description": "Edit the company story, mission, vision, and stats shown to visitors."
+      },
+      "websitePages": {
+        "title": "Website Pages",
+        "description": "Edit Contact, Careers, Blog, Help Center, and other footer pages."
+      },
+      "userManagement": {
+        "title": "User Management",
+        "description": "Manage user accounts, roles, and verification status."
+      },
+      "eventManagement": {
+        "title": "Event Management",
+        "description": "Create and manage networking, hiking, and cultural meetups."
+      },
+      "blogManagement": {
+        "title": "Blog Management",
+        "description": "Write and publish articles about life in China, relocation, and exhibitions."
+      }
     }
   },
   "adminSubsidies": {
     "backToServicesAdmin": "← Back to Services Admin",
     "title": "Transport Subsidies",
     "subsidiesConfigured": "{count} subsidies configured",
-    "columns": { "subsidy": "Subsidy", "exhibition": "Exhibition", "amount": "Amount", "deadline": "Deadline" }
+    "columns": {
+      "subsidy": "Subsidy",
+      "exhibition": "Exhibition",
+      "amount": "Amount",
+      "deadline": "Deadline"
+    }
   },
   "adminServiceTours": {
     "backToServicesAdmin": "← Back to Services Admin",
@@ -323,7 +487,12 @@
     "toursSummary": "{business} business tours + {china} China tours",
     "businessTours": "Business Tours",
     "chinaTours": "China Tours",
-    "columns": { "tour": "Tour", "city": "City", "dates": "Dates", "price": "Price" },
+    "columns": {
+      "tour": "Tour",
+      "city": "City",
+      "dates": "Dates",
+      "price": "Price"
+    },
     "view": "View →"
   },
   "adminServicesHome": {
@@ -334,11 +503,26 @@
     "subtitle": "Manage tours, applications, subsidies, and consultations.",
     "items": "{count} items",
     "sections": {
-      "businessTours": { "title": "Business Tours", "description": "Manage tour packages tied to exhibitions." },
-      "tourApplications": { "title": "Tour Applications", "description": "Review and manage tour booking applications." },
-      "visaApplications": { "title": "Visa & Setup Applications", "description": "Review company setup and visa applications." },
-      "transportSubsidies": { "title": "Transport Subsidies", "description": "Manage exhibition travel subsidies." },
-      "consultationRequests": { "title": "Consultation Requests", "description": "Review and schedule consultation bookings." }
+      "businessTours": {
+        "title": "Business Tours",
+        "description": "Manage tour packages tied to exhibitions."
+      },
+      "tourApplications": {
+        "title": "Tour Applications",
+        "description": "Review and manage tour booking applications."
+      },
+      "visaApplications": {
+        "title": "Visa & Setup Applications",
+        "description": "Review company setup and visa applications."
+      },
+      "transportSubsidies": {
+        "title": "Transport Subsidies",
+        "description": "Manage exhibition travel subsidies."
+      },
+      "consultationRequests": {
+        "title": "Consultation Requests",
+        "description": "Review and schedule consultation bookings."
+      }
     }
   },
   "adminConsultations": {
@@ -349,7 +533,11 @@
     "noResultsTitle": "No consultation requests yet",
     "noResultsSubtitle": "Consultation bookings will appear here once users submit them.",
     "topic": "Topic",
-    "statuses": { "pending": "pending", "scheduled": "scheduled", "completed": "completed" }
+    "statuses": {
+      "pending": "pending",
+      "scheduled": "scheduled",
+      "completed": "completed"
+    }
   },
   "adminVisaApplications": {
     "backToServicesAdmin": "← Back to Services Admin",
@@ -359,7 +547,12 @@
     "noResultsTitle": "No applications yet",
     "noResultsSubtitle": "Visa and company setup applications will appear here.",
     "service": "Service",
-    "statuses": { "pending": "pending", "in-progress": "in progress", "completed": "completed", "rejected": "rejected" }
+    "statuses": {
+      "pending": "pending",
+      "in-progress": "in progress",
+      "completed": "completed",
+      "rejected": "rejected"
+    }
   },
   "adminTourApplications": {
     "backToServicesAdmin": "← Back to Services Admin",
@@ -372,7 +565,11 @@
     "travelers": "Travelers",
     "services": "Services",
     "servicesCount": "{count} services",
-    "statuses": { "pending": "pending", "confirmed": "confirmed", "cancelled": "cancelled" }
+    "statuses": {
+      "pending": "pending",
+      "confirmed": "confirmed",
+      "cancelled": "cancelled"
+    }
   },
   "adminHotels": {
     "loadFailed": "Failed to load bookings",
@@ -384,7 +581,11 @@
     "loading": "Loading...",
     "noResults": "No hotel bookings yet.",
     "bookingSummary": "{user} • {checkIn} to {checkOut} • {rooms} room(s)",
-    "statuses": { "pending": "pending", "confirmed": "confirmed", "cancelled": "cancelled" },
+    "statuses": {
+      "pending": "pending",
+      "confirmed": "confirmed",
+      "cancelled": "cancelled"
+    },
     "confirm": "Confirm",
     "cancel": "Cancel"
   },
@@ -409,8 +610,18 @@
     "noQuotes": "No quotes submitted yet.",
     "quoteMeta": "Price: {price} • Lead time: {leadTime} • {date}",
     "noRfqs": "No RFQs yet.",
-    "rfqStatuses": { "draft": "draft", "open": "open", "quotes_received": "quotes received", "awarded": "awarded", "closed": "closed" },
-    "quoteStatuses": { "submitted": "submitted", "accepted": "accepted", "rejected": "rejected" }
+    "rfqStatuses": {
+      "draft": "draft",
+      "open": "open",
+      "quotes_received": "quotes received",
+      "awarded": "awarded",
+      "closed": "closed"
+    },
+    "quoteStatuses": {
+      "submitted": "submitted",
+      "accepted": "accepted",
+      "rejected": "rejected"
+    }
   },
   "adminAbout": {
     "saveFailed": "Save failed",
@@ -450,7 +661,13 @@
     "saveButton": "Save {name}"
   },
   "adminRegFormBuilder": {
-    "types": { "text": "Short answer", "textarea": "Paragraph", "radio": "Single choice", "checkbox": "Multiple choice", "file": "File upload" },
+    "types": {
+      "text": "Short answer",
+      "textarea": "Paragraph",
+      "radio": "Single choice",
+      "checkbox": "Multiple choice",
+      "file": "File upload"
+    },
     "saveFailed": "Save failed",
     "registrationStatus": "Registration Status",
     "noFieldsYet": "No fields yet — add your first question below.",
@@ -493,7 +710,11 @@
     "registrationNumber": "Registration #{id}",
     "view": "View",
     "viewFile": "📄 View file",
-    "statuses": { "pending": "pending", "approved": "approved", "rejected": "rejected" }
+    "statuses": {
+      "pending": "pending",
+      "approved": "approved",
+      "rejected": "rejected"
+    }
   },
   "adminTourRegistrations": {
     "backToTours": "← Back to Tours",
@@ -673,7 +894,12 @@
     "browseAll": "Browse all exhibitions →",
     "upcoming": "Upcoming",
     "viewFullSizePoster": "View full-size poster",
-    "stats": { "exhibitors": "Exhibitors", "visitors": "Visitors", "venue": "Venue", "duration": "Duration" },
+    "stats": {
+      "exhibitors": "Exhibitors",
+      "visitors": "Visitors",
+      "venue": "Venue",
+      "duration": "Duration"
+    },
     "aboutThisExhibition": "About This Exhibition",
     "eventHighlights": "Event Highlights",
     "photoGallery": "Photo Gallery",
@@ -717,10 +943,16 @@
     "submitting": "Submitting...",
     "submitRegistration": "Submit Registration",
     "registeringAs": "Registering as",
-    "roles": { "buyer": "Buyer", "visitor": "Visitor" },
+    "roles": {
+      "buyer": "Buyer",
+      "visitor": "Visitor"
+    },
     "personalInformation": "Personal Information",
     "genderRequired": "Gender *",
-    "genders": { "male": "Male", "female": "Female" },
+    "genders": {
+      "male": "Male",
+      "female": "Female"
+    },
     "nationality": "Nationality",
     "selectNationality": "Select nationality",
     "passportNumber": "Passport Number",
@@ -763,7 +995,11 @@
     "backTo": "Back to {name}",
     "title": "Floor Plan & Booth Selection",
     "subtitle": "Click an available booth to select and reserve it.",
-    "sizes": { "platinum": "Platinum", "gold": "Gold", "standard": "Standard" },
+    "sizes": {
+      "platinum": "Platinum",
+      "gold": "Gold",
+      "standard": "Standard"
+    },
     "booked": "Booked",
     "selected": "Selected",
     "hallMap": "Exhibition Hall Map",
@@ -814,7 +1050,11 @@
     "viewMyProfile": "View My Profile",
     "backToFloorPlan": "← Back to floor plan",
     "bookBoothTitle": "Book Booth {boothId}",
-    "steps": { "details": "Details", "payment": "Payment", "confirm": "Confirm" },
+    "steps": {
+      "details": "Details",
+      "payment": "Payment",
+      "confirm": "Confirm"
+    },
     "bookingSummary": "Booking Summary",
     "exhibition": "Exhibition",
     "booth": "Booth",
@@ -836,7 +1076,12 @@
     "notFound": "Tour not found",
     "browseAll": "Browse all tours →",
     "viewFullSizePhoto": "View full-size photo",
-    "stats": { "price": "Price", "duration": "Duration", "groupSize": "Group Size", "route": "Route" },
+    "stats": {
+      "price": "Price",
+      "duration": "Duration",
+      "groupSize": "Group Size",
+      "route": "Route"
+    },
     "pricePerPerson": "{currency}{price} / person",
     "aboutThisTour": "About This Tour",
     "tourHighlights": "Tour Highlights",
@@ -884,7 +1129,13 @@
     "backToMarketplace": "Back to marketplace →",
     "backToMarketplaceShort": "Back to marketplace",
     "postedBy": "Posted by {name} • {category}",
-    "statuses": { "open": "Open", "quotesReceived": "Quotes Received", "awarded": "Awarded", "closed": "Closed", "submitted": "Submitted" },
+    "statuses": {
+      "open": "Open",
+      "quotesReceived": "Quotes Received",
+      "awarded": "Awarded",
+      "closed": "Closed",
+      "submitted": "Submitted"
+    },
     "requestDetails": "Request Details",
     "quantity": "Quantity",
     "targetPrice": "Target Price",
@@ -955,18 +1206,6 @@
     "certs": "Certs",
     "shareProfile": "Share Profile"
   },
-  "exhibitorReviews": {
-    "reviews": "Reviews",
-    "updateYourRating": "Update your rating",
-    "rateThisSupplier": "Rate this supplier",
-    "shareYourExperience": "Share your experience working with this supplier...",
-    "saving": "Saving...",
-    "updateReview": "Update Review",
-    "submitReview": "Submit Review",
-    "logIn": "Log in",
-    "toLeaveAReview": "to leave a review.",
-    "noReviewsYet": "No reviews yet. Be the first to share your experience."
-  },
   "favoriteButton": {
     "removeFromSaved": "Remove from saved exhibitions",
     "saveExhibition": "Save exhibition",
@@ -984,30 +1223,87 @@
     "marketsWeCoverSubtitle": "We operate across all major Chinese trade hubs and exhibition cities — covering 15+ markets nationwide.",
     "viewAllExhibitions": "View All Exhibitions →",
     "marketAreas": {
-      "linyi": { "city": "Linyi", "desc": "Trade & Logistics Hub" },
-      "guzhen": { "city": "Guzhen", "desc": "Lighting Capital of China" },
-      "shenzhen": { "city": "Shenzhen", "desc": "Electronics & Tech Hub" },
-      "dongguan": { "city": "Dongguan", "desc": "Manufacturing Center" },
-      "wuxi": { "city": "Wuxi", "desc": "Industrial & Machinery" },
-      "hongKong": { "city": "Hong Kong", "desc": "Global Sourcing Fair" },
-      "beijing": { "city": "Beijing", "desc": "Trade in Services" },
-      "shanghai": { "city": "Shanghai", "desc": "Furniture & Design" },
-      "nanning": { "city": "Nanning", "desc": "China-ASEAN Expo" },
-      "guangzhou": { "city": "Guangzhou", "desc": "Beauty & Cosmetics" },
-      "weifang": { "city": "Weifang", "desc": "Agricultural Machinery" },
-      "taizhou": { "city": "Taizhou", "desc": "Plastics & Molding" },
-      "hangzhou": { "city": "Hangzhou", "desc": "Cloud & AI Tech" },
-      "macao": { "city": "Macao", "desc": "Trade & Investment" },
-      "shantou": { "city": "Shantou", "desc": "Toy Capital of China" }
+      "linyi": {
+        "city": "Linyi",
+        "desc": "Trade & Logistics Hub"
+      },
+      "guzhen": {
+        "city": "Guzhen",
+        "desc": "Lighting Capital of China"
+      },
+      "shenzhen": {
+        "city": "Shenzhen",
+        "desc": "Electronics & Tech Hub"
+      },
+      "dongguan": {
+        "city": "Dongguan",
+        "desc": "Manufacturing Center"
+      },
+      "wuxi": {
+        "city": "Wuxi",
+        "desc": "Industrial & Machinery"
+      },
+      "hongKong": {
+        "city": "Hong Kong",
+        "desc": "Global Sourcing Fair"
+      },
+      "beijing": {
+        "city": "Beijing",
+        "desc": "Trade in Services"
+      },
+      "shanghai": {
+        "city": "Shanghai",
+        "desc": "Furniture & Design"
+      },
+      "nanning": {
+        "city": "Nanning",
+        "desc": "China-ASEAN Expo"
+      },
+      "guangzhou": {
+        "city": "Guangzhou",
+        "desc": "Beauty & Cosmetics"
+      },
+      "weifang": {
+        "city": "Weifang",
+        "desc": "Agricultural Machinery"
+      },
+      "taizhou": {
+        "city": "Taizhou",
+        "desc": "Plastics & Molding"
+      },
+      "hangzhou": {
+        "city": "Hangzhou",
+        "desc": "Cloud & AI Tech"
+      },
+      "macao": {
+        "city": "Macao",
+        "desc": "Trade & Investment"
+      },
+      "shantou": {
+        "city": "Shantou",
+        "desc": "Toy Capital of China"
+      }
     },
     "moreFeatures": "+{count} more",
     "whyChooseTitle": "Why Choose The Unique Expo Services?",
     "whyChooseSubtitle": "We handle the logistics so you can focus on growing your business.",
     "benefits": {
-      "endToEnd": { "title": "End-to-End", "desc": "From visa to factory visit, we handle everything" },
-      "experience": { "title": "15+ Years", "desc": "Deep expertise in China trade and exhibitions" },
-      "network": { "title": "Trusted Network", "desc": "500+ verified partners across China" },
-      "support": { "title": "24/7 Support", "desc": "Multilingual support throughout your journey" }
+      "endToEnd": {
+        "title": "End-to-End",
+        "desc": "From visa to factory visit, we handle everything"
+      },
+      "experience": {
+        "title": "15+ Years",
+        "desc": "Deep expertise in China trade and exhibitions"
+      },
+      "network": {
+        "title": "Trusted Network",
+        "desc": "500+ verified partners across China"
+      },
+      "support": {
+        "title": "24/7 Support",
+        "desc": "Multilingual support throughout your journey"
+      }
     },
     "businessTours": {
       "title": "Business Tours",
@@ -1180,14 +1476,38 @@
     "subtitle": "Comprehensive relocation support for businesses and individuals moving to or from China.",
     "whatWeHandle": "What We Handle",
     "handle": {
-      "internationalFreight": { "title": "International Freight", "desc": "Sea, air, and land shipping with full tracking" },
-      "customsClearance": { "title": "Customs Clearance", "desc": "Import/export documentation and compliance" },
-      "officeRelocation": { "title": "Office Relocation", "desc": "Complete office move project management" },
-      "residentialMoving": { "title": "Residential Moving", "desc": "Home relocation with unpacking and setup" },
-      "storageSolutions": { "title": "Storage Solutions", "desc": "Short and long-term warehouse storage" },
-      "insuranceCoverage": { "title": "Insurance Coverage", "desc": "Comprehensive cargo and liability insurance" },
-      "settlingIn": { "title": "Settling-In Services", "desc": "Bank account, SIM card, housing search" },
-      "petRelocation": { "title": "Pet Relocation", "desc": "Safe international pet transport assistance" }
+      "internationalFreight": {
+        "title": "International Freight",
+        "desc": "Sea, air, and land shipping with full tracking"
+      },
+      "customsClearance": {
+        "title": "Customs Clearance",
+        "desc": "Import/export documentation and compliance"
+      },
+      "officeRelocation": {
+        "title": "Office Relocation",
+        "desc": "Complete office move project management"
+      },
+      "residentialMoving": {
+        "title": "Residential Moving",
+        "desc": "Home relocation with unpacking and setup"
+      },
+      "storageSolutions": {
+        "title": "Storage Solutions",
+        "desc": "Short and long-term warehouse storage"
+      },
+      "insuranceCoverage": {
+        "title": "Insurance Coverage",
+        "desc": "Comprehensive cargo and liability insurance"
+      },
+      "settlingIn": {
+        "title": "Settling-In Services",
+        "desc": "Bank account, SIM card, housing search"
+      },
+      "petRelocation": {
+        "title": "Pet Relocation",
+        "desc": "Safe international pet transport assistance"
+      }
     },
     "requestMovingQuote": "Request Moving Quote",
     "name": "Name *",
@@ -1219,13 +1539,34 @@
     "subtitle": "One-on-one expert sessions on doing business in China — market entry, sourcing, legal, and trade compliance.",
     "ourConsultationTopics": "Our Consultation Topics",
     "topics": {
-      "marketEntry": { "title": "Market Entry Strategy", "desc": "Competitor analysis, pricing, distribution channels, regulatory landscape" },
-      "supplierSourcing": { "title": "Supplier Sourcing", "desc": "Factory verification, background checks, sample coordination, price negotiation" },
-      "qualityInspection": { "title": "Quality Inspection", "desc": "Pre-shipment inspection, factory audits, product testing coordination" },
-      "legalCompliance": { "title": "Legal & Compliance", "desc": "Contract review, IP protection, regulatory compliance, dispute resolution" },
-      "culturalEtiquette": { "title": "Cultural Etiquette", "desc": "Negotiation tactics, business card protocol, gift-giving, dining customs" },
-      "tradeCompliance": { "title": "Trade Compliance", "desc": "Customs classification, import/export regulations, tariff optimization" },
-      "ipProtectionDetail": { "title": "IP Protection", "desc": "Trademark registration, patent filing, trade secret protection in China" }
+      "marketEntry": {
+        "title": "Market Entry Strategy",
+        "desc": "Competitor analysis, pricing, distribution channels, regulatory landscape"
+      },
+      "supplierSourcing": {
+        "title": "Supplier Sourcing",
+        "desc": "Factory verification, background checks, sample coordination, price negotiation"
+      },
+      "qualityInspection": {
+        "title": "Quality Inspection",
+        "desc": "Pre-shipment inspection, factory audits, product testing coordination"
+      },
+      "legalCompliance": {
+        "title": "Legal & Compliance",
+        "desc": "Contract review, IP protection, regulatory compliance, dispute resolution"
+      },
+      "culturalEtiquette": {
+        "title": "Cultural Etiquette",
+        "desc": "Negotiation tactics, business card protocol, gift-giving, dining customs"
+      },
+      "tradeCompliance": {
+        "title": "Trade Compliance",
+        "desc": "Customs classification, import/export regulations, tariff optimization"
+      },
+      "ipProtectionDetail": {
+        "title": "IP Protection",
+        "desc": "Trademark registration, patent filing, trade secret protection in China"
+      }
     },
     "pricing": "Pricing",
     "singleSession": "Single Session (60 min)",
@@ -1252,7 +1593,9 @@
     "preferredDate": "Preferred Date",
     "questionsToCover": "Questions / Topics to Cover",
     "questionsPlaceholder": "Tell us about your business needs and what you'd like to discuss...",
-    "bookConsultation": "Book Consultation"
+    "bookConsultation": "Book Consultation",
+    "requestFailed": "Request failed. Please try again.",
+    "booking": "Booking..."
   },
   "transportSubsidiesPage": {
     "ourServices": "Our Services",
@@ -1309,13 +1652,241 @@
     "processTitle": "How The Unique Expo Works",
     "step": "STEP {number}",
     "steps": {
-      "discover": { "title": "Discover Exhibitions", "desc": "Browse global trade fairs by industry, date, and location. Find the perfect event for your business." },
-      "registerBuyer": { "title": "Register as Buyer", "desc": "Apply for hosted buyer programmes, get travel subsidies, hotel accommodation, and VIP access." },
-      "connect": { "title": "Connect & Close Deals", "desc": "Meet exhibitors face-to-face, schedule 1-on-1 meetings, negotiate, and close deals on-site." }
+      "discover": {
+        "title": "Discover Exhibitions",
+        "desc": "Browse global trade fairs by industry, date, and location. Find the perfect event for your business."
+      },
+      "registerBuyer": {
+        "title": "Register as Buyer",
+        "desc": "Apply for hosted buyer programmes, get travel subsidies, hotel accommodation, and VIP access."
+      },
+      "connect": {
+        "title": "Connect & Close Deals",
+        "desc": "Meet exhibitors face-to-face, schedule 1-on-1 meetings, negotiate, and close deals on-site."
+      }
     },
     "ctaTitle": "Ready to Grow Your Business?",
     "ctaSubtitle": "Join thousands of exhibitors and buyers who use The Unique Expo to discover opportunities, register as hosted buyers, and close deals at world-class trade events in China.",
     "getStarted": "Get Started Free",
     "exploreServices": "Explore Our Services"
+  },
+  "eventsPage": {
+    "title": "Events",
+    "subtitle": "Networking, hiking, picnics, and cultural meetups in Guangzhou and beyond.",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "loading": "Loading events...",
+    "free": "Free",
+    "viewDetails": "View Details →",
+    "noResultsTitle": "No events yet",
+    "noResultsSubtitle": "Check back soon for upcoming meetups.",
+    "categories": {
+      "networking": "Networking",
+      "hiking": "Hiking",
+      "picnic": "Picnic",
+      "cultural": "Cultural",
+      "other": "Other"
+    }
+  },
+  "eventDetailPage": {
+    "loading": "Loading...",
+    "notFound": "Event not found",
+    "browseAll": "Browse all events →",
+    "categories": {
+      "networking": "Networking",
+      "hiking": "Hiking",
+      "picnic": "Picnic",
+      "cultural": "Cultural",
+      "other": "Other"
+    },
+    "aboutThisEvent": "About This Event",
+    "dateAndTime": "Date & Time",
+    "location": "Location",
+    "price": "Price",
+    "free": "Free",
+    "registrationSubmitted": "You're registered!",
+    "registrationClosed": "Registration is closed",
+    "submitting": "Submitting...",
+    "registerForThisEvent": "Register for This Event",
+    "logInToRegister": "Log in to register",
+    "registrationFailed": "Registration failed"
+  },
+  "adminEventsCrud": {
+    "loadFailed": "Failed to load events",
+    "saveFailed": "Failed to save event",
+    "deleteFailed": "Failed to delete event",
+    "title": "Manage Events",
+    "newEvent": "+ New Event",
+    "editEvent": "Edit Event",
+    "newEventHeading": "New Event",
+    "requiredFieldsError": "Title, slug, and event date are required",
+    "fields": {
+      "title": "Title",
+      "slug": "Slug",
+      "category": "Category",
+      "city": "City",
+      "venue": "Venue",
+      "eventDate": "Event Date",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "price": "Price",
+      "pricePlaceholder": "e.g. Free, or ¥50",
+      "capacity": "Capacity",
+      "imageUrl": "Image URL",
+      "description": "Description"
+    },
+    "categories": {
+      "networking": "Networking",
+      "hiking": "Hiking",
+      "picnic": "Picnic",
+      "cultural": "Cultural",
+      "other": "Other"
+    },
+    "saveChanges": "Save Changes",
+    "createEvent": "Create Event",
+    "loadingEvents": "Loading events...",
+    "view": "View",
+    "registrations": "Registrations",
+    "editButton": "Edit",
+    "deleting": "Deleting...",
+    "noEventsYet": "No events yet.",
+    "accessDenied": "Admin access required.",
+    "confirmDelete": "Delete this event?"
+  },
+  "adminEventRegistrations": {
+    "backToEvents": "← Back to Events",
+    "titleWithName": "Registrations: {name}",
+    "title": "Event Registrations",
+    "registeredCount": "{count} registered",
+    "updateFailed": "Failed to update status",
+    "noResultsTitle": "No registrations yet",
+    "noResultsSubtitle": "Registrations will appear here once people sign up.",
+    "statuses": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "blogPage": {
+    "title": "Blog",
+    "subtitle": "Life in China, relocation tips, and exhibition insights.",
+    "allPosts": "All Posts",
+    "categories": {
+      "life-in-china": "Life in China",
+      "relocation-tips": "Relocation Tips",
+      "exhibition-reviews": "Exhibition Reviews"
+    },
+    "loading": "Loading posts...",
+    "noResultsTitle": "No posts yet",
+    "noResultsSubtitle": "Check back soon for new articles."
+  },
+  "blogPostPage": {
+    "loading": "Loading...",
+    "notFound": "Post not found",
+    "browseAll": "← Browse all posts",
+    "categories": {
+      "life-in-china": "Life in China",
+      "relocation-tips": "Relocation Tips",
+      "exhibition-reviews": "Exhibition Reviews"
+    }
+  },
+  "adminBlogCrud": {
+    "loadFailed": "Failed to load posts",
+    "saveFailed": "Failed to save post",
+    "deleteFailed": "Failed to delete post",
+    "title": "Manage Blog",
+    "newPost": "+ New Post",
+    "editPost": "Edit Post",
+    "newPostHeading": "New Post",
+    "requiredFieldsError": "Title, slug, and content are required",
+    "fields": {
+      "title": "Title",
+      "slug": "Slug",
+      "category": "Category",
+      "coverImageUrl": "Cover Image URL",
+      "excerpt": "Excerpt",
+      "excerptPlaceholder": "A short summary shown on the blog list...",
+      "content": "Content",
+      "contentHint": "Supports basic Markdown: **bold**, *italic*, # headings, - lists, [links](https://...)",
+      "published": "Published (visible on the public blog)"
+    },
+    "categories": {
+      "life-in-china": "Life in China",
+      "relocation-tips": "Relocation Tips",
+      "exhibition-reviews": "Exhibition Reviews"
+    },
+    "saveChanges": "Save Changes",
+    "createPost": "Create Post",
+    "loadingPosts": "Loading posts...",
+    "view": "View",
+    "editButton": "Edit",
+    "deleting": "Deleting...",
+    "publishedBadge": "Published",
+    "draftBadge": "Draft",
+    "noPostsYet": "No posts yet.",
+    "accessDenied": "Admin access required.",
+    "confirmDelete": "Delete this post?"
+  },
+  "relocationPage": {
+    "title": "Relocation Services",
+    "subtitle": "Housing, schools, visas, and settling-in support for moving to China.",
+    "whatWeHelpWith": "What We Help With",
+    "topics": {
+      "housing": {
+        "title": "Housing",
+        "desc": "Finding an apartment, understanding leases, and negotiating with landlords."
+      },
+      "schools": {
+        "title": "Schools",
+        "desc": "International and local school options for your children."
+      },
+      "visas": {
+        "title": "Visas & Documentation",
+        "desc": "Work, residence, and family visas, plus the paperwork that comes with them."
+      },
+      "adaptation": {
+        "title": "Cultural Adaptation",
+        "desc": "Practical guidance for settling into daily life, banking, and local customs."
+      }
+    },
+    "moreDetail": "For detailed visa processing, see our <visaLink>Visa & Documentation service</visaLink>, and for the physical move itself, see <movingLink>Moving Assistance</movingLink>.",
+    "requestConsultation": "Request a Consultation",
+    "name": "Name",
+    "email": "Email",
+    "topic": "Topic",
+    "topicOptions": {
+      "housing": "Housing",
+      "schools": "Schools",
+      "visas": "Visas & Documentation",
+      "adaptation": "Cultural Adaptation",
+      "other": "Other"
+    },
+    "preferredDate": "Preferred Date",
+    "tellUsMore": "Tell Us More",
+    "tellUsMorePlaceholder": "What are you looking for help with?",
+    "submitting": "Submitting...",
+    "submitRequest": "Submit Request",
+    "requestFailed": "Request failed. Please try again.",
+    "requestReceived": "Request Received!",
+    "requestReceivedHint": "We'll reach out to you shortly to schedule your consultation.",
+    "submitAnother": "Submit Another Request"
+  },
+  "reviews": {
+    "reviews": "Reviews",
+    "updateYourRating": "Update your rating",
+    "rateThis": {
+      "supplier": "Rate this supplier",
+      "tour": "Rate this tour"
+    },
+    "shareYourExperience": {
+      "supplier": "Share your experience working with this supplier...",
+      "tour": "Share your experience on this tour..."
+    },
+    "saving": "Saving...",
+    "updateReview": "Update Review",
+    "submitReview": "Submit Review",
+    "logIn": "Log in",
+    "toLeaveAReview": " to leave a review.",
+    "noReviewsYet": "No reviews yet. Be the first to share your experience."
   }
 }

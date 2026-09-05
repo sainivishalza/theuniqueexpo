@@ -1,5 +1,8 @@
+import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
+import { toDateOnlyString, formatDateRange, safeParseArray, safeParseJson } from "@/lib/server/db-helpers";
 import { DEFAULT_TOUR_REGISTRATION_FIELDS } from "@/lib/default-tour-registration-form";
+import type { CustomFormSchema } from "@/lib/custom-registration-form";
 
 export interface TourInput {
   slug: string;
@@ -26,46 +29,9 @@ export interface TourInput {
   galleryImages?: string[];
 }
 
-function toDateStr(d: any) {
-  if (!d) return "";
-  const date = d instanceof Date ? d : new Date(d);
-  return date.toISOString().split("T")[0];
-}
-
-function formatDates(start: any, end: any) {
-  const s = new Date(start);
-  const e = new Date(end);
-  const opts: Intl.DateTimeFormatOptions = { month: "long", day: "numeric" };
-  if (s.getMonth() === e.getMonth()) {
-    return `${s.toLocaleDateString("en-US", opts)}–${e.getDate()}, ${e.getFullYear()}`;
-  }
-  return `${s.toLocaleDateString("en-US", opts)} – ${e.toLocaleDateString("en-US", opts)}, ${e.getFullYear()}`;
-}
-
-function safeParseArray(text: any): string[] {
-  if (!text) return [];
-  if (Array.isArray(text)) return text;
-  try {
-    const parsed = JSON.parse(text);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function safeParseJson(text: any): any {
-  if (!text) return null;
-  if (typeof text === "object") return text;
-  try {
-    return JSON.parse(text);
-  } catch {
-    return null;
-  }
-}
-
 // Picks the description/highlights for the requested locale, falling back
 // to English whenever a translation hasn't been filled in yet.
-export function mapTourRow(row: any, locale?: string) {
+export function mapTourRow(row: RowDataPacket, locale?: string) {
   const descriptionRu = row.description_ru || "";
   const descriptionZh = row.description_zh || "";
   const highlightsRu = safeParseArray(row.highlights_ru);
@@ -82,9 +48,9 @@ export function mapTourRow(row: any, locale?: string) {
     id: String(row.id),
     slug: row.slug,
     title: row.title,
-    dates: formatDates(row.start_date, row.end_date),
-    startDate: toDateStr(row.start_date),
-    endDate: toDateStr(row.end_date),
+    dates: formatDateRange(row.start_date, row.end_date),
+    startDate: toDateOnlyString(row.start_date),
+    endDate: toDateOnlyString(row.end_date),
     duration: row.duration,
     departureCity: row.departure_city,
     destination: row.destination,
@@ -102,7 +68,7 @@ export function mapTourRow(row: any, locale?: string) {
     image: row.image,
     galleryImages: safeParseArray(row.gallery_images),
     registrationEnabled: row.registration_enabled === undefined ? true : !!row.registration_enabled,
-    registrationFormSchema: safeParseJson(row.registration_form_schema),
+    registrationFormSchema: safeParseJson(row.registration_form_schema) as CustomFormSchema | null,
     updatedAt: row.updated_at ? Math.floor(new Date(row.updated_at).getTime() / 1000) : 0,
   };
 }
@@ -111,47 +77,47 @@ export function mapTourRow(row: any, locale?: string) {
 // dedicated image endpoint instead of embedding raw base64 (same reasoning
 // as listExhibitions).
 export async function listTours(locale?: string) {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT id, slug, title, start_date, end_date, duration, departure_city, destination, description,
             highlights, description_ru, description_zh, highlights_ru, highlights_zh,
             price, currency, group_size, organizer, color, registration_enabled, updated_at,
             IF(LEFT(image, 5) = 'data:', CONCAT('/api/tours/', slug, '/image?v=', UNIX_TIMESTAMP(updated_at)), image) AS image
      FROM tours ORDER BY start_date ASC`
   );
-  return (rows as any[]).map((row) => mapTourRow(row, locale));
+  return rows.map((row) => mapTourRow(row, locale));
 }
 
 export async function getTourBySlugOrId(slugOrId: string, locale?: string) {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT * FROM tours WHERE slug = ? OR id = ? LIMIT 1",
     [slugOrId, Number(slugOrId) || 0]
   );
-  const row = (rows as any[])[0];
+  const row = rows[0];
   return row ? mapTourRow(row, locale) : null;
 }
 
 export async function getTourImageValue(slugOrId: string): Promise<string | null> {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT image FROM tours WHERE slug = ? OR id = ? LIMIT 1",
     [slugOrId, Number(slugOrId) || 0]
   );
-  const row = (rows as any[])[0];
+  const row = rows[0];
   return row ? row.image : null;
 }
 
 export async function getTourGalleryImageValue(slugOrId: string, index: number): Promise<string | null> {
-  const [rows] = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT gallery_images FROM tours WHERE slug = ? OR id = ? LIMIT 1",
     [slugOrId, Number(slugOrId) || 0]
   );
-  const row = (rows as any[])[0];
+  const row = rows[0];
   if (!row) return null;
   const images = safeParseArray(row.gallery_images);
   return images[index] || null;
 }
 
 export async function createTour(input: TourInput) {
-  const [result] = await pool.query(
+  const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO tours (slug, title, start_date, end_date, duration, departure_city, destination, description, highlights, description_ru, description_zh, highlights_ru, highlights_zh, price, currency, group_size, organizer, color, image, gallery_images, registration_form_schema)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
@@ -167,7 +133,7 @@ export async function createTour(input: TourInput) {
       JSON.stringify(DEFAULT_TOUR_REGISTRATION_FIELDS),
     ]
   );
-  return (result as any).insertId;
+  return result.insertId;
 }
 
 export async function updateTour(id: number, input: TourInput) {

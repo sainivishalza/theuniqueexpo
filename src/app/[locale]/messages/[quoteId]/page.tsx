@@ -4,6 +4,7 @@ import { use, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 
 interface Message {
   id: string;
@@ -66,8 +67,8 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
       if (!res.ok) throw new Error(data.error || t("sendFailed"));
       setMessages((prev) => [...prev, data.message]);
       setText("");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(errorMessage(err, "Something went wrong"));
     } finally {
       setSending(false);
     }

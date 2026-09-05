@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
+import { isDuplicateEntryError } from "@/lib/db";
 import { listExhibitions, createExhibition } from "@/lib/server/exhibitions-repo";
 import { slugify } from "@/lib/slugify";
 
@@ -30,8 +31,8 @@ export async function POST(request: Request) {
   try {
     const id = await createExhibition(body);
     return NextResponse.json({ id }, { status: 201 });
-  } catch (err: any) {
-    if (err.code === "ER_DUP_ENTRY") {
+  } catch (err) {
+    if (isDuplicateEntryError(err)) {
       return NextResponse.json({ error: "An exhibition with that slug already exists" }, { status: 409 });
     }
     console.error("Create exhibition error:", err);

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { getSessionUser, createUserAccount, verifyUserPassword, setSessionCookie, type SessionUser } from "@/lib/auth-server";
 import { getTourBySlugOrId } from "@/lib/server/tours-repo";
@@ -8,7 +9,7 @@ import { validateCustomAnswers } from "@/lib/custom-registration-form";
 export async function POST(request: Request) {
   try {
     return await handlePost(request);
-  } catch (err: any) {
+  } catch (err) {
     console.error("Tour registration error:", err);
     return NextResponse.json({ error: "Registration failed. Please try again." }, { status: 500 });
   }
@@ -40,8 +41,8 @@ async function handlePost(request: Request): Promise<NextResponse> {
       return NextResponse.json({ error: "Please provide your email and a password" }, { status: 400 });
     }
 
-    const [rows] = await pool.query("SELECT id FROM users WHERE email = ?", [trimmedEmail]);
-    if ((rows as any[]).length > 0) {
+    const [rows] = await pool.query<RowDataPacket[]>("SELECT id FROM users WHERE email = ?", [trimmedEmail]);
+    if (rows.length > 0) {
       const verified = await verifyUserPassword(trimmedEmail, password);
       if (!verified) {
         return NextResponse.json(

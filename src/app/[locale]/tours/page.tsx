@@ -11,11 +11,16 @@ interface Tour {
   price: string; currency: string; groupSize: string; color: string; image: string;
 }
 
+interface RecentReview {
+  id: string; tourSlug: string; userName: string; rating: number; comment: string; createdAt: string;
+}
+
 export default function ToursPage() {
   const t = useTranslations("toursPage");
   const locale = useLocale();
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
+  const [recentReviews, setRecentReviews] = useState<RecentReview[]>([]);
 
   useEffect(() => {
     fetch(`/api/tours?locale=${locale}`)
@@ -23,6 +28,13 @@ export default function ToursPage() {
       .then((data) => setTours(data.tours || []))
       .finally(() => setLoading(false));
   }, [locale]);
+
+  useEffect(() => {
+    fetch("/api/tours/reviews/recent")
+      .then((res) => res.json())
+      .then((data) => setRecentReviews(data.reviews || []))
+      .catch(() => {});
+  }, []);
 
   return (
     <div>
@@ -127,6 +139,46 @@ export default function ToursPage() {
           )}
         </div>
       </section>
+
+      <section id="how-to-book" className="py-12 bg-gray-50 border-t border-gray-100">
+        <div className="mx-auto max-w-7xl px-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("howToBook")}</h2>
+          <div className="grid gap-6 sm:grid-cols-3">
+            {["browse", "register", "confirm"].map((step, i) => (
+              <div key={step} className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+                <div className="w-9 h-9 rounded-full gradient-brand flex items-center justify-center text-white text-sm font-bold mb-3">
+                  {i + 1}
+                </div>
+                <h3 className="font-bold text-gray-900 mb-1">{t(`howToBookSteps.${step}.title`)}</h3>
+                <p className="text-sm text-gray-500">{t(`howToBookSteps.${step}.desc`)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {recentReviews.length > 0 && (
+        <section id="reviews" className="py-12 bg-white border-t border-gray-100">
+          <div className="mx-auto max-w-7xl px-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("travelerReviews")}</h2>
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {recentReviews.map((r) => (
+                <Link
+                  key={r.id}
+                  href={`/tours/${r.tourSlug}#reviews`}
+                  className="block rounded-2xl bg-gray-50 border border-gray-100 p-5 hover:border-emerald-300 transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold text-gray-900 text-sm">{r.userName}</span>
+                    <span className="text-amber-400 text-sm">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
+                  </div>
+                  {r.comment && <p className="text-sm text-gray-600 line-clamp-3">{r.comment}</p>}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

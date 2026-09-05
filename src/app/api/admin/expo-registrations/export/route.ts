@@ -34,14 +34,14 @@ export async function GET(request: Request) {
   const schema = exhibition.registrationFormSchema;
   let lines: string[];
   if (schema && schema.length > 0) {
-    const headers = ["id", ...schema.map((f: any) => f.label), "status", "createdAt"];
+    const headers = ["id", ...schema.map((f) => f.label), "status", "createdAt"];
     lines = [
       headers.map(csvCell).join(","),
-      ...registrations.map((r: any) => {
-        const answers = r.customAnswers || {};
+      ...registrations.map((r) => {
+        const answers = (r.customAnswers || {}) as Record<string, unknown>;
         const cells = [
           r.id,
-          ...schema.map((f: any) => (f.type === "file" ? (answers[f.id] ? "Uploaded" : "") : answers[f.id])),
+          ...schema.map((f) => (f.type === "file" ? (answers[f.id] ? "Uploaded" : "") : answers[f.id])),
           r.status,
           r.createdAt,
         ];
@@ -51,7 +51,7 @@ export async function GET(request: Request) {
   } else {
     lines = [
       COLUMNS.join(","),
-      ...registrations.map((r) => COLUMNS.map((col) => csvCell((r as any)[col])).join(",")),
+      ...registrations.map((r) => COLUMNS.map((col) => csvCell((r as Record<string, unknown>)[col])).join(",")),
     ];
   }
   const csv = "﻿" + lines.join("\r\n");

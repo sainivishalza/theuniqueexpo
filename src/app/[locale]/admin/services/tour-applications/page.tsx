@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { errorMessage } from "@/lib/format";
 
 interface TourApplication {
   id: string; tourId: string; name: string; email: string; travelers: number;
@@ -37,8 +38,8 @@ export default function AdminTourAppsPage() {
       });
       if (!res.ok) throw new Error((await res.json()).error || t("updateFailed"));
       setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      alert(errorMessage(err, "Something went wrong"));
     } finally {
       setUpdatingId(null);
     }

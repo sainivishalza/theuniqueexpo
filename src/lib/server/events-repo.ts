@@ -88,6 +88,16 @@ export async function updateEventRegistrationConfig(id: number, registrationEnab
   await pool.query("UPDATE events SET registration_enabled = ? WHERE id = ?", [registrationEnabled, id]);
 }
 
+// Cancelled registrations free up their slot -- only pending/confirmed
+// ones count against capacity.
+export async function countActiveRegistrations(eventId: number): Promise<number> {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    "SELECT COUNT(*) AS count FROM event_registrations WHERE event_id = ? AND status != 'cancelled'",
+    [eventId]
+  );
+  return rows[0]?.count || 0;
+}
+
 function mapRegistrationRow(row: RowDataPacket) {
   return {
     id: String(row.id),

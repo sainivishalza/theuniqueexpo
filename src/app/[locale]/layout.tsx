@@ -6,7 +6,9 @@ import { notFound } from "next/navigation";
 import "./globals.css";
 import ClientShell from "@/components/ClientShell";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import OrganizationSchema from "@/components/OrganizationSchema";
 import { routing } from "@/i18n/routing";
+import { getCompanyProfile } from "@/lib/server/company-profile-repo";
 
 // Self-hosted at build time instead of fetched from Google's CDN at
 // request time -- removes an external DNS/TLS/download round-trip from
@@ -18,7 +20,7 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const SITE_URL = "https://theuniqueexpo.com";
+const SITE_URL = "https://www.theuniqueexpo.com";
 const SITE_NAME = "The Unique Expo";
 const DEFAULT_DESCRIPTION =
   "Discover Something Unique Together — The world's leading B2B exhibition, trade-fair & sourcing platform connecting buyers with exhibitors worldwide.";
@@ -60,14 +62,15 @@ export default async function RootLayout({
     notFound();
   }
 
-  const messages = await getMessages();
+  const [messages, companyProfile] = await Promise.all([getMessages(), getCompanyProfile()]);
 
   return (
     <html lang={locale} className={inter.variable}>
       <body className="antialiased">
+        <OrganizationSchema profile={companyProfile} />
         <NextIntlClientProvider messages={messages}>
           <GoogleAnalytics />
-          <ClientShell>{children}</ClientShell>
+          <ClientShell companyProfile={companyProfile}>{children}</ClientShell>
         </NextIntlClientProvider>
       </body>
     </html>

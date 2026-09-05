@@ -1,9 +1,11 @@
 import Logo from "@/components/Logo";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { companyProfileSocialLinks, type CompanyProfile } from "@/lib/company-profile";
 
-export default function Footer() {
+export default function Footer({ companyProfile }: { companyProfile: CompanyProfile }) {
   const t = useTranslations("footer");
+  const socialLinks = companyProfileSocialLinks(companyProfile);
 
   const footerLinks = {
     [t("columns.platform")]: [
@@ -63,18 +65,23 @@ export default function Footer() {
           <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
             {t("brandBlurb")}
           </p>
-          {/* Social icons */}
-          <div className="flex gap-3 mt-5">
-            {["X", "in", "f", "▶"].map((icon, i) => (
-              <a
-                key={i}
-                href="#"
-                className="w-9 h-9 rounded-lg bg-gray-800 flex items-center justify-center text-sm text-gray-400 hover:bg-gray-700 hover:text-white transition-colors"
-              >
-                {icon}
-              </a>
-            ))}
-          </div>
+          {/* Social icons -- only rendered for links the admin has actually configured */}
+          {socialLinks.length > 0 && (
+            <div className="flex gap-3 mt-5">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="w-9 h-9 rounded-lg bg-gray-800 flex items-center justify-center text-sm text-gray-400 hover:bg-gray-700 hover:text-white transition-colors"
+                >
+                  {social.icon}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Link columns */}

@@ -467,6 +467,10 @@
       "blogManagement": {
         "title": "博客管理",
         "description": "撰写并发布关于在中国生活、移居和展会的文章。"
+      },
+      "companyProfile": {
+        "title": "公司信息",
+        "description": "用于结构化数据标记和网站页脚的联系方式、地址和社交媒体链接。"
       }
     }
   },
@@ -1810,7 +1814,8 @@
       "life-in-china": "在中国的生活",
       "relocation-tips": "移居贴士",
       "exhibition-reviews": "展会点评"
-    }
+    },
+    "writtenBy": "作者"
   },
   "adminBlogCrud": {
     "loadFailed": "加载文章失败",
@@ -1830,7 +1835,10 @@
       "excerptPlaceholder": "在文章列表中显示的简短摘要...",
       "content": "正文",
       "contentHint": "支持基础 Markdown：**加粗**、*斜体*、# 标题、- 列表、[链接](https://...)",
-      "published": "已发布（在公开博客中可见）"
+      "published": "已发布（在公开博客中可见）",
+      "authorName": "作者姓名",
+      "authorBio": "作者简介",
+      "authorBioPlaceholder": "例如:The Unique Expo 创始人,8 年以上帮助买家从中国采购的经验"
     },
     "categories": {
       "life-in-china": "在中国的生活",
@@ -1939,5 +1947,25 @@
       "in-progress": "处理中",
       "completed": "已完成"
     }
+  },
+  "adminCompanyProfile": {
+    "title": "公司信息",
+    "subtitle": "此信息用于生成 Organization 结构化数据(供 Google/AI 搜索使用)以及网站页脚中的真实社交媒体链接。",
+    "saveFailed": "保存失败",
+    "saved": "已保存!",
+    "saveButton": "保存更改",
+    "identity": "基本信息",
+    "identityHint": "您的法定/品牌名称、徽标和主要联系方式。",
+    "legalName": "法定 / 品牌名称",
+    "logoUrl": "徽标链接",
+    "contactEmail": "联系邮箱",
+    "phone": "电话号码",
+    "address": "地址",
+    "addressHint": "如果没有对外公开的办公地址,请留空 -- 留空比填写错误的地址更安全。",
+    "addressLine": "街道地址",
+    "addressCity": "城市",
+    "addressCountry": "国家",
+    "social": "社交媒体链接",
+    "socialHint": "只有在此处填写的链接才会显示在网站页脚和 Organization 结构化数据中 -- 留空即可隐藏。"
   }
 }

@@ -467,6 +467,10 @@
       "blogManagement": {
         "title": "Blog Management",
         "description": "Write and publish articles about life in China, relocation, and exhibitions."
+      },
+      "companyProfile": {
+        "title": "Company Profile",
+        "description": "Contact info, address, and social links used in schema markup and the site footer."
       }
     }
   },
@@ -1810,7 +1814,8 @@
       "life-in-china": "Life in China",
       "relocation-tips": "Relocation Tips",
       "exhibition-reviews": "Exhibition Reviews"
-    }
+    },
+    "writtenBy": "Written by"
   },
   "adminBlogCrud": {
     "loadFailed": "Failed to load posts",
@@ -1830,7 +1835,10 @@
       "excerptPlaceholder": "A short summary shown on the blog list...",
       "content": "Content",
       "contentHint": "Supports basic Markdown: **bold**, *italic*, # headings, - lists, [links](https://...)",
-      "published": "Published (visible on the public blog)"
+      "published": "Published (visible on the public blog)",
+      "authorName": "Author Name",
+      "authorBio": "Author Bio",
+      "authorBioPlaceholder": "e.g. Founder of The Unique Expo, 8+ years helping buyers source from China"
     },
     "categories": {
       "life-in-china": "Life in China",
@@ -1939,5 +1947,25 @@
       "in-progress": "in progress",
       "completed": "completed"
     }
+  },
+  "adminCompanyProfile": {
+    "title": "Company Profile",
+    "subtitle": "This information powers Organization schema markup (for Google/AI search) and the real social links in your site footer.",
+    "saveFailed": "Save failed",
+    "saved": "Saved!",
+    "saveButton": "Save Changes",
+    "identity": "Identity",
+    "identityHint": "Your legal/brand name, logo, and primary contact details.",
+    "legalName": "Legal / Brand Name",
+    "logoUrl": "Logo URL",
+    "contactEmail": "Contact Email",
+    "phone": "Phone Number",
+    "address": "Address",
+    "addressHint": "Leave blank if you don't have a public office address -- an empty address is safer than a wrong one.",
+    "addressLine": "Street Address",
+    "addressCity": "City",
+    "addressCountry": "Country",
+    "social": "Social Links",
+    "socialHint": "Only links you enter here will appear in the site footer and Organization schema -- leave any blank to hide them."
   }
 }

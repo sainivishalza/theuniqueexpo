@@ -24,7 +24,7 @@ interface SessionTokenPayload {
   role: string;
 }
 
-function signSessionToken(user: Pick<SessionUser, "id" | "email" | "role">): string {
+export function signSessionToken(user: Pick<SessionUser, "id" | "email" | "role">): string {
   return jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
 }
 

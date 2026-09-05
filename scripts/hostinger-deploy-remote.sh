@@ -147,7 +147,7 @@ REFRESHEOF
       */hbuilds/versions/*/nodejs)
         echo "-- live hbuilds worker pid $pid --"
         for key in DB_HOST DB_USER DB_PASSWORD DB_NAME DB_SOCKET; do
-          val=$(tr '\0' '\n' < "/proc/$pid/environ" 2>/dev/null | grep "^$key=" | cut -d= -f2-)
+          val=$(tr '\0' '\n' < "/proc/$pid/environ" 2>/dev/null | grep "^$key=" | cut -d= -f2-) || val=""
           if [ -n "$val" ]; then
             printf '%s (live process): %s\n' "$key" "$(printf '%s' "$val" | sha256sum | cut -d' ' -f1)"
           else

@@ -1684,7 +1684,7 @@
       "networking": "Нетворкинг",
       "hiking": "Поход",
       "picnic": "Пикник",
-      "cultural": "Культурное",
+      "cultural": "Культура",
       "other": "Другое"
     }
   },
@@ -1696,7 +1696,7 @@
       "networking": "Нетворкинг",
       "hiking": "Поход",
       "picnic": "Пикник",
-      "cultural": "Культурное",
+      "cultural": "Культура",
       "other": "Другое"
     },
     "aboutThisEvent": "Об этом событии",
@@ -1730,7 +1730,7 @@
       "startTime": "Время начала",
       "endTime": "Время окончания",
       "price": "Цена",
-      "pricePlaceholder": "например, Бесплатно или ¥50",
+      "pricePlaceholder": "например, бесплатно или ¥50",
       "capacity": "Вместимость",
       "imageUrl": "URL изображения",
       "description": "Описание"
@@ -1739,7 +1739,7 @@
       "networking": "Нетворкинг",
       "hiking": "Поход",
       "picnic": "Пикник",
-      "cultural": "Культурное",
+      "cultural": "Культура",
       "other": "Другое"
     },
     "saveChanges": "Сохранить изменения",

@@ -68,7 +68,7 @@
     scroll-behavior: smooth;
   }
   body {
-    font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-body), "Inter", system-ui, -apple-system, sans-serif;
     background-color: var(--color-cream-50);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

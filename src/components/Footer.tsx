@@ -35,9 +35,9 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
   };
 
   return (
-    <footer className="bg-emerald-950 text-gray-300">
+    <footer className="bg-[var(--color-footer-bg)] text-gray-300">
       {/* Newsletter */}
-      <div className="border-b border-emerald-900">
+      <div className="border-b border-[var(--color-footer-border)]">
         <div className="mx-auto max-w-7xl px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-xl font-bold text-white">{t("newsletterTitle")}</h3>
@@ -47,7 +47,7 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
             <input
               type="email"
               placeholder={t("emailPlaceholder")}
-              className="flex-1 md:w-72 rounded-xl bg-emerald-900 border border-emerald-800 px-4 py-3 text-sm text-white placeholder-gray-500 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
+              className="flex-1 md:w-72 rounded-xl bg-[var(--color-footer-surface)] border border-[var(--color-footer-border)] px-4 py-3 text-sm text-white placeholder-gray-500 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 outline-none transition-colors"
             />
             <button className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity whitespace-nowrap">
               {t("subscribe")}
@@ -76,7 +76,7 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="w-9 h-9 rounded-lg bg-emerald-900 flex items-center justify-center text-sm text-gray-400 hover:bg-emerald-800 hover:text-white transition-colors"
+                  className="w-9 h-9 rounded-lg bg-[var(--color-footer-surface)] flex items-center justify-center text-sm text-gray-400 hover:bg-[var(--color-footer-border)] hover:text-white transition-colors"
                 >
                   {social.icon}
                 </a>
@@ -103,7 +103,7 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-emerald-900">
+      <div className="border-t border-[var(--color-footer-border)]">
         <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
           <span>{t("copyright", { year: new Date().getFullYear() })}</span>
           <div className="flex gap-4">

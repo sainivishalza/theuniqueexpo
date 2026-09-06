@@ -478,6 +478,10 @@
       "faqManagement": {
         "title": "FAQ Management",
         "description": "Edit the homepage FAQ section shown to visitors and search/AI engines."
+      },
+      "siteTheme": {
+        "title": "Site Theme",
+        "description": "Control the site's colors and fonts for the whole site, without a code deploy."
       }
     }
   },
@@ -2042,5 +2046,34 @@
     "quoteRequested": "Quote Requested!",
     "quoteRequestedHint": "Our moving team will prepare a custom quote and contact you within 24 hours.",
     "startOver": "Estimate Another Move"
+  },
+  "adminSiteTheme": {
+    "title": "Site Theme",
+    "subtitle": "Pick colors and fonts for the whole site. Changes apply everywhere immediately after saving.",
+    "saveFailed": "Save failed",
+    "saved": "Saved! Refresh any page to see the changes.",
+    "saveButton": "Save Theme",
+    "colors": "Colors",
+    "colorsHint": "Each color drives every button, badge, link, and background of that kind across the whole site.",
+    "primaryColor": "Primary Brand Color",
+    "primaryColorHint": "Buttons, links, badges, and headings accents.",
+    "goldColor": "Gold Accent Color",
+    "goldColorHint": "Premium highlights and accent buttons.",
+    "backgroundColor": "Background Color",
+    "backgroundColorHint": "The main warm page background behind content.",
+    "footerColor": "Footer Color",
+    "footerColorHint": "The footer background, independent of the primary color.",
+    "fonts": "Fonts",
+    "fontsHint": "Pick one font for each role -- applied to every heading, paragraph, and accent phrase sitewide.",
+    "headingFont": "Heading Font",
+    "bodyFont": "Body Font",
+    "scriptFont": "Accent / Script Font",
+    "preview": "Preview",
+    "previewHeading": "Exhibitions in China",
+    "previewBody": "This is how body text looks across the site with the fonts and colors picked above.",
+    "previewButton": "Primary Button",
+    "previewAccent": "Gold Accent",
+    "previewFooter": "Footer",
+    "previewScript": "A short signature phrase"
   }
 }

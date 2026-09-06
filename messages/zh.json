@@ -478,6 +478,10 @@
       "faqManagement": {
         "title": "常见问题管理",
         "description": "编辑向访客及搜索/AI 引擎展示的首页常见问题板块。"
+      },
+      "siteTheme": {
+        "title": "网站主题",
+        "description": "无需部署代码即可控制整个网站的颜色和字体。"
       }
     }
   },
@@ -2042,5 +2046,34 @@
     "quoteRequested": "报价请求已提交!",
     "quoteRequestedHint": "我们的搬迁团队将准备定制报价,并在 24 小时内与您联系。",
     "startOver": "估算另一次搬迁"
+  },
+  "adminSiteTheme": {
+    "title": "网站主题",
+    "subtitle": "为整个网站选择颜色和字体。保存后立即在所有页面生效。",
+    "saveFailed": "保存失败",
+    "saved": "已保存！刷新任意页面即可查看更改。",
+    "saveButton": "保存主题",
+    "colors": "颜色",
+    "colorsHint": "每种颜色都会影响全站同类型的按钮、徽章、链接和背景。",
+    "primaryColor": "主品牌色",
+    "primaryColorHint": "按钮、链接、徽章和标题强调色。",
+    "goldColor": "金色强调色",
+    "goldColorHint": "高级强调和按钮。",
+    "backgroundColor": "背景颜色",
+    "backgroundColorHint": "内容背后的主要暖色页面背景。",
+    "footerColor": "页脚颜色",
+    "footerColorHint": "页脚背景色，独立于主品牌色。",
+    "fonts": "字体",
+    "fontsHint": "为每种角色选择一种字体 -- 应用于全站的标题、正文和强调短语。",
+    "headingFont": "标题字体",
+    "bodyFont": "正文字体",
+    "scriptFont": "强调/手写字体",
+    "preview": "预览",
+    "previewHeading": "中国展会",
+    "previewBody": "这是使用上面所选字体和颜色时全站正文的显示效果。",
+    "previewButton": "主按钮",
+    "previewAccent": "金色强调",
+    "previewFooter": "页脚",
+    "previewScript": "一句简短的签名短语"
   }
 }

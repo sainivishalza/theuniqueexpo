@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
+import Card from "@/components/ui/Card";
 
 interface Event { id: string; slug: string; title: string; }
 interface Registration {
@@ -76,11 +77,11 @@ export default function AdminEventRegistrationsPage({ params }: { params: Promis
         <div className="mx-auto max-w-7xl px-6">
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
           {!loading && !error && registrations.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
+            <Card shadow="sm" bordered={false} className="text-center py-20">
               <div className="text-5xl mb-4">📝</div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">{t("noResultsTitle")}</h3>
               <p className="text-gray-500">{t("noResultsSubtitle")}</p>
-            </div>
+            </Card>
           ) : !error && (
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
               <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>

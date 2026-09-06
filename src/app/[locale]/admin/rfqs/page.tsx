@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 interface RFQ {
   id: string;
@@ -160,7 +161,7 @@ export default function AdminRFQsPage() {
 
       <div className="mt-6 space-y-4">
         {rfqs.map((rfq) => (
-          <div key={rfq.id} className="rounded-lg border border-gray-200 p-5">
+          <Card key={rfq.id} shadow="sm" hoverable className="p-5">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
               <div className="min-w-0">
                 <h2 className="font-semibold">{rfq.title}</h2>
@@ -233,7 +234,7 @@ export default function AdminRFQsPage() {
                 ))}
               </div>
             )}
-          </div>
+          </Card>
         ))}
         {!loading && !error && rfqs.length === 0 && (
           <p className="text-center text-gray-400 py-10">{t("noRfqs")}</p>

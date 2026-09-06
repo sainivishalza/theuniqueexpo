@@ -16,6 +16,7 @@ const SECTION_KEYS = [
   { key: "aboutUsPage", href: "/admin/about", icon: "📝", color: "from-blue-500 to-cyan-600" },
   { key: "websitePages", href: "/admin/pages", icon: "📄", color: "from-sky-500 to-indigo-600" },
   { key: "companyProfile", href: "/admin/company-profile", icon: "🏢", color: "from-teal-500 to-emerald-600" },
+  { key: "faqManagement", href: "/admin/faq", icon: "❓", color: "from-rose-500 to-pink-600" },
   { key: "userManagement", icon: "👥", color: "from-orange-500 to-red-500", comingSoon: true },
 ];
 

@@ -68,9 +68,25 @@ export default async function BlogPostPage({
   };
   const schemaJson = JSON.stringify(schema).replace(/</g, "\\u003c");
 
+  // Separate FAQPage schema (rather than folding into BlogPosting) since
+  // that's the type Google/AI answer engines actually look for Q&A pairs
+  // under -- a page can carry more than one JSON-LD script.
+  const faqSchemaJson = post.faqItems.length > 0
+    ? JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: post.faqItems.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: { "@type": "Answer", text: item.answer },
+        })),
+      }).replace(/</g, "\\u003c")
+    : null;
+
   return (
     <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaJson }} />
+      {faqSchemaJson && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchemaJson }} />}
 
       <section className="bg-gray-900 py-12">
         <div className="mx-auto max-w-3xl px-6 text-white">
@@ -113,6 +129,20 @@ export default async function BlogPostPage({
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{t("writtenBy")}</p>
                 <p className="font-bold text-gray-900">{post.authorName}</p>
                 {post.authorBio && <p className="text-sm text-gray-500 mt-1">{post.authorBio}</p>}
+              </div>
+            </div>
+          )}
+
+          {post.faqItems.length > 0 && (
+            <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
+              <h2 className="font-bold text-gray-900 mb-4">{t("faqTitle")}</h2>
+              <div className="space-y-4">
+                {post.faqItems.map((item) => (
+                  <div key={item.question}>
+                    <h3 className="font-semibold text-gray-900 text-sm">{item.question}</h3>
+                    <p className="text-sm text-gray-500 mt-1">{item.answer}</p>
+                  </div>
+                ))}
               </div>
             </div>
           )}

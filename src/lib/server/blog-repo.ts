@@ -1,6 +1,7 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
-import { toIsoTimestamp } from "@/lib/server/db-helpers";
+import { toIsoTimestamp, safeParseJson } from "@/lib/server/db-helpers";
+import { normalizeFaqItems, type FaqItem } from "@/lib/faq-content";
 
 export type BlogCategory = "life-in-china" | "relocation-tips" | "exhibition-reviews";
 
@@ -13,6 +14,7 @@ export interface BlogPostInput {
   coverImage?: string;
   authorName?: string;
   authorBio?: string;
+  faqItems?: FaqItem[];
   published: boolean;
 }
 
@@ -27,6 +29,7 @@ function mapBlogPostRow(row: RowDataPacket) {
     coverImage: row.cover_image,
     authorName: row.author_name || "",
     authorBio: row.author_bio || "",
+    faqItems: normalizeFaqItems(safeParseJson(row.faq_items)),
     published: !!row.published,
     publishedAt: row.published_at ? toIsoTimestamp(row.published_at) : null,
     createdAt: toIsoTimestamp(row.created_at),
@@ -73,11 +76,12 @@ export async function getPostById(id: number) {
 
 export async function createPost(input: BlogPostInput) {
   const [result] = await pool.query<ResultSetHeader>(
-    `INSERT INTO blog_posts (slug, category, title, excerpt, content, cover_image, author_name, author_bio, published, published_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO blog_posts (slug, category, title, excerpt, content, cover_image, author_name, author_bio, faq_items, published, published_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       input.slug, input.category, input.title, input.excerpt, input.content, input.coverImage || "",
-      input.authorName || "", input.authorBio || "", input.published, input.published ? new Date() : null,
+      input.authorName || "", input.authorBio || "", JSON.stringify(input.faqItems || []),
+      input.published, input.published ? new Date() : null,
     ]
   );
   return result.insertId;
@@ -89,11 +93,11 @@ export async function updatePost(id: number, input: BlogPostInput) {
   // an already-published post (or a still-draft one) shouldn't bump it.
   const publishedAt = input.published && !existing?.publishedAt ? new Date() : undefined;
   await pool.query(
-    `UPDATE blog_posts SET slug=?, category=?, title=?, excerpt=?, content=?, cover_image=?, author_name=?, author_bio=?, published=?${publishedAt ? ", published_at=?" : ""}
+    `UPDATE blog_posts SET slug=?, category=?, title=?, excerpt=?, content=?, cover_image=?, author_name=?, author_bio=?, faq_items=?, published=?${publishedAt ? ", published_at=?" : ""}
      WHERE id=?`,
     publishedAt
-      ? [input.slug, input.category, input.title, input.excerpt, input.content, input.coverImage || "", input.authorName || "", input.authorBio || "", input.published, publishedAt, id]
-      : [input.slug, input.category, input.title, input.excerpt, input.content, input.coverImage || "", input.authorName || "", input.authorBio || "", input.published, id]
+      ? [input.slug, input.category, input.title, input.excerpt, input.content, input.coverImage || "", input.authorName || "", input.authorBio || "", JSON.stringify(input.faqItems || []), input.published, publishedAt, id]
+      : [input.slug, input.category, input.title, input.excerpt, input.content, input.coverImage || "", input.authorName || "", input.authorBio || "", JSON.stringify(input.faqItems || []), input.published, id]
   );
 }
 

@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
+import { getFaqItems } from "@/lib/server/faq-content-repo";
 
 // How many of the soonest upcoming exhibitions to feature on the homepage.
 const FEATURED_COUNT = 6;
@@ -32,6 +33,18 @@ export default async function Home() {
   const locale = await getLocale();
   const exhibitions = await listExhibitions(locale);
   const featured = exhibitions.slice(0, FEATURED_COUNT);
+  const faqItems = await getFaqItems();
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
+  const faqSchemaJson = JSON.stringify(faqSchema).replace(/</g, "\\u003c");
 
   const stats = [
     { value: "20+", label: t("stats.exhibitions"), icon: "🎯" },
@@ -251,6 +264,29 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── FAQ Section ── */}
+      {faqItems.length > 0 && (
+        <section className="py-20 bg-white">
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchemaJson }} />
+          <div className="mx-auto max-w-3xl px-6">
+            <div className="text-center mb-12">
+              <span className="inline-block rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-semibold text-emerald-700 mb-4">
+                {t("faqBadge")}
+              </span>
+              <h2 className="text-4xl font-extrabold text-gray-900">{t("faqTitle")}</h2>
+            </div>
+            <div className="space-y-4">
+              {faqItems.map((item) => (
+                <div key={item.question} className="rounded-2xl bg-gray-50 p-6 border border-gray-100">
+                  <h3 className="font-bold text-gray-900 mb-2">{item.question}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── CTA Section ── */}
       <section className="py-20 bg-gradient-to-r from-emerald-600 via-teal-600 to-purple-700">

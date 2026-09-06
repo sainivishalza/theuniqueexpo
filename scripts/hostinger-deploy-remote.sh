@@ -208,6 +208,7 @@ $MYSQL < schema-migrations/015-moving-subsidy-applications.sql
 $MYSQL < schema-migrations/016-company-profile.sql
 $MYSQL < schema-migrations/017-blog-author.sql
 $MYSQL < schema-migrations/018-blog-pillar-cluster-content.sql
+$MYSQL < schema-migrations/019-faq-content.sql
 
 echo "Installing dependencies and building ..."
 npm install

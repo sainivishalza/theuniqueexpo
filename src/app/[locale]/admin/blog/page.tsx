@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import { slugify } from "@/lib/slugify";
 import { errorMessage } from "@/lib/format";
+import type { FaqItem } from "@/lib/faq-content";
 
 interface Post {
   id: string;
@@ -17,6 +18,7 @@ interface Post {
   coverImage: string;
   authorName: string;
   authorBio: string;
+  faqItems: FaqItem[];
   published: boolean;
 }
 
@@ -24,7 +26,7 @@ const CATEGORIES = ["life-in-china", "relocation-tips", "exhibition-reviews"];
 
 const EMPTY_FORM = {
   slug: "", category: "life-in-china", title: "", excerpt: "", content: "", coverImage: "",
-  authorName: "", authorBio: "", published: false,
+  authorName: "", authorBio: "", faqItems: [] as FaqItem[], published: false,
 };
 
 export default function AdminBlogPage() {
@@ -66,12 +68,25 @@ export default function AdminBlogPage() {
     setForm({
       slug: post.slug, category: post.category, title: post.title, excerpt: post.excerpt,
       content: post.content, coverImage: post.coverImage || "",
-      authorName: post.authorName || "", authorBio: post.authorBio || "", published: post.published,
+      authorName: post.authorName || "", authorBio: post.authorBio || "",
+      faqItems: post.faqItems || [], published: post.published,
     });
     setFormError("");
     setEditingId(post.id);
     setShowNew(false);
     setSlugTouched(true);
+  }
+
+  function updateFaqItem(index: number, patch: Partial<FaqItem>) {
+    setForm((f) => ({ ...f, faqItems: f.faqItems.map((item, i) => (i === index ? { ...item, ...patch } : item)) }));
+  }
+
+  function addFaqItem() {
+    setForm((f) => ({ ...f, faqItems: [...f.faqItems, { question: "", answer: "" }] }));
+  }
+
+  function removeFaqItem(index: number) {
+    setForm((f) => ({ ...f, faqItems: f.faqItems.filter((_, i) => i !== index) }));
   }
 
   function openNew() {
@@ -212,6 +227,39 @@ export default function AdminBlogPage() {
                 value={form.content}
                 onChange={(e) => setForm({ ...form, content: e.target.value })}
               />
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.faqItems")}</label>
+              <p className="text-xs text-gray-400 mb-2">{t("fields.faqItemsHint")}</p>
+              <div className="space-y-2">
+                {form.faqItems.map((item, i) => (
+                  <div key={i} className="rounded-xl border border-gray-200 p-3 space-y-2">
+                    <div className="flex items-start gap-2">
+                      <input
+                        type="text"
+                        value={item.question}
+                        onChange={(e) => updateFaqItem(i, { question: e.target.value })}
+                        placeholder={t("fields.faqQuestionPlaceholder")}
+                        className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold"
+                      />
+                      <button onClick={() => removeFaqItem(i)} className="text-xs font-semibold text-red-600 hover:underline whitespace-nowrap py-2">{ta("delete")}</button>
+                    </div>
+                    <textarea
+                      value={item.answer}
+                      onChange={(e) => updateFaqItem(i, { answer: e.target.value })}
+                      placeholder={t("fields.faqAnswerPlaceholder")}
+                      rows={2}
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-y"
+                    />
+                  </div>
+                ))}
+                <button
+                  onClick={addFaqItem}
+                  className="w-full rounded-xl border-2 border-dashed border-gray-300 py-2 text-sm font-semibold text-gray-500 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
+                >
+                  {t("fields.addFaqItem")}
+                </button>
+              </div>
             </div>
             <div className="mt-4 flex items-center gap-2">
               <input

@@ -471,6 +471,10 @@
       "companyProfile": {
         "title": "Company Profile",
         "description": "Contact info, address, and social links used in schema markup and the site footer."
+      },
+      "faqManagement": {
+        "title": "FAQ Management",
+        "description": "Edit the homepage FAQ section shown to visitors and search/AI engines."
       }
     }
   },
@@ -1694,7 +1698,9 @@
     "ctaTitle": "Ready to Grow Your Business?",
     "ctaSubtitle": "Join thousands of exhibitors and buyers who use The Unique Expo to discover opportunities, register as hosted buyers, and close deals at world-class trade events in China.",
     "getStarted": "Get Started Free",
-    "exploreServices": "Explore Our Services"
+    "exploreServices": "Explore Our Services",
+    "faqBadge": "Common Questions",
+    "faqTitle": "Frequently Asked Questions"
   },
   "eventsPage": {
     "title": "Events",
@@ -1815,7 +1821,8 @@
       "relocation-tips": "Relocation Tips",
       "exhibition-reviews": "Exhibition Reviews"
     },
-    "writtenBy": "Written by"
+    "writtenBy": "Written by",
+    "faqTitle": "Frequently Asked Questions"
   },
   "adminBlogCrud": {
     "loadFailed": "Failed to load posts",
@@ -1838,7 +1845,12 @@
       "published": "Published (visible on the public blog)",
       "authorName": "Author Name",
       "authorBio": "Author Bio",
-      "authorBioPlaceholder": "e.g. Founder of The Unique Expo, 8+ years helping buyers source from China"
+      "authorBioPlaceholder": "e.g. Founder of The Unique Expo, 8+ years helping buyers source from China",
+      "faqItems": "Article FAQ (optional)",
+      "faqItemsHint": "Adds a Q&A section to this article and marks it up with FAQPage schema.",
+      "faqQuestionPlaceholder": "Question",
+      "faqAnswerPlaceholder": "Answer",
+      "addFaqItem": "+ Add Question"
     },
     "categories": {
       "life-in-china": "Life in China",
@@ -1967,5 +1979,15 @@
     "addressCountry": "Country",
     "social": "Social Links",
     "socialHint": "Only links you enter here will appear in the site footer and Organization schema -- leave any blank to hide them."
+  },
+  "adminFaq": {
+    "title": "FAQ Management",
+    "subtitle": "These questions appear on the homepage and are marked up with FAQPage schema for Google and AI answer engines.",
+    "saveFailed": "Save failed",
+    "saved": "Saved!",
+    "saveButton": "Save Changes",
+    "questionPlaceholder": "Question",
+    "answerPlaceholder": "Answer",
+    "addQuestion": "+ Add Question"
   }
 }

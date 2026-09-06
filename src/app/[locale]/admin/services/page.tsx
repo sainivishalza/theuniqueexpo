@@ -79,7 +79,7 @@ export default function AdminServicesPage() {
           </div>
         </div>
       </section>
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {sections.map((s) => (
             <Card key={s.title} href={s.href} shadow="sm" className="p-6 flex items-start gap-4">

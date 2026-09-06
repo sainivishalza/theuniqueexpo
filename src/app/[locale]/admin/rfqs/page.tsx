@@ -205,7 +205,7 @@ export default function AdminRFQsPage() {
                   <p className="text-xs text-gray-400">{t("noQuotes")}</p>
                 )}
                 {quotesByRfq[rfq.id]?.map((q) => (
-                  <div key={q.id} className="rounded-lg bg-gray-50 border border-gray-100 p-4">
+                  <div key={q.id} className="rounded-lg bg-cream-50 border border-gray-100 p-4">
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                       <div className="min-w-0">
                         <p className="font-semibold text-sm">{q.exhibitorName}</p>

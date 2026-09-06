@@ -75,7 +75,7 @@ export default function ExhibitorProfilePage() {
       </section>
 
       {/* Content */}
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-5xl px-6">
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Main */}
@@ -91,7 +91,7 @@ export default function ExhibitorProfilePage() {
                 <h2 className="text-xl font-bold text-gray-900 mb-5">{t("productsAndServices")}</h2>
                 <div className="grid grid-cols-2 gap-3">
                   {profile.products.map((p) => (
-                    <div key={p} className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                    <div key={p} className="flex items-center gap-3 p-3 rounded-xl bg-cream-50 border border-gray-100">
                       <IconBadge size="xs" icon="✦" bgClassName="gradient-brand text-white" className="flex-shrink-0" />
                       <span className="text-sm font-medium text-gray-700">{p}</span>
                     </div>

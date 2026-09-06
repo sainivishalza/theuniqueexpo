@@ -35,7 +35,7 @@ export default async function BlogPage({
         </div>
       </section>
 
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-wrap gap-2 mb-8">
             <Link

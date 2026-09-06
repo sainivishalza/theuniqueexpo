@@ -316,7 +316,7 @@ export default function AdminToursPage() {
                     className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                   <div className="flex items-center gap-3">
-                    <label className="cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                    <label className="cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors">
                       {t("uploadPhoto")}
                       <input
                         type="file"
@@ -361,7 +361,7 @@ export default function AdminToursPage() {
                 </div>
               )}
               {form.galleryImages.length < MAX_GALLERY_IMAGES && (
-                <label className="cursor-pointer inline-block rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                <label className="cursor-pointer inline-block rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors">
                   {galleryUploading ? t("uploading") : t("addPhotos")}
                   <input
                     type="file"
@@ -396,7 +396,7 @@ export default function AdminToursPage() {
                 onChange={(e) => setForm({ ...form, highlights: e.target.value })}
               />
             </div>
-            <div className="mt-6 rounded-xl border border-gray-100 bg-gray-50 p-4">
+            <div className="mt-6 rounded-xl border border-gray-100 bg-cream-50 p-4">
               <h4 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-3">{t("translationsOptional")}</h4>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
@@ -450,7 +450,7 @@ export default function AdminToursPage() {
         </section>
       )}
 
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 space-y-4">
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingTours")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}

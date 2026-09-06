@@ -61,7 +61,7 @@ export default function ToursPage() {
       </section>
 
       {/* Tours Grid */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {loading && <p className="text-center py-20 text-gray-400">{t("loading")}</p>}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -136,7 +136,7 @@ export default function ToursPage() {
         </div>
       </section>
 
-      <section id="how-to-book" className="py-12 bg-gray-50 border-t border-gray-100">
+      <section id="how-to-book" className="py-12 bg-cream-50 border-t border-gray-100">
         <div className="mx-auto max-w-7xl px-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("howToBook")}</h2>
           <div className="grid gap-6 sm:grid-cols-3">
@@ -162,7 +162,7 @@ export default function ToursPage() {
                 <Link
                   key={r.id}
                   href={`/tours/${r.tourSlug}#reviews`}
-                  className="block rounded-2xl bg-gray-50 border border-gray-100 p-5 hover:border-emerald-300 transition-colors"
+                  className="block rounded-2xl bg-cream-50 border border-gray-100 p-5 hover:border-emerald-300 transition-colors"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-semibold text-gray-900 text-sm">{r.userName}</span>

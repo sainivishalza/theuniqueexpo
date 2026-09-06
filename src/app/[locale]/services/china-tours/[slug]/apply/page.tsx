@@ -78,7 +78,7 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
   );
 
   return (
-    <div className="py-12 bg-gray-50 min-h-screen">
+    <div className="py-12 bg-cream-50 min-h-screen">
       <div className="mx-auto max-w-3xl px-6">
         <Link href={"/services/china-tours/" + tour.slug} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">{t("backTo", { name: tour.title })}</Link>
         <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{t("applyFor", { name: tour.title })}</h1>

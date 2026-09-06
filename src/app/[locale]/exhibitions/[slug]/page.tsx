@@ -174,7 +174,7 @@ export default function ExhibitionDetailPage({
       </section>
 
       {/* Main Content */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Left: main content */}
@@ -190,7 +190,7 @@ export default function ExhibitionDetailPage({
                 <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("eventHighlights")}</h2>
                 <div className="grid gap-4 md:grid-cols-2">
                   {expo.highlights.map((h, i) => (
-                    <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100">
+                    <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-cream-50 border border-gray-100">
                       <IconBadge size="xs" icon={i + 1} bgClassName="gradient-brand text-white" className="flex-shrink-0" />
                       <span className="text-sm text-gray-700 pt-1">{h}</span>
                     </div>
@@ -291,7 +291,7 @@ export default function ExhibitionDetailPage({
                 </div>
                 <Link
                   href={`/exhibitions/${expo.slug}/hotels`}
-                  className="block w-full text-center rounded-xl border border-gray-200 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="block w-full text-center rounded-xl border border-gray-200 py-2.5 text-sm font-semibold text-gray-700 hover:bg-cream-50 transition-colors"
                 >
                   {t("browseHotels")}
                 </Link>
@@ -320,7 +320,7 @@ export default function ExhibitionDetailPage({
                   href={expo.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 block text-center rounded-xl border border-gray-200 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
+                  className="mt-3 block text-center rounded-xl border border-gray-200 py-2 text-xs font-semibold text-gray-600 hover:bg-cream-50 transition-colors"
                 >
                   {t("officialWebsite")}
                 </a>

@@ -57,7 +57,7 @@ export default function AdminMovingQuotesPage() {
           <p className="mt-1 text-emerald-200/80">{loading ? ta("loading") : t("requestsReceived", { count: quotes.length })}</p>
         </div>
       </section>
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {!loading && quotes.length === 0 ? (
             <Card shadow="sm" bordered={false} className="text-center py-20">
@@ -67,7 +67,7 @@ export default function AdminMovingQuotesPage() {
             </Card>
           ) : (
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
-              <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
+              <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("route")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("movingType")}</th>
@@ -75,7 +75,7 @@ export default function AdminMovingQuotesPage() {
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {quotes.map((q) => (
-                  <tr key={q.id} className="hover:bg-gray-50">
+                  <tr key={q.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{q.name}<br/><span className="text-xs text-gray-400">{q.email}</span></td>
                     <td className="px-6 py-4 text-gray-500">{q.originCity} → {q.destinationCity}</td>
                     <td className="px-6 py-4 text-gray-500">{q.movingType}</td>

@@ -19,12 +19,12 @@ export default function AdminToursPage() {
           <p className="mt-1 text-emerald-200/80">{t("toursSummary", { business: businessTours.length, china: chinaTours.length })}</p>
         </div>
       </section>
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 space-y-8">
           <div>
             <h2 className="text-xl font-bold text-gray-900 mb-4">{t("businessTours")}</h2>
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
-              <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
+              <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.tour")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.city")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.dates")}</th>
@@ -32,7 +32,7 @@ export default function AdminToursPage() {
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("actions")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {businessTours.map((t2) => (
-                  <tr key={t2.id} className="hover:bg-gray-50">
+                  <tr key={t2.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{t2.title.en}</td>
                     <td className="px-6 py-4 text-gray-500">{t2.city}</td>
                     <td className="px-6 py-4 text-gray-500">{t2.dates}</td>
@@ -46,7 +46,7 @@ export default function AdminToursPage() {
           <div>
             <h2 className="text-xl font-bold text-gray-900 mb-4">{t("chinaTours")}</h2>
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
-              <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
+              <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.tour")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.city")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.dates")}</th>
@@ -54,7 +54,7 @@ export default function AdminToursPage() {
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("actions")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {chinaTours.map((t2) => (
-                  <tr key={t2.id} className="hover:bg-gray-50">
+                  <tr key={t2.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{t2.title.en}</td>
                     <td className="px-6 py-4 text-gray-500">{t2.city}</td>
                     <td className="px-6 py-4 text-gray-500">{t2.dates}</td>

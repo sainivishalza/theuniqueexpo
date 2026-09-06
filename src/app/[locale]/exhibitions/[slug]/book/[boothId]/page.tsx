@@ -85,7 +85,7 @@ export default function BookBoothPage() {
             </Link>
             <Link
               href={`/exhibitor/${String(user.id)}`}
-              className="rounded border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="rounded border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-cream-50"
             >
               {t("viewMyProfile")}
             </Link>
@@ -181,7 +181,7 @@ export default function BookBoothPage() {
           <div className="flex gap-3">
             <button
               onClick={() => setStep("details")}
-              className="rounded border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="rounded border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-cream-50"
             >
               {t("back")}
             </button>

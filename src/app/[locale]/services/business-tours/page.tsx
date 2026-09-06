@@ -29,7 +29,7 @@ export default function BusinessToursPage() {
           <p className="mt-3 text-lg text-gray-300 max-w-2xl">{t("subtitle")}</p>
         </div>
       </section>
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {businessTours.map((tour) => (

@@ -83,7 +83,7 @@ export default function AdminCompanyProfilePage() {
         </div>
       </section>
 
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-4xl px-6 space-y-6">
           {loading ? (
             <p className="text-center text-gray-500 py-10">{ta("loading")}</p>

@@ -145,7 +145,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
       </section>
 
       {/* Main Content */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-8 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-8">
@@ -159,7 +159,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
                   <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("tourHighlights")}</h2>
                   <div className="grid gap-4 md:grid-cols-2">
                     {tour.highlights.map((h, i) => (
-                      <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100">
+                      <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-cream-50 border border-gray-100">
                         <IconBadge size="xs" icon={i + 1} bgClassName="gradient-brand text-white" className="flex-shrink-0" />
                         <span className="text-sm text-gray-700 pt-1">{h}</span>
                       </div>

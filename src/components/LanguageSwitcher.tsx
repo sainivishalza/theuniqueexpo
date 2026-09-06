@@ -69,7 +69,7 @@ export default function LanguageSwitcher({ mobile = false }: { mobile?: boolean 
                 className={`w-full text-left px-4 py-2 text-sm transition-colors ${
                   code === locale
                     ? "text-emerald-600 font-semibold bg-emerald-50"
-                    : "text-gray-700 hover:bg-gray-50"
+                    : "text-gray-700 hover:bg-cream-50"
                 }`}
               >
                 {LANGUAGE_LABELS[code].native}

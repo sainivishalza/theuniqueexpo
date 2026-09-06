@@ -98,7 +98,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
         </section>
       )}
 
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-5xl px-6 grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             <Card shadow="sm" bordered={false} className="p-8">

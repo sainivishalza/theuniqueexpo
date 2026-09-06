@@ -1,45 +1,66 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #ecfdf5;
-  --color-brand-100: #d1fae5;
-  --color-brand-200: #a7f3d0;
-  --color-brand-300: #6ee7b7;
-  --color-brand-400: #34d399;
-  --color-brand-500: #10b981;
-  --color-brand-600: #059669;
-  --color-brand-700: #047857;
-  --color-brand-800: #065f46;
-  --color-brand-900: #064e3b;
-  --color-brand-950: #022c22;
+  /* Brand palette overrides Tailwind's built-in `emerald-*` scale (rather
+     than only extending the custom `brand-*` names) so every existing
+     bg/text/border/shadow-emerald-* utility already used across the site
+     repaints to the new natural-emerald identity without touching each
+     call site. Anchored on the brand brief's named swatches: emerald-500
+     = Forest Green, emerald-600 = Deep Emerald (primary), emerald-800 =
+     Dark Emerald (secondary dark, e.g. footer). */
+  --color-emerald-50: #f3f8f5;
+  --color-emerald-100: #e8f0e8;
+  --color-emerald-200: #cde3d1;
+  --color-emerald-300: #a3cbaa;
+  --color-emerald-400: #69a679;
+  --color-emerald-500: #0b6b5b;
+  --color-emerald-600: #075b4f;
+  --color-emerald-700: #065045;
+  --color-emerald-800: #03483f;
+  --color-emerald-900: #022e28;
+  --color-emerald-950: #011714;
 
   /* Warm gold accent -- used sparingly for highlights/badges alongside the
      emerald brand scale, not as a replacement for it. */
-  --color-gold-50: #fdf8ec;
-  --color-gold-100: #faeecc;
-  --color-gold-200: #f4dd99;
-  --color-gold-300: #edc85e;
-  --color-gold-400: #e6b73a;
-  --color-gold-500: #d4a017;
-  --color-gold-600: #b3830f;
-  --color-gold-700: #8a640c;
-  --color-gold-800: #6b4d0a;
-  --color-gold-900: #4a3507;
-  --color-gold-950: #2b1e04;
+  --color-gold-50: #fbf6ea;
+  --color-gold-100: #f5eace;
+  --color-gold-200: #ecd7a1;
+  --color-gold-300: #e0bf6f;
+  --color-gold-400: #d4af5a;
+  --color-gold-500: #c9a24a;
+  --color-gold-600: #ab863a;
+  --color-gold-700: #86682e;
+  --color-gold-800: #644e23;
+  --color-gold-900: #423417;
+  --color-gold-950: #251d0d;
 
-  /* Cream neutral -- warm off-white for section backgrounds, an alternative
-     to plain gray-50 where a softer tone is wanted. */
-  --color-cream-50: #fffdf9;
-  --color-cream-100: #fdf9f0;
-  --color-cream-200: #faf3e3;
-  --color-cream-300: #f5e9cf;
-  --color-cream-400: #ecd9ab;
-  --color-cream-500: #ddc17e;
-  --color-cream-600: #c4a35a;
-  --color-cream-700: #a3823f;
-  --color-cream-800: #7d6230;
-  --color-cream-900: #574522;
-  --color-cream-950: #332813;
+  /* Cream neutral -- warm ivory background, the site's default surface
+     tone in place of plain gray-50/white. */
+  --color-cream-50: #fefdfb;
+  --color-cream-100: #f8f6ef;
+  --color-cream-200: #f1ecdd;
+  --color-cream-300: #e7dfc4;
+  --color-cream-400: #d6c89e;
+  --color-cream-500: #c1ab77;
+  --color-cream-600: #a68d58;
+  --color-cream-700: #816d44;
+  --color-cream-800: #5f5133;
+  --color-cream-900: #403622;
+  --color-cream-950: #241d12;
+
+  /* Muted pink/coral -- a very limited accent, not part of the core
+     emerald/gold/cream system. Use sparingly and only where called for. */
+  --color-accent-50: #fdf1f4;
+  --color-accent-100: #fbdfe6;
+  --color-accent-200: #f6bfcd;
+  --color-accent-300: #ef95ac;
+  --color-accent-400: #e56a89;
+  --color-accent-500: #d94c72;
+  --color-accent-600: #b83a5c;
+  --color-accent-700: #932e49;
+  --color-accent-800: #6d2237;
+  --color-accent-900: #491725;
+  --color-accent-950: #280d14;
 }
 
 @layer base {
@@ -48,17 +69,29 @@
   }
   body {
     font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+    background-color: var(--color-cream-50);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  /* One heading font applied globally via the tag selector, rather than a
+     className on every h1-h6 across ~40+ pages, so the whole site's
+     headings stay consistent from a single place. */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading), "Oswald", system-ui, -apple-system, sans-serif;
+  }
+  /* Sparse accent/script typography (short slogans, signature-style
+     phrases) -- opt in per element with `font-script`, never the default. */
+  .font-script {
+    font-family: var(--font-script), "Caveat", cursive;
   }
 }
 
 @layer utilities {
   .gradient-hero {
-    background: linear-gradient(135deg, #0f1712 0%, #064e3b 45%, #059669 100%);
+    background: linear-gradient(135deg, #011714 0%, #03483f 45%, #0b6b5b 100%);
   }
   .gradient-brand {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    background: linear-gradient(135deg, #0b6b5b 0%, #075b4f 100%);
   }
   .gradient-warm {
     background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
@@ -67,7 +100,10 @@
     background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
   }
   .gradient-green {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #0b6b5b 0%, #075b4f 100%);
+  }
+  .gradient-gold {
+    background: linear-gradient(135deg, #d4af5a 0%, #c9a24a 100%);
   }
   .gradient-overlay {
     background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.1) 100%);

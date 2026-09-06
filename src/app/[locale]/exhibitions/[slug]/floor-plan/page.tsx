@@ -82,7 +82,7 @@ export default function FloorPlanPage() {
       </section>
 
       {/* Content */}
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {/* Legend */}
           <div className="mb-8 flex flex-wrap gap-5 items-center">

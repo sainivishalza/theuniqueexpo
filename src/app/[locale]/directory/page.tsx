@@ -89,13 +89,13 @@ export default function DirectoryPage() {
               placeholder={t("searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+              className="w-full rounded-xl border border-gray-200 bg-cream-50 pl-10 pr-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
             />
           </div>
           <select
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
-            className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700 focus:border-emerald-500 outline-none"
+            className="rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm text-gray-700 focus:border-emerald-500 outline-none"
           >
             <option value="">{t("allIndustries")}</option>
             {industries.map((i) => (
@@ -109,7 +109,7 @@ export default function DirectoryPage() {
       </section>
 
       {/* Results */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {filtered.length === 0 ? (

@@ -104,7 +104,7 @@ export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: str
       </div>
 
       {user ? (
-        <form onSubmit={handleSubmit} className="mb-6 rounded-xl border border-gray-200 p-5 bg-gray-50 space-y-3">
+        <form onSubmit={handleSubmit} className="mb-6 rounded-xl border border-gray-200 p-5 bg-cream-50 space-y-3">
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">
               {myReview ? t("updateYourRating") : t(`rateThis.${kind}`)}
@@ -127,7 +127,7 @@ export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: str
           </button>
         </form>
       ) : (
-        <div className="mb-6 rounded-xl bg-gray-50 border border-gray-200 p-4 text-sm text-gray-500">
+        <div className="mb-6 rounded-xl bg-cream-50 border border-gray-200 p-4 text-sm text-gray-500">
           <Link href="/login" className="text-emerald-600 hover:underline font-semibold">{t("logIn")}</Link>{t("toLeaveAReview")}
         </div>
       )}

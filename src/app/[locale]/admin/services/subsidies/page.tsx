@@ -20,10 +20,10 @@ export default function AdminSubsidiesPage() {
           <p className="mt-1 text-emerald-200/80">{t("subsidiesConfigured", { count: subsidies.length })}</p>
         </div>
       </section>
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
-            <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
+            <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
               <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.subsidy")}</th>
               <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.exhibition")}</th>
               <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.amount")}</th>
@@ -31,7 +31,7 @@ export default function AdminSubsidiesPage() {
               <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
             </tr></thead><tbody className="divide-y divide-gray-100">
               {subsidies.map((s) => (
-                <tr key={s.id} className="hover:bg-gray-50">
+                <tr key={s.id} className="hover:bg-cream-50">
                   <td className="px-6 py-4 font-medium text-gray-900">{s.title}</td>
                   <td className="px-6 py-4 text-gray-500">{s.exhibitionTitle}</td>
                   <td className="px-6 py-4 text-gray-900">{s.amount}</td>

@@ -58,7 +58,7 @@ export default function AdminSubsidyApplicationsPage() {
           <p className="mt-1 text-emerald-200/80">{loading ? ta("loading") : t("requestsReceived", { count: applications.length })}</p>
         </div>
       </section>
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {!loading && applications.length === 0 ? (
             <Card shadow="sm" bordered={false} className="text-center py-20">
@@ -68,14 +68,14 @@ export default function AdminSubsidyApplicationsPage() {
             </Card>
           ) : (
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
-              <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
+              <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("subsidy")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {applications.map((a) => (
-                  <tr key={a.id} className="hover:bg-gray-50">
+                  <tr key={a.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{a.name}<br/><span className="text-xs text-gray-400">{a.email}</span></td>
                     <td className="px-6 py-4 text-gray-500">{subsidies.find((s) => s.id === a.subsidyId)?.title || a.subsidyId}</td>
                     <td className="px-6 py-4">

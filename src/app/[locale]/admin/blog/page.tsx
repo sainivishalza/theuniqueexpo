@@ -280,7 +280,7 @@ export default function AdminBlogPage() {
         </section>
       )}
 
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 space-y-4">
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingPosts")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}

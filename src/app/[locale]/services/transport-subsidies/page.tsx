@@ -53,7 +53,7 @@ export default function SubsidiesPage() {
           </div>
         </div>
       </section>
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 space-y-8">
           {subsidies.map((sub) => {
             const isOpen = sub.status !== "closed";
@@ -115,7 +115,7 @@ export default function SubsidiesPage() {
                           {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
                           <div className="flex gap-3">
                             <Button type="submit" disabled={submitting} variant="save" size="wide">{submitting ? t("submitting") : t("submitAssistanceRequest")}</Button>
-                            <button type="button" onClick={() => { setOpenFormId(null); setError(""); }} className="rounded-xl px-6 py-3 text-sm font-semibold text-gray-500 hover:bg-gray-50">{t("cancel")}</button>
+                            <button type="button" onClick={() => { setOpenFormId(null); setError(""); }} className="rounded-xl px-6 py-3 text-sm font-semibold text-gray-500 hover:bg-cream-50">{t("cancel")}</button>
                           </div>
                         </form>
                       ) : (

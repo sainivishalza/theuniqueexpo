@@ -42,7 +42,7 @@ export default function NavDropdown({ label, href, items }: { label: string; hre
               <Link
                 key={item.href}
                 href={item.href}
-                className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-emerald-600 transition-colors"
+                className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-cream-50 hover:text-emerald-600 transition-colors"
                 onClick={() => setOpen(false)}
               >
                 {item.label}

@@ -131,7 +131,7 @@ export default function RFQDetailPage() {
         </div>
       </section>
 
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-4xl px-6">
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Main */}
@@ -146,7 +146,7 @@ export default function RFQDetailPage() {
                     { label: t("targetPrice"), value: rfq.targetPrice || t("flexible"), icon: "💰" },
                     { label: t("deadline"), value: rfq.deadline || t("flexible"), icon: "📅" },
                   ].map((s) => (
-                    <div key={s.label} className="p-4 rounded-xl bg-gray-50 border border-gray-100 text-center">
+                    <div key={s.label} className="p-4 rounded-xl bg-cream-50 border border-gray-100 text-center">
                       <div className="text-xl mb-1">{s.icon}</div>
                       <div className="text-xs text-gray-400">{s.label}</div>
                       <div className="text-sm font-bold text-gray-900 mt-0.5">{s.value}</div>
@@ -179,13 +179,13 @@ export default function RFQDetailPage() {
                 )}
 
                 {user && user.role !== "exhibitor" && (
-                  <div className="mb-6 rounded-xl bg-gray-50 border border-gray-200 p-4 text-sm text-gray-500">
+                  <div className="mb-6 rounded-xl bg-cream-50 border border-gray-200 p-4 text-sm text-gray-500">
                     {t("onlySupplierAccounts")}
                   </div>
                 )}
 
                 {showQuoteForm && (
-                  <form onSubmit={handleSubmitQuote} className="mb-6 rounded-xl border border-gray-200 p-5 space-y-3 bg-gray-50">
+                  <form onSubmit={handleSubmitQuote} className="mb-6 rounded-xl border border-gray-200 p-5 space-y-3 bg-cream-50">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-xs font-semibold text-gray-600 mb-1">{t("price")}</label>

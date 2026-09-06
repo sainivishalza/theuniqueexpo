@@ -71,7 +71,7 @@ export default function MovingAssistancePage() {
           <p className="mt-3 text-lg text-gray-300 max-w-2xl">{t("subtitle")}</p>
         </div>
       </section>
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 grid gap-12 lg:grid-cols-2">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("whatWeHandle")}</h2>

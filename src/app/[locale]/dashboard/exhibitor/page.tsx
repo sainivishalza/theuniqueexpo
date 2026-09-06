@@ -44,7 +44,7 @@ export default function ExhibitorDashboard() {
         </div>
       </section>
 
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {/* Quick actions */}
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-10">

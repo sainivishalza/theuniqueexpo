@@ -57,7 +57,7 @@ export default function AdminConsultationsPage() {
           <p className="mt-1 text-emerald-200/80">{loading ? ta("loading") : t("requestsReceived", { count: bookings.length })}</p>
         </div>
       </section>
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {!loading && bookings.length === 0 ? (
             <Card shadow="sm" bordered={false} className="text-center py-20">
@@ -67,14 +67,14 @@ export default function AdminConsultationsPage() {
             </Card>
           ) : (
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
-              <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
+              <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("topic")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {bookings.map((b) => (
-                  <tr key={b.id} className="hover:bg-gray-50">
+                  <tr key={b.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{b.name}<br/><span className="text-xs text-gray-400">{b.email}</span></td>
                     <td className="px-6 py-4 text-gray-500">{b.topic}</td>
                     <td className="px-6 py-4">

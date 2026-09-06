@@ -79,7 +79,7 @@ export default function ExhibitionsPage() {
           <select
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 outline-none"
+            className="rounded-lg border border-gray-200 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 outline-none"
           >
             <option value="All">{t("allIndustries")}</option>
             {industries.map((i) => (
@@ -89,7 +89,7 @@ export default function ExhibitionsPage() {
           <select
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 outline-none"
+            className="rounded-lg border border-gray-200 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 outline-none"
           >
             <option value="All">{t("allCities")}</option>
             {cities.map((c) => (
@@ -104,7 +104,7 @@ export default function ExhibitionsPage() {
                 className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${
                   dateFilter === f
                     ? "bg-gray-900 text-white"
-                    : "bg-white text-gray-600 hover:bg-gray-50"
+                    : "bg-white text-gray-600 hover:bg-cream-50"
                 }`}
               >
                 {dateFilterLabels[f]}
@@ -118,7 +118,7 @@ export default function ExhibitionsPage() {
       </section>
 
       {/* Exhibition Grid */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {loading && <p className="text-center py-20 text-gray-400">{t("loading")}</p>}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">

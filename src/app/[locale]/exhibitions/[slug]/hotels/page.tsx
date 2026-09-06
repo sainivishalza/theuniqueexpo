@@ -119,7 +119,7 @@ export default function HotelsPage() {
         </div>
       </section>
 
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {hotels.length === 0 ? (
             <div className="text-center py-20">
@@ -165,7 +165,7 @@ export default function HotelsPage() {
                       className={`mt-4 w-full rounded-xl py-2.5 text-sm font-semibold transition-all ${
                         selectedHotel?.id === hotel.id
                           ? "gradient-brand text-white shadow-md shadow-emerald-500/25"
-                          : "border border-gray-200 text-gray-700 hover:bg-gray-50"
+                          : "border border-gray-200 text-gray-700 hover:bg-cream-50"
                       }`}
                     >
                       {selectedHotel?.id === hotel.id ? t("selectedCheck") : t("selectHotel")}

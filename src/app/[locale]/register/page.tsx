@@ -69,7 +69,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Right: Form */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-gray-50">
+      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-cream-50">
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-8"><Logo /></div>
           <h2 className="text-3xl font-extrabold text-gray-900 mb-2">{t("createAccount")}</h2>

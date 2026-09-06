@@ -277,7 +277,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
   const customSchema = expo.registrationFormSchema;
   if (customSchema && customSchema.length > 0) {
     return (
-      <div className="py-12 bg-gray-50 min-h-screen">
+      <div className="py-12 bg-cream-50 min-h-screen">
         <div className="mx-auto max-w-3xl px-6">
           <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">{t("backTo", { name: expo.title })}</Link>
           <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{t("registerFor", { name: expo.title })}</h1>
@@ -326,7 +326,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
   }
 
   return (
-    <div className="py-12 bg-gray-50 min-h-screen">
+    <div className="py-12 bg-cream-50 min-h-screen">
       <div className="mx-auto max-w-3xl px-6">
         <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">{t("backTo", { name: expo.title })}</Link>
         <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{t("registerFor", { name: expo.title })}</h1>
@@ -428,11 +428,11 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
                   <div key={key} className="rounded-xl border border-gray-200 p-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">{label} {required && "*"}</label>
                     {value && (isImage ? (
-                      <img src={value} alt="" className="h-20 w-full object-contain mb-2 rounded-lg bg-gray-50" />
+                      <img src={value} alt="" className="h-20 w-full object-contain mb-2 rounded-lg bg-cream-50" />
                     ) : (
-                      <div className="h-20 w-full flex items-center justify-center mb-2 rounded-lg bg-gray-50 text-sm text-gray-500">{t("fileAttached")}</div>
+                      <div className="h-20 w-full flex items-center justify-center mb-2 rounded-lg bg-cream-50 text-sm text-gray-500">{t("fileAttached")}</div>
                     ))}
-                    <label className="cursor-pointer inline-block rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
+                    <label className="cursor-pointer inline-block rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50">
                       {value ? t("replaceFile") : t("chooseFile")}
                       <input type="file" accept="image/*,application/pdf" className="hidden" onChange={(e) => handleFile(key, e.target.files?.[0] || null)} />
                     </label>
@@ -538,11 +538,11 @@ function CustomField({
     <div className="rounded-xl border border-gray-200 p-4">
       <label className="block text-sm font-medium text-gray-700 mb-2">{field.label} {field.required && "*"}</label>
       {fileValue && (isImage ? (
-        <img src={fileValue} alt="" className="h-20 w-full object-contain mb-2 rounded-lg bg-gray-50" />
+        <img src={fileValue} alt="" className="h-20 w-full object-contain mb-2 rounded-lg bg-cream-50" />
       ) : (
-        <div className="h-20 w-full flex items-center justify-center mb-2 rounded-lg bg-gray-50 text-sm text-gray-500">{t("fileAttached")}</div>
+        <div className="h-20 w-full flex items-center justify-center mb-2 rounded-lg bg-cream-50 text-sm text-gray-500">{t("fileAttached")}</div>
       ))}
-      <label className="cursor-pointer inline-block rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50">
+      <label className="cursor-pointer inline-block rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50">
         {fileValue ? t("replaceFile") : t("chooseFile")}
         <input type="file" accept="image/*,application/pdf" className="hidden" onChange={(e) => onFile(e.target.files?.[0] || null)} />
       </label>

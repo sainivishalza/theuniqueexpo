@@ -114,7 +114,7 @@ export default async function BlogPostPage({
         </section>
       )}
 
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-3xl px-6">
           <Card
             shadow="sm"

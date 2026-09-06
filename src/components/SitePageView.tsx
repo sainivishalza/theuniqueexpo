@@ -17,7 +17,7 @@ export default function SitePageView({ content }: { content: SitePageContent }) 
         </div>
       </section>
 
-      <section className="py-14 bg-gray-50">
+      <section className="py-14 bg-cream-50">
         <div className="mx-auto max-w-4xl px-6 space-y-8">
           {(bodyParagraphs.length > 0 || hasContactBlock) && (
             <div className="rounded-2xl bg-white p-8 shadow-sm">

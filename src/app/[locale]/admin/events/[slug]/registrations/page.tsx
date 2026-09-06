@@ -73,7 +73,7 @@ export default function AdminEventRegistrationsPage({ params }: { params: Promis
         </div>
       </section>
 
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
           {!loading && !error && registrations.length === 0 ? (
@@ -84,14 +84,14 @@ export default function AdminEventRegistrationsPage({ params }: { params: Promis
             </Card>
           ) : !error && (
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
-              <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
+              <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("email")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {registrations.map((r) => (
-                  <tr key={r.id} className="hover:bg-gray-50">
+                  <tr key={r.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{r.userName}</td>
                     <td className="px-6 py-4 text-gray-500">{r.userEmail}</td>
                     <td className="px-6 py-4">

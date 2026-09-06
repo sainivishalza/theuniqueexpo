@@ -25,7 +25,7 @@ export default function AdminSitePagesIndex() {
         </div>
       </section>
 
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-4xl px-6 grid gap-4 sm:grid-cols-2">
           {SITE_PAGES.map((p) => (
             <Card key={p.slug} href={`/admin/pages/${p.slug}`} shadow="sm" className="p-5 flex items-center justify-between">

@@ -123,7 +123,7 @@ export default async function Home() {
       </section>
 
       {/* ── Featured Events Banner — Full Detail Cards ── */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
             <Badge tone="emerald" className="mb-4">{t("featuredBadge")}</Badge>
@@ -273,7 +273,7 @@ export default async function Home() {
             </div>
             <div className="space-y-4">
               {faqItems.map((item) => (
-                <div key={item.question} className="rounded-2xl bg-gray-50 p-6 border border-gray-100">
+                <div key={item.question} className="rounded-2xl bg-cream-50 p-6 border border-gray-100">
                   <h3 className="font-bold text-gray-900 mb-2">{item.question}</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">{item.answer}</p>
                 </div>

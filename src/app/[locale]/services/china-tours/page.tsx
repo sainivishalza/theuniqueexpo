@@ -22,7 +22,7 @@ export default function ChinaToursPage() {
           <p className="mt-3 text-lg text-gray-300 max-w-2xl">{t("subtitle")}</p>
         </div>
       </section>
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-8 md:grid-cols-2">
             {chinaTours.map((tour) => (

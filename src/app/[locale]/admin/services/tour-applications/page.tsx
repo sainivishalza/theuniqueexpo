@@ -58,7 +58,7 @@ export default function AdminTourAppsPage() {
           <p className="mt-1 text-emerald-200/80">{loading ? ta("loading") : t("applicationsReceived", { count: apps.length })}</p>
         </div>
       </section>
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {!loading && apps.length === 0 ? (
             <Card shadow="sm" bordered={false} className="text-center py-20">
@@ -68,7 +68,7 @@ export default function AdminTourAppsPage() {
             </Card>
           ) : (
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
-              <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
+              <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("tour")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("travelers")}</th>
@@ -77,7 +77,7 @@ export default function AdminTourAppsPage() {
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {apps.map((a) => (
-                  <tr key={a.id} className="hover:bg-gray-50">
+                  <tr key={a.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{a.name}<br/><span className="text-xs text-gray-400">{a.email}</span></td>
                     <td className="px-6 py-4 text-gray-500">{a.tourId}</td>
                     <td className="px-6 py-4 text-gray-900">{a.travelers}</td>

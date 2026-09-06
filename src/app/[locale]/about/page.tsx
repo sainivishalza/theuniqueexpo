@@ -57,7 +57,7 @@ export default async function AboutPage() {
         </section>
       )}
 
-      <section className="py-14 bg-gray-50">
+      <section className="py-14 bg-cream-50">
         <div className="mx-auto max-w-4xl px-6 space-y-8">
           <Card shadow="sm" bordered={false} className="p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("ourStory")}</h2>

@@ -42,7 +42,7 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   // Admin CRUD form's inline save/create button (flatter than gradientCta -- no hover lift).
   gradientFlat: "gradient-brand text-white shadow-md disabled:opacity-50",
   // Secondary/neutral action on a light background -- admin form cancel, row view/edit links.
-  ghost: "border border-gray-200 text-gray-700 hover:bg-gray-50",
+  ghost: "border border-gray-200 text-gray-700 hover:bg-cream-50",
   // Destructive secondary action on a light background -- admin row delete.
   ghostDanger: "border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50",
 };

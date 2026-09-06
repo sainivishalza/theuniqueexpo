@@ -50,23 +50,23 @@ export default async function TourDetailPage({ params }: { params: Promise<{ loc
           </div>
         </div>
       </section>
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 grid gap-10 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-white rounded-2xl p-8 shadow-sm">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("aboutThisTour")}</h2>
               <p className="text-gray-600 leading-relaxed">{tour.description}</p>
               <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-gray-50 rounded-xl"><div className="text-2xl font-extrabold text-emerald-600">${formatNumber(tour.price)}</div><div className="text-xs text-gray-400 mt-1">{t("perPerson")}</div></div>
-                <div className="text-center p-4 bg-gray-50 rounded-xl"><div className="text-2xl font-extrabold text-gray-900">{tour.groupSize}</div><div className="text-xs text-gray-400 mt-1">{t("groupSize")}</div></div>
-                <div className="text-center p-4 bg-gray-50 rounded-xl"><div className="text-2xl font-extrabold text-green-600">{tour.duration}</div><div className="text-xs text-gray-400 mt-1">{t("duration")}</div></div>
+                <div className="text-center p-4 bg-cream-50 rounded-xl"><div className="text-2xl font-extrabold text-emerald-600">${formatNumber(tour.price)}</div><div className="text-xs text-gray-400 mt-1">{t("perPerson")}</div></div>
+                <div className="text-center p-4 bg-cream-50 rounded-xl"><div className="text-2xl font-extrabold text-gray-900">{tour.groupSize}</div><div className="text-xs text-gray-400 mt-1">{t("groupSize")}</div></div>
+                <div className="text-center p-4 bg-cream-50 rounded-xl"><div className="text-2xl font-extrabold text-green-600">{tour.duration}</div><div className="text-xs text-gray-400 mt-1">{t("duration")}</div></div>
               </div>
             </div>
             <div className="bg-white rounded-2xl p-8 shadow-sm">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("highlights")}</h2>
               <div className="grid gap-3 md:grid-cols-2">
                 {tour.highlights.map((h) => (
-                  <div key={h} className="flex items-start gap-3 p-3 rounded-xl bg-gray-50">
+                  <div key={h} className="flex items-start gap-3 p-3 rounded-xl bg-cream-50">
                     <span className="text-emerald-500 mt-0.5">✓</span>
                     <span className="text-sm text-gray-700">{h}</span>
                   </div>

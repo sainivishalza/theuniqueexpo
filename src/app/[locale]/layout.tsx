@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Oswald, Caveat } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -19,6 +19,24 @@ const inter = Inter({
   weight: ["400", "500", "600", "700", "800", "900"],
   display: "swap",
   variable: "--font-inter",
+});
+
+// Main heading font -- bold, confident, slightly condensed, applied
+// sitewide via globals.css's `h1..h6` rule rather than per-component.
+const oswald = Oswald({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  display: "swap",
+  variable: "--font-heading",
+});
+
+// Sparse accent/script font, opted into per element with `.font-script` --
+// never the default for headings or body copy.
+const caveat = Caveat({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  display: "swap",
+  variable: "--font-script",
 });
 
 const SITE_URL = "https://www.theuniqueexpo.com";
@@ -70,7 +88,7 @@ export default async function RootLayout({
   const messages = omitMessages(rawMessages, [...ADMIN_NAMESPACES, ...DASHBOARD_NAMESPACES]);
 
   return (
-    <html lang={locale} className={inter.variable}>
+    <html lang={locale} className={`${inter.variable} ${oswald.variable} ${caveat.variable}`}>
       <body className="antialiased">
         <OrganizationSchema profile={companyProfile} />
         <NextIntlClientProvider messages={messages}>

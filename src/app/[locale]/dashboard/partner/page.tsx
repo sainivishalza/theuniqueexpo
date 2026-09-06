@@ -48,7 +48,7 @@ export default function PartnerDashboard() {
         </div>
       </section>
 
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {/* Referral Link */}
           <Card shadow="sm" className="p-8 mb-8">
@@ -59,7 +59,7 @@ export default function PartnerDashboard() {
                 type="text"
                 value={referralLink}
                 readOnly
-                className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-mono text-gray-700"
+                className="flex-1 rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm font-mono text-gray-700"
               />
               <Button onClick={() => navigator.clipboard.writeText(referralLink)} variant="gradientCta" size="wide">
                 {t("copyLink")}
@@ -80,7 +80,7 @@ export default function PartnerDashboard() {
               </div>
             ) : (
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <thead className="bg-cream-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   <tr>
                     <th className="px-6 py-3">{t("columns.name")}</th>
                     <th className="px-6 py-3">{t("columns.email")}</th>
@@ -93,7 +93,7 @@ export default function PartnerDashboard() {
                   {referrals.map((ref) => {
                     const status = statusLabels[ref.conversionStatus];
                     return (
-                      <tr key={ref.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={ref.id} className="hover:bg-cream-50 transition-colors">
                         <td className="px-6 py-4 font-semibold text-gray-900">{ref.referredUserName}</td>
                         <td className="px-6 py-4 text-gray-500">{ref.referredUserEmail}</td>
                         <td className="px-6 py-4 text-gray-500">{ref.signupDate}</td>
@@ -121,7 +121,7 @@ export default function PartnerDashboard() {
                 { icon: "🖼️", label: t("materials.bannerPack") },
                 { icon: "📋", label: t("materials.brochure") },
               ].map((m) => (
-                <button key={m.label} className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors">
+                <button key={m.label} className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-cream-50 hover:border-gray-300 transition-colors">
                   {m.icon} {m.label}
                 </button>
               ))}

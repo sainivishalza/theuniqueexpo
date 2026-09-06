@@ -95,7 +95,7 @@ export default function RelocationCostEstimatorPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-cream-50">
         <div className="mx-auto max-w-4xl px-6">
           <Card shadow="sm" bordered={false} className="p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{t("calculatorTitle")}</h2>

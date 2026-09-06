@@ -112,7 +112,7 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
         </div>
       </section>
 
-      <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
           {!loading && !error && registrations.length === 0 ? (
@@ -123,14 +123,14 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
             </Card>
           ) : !error && (
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
-              <table className="w-full text-sm"><thead className="bg-gray-50 border-b border-gray-100"><tr>
+              <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("traveler")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600"></th>
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {registrations.map((r) => (
-                  <tr key={r.id} className="hover:bg-gray-50">
+                  <tr key={r.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{displayName(r, tr("registrationNumber", { id: r.id }))}</td>
                     <td className="px-6 py-4">
                       <select
@@ -174,9 +174,9 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
                         {field.type === "file" && typeof value === "string" && value ? (
                           <a href={value} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-gray-200 p-2 hover:border-emerald-400 max-w-xs">
                             {value.startsWith("data:image") ? (
-                              <img src={value} alt={field.label} className="h-28 w-full object-contain rounded-lg bg-gray-50" />
+                              <img src={value} alt={field.label} className="h-28 w-full object-contain rounded-lg bg-cream-50" />
                             ) : (
-                              <div className="h-28 w-full flex items-center justify-center rounded-lg bg-gray-50 text-sm text-gray-500">{tr("viewFile")}</div>
+                              <div className="h-28 w-full flex items-center justify-center rounded-lg bg-cream-50 text-sm text-gray-500">{tr("viewFile")}</div>
                             )}
                           </a>
                         ) : (

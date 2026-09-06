@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { errorMessage } from "@/lib/format";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 const HANDLE_KEYS = [
   { key: "internationalFreight", icon: "🚢" },
@@ -48,12 +50,12 @@ export default function MovingAssistancePage() {
 
   if (submitted) return (
     <div className="min-h-[60vh] flex items-center justify-center">
-      <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
+      <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
         <div className="text-6xl mb-4">📦</div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("quoteRequested")}</h1>
         <p className="text-gray-500 mb-6">{t("quoteRequestedHint")}</p>
         <button onClick={() => setSubmitted(false)} className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("submitAnother")}</button>
-      </div>
+      </Card>
     </div>
   );
 
@@ -87,7 +89,7 @@ export default function MovingAssistancePage() {
             </Link>
           </div>
           <div>
-            <div className="bg-white rounded-2xl p-8 shadow-sm sticky top-24">
+            <Card shadow="sm" bordered={false} className="p-8 sticky top-24">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("requestMovingQuote")}</h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
@@ -110,9 +112,9 @@ export default function MovingAssistancePage() {
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("preferredMoveDate")}</label><input type="date" value={form.date} onChange={(e) => setForm({...form, date: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("additionalDetails")}</label><textarea value={form.details} onChange={(e) => setForm({...form, details: e.target.value})} rows={3} placeholder={t("additionalDetailsPlaceholder")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
                 {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-                <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">{submitting ? t("submitting") : t("submitQuoteRequest")}</button>
+                <Button type="submit" disabled={submitting} variant="save" size="block">{submitting ? t("submitting") : t("submitQuoteRequest")}</Button>
               </form>
-            </div>
+            </Card>
           </div>
         </div>
       </section>

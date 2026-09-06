@@ -4,6 +4,9 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { subsidies, getOpenSubsidies } from "@/lib/subsidies";
 import { errorMessage } from "@/lib/format";
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 export default function SubsidiesPage() {
   const t = useTranslations("transportSubsidiesPage");
@@ -57,14 +60,14 @@ export default function SubsidiesPage() {
             const isSubmitted = submittedIds.includes(sub.id);
             const isFormOpen = openFormId === sub.id;
             return (
-              <div key={sub.id} className={`bg-white rounded-2xl shadow-sm overflow-hidden ${sub.status === "closed" ? "opacity-60" : ""}`}>
+              <Card key={sub.id} shadow="sm" bordered={false} className={sub.status === "closed" ? "opacity-60" : ""}>
                 <div className="p-8">
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <div className="flex items-center gap-3 mb-2">
-                        <span className={`rounded-lg px-3 py-1 text-xs font-bold ${sub.status === "open" ? "bg-green-100 text-green-700" : sub.status === "closing-soon" ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-500"}`}>
+                        <Badge tone={sub.status === "open" ? "success" : sub.status === "closing-soon" ? "warning" : "gray"} size="tag">
                           {sub.status === "open" ? t("statusOpen") : sub.status === "closing-soon" ? t("statusClosingSoon") : t("statusClosed")}
-                        </span>
+                        </Badge>
                         <span className="text-sm text-gray-400">{sub.exhibitionTitle}</span>
                       </div>
                       <h2 className="text-2xl font-bold text-gray-900">{sub.title}</h2>
@@ -111,17 +114,17 @@ export default function SubsidiesPage() {
                           <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("message")}</label><textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} rows={3} placeholder={t("messagePlaceholder")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
                           {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
                           <div className="flex gap-3">
-                            <button type="submit" disabled={submitting} className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">{submitting ? t("submitting") : t("submitAssistanceRequest")}</button>
+                            <Button type="submit" disabled={submitting} variant="save" size="wide">{submitting ? t("submitting") : t("submitAssistanceRequest")}</Button>
                             <button type="button" onClick={() => { setOpenFormId(null); setError(""); }} className="rounded-xl px-6 py-3 text-sm font-semibold text-gray-500 hover:bg-gray-50">{t("cancel")}</button>
                           </div>
                         </form>
                       ) : (
-                        <button onClick={() => { setOpenFormId(sub.id); setError(""); }} className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity">{t("requestAssistance")}</button>
+                        <Button onClick={() => { setOpenFormId(sub.id); setError(""); }} variant="save" size="wide">{t("requestAssistance")}</Button>
                       )}
                     </div>
                   )}
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>

@@ -54,7 +54,7 @@ export default function MovingAssistancePage() {
         <div className="text-6xl mb-4">📦</div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("quoteRequested")}</h1>
         <p className="text-gray-500 mb-6">{t("quoteRequestedHint")}</p>
-        <button onClick={() => setSubmitted(false)} className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("submitAnother")}</button>
+        <Button onClick={() => setSubmitted(false)} variant="gradientPlain" size="wide">{t("submitAnother")}</Button>
       </Card>
     </div>
   );

@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { renderMarkdown } from "@/lib/markdown";
 import { getPublishedPostBySlug } from "@/lib/server/blog-repo";
+import Card from "@/components/ui/Card";
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
@@ -115,13 +116,15 @@ export default async function BlogPostPage({
 
       <section className="py-12 bg-gray-50">
         <div className="mx-auto max-w-3xl px-6">
-          <div
-            className="rounded-2xl bg-white p-8 shadow-sm text-gray-700"
+          <Card
+            shadow="sm"
+            bordered={false}
+            className="p-8 text-gray-700"
             dangerouslySetInnerHTML={{ __html: renderMarkdown(post.content) }}
           />
 
           {post.authorName && (
-            <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm flex items-start gap-4">
+            <Card shadow="sm" bordered={false} className="mt-6 p-6 flex items-start gap-4">
               <div className="w-12 h-12 rounded-full gradient-brand flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
                 {post.authorName.charAt(0)}
               </div>
@@ -130,11 +133,11 @@ export default async function BlogPostPage({
                 <p className="font-bold text-gray-900">{post.authorName}</p>
                 {post.authorBio && <p className="text-sm text-gray-500 mt-1">{post.authorBio}</p>}
               </div>
-            </div>
+            </Card>
           )}
 
           {post.faqItems.length > 0 && (
-            <div className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
+            <Card shadow="sm" bordered={false} className="mt-6 p-6">
               <h2 className="font-bold text-gray-900 mb-4">{t("faqTitle")}</h2>
               <div className="space-y-4">
                 {post.faqItems.map((item) => (
@@ -144,7 +147,7 @@ export default async function BlogPostPage({
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           )}
 
           <Link href="/blog" className="mt-6 inline-block text-sm font-semibold text-emerald-600 hover:underline">

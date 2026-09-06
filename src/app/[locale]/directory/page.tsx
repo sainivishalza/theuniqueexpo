@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { mockExhibitorProfiles } from "@/lib/booths";
+import Badge from "@/components/ui/Badge";
+import Card from "@/components/ui/Card";
 
 interface ReviewSummary {
   average: number;
@@ -119,11 +120,7 @@ export default function DirectoryPage() {
               </div>
             ) : (
               filtered.map((ex, idx) => (
-                <Link
-                  key={ex.id}
-                  href={`/exhibitor/${ex.id}`}
-                  className="group block rounded-2xl bg-white p-6 shadow-sm border border-gray-100 card-hover"
-                >
+                <Card key={ex.id} href={`/exhibitor/${ex.id}`} shadow="sm" className="p-6">
                   <div className="flex items-start gap-4">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${avatarColors[idx % avatarColors.length]} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
                       {ex.name[0]}
@@ -133,9 +130,9 @@ export default function DirectoryPage() {
                         <h2 className="text-lg font-bold text-gray-900 group-hover:text-emerald-600 transition-colors truncate">
                           {ex.name}
                         </h2>
-                        <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-bold text-green-700 flex-shrink-0">
+                        <Badge tone="success" size="status" className="flex-shrink-0">
                           {t("verified")}
-                        </span>
+                        </Badge>
                       </div>
                       <p className="text-sm text-gray-500 mt-0.5">
                         {ex.industry} • {ex.country}
@@ -165,7 +162,7 @@ export default function DirectoryPage() {
                       </span>
                     )}
                   </div>
-                </Link>
+                </Card>
               ))
             )}
           </div>

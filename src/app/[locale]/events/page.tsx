@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import Badge from "@/components/ui/Badge";
+import Card from "@/components/ui/Card";
 
 interface Event {
   id: string; slug: string; title: string; category: string; city: string; venue: string;
@@ -66,11 +68,7 @@ export default function EventsPage() {
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {events.map((event) => (
-              <Link
-                key={event.id}
-                href={`/events/${event.slug}`}
-                className="group block rounded-2xl overflow-hidden bg-white shadow-md shadow-gray-200/50 card-hover"
-              >
+              <Card key={event.id} href={`/events/${event.slug}`} bordered={false}>
                 <div className="relative h-44 overflow-hidden bg-gray-900">
                   {event.image ? (
                     <Image
@@ -86,9 +84,9 @@ export default function EventsPage() {
                     </div>
                   )}
                   <div className="absolute top-3 left-3">
-                    <span className="rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold text-gray-900 shadow-sm capitalize">
+                    <Badge tone="white" size="tag" className="capitalize">
                       {CATEGORY_ICONS[event.category] || "📅"} {t(`categories.${event.category}`)}
-                    </span>
+                    </Badge>
                   </div>
                 </div>
                 <div className="p-5">
@@ -115,7 +113,7 @@ export default function EventsPage() {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </Card>
             ))}
           </div>
 

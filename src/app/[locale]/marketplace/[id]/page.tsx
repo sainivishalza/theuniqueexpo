@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
+import Card from "@/components/ui/Card";
 
 interface RFQ {
   id: string; title: string; product: string; description: string; quantity: string;
@@ -136,7 +137,7 @@ export default function RFQDetailPage() {
             {/* Main */}
             <div className="lg:col-span-2 space-y-6">
               {/* Details */}
-              <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-8">
                 <h2 className="text-lg font-bold text-gray-900 mb-4">{t("requestDetails")}</h2>
                 <p className="text-gray-600 leading-relaxed mb-6">{rfq.description}</p>
                 <div className="grid grid-cols-3 gap-4">
@@ -152,10 +153,10 @@ export default function RFQDetailPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </Card>
 
               {/* Quotes */}
-              <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-8">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-bold text-gray-900">{t("quotesCount", { count: quotes.length })}</h2>
                   {user?.role === "exhibitor" && !alreadyQuoted && (
@@ -245,19 +246,19 @@ export default function RFQDetailPage() {
                     ))
                   )}
                 </div>
-              </div>
+              </Card>
             </div>
 
             {/* Sidebar */}
             <div className="space-y-6">
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-6">
                 <h3 className="text-sm font-bold text-gray-900 mb-3">{t("requestInfo")}</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between"><span className="text-gray-500">{t("category")}</span><span className="font-semibold">{rfq.category}</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">{t("status")}</span><span className="font-semibold capitalize">{STATUS_LABELS[rfq.status] || rfq.status.replace("_", " ")}</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">{t("quotes")}</span><span className="font-semibold">{quotes.length}</span></div>
                 </div>
-              </div>
+              </Card>
             </div>
           </div>
         </div>

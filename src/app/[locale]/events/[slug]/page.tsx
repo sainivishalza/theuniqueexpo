@@ -6,6 +6,9 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 interface Event {
   id: string; slug: string; title: string; category: string; city: string; venue: string;
@@ -72,9 +75,9 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
     <div>
       <section className="bg-gray-900 py-8 md:py-10">
         <div className="mx-auto max-w-5xl px-6">
-          <span className="rounded-lg bg-white/10 px-3 py-1 text-sm font-medium text-white border border-white/10 capitalize">
+          <Badge tone="outline-light" size="pill" className="capitalize">
             {CATEGORY_ICONS[event.category] || "📅"} {t(`categories.${event.category}`)}
-          </span>
+          </Badge>
           <h1 className="mt-4 text-3xl md:text-5xl font-extrabold text-white leading-tight max-w-3xl">
             {event.title}
           </h1>
@@ -98,14 +101,14 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
       <section className="py-12 bg-gray-50">
         <div className="mx-auto max-w-5xl px-6 grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            <div className="rounded-2xl bg-white p-8 shadow-sm">
+            <Card shadow="sm" bordered={false} className="p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("aboutThisEvent")}</h2>
               <p className="text-gray-600 leading-relaxed whitespace-pre-line">{event.description}</p>
-            </div>
+            </Card>
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100 space-y-4">
+            <Card shadow="sm" className="p-6 space-y-4">
               <div className="flex items-start gap-3">
                 <span className="text-xl">📅</span>
                 <div>
@@ -131,9 +134,9 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
                   <div className="text-sm font-semibold text-gray-900">{event.price || t("free")}</div>
                 </div>
               </div>
-            </div>
+            </Card>
 
-            <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+            <Card shadow="sm" className="p-6">
               {registered ? (
                 <div className="text-center py-2">
                   <div className="text-3xl mb-2">✅</div>
@@ -144,23 +147,16 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
               ) : user ? (
                 <>
                   {error && <div className="mb-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</div>}
-                  <button
-                    onClick={handleRegister}
-                    disabled={submitting}
-                    className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 disabled:opacity-50"
-                  >
+                  <Button onClick={handleRegister} disabled={submitting} variant="gradientCta" size="block">
                     {submitting ? t("submitting") : t("registerForThisEvent")}
-                  </button>
+                  </Button>
                 </>
               ) : (
-                <Link
-                  href="/login"
-                  className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all"
-                >
+                <Button href="/login" variant="gradientCta" size="block">
                   {t("logInToRegister")}
-                </Link>
+                </Button>
               )}
-            </div>
+            </Card>
           </div>
         </div>
       </section>

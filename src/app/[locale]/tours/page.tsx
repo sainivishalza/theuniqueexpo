@@ -141,13 +141,13 @@ export default function ToursPage() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("howToBook")}</h2>
           <div className="grid gap-6 sm:grid-cols-3">
             {["browse", "register", "confirm"].map((step, i) => (
-              <div key={step} className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <Card key={step} shadow="sm" className="p-6">
                 <div className="w-9 h-9 rounded-full gradient-brand flex items-center justify-center text-white text-sm font-bold mb-3">
                   {i + 1}
                 </div>
                 <h3 className="font-bold text-gray-900 mb-1">{t(`howToBookSteps.${step}.title`)}</h3>
                 <p className="text-sm text-gray-500">{t(`howToBookSteps.${step}.desc`)}</p>
-              </div>
+              </Card>
             ))}
           </div>
         </div>

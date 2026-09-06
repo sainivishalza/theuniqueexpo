@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import FavoriteButton from "@/components/FavoriteButton";
+import Card from "@/components/ui/Card";
 
 interface Exhibition {
   id: string;
@@ -66,11 +67,7 @@ export default function FavoritesPage() {
 
       <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {exhibitions.map((expo) => (
-          <Link
-            key={expo.id}
-            href={`/exhibitions/${expo.slug}`}
-            className="group block rounded-2xl overflow-hidden bg-white shadow-md shadow-gray-200/50 card-hover"
-          >
+          <Card key={expo.id} href={`/exhibitions/${expo.slug}`} bordered={false}>
             <div className="relative h-40 overflow-hidden bg-gray-900">
               {expo.image && (
                 <Image
@@ -95,7 +92,7 @@ export default function FavoritesPage() {
               <p className="text-sm text-gray-500 mt-1">{expo.dates}</p>
               <p className="text-xs text-gray-400 mt-0.5">{expo.venue}, {expo.city}</p>
             </div>
-          </Link>
+          </Card>
         ))}
       </div>
     </main>

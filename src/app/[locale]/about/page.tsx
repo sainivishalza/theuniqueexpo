@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { getAboutContent } from "@/lib/server/about-content-repo";
+import Card from "@/components/ui/Card";
+import IconBadge from "@/components/ui/IconBadge";
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
@@ -57,26 +59,26 @@ export default async function AboutPage() {
 
       <section className="py-14 bg-gray-50">
         <div className="mx-auto max-w-4xl px-6 space-y-8">
-          <div className="rounded-2xl bg-white p-8 shadow-sm">
+          <Card shadow="sm" bordered={false} className="p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("ourStory")}</h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               {storyParagraphs.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
             </div>
-          </div>
+          </Card>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <div className="rounded-2xl bg-white p-8 shadow-sm">
-              <div className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center text-white text-lg mb-4">🎯</div>
+            <Card shadow="sm" bordered={false} className="p-8">
+              <IconBadge size="sm" icon="🎯" bgClassName="gradient-brand text-white" className="mb-4" />
               <h3 className="text-lg font-bold text-gray-900 mb-2">{t("ourMission")}</h3>
               <p className="text-sm text-gray-600 leading-relaxed">{content.mission}</p>
-            </div>
-            <div className="rounded-2xl bg-white p-8 shadow-sm">
-              <div className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center text-white text-lg mb-4">🔭</div>
+            </Card>
+            <Card shadow="sm" bordered={false} className="p-8">
+              <IconBadge size="sm" icon="🔭" bgClassName="gradient-brand text-white" className="mb-4" />
               <h3 className="text-lg font-bold text-gray-900 mb-2">{t("ourVision")}</h3>
               <p className="text-sm text-gray-600 leading-relaxed">{content.vision}</p>
-            </div>
+            </Card>
           </div>
         </div>
       </section>

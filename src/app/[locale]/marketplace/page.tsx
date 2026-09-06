@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
+import Card from "@/components/ui/Card";
 
 interface RFQ {
   id: string; title: string; product: string; description: string; quantity: string;
@@ -102,7 +103,7 @@ export default function MarketplacePage() {
             {loading ? (
               <div className="text-center py-20 text-gray-400">{t("loadingBuyRequests")}</div>
             ) : rfqs.length === 0 ? (
-              <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
+              <Card shadow="sm" bordered={false} className="text-center py-20">
                 <div className="text-5xl mb-4">📋</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{t("noResultsTitle")}</h3>
                 <p className="text-gray-500 mb-6">{t("noResultsSubtitle")}</p>
@@ -112,14 +113,10 @@ export default function MarketplacePage() {
                 >
                   {t("postFirstRfq")}
                 </Link>
-              </div>
+              </Card>
             ) : (
               rfqs.map((rfq) => (
-                <Link
-                  key={rfq.id}
-                  href={`/marketplace/${rfq.id}`}
-                  className="group block rounded-2xl bg-white p-6 shadow-sm border border-gray-100 card-hover"
-                >
+                <Card key={rfq.id} href={`/marketplace/${rfq.id}`} shadow="sm" className="p-6">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
@@ -150,7 +147,7 @@ export default function MarketplacePage() {
                       {t("viewDetails")}
                     </span>
                   </div>
-                </Link>
+                </Card>
               ))
             )}
           </div>

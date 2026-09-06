@@ -6,6 +6,9 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { mockExhibitorProfiles } from "@/lib/booths";
 import ReviewsSection from "@/components/ReviewsSection";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import IconBadge from "@/components/ui/IconBadge";
 
 const avatarColors = [
   "from-emerald-500 to-emerald-600",
@@ -78,26 +81,26 @@ export default function ExhibitorProfilePage() {
             {/* Main */}
             <div className="lg:col-span-2 space-y-8">
               {/* About */}
-              <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-8">
                 <h2 className="text-xl font-bold text-gray-900 mb-4">{t("about")}</h2>
                 <p className="text-gray-600 leading-relaxed">{profile.description}</p>
-              </div>
+              </Card>
 
               {/* Products */}
-              <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-8">
                 <h2 className="text-xl font-bold text-gray-900 mb-5">{t("productsAndServices")}</h2>
                 <div className="grid grid-cols-2 gap-3">
                   {profile.products.map((p) => (
                     <div key={p} className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
-                      <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center text-white text-xs font-bold flex-shrink-0">✦</div>
+                      <IconBadge size="xs" icon="✦" bgClassName="gradient-brand text-white" className="flex-shrink-0" />
                       <span className="text-sm font-medium text-gray-700">{p}</span>
                     </div>
                   ))}
                 </div>
-              </div>
+              </Card>
 
               {/* Certifications */}
-              <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-8">
                 <h2 className="text-xl font-bold text-gray-900 mb-5">{t("certifications")}</h2>
                 <div className="flex flex-wrap gap-2">
                   {profile.certifications.map((c) => (
@@ -106,7 +109,7 @@ export default function ExhibitorProfilePage() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </Card>
 
               <ReviewsSection apiBasePath={`/api/exhibitors/${profile.slug}/reviews`} kind="supplier" />
             </div>
@@ -114,24 +117,18 @@ export default function ExhibitorProfilePage() {
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Actions */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-4">{t("connect")}</h3>
-                <Link
-                  href="/register"
-                  className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
-                >
+                <Button href="/register" variant="gradientCta" size="block">
                   {t("requestMeeting")}
-                </Link>
-                <Link
-                  href="/marketplace/new"
-                  className="mt-3 block w-full text-center rounded-xl border border-gray-200 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
-                >
+                </Button>
+                <Button href="/marketplace/new" variant="ghost" size="block" className="mt-3">
                   {t("sendRfq")}
-                </Link>
-              </div>
+                </Button>
+              </Card>
 
               {/* Quick facts */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-6">
                 <h3 className="text-sm font-bold text-gray-900 mb-4">{t("quickFacts")}</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
@@ -151,10 +148,10 @@ export default function ExhibitorProfilePage() {
                     <span className="font-semibold text-gray-900">{profile.certifications.length}</span>
                   </div>
                 </div>
-              </div>
+              </Card>
 
               {/* Share */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-6">
                 <h3 className="text-sm font-bold text-gray-900 mb-3">{t("shareProfile")}</h3>
                 <div className="flex gap-2">
                   {["𝕏", "in", "f", "✉"].map((icon, i) => (
@@ -163,7 +160,7 @@ export default function ExhibitorProfilePage() {
                     </button>
                   ))}
                 </div>
-              </div>
+              </Card>
             </div>
           </div>
         </div>

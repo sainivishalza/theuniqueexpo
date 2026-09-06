@@ -6,6 +6,10 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import IconBadge from "@/components/ui/IconBadge";
 
 interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -89,12 +93,8 @@ export default function ExhibitionDetailPage({
       <section className="bg-gray-900 py-8 md:py-10">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-wrap gap-2 mb-4">
-            <span className="rounded-lg bg-white/10 px-3 py-1 text-sm font-medium text-white border border-white/10">
-              {expo.industry}
-            </span>
-            <span className="rounded-lg bg-white/10 px-3 py-1 text-sm font-medium text-white border border-white/10">
-              {expo.city}, {expo.country}
-            </span>
+            <Badge tone="outline-light" size="pill">{expo.industry}</Badge>
+            <Badge tone="outline-light" size="pill">{expo.city}, {expo.country}</Badge>
             {isUpcoming && (
               <span className="rounded-lg bg-green-500/90 px-3 py-1 text-sm font-bold text-white">
                 {t("upcoming")}
@@ -163,7 +163,7 @@ export default function ExhibitionDetailPage({
             { label: t("stats.duration"), value: expo.dates, icon: "📅" },
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-lg">{s.icon}</div>
+              <IconBadge size="sm" icon={s.icon} tint="bg-gray-100" />
               <div>
                 <div className="text-xs text-gray-400">{s.label}</div>
                 <div className="text-sm font-bold text-gray-900">{s.value}</div>
@@ -180,29 +180,27 @@ export default function ExhibitionDetailPage({
             {/* Left: main content */}
             <div className="lg:col-span-2 space-y-8">
               {/* About */}
-              <div className="rounded-2xl bg-white p-8 shadow-sm">
+              <Card shadow="sm" bordered={false} className="p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("aboutThisExhibition")}</h2>
                 <p className="text-gray-600 leading-relaxed whitespace-pre-line">{expo.description}</p>
-              </div>
+              </Card>
 
               {/* Highlights */}
-              <div className="rounded-2xl bg-white p-8 shadow-sm">
+              <Card shadow="sm" bordered={false} className="p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("eventHighlights")}</h2>
                 <div className="grid gap-4 md:grid-cols-2">
                   {expo.highlights.map((h, i) => (
                     <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100">
-                      <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                        {i + 1}
-                      </div>
+                      <IconBadge size="xs" icon={i + 1} bgClassName="gradient-brand text-white" className="flex-shrink-0" />
                       <span className="text-sm text-gray-700 pt-1">{h}</span>
                     </div>
                   ))}
                 </div>
-              </div>
+              </Card>
 
               {/* Photo gallery */}
               {expo.galleryImages && expo.galleryImages.length > 0 && (
-                <div className="rounded-2xl bg-white p-8 shadow-sm">
+                <Card shadow="sm" bordered={false} className="p-8">
                   <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("photoGallery")}</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {expo.galleryImages.map((img, i) => (
@@ -222,11 +220,11 @@ export default function ExhibitionDetailPage({
                       </button>
                     ))}
                   </div>
-                </div>
+                </Card>
               )}
 
               {/* Exhibitor preview */}
-              <div className="rounded-2xl bg-white p-8 shadow-sm">
+              <Card shadow="sm" bordered={false} className="p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("featuredExhibitors")}</h2>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
                   {exhibitorLogos.map((e) => (
@@ -244,45 +242,39 @@ export default function ExhibitionDetailPage({
                 >
                   {t("viewAllExhibitors")}
                 </Link>
-              </div>
+              </Card>
             </div>
 
             {/* Right: sidebar */}
             <div className="space-y-6">
               {/* Buyer/Visitor registration CTA */}
               {expo.registrationEnabled && (
-                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+                <Card shadow="sm" className="p-6">
                   <h3 className="text-lg font-bold text-gray-900 mb-2">{t("registerToAttend")}</h3>
                   <p className="text-sm text-gray-500 mb-5">{t("registerToAttendHint")}</p>
-                  <Link
-                    href={`/exhibitions/${expo.slug}/register`}
-                    className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
-                  >
+                  <Button href={`/exhibitions/${expo.slug}/register`} variant="gradientCta" size="block">
                     {t("registerAsBuyerVisitor")}
-                  </Link>
-                </div>
+                  </Button>
+                </Card>
               )}
 
               {/* Booking CTA */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-4">{t("bookYourBooth")}</h3>
                 <p className="text-sm text-gray-500 mb-5">{t("bookYourBoothHint")}</p>
                 {isUpcoming ? (
-                  <Link
-                    href={`/exhibitions/${expo.slug}/floor-plan`}
-                    className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:shadow-emerald-500/30 hover:scale-[1.02] transition-all duration-200"
-                  >
+                  <Button href={`/exhibitions/${expo.slug}/floor-plan`} variant="gradientCta" size="block">
                     {t("viewFloorPlanAndBook")}
-                  </Link>
+                  </Button>
                 ) : (
                   <div className="block w-full text-center rounded-xl bg-gray-200 py-3 text-sm font-semibold text-gray-500">
                     {t("exhibitionEnded")}
                   </div>
                 )}
-              </div>
+              </Card>
 
               {/* Hotels */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-3">{t("hotelsNearby")}</h3>
                 <div className="relative h-32 rounded-xl overflow-hidden mb-4">
                   <Image
@@ -303,10 +295,10 @@ export default function ExhibitionDetailPage({
                 >
                   {t("browseHotels")}
                 </Link>
-              </div>
+              </Card>
 
               {/* Share */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-3">{t("shareThisEvent")}</h3>
                 <div className="flex gap-2">
                   {["𝕏", "in", "f", "✉"].map((icon, i) => (
@@ -318,10 +310,10 @@ export default function ExhibitionDetailPage({
                     </button>
                   ))}
                 </div>
-              </div>
+              </Card>
 
               {/* Organizer */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-6">
                 <h3 className="text-sm font-bold text-gray-900 mb-2">{t("organizedBy")}</h3>
                 <p className="text-sm text-gray-500">{expo.organizer}</p>
                 <a
@@ -332,7 +324,7 @@ export default function ExhibitionDetailPage({
                 >
                   {t("officialWebsite")}
                 </a>
-              </div>
+              </Card>
             </div>
           </div>
         </div>

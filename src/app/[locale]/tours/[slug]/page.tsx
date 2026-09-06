@@ -5,6 +5,10 @@ import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import ReviewsSection from "@/components/ReviewsSection";
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import IconBadge from "@/components/ui/IconBadge";
 
 interface Tour {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -68,12 +72,8 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
       <section className="bg-gray-900 py-8 md:py-10">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-wrap gap-2 mb-4">
-            <span className="rounded-lg bg-white/10 px-3 py-1 text-sm font-medium text-white border border-white/10">
-              {tour.duration}
-            </span>
-            <span className="rounded-lg bg-white/10 px-3 py-1 text-sm font-medium text-white border border-white/10">
-              {tour.departureCity} → {tour.destination}
-            </span>
+            <Badge tone="outline-light" size="pill">{tour.duration}</Badge>
+            <Badge tone="outline-light" size="pill">{tour.departureCity} → {tour.destination}</Badge>
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight max-w-3xl">
             {tour.title}
@@ -134,7 +134,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
             { label: t("stats.route"), value: `${tour.departureCity} → ${tour.destination}`, icon: "🧭" },
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-lg">{s.icon}</div>
+              <IconBadge size="sm" icon={s.icon} tint="bg-gray-100" />
               <div>
                 <div className="text-xs text-gray-400">{s.label}</div>
                 <div className="text-sm font-bold text-gray-900">{s.value}</div>
@@ -149,29 +149,27 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-8 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-8">
-              <div className="rounded-2xl bg-white p-8 shadow-sm">
+              <Card shadow="sm" bordered={false} className="p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("aboutThisTour")}</h2>
                 <p className="text-gray-600 leading-relaxed whitespace-pre-line">{tour.description}</p>
-              </div>
+              </Card>
 
               {tour.highlights.length > 0 && (
-                <div className="rounded-2xl bg-white p-8 shadow-sm">
+                <Card shadow="sm" bordered={false} className="p-8">
                   <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("tourHighlights")}</h2>
                   <div className="grid gap-4 md:grid-cols-2">
                     {tour.highlights.map((h, i) => (
                       <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-100">
-                        <div className="w-8 h-8 rounded-lg gradient-brand flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                          {i + 1}
-                        </div>
+                        <IconBadge size="xs" icon={i + 1} bgClassName="gradient-brand text-white" className="flex-shrink-0" />
                         <span className="text-sm text-gray-700 pt-1">{h}</span>
                       </div>
                     ))}
                   </div>
-                </div>
+                </Card>
               )}
 
               {tour.galleryImages && tour.galleryImages.length > 0 && (
-                <div className="rounded-2xl bg-white p-8 shadow-sm">
+                <Card shadow="sm" bordered={false} className="p-8">
                   <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("photoGallery")}</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {tour.galleryImages.map((img, i) => (
@@ -191,7 +189,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
                       </button>
                     ))}
                   </div>
-                </div>
+                </Card>
               )}
 
               <div id="reviews">
@@ -201,7 +199,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
 
             {/* Sidebar */}
             <div className="space-y-6">
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{t("bookThisTour")}</h3>
                 <p className="text-sm text-gray-500 mb-5">
                   {tour.registrationEnabled
@@ -209,23 +207,20 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
                     : t("registrationClosed")}
                 </p>
                 {tour.registrationEnabled ? (
-                  <Link
-                    href={`/tours/${tour.slug}/register`}
-                    className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
-                  >
+                  <Button href={`/tours/${tour.slug}/register`} variant="gradientCta" size="block">
                     {t("registerForThisTour")}
-                  </Link>
+                  </Button>
                 ) : (
                   <div className="block w-full text-center rounded-xl bg-gray-200 py-3 text-sm font-semibold text-gray-500">
                     {t("registrationClosed")}
                   </div>
                 )}
-              </div>
+              </Card>
 
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <Card shadow="sm" className="p-6">
                 <h3 className="text-sm font-bold text-gray-900 mb-2">{t("organizedBy")}</h3>
                 <p className="text-sm text-gray-500">{tour.organizer}</p>
-              </div>
+              </Card>
             </div>
           </div>
         </div>

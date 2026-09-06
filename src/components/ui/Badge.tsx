@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef } from "react";
 
-export type BadgeTone = "emerald" | "purple" | "gold" | "gray" | "white" | "live";
-export type BadgeSize = "eyebrow" | "tag";
+export type BadgeTone = "emerald" | "purple" | "gold" | "gray" | "white" | "live" | "outline-light";
+export type BadgeSize = "eyebrow" | "tag" | "pill";
 
 const TONE_CLASSES: Record<BadgeTone, string> = {
   emerald: "bg-emerald-100 text-emerald-700",
@@ -12,6 +12,8 @@ const TONE_CLASSES: Record<BadgeTone, string> = {
   white: "bg-white/90 backdrop-blur-sm text-gray-900 shadow-sm",
   // "Upcoming" / status marker over an image.
   live: "bg-green-500/90 backdrop-blur-sm text-white shadow-sm",
+  // Meta tag on a dark header bar, e.g. a detail page's industry/duration tag.
+  "outline-light": "bg-white/10 text-white border border-white/10",
 };
 
 const SIZE_CLASSES: Record<BadgeSize, string> = {
@@ -19,6 +21,8 @@ const SIZE_CLASSES: Record<BadgeSize, string> = {
   eyebrow: "rounded-full px-4 py-1.5 text-sm font-semibold",
   // Small label on a card/image, e.g. industry or "Upcoming".
   tag: "rounded-lg px-3 py-1 text-xs font-bold",
+  // Meta tag on a detail page's dark header bar.
+  pill: "rounded-lg px-3 py-1 text-sm font-medium",
 };
 
 interface BadgeProps extends ComponentPropsWithoutRef<"span"> {

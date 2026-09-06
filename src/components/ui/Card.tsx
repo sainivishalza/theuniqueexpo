@@ -9,12 +9,16 @@ const SHADOW_CLASSES: Record<CardShadow, string> = {
   lg: "shadow-lg shadow-gray-200/60",
 };
 
-const BASE_CLASSES = "block rounded-2xl overflow-hidden bg-white card-hover";
+const BASE_CLASSES = "block rounded-2xl overflow-hidden bg-white";
 
 interface CardOwnProps {
   href?: string;
   shadow?: CardShadow;
   bordered?: boolean;
+  /** Lift-on-hover affordance -- defaults to on for a clickable (href) card
+   * and off for a static content panel, since a non-interactive panel
+   * shouldn't visually invite a click it doesn't perform. */
+  hoverable?: boolean;
   className?: string;
 }
 
@@ -24,15 +28,16 @@ type CardProps = CardOwnProps &
     | ({ href?: undefined } & ComponentPropsWithoutRef<"div">)
   );
 
-// Shared card shell (exhibition/service/tour listing cards, process-step
-// tiles, etc.) so the rounded-corner + shadow + hover-lift treatment stays
+// Shared card shell used both for clickable listing cards (exhibition/tour/
+// service/blog cards) and static content panels (detail-page "About",
+// sidebar CTA panels, etc.) so the rounded-corner + shadow treatment stays
 // consistent everywhere instead of being retyped per page. Renders a
 // <Link> (with the hover "group" class for image zoom effects) when `href`
 // is given, a plain <div> otherwise.
-export default function Card({ href, shadow = "md", bordered = true, className = "", ...props }: CardProps) {
+export default function Card({ href, shadow = "md", bordered = true, hoverable = href !== undefined, className = "", ...props }: CardProps) {
   const classes = `${BASE_CLASSES} ${SHADOW_CLASSES[shadow]} ${bordered ? "border border-gray-100" : ""} ${
-    href ? "group" : ""
-  } ${className}`;
+    hoverable ? "card-hover" : ""
+  } ${href ? "group" : ""} ${className}`;
   if (href) {
     return <Link href={href} className={classes} {...(props as Omit<ComponentPropsWithoutRef<typeof Link>, "href">)} />;
   }

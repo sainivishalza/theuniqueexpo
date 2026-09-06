@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { Link } from "@/i18n/navigation";
 
-export type ButtonVariant = "primary" | "dark" | "outline" | "gradient" | "gold";
+export type ButtonVariant = "primary" | "dark" | "outline" | "gradient" | "gold" | "gradientCta";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   // White pill on a dark/colored background -- main hero/CTA buttons.
@@ -15,9 +15,11 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   gradient: "gradient-brand text-white hover:scale-105",
   // Gold accent fill -- for highlight actions, used sparingly.
   gold: "bg-gold-500 text-white shadow-lg shadow-gold-500/25 hover:bg-gold-600 hover:scale-105",
+  // Full-width gradient CTA on a detail-page sidebar panel (register/book buttons).
+  gradientCta: "gradient-brand text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02]",
 };
 
-export type ButtonSize = "md" | "sm";
+export type ButtonSize = "md" | "sm" | "block";
 
 // Padding/text-size live on a size variant rather than being left to an
 // overriding className -- two same-specificity Tailwind utility classes
@@ -27,6 +29,8 @@ export type ButtonSize = "md" | "sm";
 const SIZE_CLASSES: Record<ButtonSize, string> = {
   md: "px-8 py-4 text-base",
   sm: "px-8 py-3.5 text-sm",
+  // Full-width sidebar CTA -- no horizontal padding, text centered by the width itself.
+  block: "w-full py-3 text-sm",
 };
 
 const BASE_CLASSES = "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300";

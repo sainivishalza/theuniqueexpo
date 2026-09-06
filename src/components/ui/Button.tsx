@@ -1,7 +1,19 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { Link } from "@/i18n/navigation";
 
-export type ButtonVariant = "primary" | "dark" | "outline" | "gradient" | "gold" | "gradientCta" | "save" | "linkDanger" | "dashedAdd";
+export type ButtonVariant =
+  | "primary"
+  | "dark"
+  | "outline"
+  | "gradient"
+  | "gold"
+  | "gradientCta"
+  | "save"
+  | "linkDanger"
+  | "dashedAdd"
+  | "gradientFlat"
+  | "ghost"
+  | "ghostDanger";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   // White pill on a dark/colored background -- main hero/CTA buttons.
@@ -23,9 +35,15 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   linkDanger: "text-red-600 hover:underline",
   // "Add another item" action in an admin repeatable-item list.
   dashedAdd: "border-2 border-dashed border-gray-300 text-gray-500 hover:border-emerald-400 hover:text-emerald-600",
+  // Admin CRUD form's inline save/create button (flatter than gradientCta -- no hover lift).
+  gradientFlat: "gradient-brand text-white shadow-md disabled:opacity-50",
+  // Secondary/neutral action on a light background -- admin form cancel, row view/edit links.
+  ghost: "border border-gray-200 text-gray-700 hover:bg-gray-50",
+  // Destructive secondary action on a light background -- admin row delete.
+  ghostDanger: "border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50",
 };
 
-export type ButtonSize = "md" | "sm" | "block" | "blockSm" | "blockLg" | "inline";
+export type ButtonSize = "md" | "sm" | "block" | "blockSm" | "blockLg" | "inline" | "compact" | "xs";
 
 // Padding/text-size live on a size variant rather than being left to an
 // overriding className -- two same-specificity Tailwind utility classes
@@ -43,6 +61,10 @@ const SIZE_CLASSES: Record<ButtonSize, string> = {
   blockLg: "w-full py-4 text-sm",
   // Plain inline text action, no padding/width -- e.g. a row's delete link.
   inline: "text-xs",
+  // Admin form/header action button (new item, save, cancel).
+  compact: "px-5 py-2.5 text-sm",
+  // Admin list-row action button (view, edit, delete).
+  xs: "px-4 py-2 text-xs",
 };
 
 const BASE_CLASSES = "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300";

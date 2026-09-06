@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import { errorMessage } from "@/lib/format";
+import Badge from "@/components/ui/Badge";
 
 interface Booking {
   id: string;
@@ -95,17 +96,9 @@ export default function AdminHotelsPage() {
                 </p>
               </div>
               <div className="flex items-center gap-3 flex-wrap">
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                    bk.status === "pending"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : bk.status === "confirmed"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                  }`}
-                >
+                <Badge tone={bk.status === "pending" ? "warning" : bk.status === "confirmed" ? "success" : "danger"} size="status">
                   {t(`statuses.${bk.status}`)}
-                </span>
+                </Badge>
                 {bk.status === "pending" && (
                   <>
                     <button

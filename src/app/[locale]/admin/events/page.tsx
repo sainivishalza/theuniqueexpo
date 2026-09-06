@@ -6,6 +6,8 @@ import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import { slugify } from "@/lib/slugify";
 import { errorMessage } from "@/lib/format";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 interface Event {
   id: string;
@@ -156,12 +158,9 @@ export default function AdminEventsPage() {
           </Link>
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
-            <button
-              onClick={openNew}
-              className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
-            >
+            <Button onClick={openNew} variant="gradientCta" size="compact">
               {t("newEvent")}
-            </button>
+            </Button>
           </div>
         </div>
       </section>
@@ -212,19 +211,12 @@ export default function AdminEventsPage() {
               />
             </div>
             <div className="mt-5 flex gap-3">
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md disabled:opacity-50"
-              >
+              <Button onClick={handleSave} disabled={saving} variant="gradientFlat" size="compact">
                 {saving ? ta("saving") : editingId ? t("saveChanges") : t("createEvent")}
-              </button>
-              <button
-                onClick={closeForm}
-                className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-              >
+              </Button>
+              <Button onClick={closeForm} variant="ghost" size="compact">
                 {ta("cancel")}
-              </button>
+              </Button>
             </div>
           </div>
         </section>
@@ -235,7 +227,7 @@ export default function AdminEventsPage() {
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingEvents")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
           {!loading && !error && events.map((event) => (
-            <div key={event.id} className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl bg-white p-5 shadow-sm border border-gray-100 card-hover">
+            <Card key={event.id} shadow="sm" hoverable className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1 min-w-0">
                 <h2 className="font-bold text-gray-900 truncate">{event.title}</h2>
                 <p className="text-sm text-gray-500">
@@ -243,18 +235,14 @@ export default function AdminEventsPage() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Link href={`/events/${event.slug}`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("view")}</Link>
-                <Link href={`/admin/events/${event.slug}/registrations`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("registrations")}</Link>
-                <button onClick={() => openEdit(event)} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("editButton")}</button>
-                <button
-                  onClick={() => handleDelete(event.id)}
-                  disabled={deletingId === event.id}
-                  className="rounded-xl border border-red-200 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
-                >
+                <Button href={`/events/${event.slug}`} variant="ghost" size="xs">{t("view")}</Button>
+                <Button href={`/admin/events/${event.slug}/registrations`} variant="ghost" size="xs">{t("registrations")}</Button>
+                <Button onClick={() => openEdit(event)} variant="ghost" size="xs">{t("editButton")}</Button>
+                <Button onClick={() => handleDelete(event.id)} disabled={deletingId === event.id} variant="ghostDanger" size="xs">
                   {deletingId === event.id ? t("deleting") : ta("delete")}
-                </button>
+                </Button>
               </div>
-            </div>
+            </Card>
           ))}
           {!loading && !error && events.length === 0 && (
             <p className="text-center text-gray-500 py-10">{t("noEventsYet")}</p>

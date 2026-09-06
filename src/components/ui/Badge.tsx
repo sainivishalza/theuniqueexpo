@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef } from "react";
 
-export type BadgeTone = "emerald" | "purple" | "gold" | "gray" | "white" | "live" | "outline-light";
-export type BadgeSize = "eyebrow" | "tag" | "pill";
+export type BadgeTone = "emerald" | "purple" | "gold" | "gray" | "white" | "live" | "outline-light" | "warning" | "success" | "danger";
+export type BadgeSize = "eyebrow" | "tag" | "pill" | "status";
 
 const TONE_CLASSES: Record<BadgeTone, string> = {
   emerald: "bg-emerald-100 text-emerald-700",
@@ -14,6 +14,12 @@ const TONE_CLASSES: Record<BadgeTone, string> = {
   live: "bg-green-500/90 backdrop-blur-sm text-white shadow-sm",
   // Meta tag on a dark header bar, e.g. a detail page's industry/duration tag.
   "outline-light": "bg-white/10 text-white border border-white/10",
+  // Admin status pill -- pending/awaiting action.
+  warning: "bg-yellow-100 text-yellow-700",
+  // Admin status pill -- confirmed/approved.
+  success: "bg-green-100 text-green-700",
+  // Admin status pill -- cancelled/rejected.
+  danger: "bg-red-100 text-red-700",
 };
 
 const SIZE_CLASSES: Record<BadgeSize, string> = {
@@ -23,6 +29,8 @@ const SIZE_CLASSES: Record<BadgeSize, string> = {
   tag: "rounded-lg px-3 py-1 text-xs font-bold",
   // Meta tag on a detail page's dark header bar.
   pill: "rounded-lg px-3 py-1 text-sm font-medium",
+  // Admin record status pill (booking/application/order status).
+  status: "rounded-full px-2 py-0.5 text-xs font-medium",
 };
 
 interface BadgeProps extends ComponentPropsWithoutRef<"span"> {

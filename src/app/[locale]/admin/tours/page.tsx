@@ -8,6 +8,7 @@ import { slugify } from "@/lib/slugify";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 interface Tour {
   id: string;
@@ -256,12 +257,9 @@ export default function AdminToursPage() {
           </Link>
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
-            <button
-              onClick={openNew}
-              className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
-            >
+            <Button onClick={openNew} variant="gradientCta" size="compact">
               {t("newTour")}
-            </button>
+            </Button>
           </div>
         </div>
       </section>
@@ -441,19 +439,12 @@ export default function AdminToursPage() {
               <p className="mt-2 text-xs text-gray-400">{t("translationsHint")}</p>
             </div>
             <div className="mt-5 flex gap-3">
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md disabled:opacity-50"
-              >
+              <Button onClick={handleSave} disabled={saving} variant="gradientFlat" size="compact">
                 {saving ? ta("saving") : editingId ? t("saveChanges") : t("createTour")}
-              </button>
-              <button
-                onClick={closeForm}
-                className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-              >
+              </Button>
+              <Button onClick={closeForm} variant="ghost" size="compact">
                 {ta("cancel")}
-              </button>
+              </Button>
             </div>
           </div>
         </section>
@@ -464,7 +455,7 @@ export default function AdminToursPage() {
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingTours")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
           {!loading && !error && tours.map((tour) => (
-            <div key={tour.id} className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl bg-white p-5 shadow-sm border border-gray-100 card-hover">
+            <Card key={tour.id} shadow="sm" hoverable className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center gap-4 min-w-0 flex-1">
                 <div className="w-20 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
                   {tour.image && <img src={tour.image} alt={tour.title} className="img-cover" />}
@@ -475,19 +466,15 @@ export default function AdminToursPage() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Link href={`/tours/${tour.slug}`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("view")}</Link>
-                <Link href={`/admin/tours/${tour.slug}/registrations`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("registrations")}</Link>
-                <Link href={`/admin/tours/${tour.slug}/registration-form`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("registrationForm")}</Link>
-                <button onClick={() => openEdit(tour)} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("editButton")}</button>
-                <button
-                  onClick={() => handleDelete(tour.id)}
-                  disabled={deletingId === tour.id}
-                  className="rounded-xl border border-red-200 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
-                >
+                <Button href={`/tours/${tour.slug}`} variant="ghost" size="xs">{t("view")}</Button>
+                <Button href={`/admin/tours/${tour.slug}/registrations`} variant="ghost" size="xs">{t("registrations")}</Button>
+                <Button href={`/admin/tours/${tour.slug}/registration-form`} variant="ghost" size="xs">{t("registrationForm")}</Button>
+                <Button onClick={() => openEdit(tour)} variant="ghost" size="xs">{t("editButton")}</Button>
+                <Button onClick={() => handleDelete(tour.id)} disabled={deletingId === tour.id} variant="ghostDanger" size="xs">
                   {deletingId === tour.id ? t("deleting") : ta("delete")}
-                </button>
+                </Button>
               </div>
-            </div>
+            </Card>
           ))}
           {!loading && !error && tours.length === 0 && (
             <p className="text-center text-gray-500 py-10">{t("noToursYet")}</p>

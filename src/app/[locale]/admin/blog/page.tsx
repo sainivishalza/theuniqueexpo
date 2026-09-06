@@ -8,6 +8,8 @@ import { slugify } from "@/lib/slugify";
 import { errorMessage } from "@/lib/format";
 import type { FaqItem } from "@/lib/faq-content";
 import Button from "@/components/ui/Button";
+import Badge from "@/components/ui/Badge";
+import Card from "@/components/ui/Card";
 
 interface Post {
   id: string;
@@ -168,12 +170,9 @@ export default function AdminBlogPage() {
           </Link>
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
-            <button
-              onClick={openNew}
-              className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
-            >
+            <Button onClick={openNew} variant="gradientCta" size="compact">
               {t("newPost")}
-            </button>
+            </Button>
           </div>
         </div>
       </section>
@@ -270,19 +269,12 @@ export default function AdminBlogPage() {
               <label htmlFor="published" className="text-sm font-medium text-gray-700">{t("fields.published")}</label>
             </div>
             <div className="mt-5 flex gap-3">
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md disabled:opacity-50"
-              >
+              <Button onClick={handleSave} disabled={saving} variant="gradientFlat" size="compact">
                 {saving ? ta("saving") : editingId ? t("saveChanges") : t("createPost")}
-              </button>
-              <button
-                onClick={closeForm}
-                className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-              >
+              </Button>
+              <Button onClick={closeForm} variant="ghost" size="compact">
                 {ta("cancel")}
-              </button>
+              </Button>
             </div>
           </div>
         </section>
@@ -293,28 +285,24 @@ export default function AdminBlogPage() {
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingPosts")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
           {!loading && !error && posts.map((post) => (
-            <div key={post.id} className="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl bg-white p-5 shadow-sm border border-gray-100 card-hover">
+            <Card key={post.id} shadow="sm" hoverable className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <h2 className="font-bold text-gray-900 truncate">{post.title}</h2>
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${post.published ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                  <Badge tone={post.published ? "success" : "gray"} size="status">
                     {post.published ? t("publishedBadge") : t("draftBadge")}
-                  </span>
+                  </Badge>
                 </div>
                 <p className="text-sm text-gray-500">{t(`categories.${post.category}`)}</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                {post.published && <Link href={`/blog/${post.slug}`} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("view")}</Link>}
-                <button onClick={() => openEdit(post)} className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">{t("editButton")}</button>
-                <button
-                  onClick={() => handleDelete(post.id)}
-                  disabled={deletingId === post.id}
-                  className="rounded-xl border border-red-200 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
-                >
+                {post.published && <Button href={`/blog/${post.slug}`} variant="ghost" size="xs">{t("view")}</Button>}
+                <Button onClick={() => openEdit(post)} variant="ghost" size="xs">{t("editButton")}</Button>
+                <Button onClick={() => handleDelete(post.id)} disabled={deletingId === post.id} variant="ghostDanger" size="xs">
                   {deletingId === post.id ? t("deleting") : ta("delete")}
-                </button>
+                </Button>
               </div>
-            </div>
+            </Card>
           ))}
           {!loading && !error && posts.length === 0 && (
             <p className="text-center text-gray-500 py-10">{t("noPostsYet")}</p>

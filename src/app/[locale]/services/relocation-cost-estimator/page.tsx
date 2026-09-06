@@ -3,6 +3,8 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { errorMessage } from "@/lib/format";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 type MovingType = "office" | "residential" | "freight" | "pet";
 type Scope = "small" | "medium" | "large";
@@ -71,12 +73,12 @@ export default function RelocationCostEstimatorPage() {
 
   if (submitted) return (
     <div className="min-h-[60vh] flex items-center justify-center">
-      <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
+      <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
         <div className="text-6xl mb-4">📦</div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("quoteRequested")}</h1>
         <p className="text-gray-500 mb-6">{t("quoteRequestedHint")}</p>
         <button onClick={() => setSubmitted(false)} className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("startOver")}</button>
-      </div>
+      </Card>
     </div>
   );
 
@@ -95,7 +97,7 @@ export default function RelocationCostEstimatorPage() {
 
       <section className="py-16 bg-gray-50">
         <div className="mx-auto max-w-4xl px-6">
-          <div className="bg-white rounded-2xl p-8 shadow-sm">
+          <Card shadow="sm" bordered={false} className="p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">{t("calculatorTitle")}</h2>
             <p className="text-sm text-gray-500 mb-6">{t("calculatorSubtitle")}</p>
 
@@ -147,12 +149,12 @@ export default function RelocationCostEstimatorPage() {
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("preferredMoveDate")}</label><input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("additionalDetails")}</label><textarea value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} rows={3} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
                 {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-                <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
+                <Button type="submit" disabled={submitting} variant="save" size="block">
                   {submitting ? t("submitting") : t("submitQuoteRequest")}
-                </button>
+                </Button>
               </form>
             </div>
-          </div>
+          </Card>
         </div>
       </section>
     </div>

@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import type { FaqItem } from "@/lib/faq-content";
 import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 export default function AdminFaqPage() {
   const t = useTranslations("adminFaq");
@@ -83,7 +84,7 @@ export default function AdminFaqPage() {
             <p className="text-center text-gray-500 py-10">{ta("loading")}</p>
           ) : (
             <>
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
+              <Card shadow="sm" bordered={false} className="p-6 space-y-4">
                 {items.map((item, i) => (
                   <div key={i} className="rounded-xl border border-gray-200 p-4 space-y-2">
                     <div className="flex items-start gap-2">
@@ -108,7 +109,7 @@ export default function AdminFaqPage() {
                 <Button onClick={addItem} variant="dashedAdd" size="blockSm">
                   {t("addQuestion")}
                 </Button>
-              </div>
+              </Card>
 
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
               {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{t("saved")}</div>}

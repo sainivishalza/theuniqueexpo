@@ -9,6 +9,7 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import OrganizationSchema from "@/components/OrganizationSchema";
 import { routing } from "@/i18n/routing";
 import { getCompanyProfile } from "@/lib/server/company-profile-repo";
+import { ADMIN_NAMESPACES, DASHBOARD_NAMESPACES, omitMessages } from "@/lib/client-message-namespaces";
 
 // Self-hosted at build time instead of fetched from Google's CDN at
 // request time -- removes an external DNS/TLS/download round-trip from
@@ -62,7 +63,11 @@ export default async function RootLayout({
     notFound();
   }
 
-  const [messages, companyProfile] = await Promise.all([getMessages(), getCompanyProfile()]);
+  const [rawMessages, companyProfile] = await Promise.all([getMessages(), getCompanyProfile()]);
+  // Admin/dashboard-only namespaces (~38% of the whole bundle) are added
+  // back by their own nested providers in admin/layout.tsx and
+  // dashboard/layout.tsx -- every other page doesn't need them at all.
+  const messages = omitMessages(rawMessages, [...ADMIN_NAMESPACES, ...DASHBOARD_NAMESPACES]);
 
   return (
     <html lang={locale} className={inter.variable}>

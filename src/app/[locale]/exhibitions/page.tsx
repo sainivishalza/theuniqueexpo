@@ -4,9 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
+import Badge from "@/components/ui/Badge";
+import Card from "@/components/ui/Card";
 
 interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -122,11 +123,7 @@ export default function ExhibitionsPage() {
           {loading && <p className="text-center py-20 text-gray-400">{t("loading")}</p>}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map((expo) => (
-              <Link
-                key={expo.id}
-                href={`/exhibitions/${expo.slug}`}
-                className="group block rounded-2xl overflow-hidden bg-white shadow-md shadow-gray-200/50 card-hover"
-              >
+              <Card key={expo.id} href={`/exhibitions/${expo.slug}`} bordered={false}>
                 {/* Image */}
                 <div className="relative h-52 overflow-hidden bg-gray-900">
                   {/* Blurred backdrop fills the frame regardless of the poster's aspect ratio */}
@@ -149,13 +146,9 @@ export default function ExhibitionsPage() {
                   <div className="absolute inset-0 gradient-overlay" />
                   <FavoriteButton exhibitionId={expo.id} className="absolute top-4 right-4 z-10 w-9 h-9 text-lg shadow-md" />
                   <div className="absolute top-4 left-4 flex gap-2">
-                    <span className="rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold text-gray-900 shadow-sm">
-                      {expo.industry}
-                    </span>
+                    <Badge tone="white" size="tag">{expo.industry}</Badge>
                     {new Date(expo.endDate) >= new Date() && (
-                      <span className="rounded-lg bg-green-500/90 backdrop-blur-sm px-3 py-1 text-xs font-bold text-white shadow-sm">
-                        {t("upcoming")}
-                      </span>
+                      <Badge tone="live" size="tag">{t("upcoming")}</Badge>
                     )}
                   </div>
                   <div className="absolute bottom-4 left-4 right-4">
@@ -191,7 +184,7 @@ export default function ExhibitionsPage() {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </Card>
             ))}
           </div>
 

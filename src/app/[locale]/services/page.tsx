@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { serviceCategories } from "@/lib/services";
+import Card from "@/components/ui/Card";
 
 const MARKET_AREA_KEYS = [
   { key: "linyi", emoji: "📦", slug: "linyi-20-22-sept" },
@@ -89,7 +90,11 @@ export default function ServicesPage() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {serviceCategories.map((svc) => (
-              <Link key={svc.id} href={svc.slug === "business-tours" || svc.slug === "china-tours" ? "/services/" + svc.slug : svc.slug === "transport-subsidies" ? "/services/transport-subsidies" : "/services/" + svc.slug} className="group block rounded-2xl overflow-hidden bg-white shadow-md shadow-gray-200/50 card-hover">
+              <Card
+                key={svc.id}
+                href={svc.slug === "business-tours" || svc.slug === "china-tours" ? "/services/" + svc.slug : svc.slug === "transport-subsidies" ? "/services/transport-subsidies" : "/services/" + svc.slug}
+                bordered={false}
+              >
                 <div className="relative h-48 overflow-hidden">
                   <Image
                     src={svc.image}
@@ -116,7 +121,7 @@ export default function ServicesPage() {
                   </div>
                   <span className="inline-block rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white group-hover:scale-105 transition-transform">{t(svc.ctaKey)} →</span>
                 </div>
-              </Link>
+              </Card>
             ))}
           </div>
         </div>

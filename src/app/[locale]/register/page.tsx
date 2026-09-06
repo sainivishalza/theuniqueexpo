@@ -7,6 +7,7 @@ import { useRouter } from "@/i18n/navigation";
 import { useAuth, type UserRole } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Logo from "@/components/Logo";
+import Button from "@/components/ui/Button";
 
 const ROLE_KEYS: { value: UserRole; icon: string }[] = [
   { value: "buyer", icon: "🛒" },
@@ -109,9 +110,9 @@ export default function RegisterPage() {
               <input type="text" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder={t("countryPlaceholder")} />
             </div>
 
-            <button type="submit" disabled={loading} className="w-full rounded-xl gradient-brand py-3.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
+            <Button type="submit" disabled={loading} variant="save" size="blockMd">
               {loading ? t("creatingAccount") : t("createAccountButton")}
-            </button>
+            </Button>
           </form>
 
           <div className="mt-8 text-center">

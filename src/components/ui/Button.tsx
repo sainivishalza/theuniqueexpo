@@ -43,7 +43,7 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   ghostDanger: "border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50",
 };
 
-export type ButtonSize = "md" | "sm" | "block" | "blockSm" | "blockLg" | "inline" | "compact" | "xs";
+export type ButtonSize = "md" | "sm" | "block" | "blockSm" | "blockMd" | "blockLg" | "inline" | "compact" | "xs";
 
 // Padding/text-size live on a size variant rather than being left to an
 // overriding className -- two same-specificity Tailwind utility classes
@@ -57,6 +57,8 @@ const SIZE_CLASSES: Record<ButtonSize, string> = {
   block: "w-full py-3 text-sm",
   // Full-width admin "add item" action.
   blockSm: "w-full py-2.5 text-sm",
+  // Full-width auth form submit button.
+  blockMd: "w-full py-3.5 text-sm",
   // Full-width admin save button.
   blockLg: "w-full py-4 text-sm",
   // Plain inline text action, no padding/width -- e.g. a row's delete link.

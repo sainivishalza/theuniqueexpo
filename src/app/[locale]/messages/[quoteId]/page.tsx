@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
+import Card from "@/components/ui/Card";
 
 interface Message {
   id: string;
@@ -109,7 +110,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
     <main className="mx-auto max-w-2xl px-6 py-8">
       <Link href="/messages" className="text-sm text-gray-500 hover:underline">{t("backToMessagesShort")}</Link>
 
-      <div className="mt-4 rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <Card shadow="sm" className="mt-4">
         <div className="border-b border-gray-100 p-5">
           <h1 className="font-bold text-gray-900">{thread.rfqTitle}</h1>
           <p className="text-sm text-gray-500 mt-0.5">
@@ -158,7 +159,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
           </button>
         </form>
         {error && <p className="px-4 pb-3 text-xs text-red-600">{error}</p>}
-      </div>
+      </Card>
     </main>
   );
 }

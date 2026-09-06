@@ -45,7 +45,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("notFound")}</h1>
+          <h1 className="text-2xl font-bold text-heading">{t("notFound")}</h1>
           <Link href="/events" className="mt-4 inline-block text-emerald-600 hover:underline">{t("browseAll")}</Link>
         </div>
       </div>
@@ -102,7 +102,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
         <div className="mx-auto max-w-5xl px-6 grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             <Card shadow="sm" bordered={false} className="p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("aboutThisEvent")}</h2>
+              <h2 className="text-2xl font-bold text-heading mb-4">{t("aboutThisEvent")}</h2>
               <p className="text-gray-600 leading-relaxed whitespace-pre-line">{event.description}</p>
             </Card>
           </div>

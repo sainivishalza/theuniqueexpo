@@ -54,7 +54,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ loc
         <div className="mx-auto max-w-7xl px-6 grid gap-10 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-white rounded-2xl p-8 shadow-sm">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("aboutThisTour")}</h2>
+              <h2 className="text-2xl font-bold text-heading mb-4">{t("aboutThisTour")}</h2>
               <p className="text-gray-600 leading-relaxed">{tour.description}</p>
               <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="text-center p-4 bg-cream-50 rounded-xl"><div className="text-2xl font-extrabold text-emerald-600">${formatNumber(tour.price)}</div><div className="text-xs text-gray-400 mt-1">{t("perPerson")}</div></div>
@@ -63,7 +63,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ loc
               </div>
             </div>
             <div className="bg-white rounded-2xl p-8 shadow-sm">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("highlights")}</h2>
+              <h2 className="text-2xl font-bold text-heading mb-6">{t("highlights")}</h2>
               <div className="grid gap-3 md:grid-cols-2">
                 {tour.highlights.map((h) => (
                   <div key={h} className="flex items-start gap-3 p-3 rounded-xl bg-cream-50">
@@ -74,7 +74,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ loc
               </div>
             </div>
             <div className="bg-white rounded-2xl p-8 shadow-sm">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("dayByDayItinerary")}</h2>
+              <h2 className="text-2xl font-bold text-heading mb-6">{t("dayByDayItinerary")}</h2>
               <div className="space-y-4">
                 {tour.itinerary.map((day, i) => (
                   <div key={i} className="flex gap-4">
@@ -82,7 +82,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ loc
                       <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white text-xs font-bold">{day.day}</div>
                     </div>
                     <div className="flex-1 pb-4 border-b border-gray-100">
-                      <h3 className="font-bold text-gray-900">{day.title}</h3>
+                      <h3 className="font-bold text-heading">{day.title}</h3>
                       <p className="text-sm text-gray-500 mt-1">{day.description}</p>
                     </div>
                   </div>
@@ -92,18 +92,18 @@ export default async function TourDetailPage({ params }: { params: Promise<{ loc
           </div>
           <div className="space-y-6">
             <div className="bg-white rounded-2xl p-6 shadow-sm sticky top-24">
-              <h3 className="font-bold text-gray-900 mb-4">{t("bookThisTour")}</h3>
+              <h3 className="font-bold text-heading mb-4">{t("bookThisTour")}</h3>
               <div className="text-3xl font-extrabold text-gray-900 mb-1">${formatNumber(tour.price)} <span className="text-base font-normal text-gray-400">{t("usdPerPerson")}</span></div>
               <p className="text-sm text-gray-400 mb-6">{tour.groupSize}</p>
               <Link href={"/services/business-tours/" + tour.slug + "/apply"} className="block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity">{t("applyNow")}</Link>
               <div className="mt-6">
-                <h4 className="text-sm font-bold text-gray-900 mb-3">{t("included")}</h4>
+                <h4 className="text-sm font-bold text-heading mb-3">{t("included")}</h4>
                 <ul className="space-y-2">
                   {tour.included.map((item) => (<li key={item} className="flex items-start gap-2 text-sm text-gray-600"><span className="text-green-500">✓</span>{item}</li>))}
                 </ul>
               </div>
               <div className="mt-4">
-                <h4 className="text-sm font-bold text-gray-900 mb-3">{t("notIncluded")}</h4>
+                <h4 className="text-sm font-bold text-heading mb-3">{t("notIncluded")}</h4>
                 <ul className="space-y-2">
                   {tour.notIncluded.map((item) => (<li key={item} className="flex items-start gap-2 text-sm text-gray-500"><span className="text-red-400">✕</span>{item}</li>))}
                 </ul>

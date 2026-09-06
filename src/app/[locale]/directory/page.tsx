@@ -115,7 +115,7 @@ export default function DirectoryPage() {
             {filtered.length === 0 ? (
               <div className="col-span-full text-center py-20">
                 <div className="text-5xl mb-4">🔍</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{t("noResultsTitle")}</h3>
+                <h3 className="text-xl font-bold text-heading mb-2">{t("noResultsTitle")}</h3>
                 <p className="text-gray-500">{t("noResultsSubtitle")}</p>
               </div>
             ) : (
@@ -127,7 +127,7 @@ export default function DirectoryPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h2 className="text-lg font-bold text-gray-900 group-hover:text-emerald-600 transition-colors truncate">
+                        <h2 className="text-lg font-bold text-heading group-hover:text-emerald-600 transition-colors truncate">
                           {ex.name}
                         </h2>
                         <Badge tone="success" size="status" className="flex-shrink-0">

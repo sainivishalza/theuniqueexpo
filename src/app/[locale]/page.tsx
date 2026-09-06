@@ -127,7 +127,7 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
             <Badge tone="emerald" className="mb-4">{t("featuredBadge")}</Badge>
-            <h2 className="text-4xl font-extrabold text-gray-900">
+            <h2 className="text-4xl font-extrabold text-heading">
               {t("featuredTitle")}
             </h2>
             <p className="mt-3 text-lg text-gray-500 max-w-2xl mx-auto">
@@ -210,7 +210,7 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
             <Badge tone="purple" className="mb-4">{t("industryBadge")}</Badge>
-            <h2 className="text-4xl font-extrabold text-gray-900">
+            <h2 className="text-4xl font-extrabold text-heading">
               {t("industryTitle")}
             </h2>
             <p className="mt-3 text-lg text-gray-500">
@@ -240,7 +240,7 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
             <Badge tone="emerald" className="mb-4">{t("processBadge")}</Badge>
-            <h2 className="text-4xl font-extrabold text-gray-900">
+            <h2 className="text-4xl font-extrabold text-heading">
               {t("processTitle")}
             </h2>
           </div>
@@ -254,7 +254,7 @@ export default async function Home() {
               <div key={item.step} className="relative rounded-2xl bg-white p-8 border border-gray-100 shadow-sm card-hover">
                 <IconBadge icon={item.icon} gradient={item.color} className="mb-5" />
                 <div className="text-xs font-bold text-gray-600 mb-2">{t("step", { number: item.step })}</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{t(`steps.${item.key}.title`)}</h3>
+                <h3 className="text-xl font-bold text-heading mb-3">{t(`steps.${item.key}.title`)}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{t(`steps.${item.key}.desc`)}</p>
               </div>
             ))}
@@ -269,12 +269,12 @@ export default async function Home() {
           <div className="mx-auto max-w-3xl px-6">
             <div className="text-center mb-12">
               <Badge tone="emerald" className="mb-4">{t("faqBadge")}</Badge>
-              <h2 className="text-4xl font-extrabold text-gray-900">{t("faqTitle")}</h2>
+              <h2 className="text-4xl font-extrabold text-heading">{t("faqTitle")}</h2>
             </div>
             <div className="space-y-4">
               {faqItems.map((item) => (
                 <div key={item.question} className="rounded-2xl bg-cream-50 p-6 border border-gray-100">
-                  <h3 className="font-bold text-gray-900 mb-2">{item.question}</h3>
+                  <h3 className="font-bold text-heading mb-2">{item.question}</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">{item.answer}</p>
                 </div>
               ))}

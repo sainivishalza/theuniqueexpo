@@ -94,7 +94,7 @@ export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: str
   return (
     <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-xl font-bold text-gray-900">{t("reviews")}</h2>
+        <h2 className="text-xl font-bold text-heading">{t("reviews")}</h2>
         {summary.count > 0 && (
           <div className="flex items-center gap-2">
             <Stars value={Math.round(summary.average)} />

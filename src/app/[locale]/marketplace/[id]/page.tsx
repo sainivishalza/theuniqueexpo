@@ -71,7 +71,7 @@ export default function RFQDetailPage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-4">📋</div>
-          <h1 className="text-xl font-bold text-gray-900">{t("notFound")}</h1>
+          <h1 className="text-xl font-bold text-heading">{t("notFound")}</h1>
           <Link href="/marketplace" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("backToMarketplace")}</Link>
         </div>
       </div>
@@ -138,7 +138,7 @@ export default function RFQDetailPage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Details */}
               <Card shadow="sm" className="p-8">
-                <h2 className="text-lg font-bold text-gray-900 mb-4">{t("requestDetails")}</h2>
+                <h2 className="text-lg font-bold text-heading mb-4">{t("requestDetails")}</h2>
                 <p className="text-gray-600 leading-relaxed mb-6">{rfq.description}</p>
                 <div className="grid grid-cols-3 gap-4">
                   {[
@@ -158,7 +158,7 @@ export default function RFQDetailPage() {
               {/* Quotes */}
               <Card shadow="sm" className="p-8">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-bold text-gray-900">{t("quotesCount", { count: quotes.length })}</h2>
+                  <h2 className="text-lg font-bold text-heading">{t("quotesCount", { count: quotes.length })}</h2>
                   {user?.role === "exhibitor" && !alreadyQuoted && (
                     <button
                       onClick={() => setShowQuoteForm(!showQuoteForm)}
@@ -224,7 +224,7 @@ export default function RFQDetailPage() {
                       <div key={q.id} className="rounded-xl border border-gray-200 p-5 hover:shadow-sm transition-shadow">
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <h3 className="font-bold text-gray-900">{q.exhibitorName}</h3>
+                            <h3 className="font-bold text-heading">{q.exhibitorName}</h3>
                             <p className="text-xs text-gray-400">{t("submittedOn", { date: q.createdAt })}</p>
                           </div>
                           <span className="rounded-lg bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">{STATUS_LABELS[q.status] || q.status}</span>
@@ -252,7 +252,7 @@ export default function RFQDetailPage() {
             {/* Sidebar */}
             <div className="space-y-6">
               <Card shadow="sm" className="p-6">
-                <h3 className="text-sm font-bold text-gray-900 mb-3">{t("requestInfo")}</h3>
+                <h3 className="text-sm font-bold text-heading mb-3">{t("requestInfo")}</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between"><span className="text-gray-500">{t("category")}</span><span className="font-semibold">{rfq.category}</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">{t("status")}</span><span className="font-semibold capitalize">{STATUS_LABELS[rfq.status] || rfq.status.replace("_", " ")}</span></div>

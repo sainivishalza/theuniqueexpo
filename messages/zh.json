@@ -2074,6 +2074,8 @@
     "previewButton": "主按钮",
     "previewAccent": "金色强调",
     "previewFooter": "页脚",
-    "previewScript": "一句简短的签名短语"
+    "previewScript": "一句简短的签名短语",
+    "headingColor": "标题文字颜色",
+    "headingColorHint": "所有页面标题的颜色，独立于主品牌色。"
   }
 }

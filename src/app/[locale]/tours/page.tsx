@@ -129,7 +129,7 @@ export default function ToursPage() {
           {!loading && tours.length === 0 && (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">🧳</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t("noResultsTitle")}</h3>
+              <h3 className="text-xl font-bold text-heading mb-2">{t("noResultsTitle")}</h3>
               <p className="text-gray-500">{t("noResultsSubtitle")}</p>
             </div>
           )}
@@ -138,14 +138,14 @@ export default function ToursPage() {
 
       <section id="how-to-book" className="py-12 bg-cream-50 border-t border-gray-100">
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("howToBook")}</h2>
+          <h2 className="text-2xl font-bold text-heading mb-6">{t("howToBook")}</h2>
           <div className="grid gap-6 sm:grid-cols-3">
             {["browse", "register", "confirm"].map((step, i) => (
               <Card key={step} shadow="sm" className="p-6">
                 <div className="w-9 h-9 rounded-full gradient-brand flex items-center justify-center text-white text-sm font-bold mb-3">
                   {i + 1}
                 </div>
-                <h3 className="font-bold text-gray-900 mb-1">{t(`howToBookSteps.${step}.title`)}</h3>
+                <h3 className="font-bold text-heading mb-1">{t(`howToBookSteps.${step}.title`)}</h3>
                 <p className="text-sm text-gray-500">{t(`howToBookSteps.${step}.desc`)}</p>
               </Card>
             ))}
@@ -156,7 +156,7 @@ export default function ToursPage() {
       {recentReviews.length > 0 && (
         <section id="reviews" className="py-12 bg-white border-t border-gray-100">
           <div className="mx-auto max-w-7xl px-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("travelerReviews")}</h2>
+            <h2 className="text-2xl font-bold text-heading mb-6">{t("travelerReviews")}</h2>
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {recentReviews.map((r) => (
                 <Link

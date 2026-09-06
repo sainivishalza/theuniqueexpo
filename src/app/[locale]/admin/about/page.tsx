@@ -94,7 +94,7 @@ export default function AdminAboutPage() {
           ) : (
             <>
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
-                <h2 className="font-bold text-gray-900">{t("header")}</h2>
+                <h2 className="font-bold text-heading">{t("header")}</h2>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heading")}</label>
                   <input
@@ -126,7 +126,7 @@ export default function AdminAboutPage() {
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-3">
-                <h2 className="font-bold text-gray-900">{t("ourStory")}</h2>
+                <h2 className="font-bold text-heading">{t("ourStory")}</h2>
                 <p className="text-xs text-gray-400">{t("storyHint")}</p>
                 <textarea
                   value={content.story}
@@ -138,7 +138,7 @@ export default function AdminAboutPage() {
 
               <div className="grid gap-6 md:grid-cols-2">
                 <Card shadow="sm" bordered={false} className="p-6 space-y-3">
-                  <h2 className="font-bold text-gray-900">{t("mission")}</h2>
+                  <h2 className="font-bold text-heading">{t("mission")}</h2>
                   <textarea
                     value={content.mission}
                     onChange={(e) => update({ mission: e.target.value })}
@@ -147,7 +147,7 @@ export default function AdminAboutPage() {
                   />
                 </Card>
                 <Card shadow="sm" bordered={false} className="p-6 space-y-3">
-                  <h2 className="font-bold text-gray-900">{t("vision")}</h2>
+                  <h2 className="font-bold text-heading">{t("vision")}</h2>
                   <textarea
                     value={content.vision}
                     onChange={(e) => update({ vision: e.target.value })}
@@ -158,7 +158,7 @@ export default function AdminAboutPage() {
               </div>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-4">
-                <h2 className="font-bold text-gray-900">{t("stats")}</h2>
+                <h2 className="font-bold text-heading">{t("stats")}</h2>
                 {content.stats.map((stat, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <input

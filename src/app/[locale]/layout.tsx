@@ -115,6 +115,7 @@ export default async function RootLayout({
     "--color-footer-bg": footerTints.base,
     "--color-footer-surface": footerTints.surface,
     "--color-footer-border": footerTints.border,
+    "--color-heading": siteTheme.headingColor,
     "--font-heading": headingFontStack(siteTheme.headingFont),
     "--font-body": bodyFontStack(siteTheme.bodyFont),
     "--font-script": scriptFontStack(siteTheme.scriptFont),

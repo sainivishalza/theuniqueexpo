@@ -52,7 +52,7 @@ export default function MovingAssistancePage() {
     <div className="min-h-[60vh] flex items-center justify-center">
       <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
         <div className="text-6xl mb-4">📦</div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("quoteRequested")}</h1>
+        <h1 className="text-2xl font-bold text-heading mb-2">{t("quoteRequested")}</h1>
         <p className="text-gray-500 mb-6">{t("quoteRequestedHint")}</p>
         <Button onClick={() => setSubmitted(false)} variant="gradientPlain" size="wide">{t("submitAnother")}</Button>
       </Card>
@@ -74,23 +74,23 @@ export default function MovingAssistancePage() {
       <section className="py-16 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 grid gap-12 lg:grid-cols-2">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("whatWeHandle")}</h2>
+            <h2 className="text-2xl font-bold text-heading mb-6">{t("whatWeHandle")}</h2>
             <div className="space-y-4">
               {HANDLE_KEYS.map((s) => (
                 <div key={s.key} className="flex items-start gap-4 p-4 rounded-xl bg-white shadow-sm">
                   <span className="text-2xl">{s.icon}</span>
-                  <div><h3 className="font-bold text-gray-900">{t(`handle.${s.key}.title`)}</h3><p className="text-sm text-gray-500">{t(`handle.${s.key}.desc`)}</p></div>
+                  <div><h3 className="font-bold text-heading">{t(`handle.${s.key}.title`)}</h3><p className="text-sm text-gray-500">{t(`handle.${s.key}.desc`)}</p></div>
                 </div>
               ))}
             </div>
             <Link href="/services/relocation-cost-estimator" className="mt-6 flex items-center gap-4 p-4 rounded-xl bg-emerald-50 border border-emerald-100 hover:border-emerald-300 transition-colors">
               <span className="text-2xl">🧮</span>
-              <div><h3 className="font-bold text-gray-900">{t("costEstimatorTeaser.title")}</h3><p className="text-sm text-gray-500">{t("costEstimatorTeaser.desc")}</p></div>
+              <div><h3 className="font-bold text-heading">{t("costEstimatorTeaser.title")}</h3><p className="text-sm text-gray-500">{t("costEstimatorTeaser.desc")}</p></div>
             </Link>
           </div>
           <div>
             <Card shadow="sm" bordered={false} className="p-8 sticky top-24">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("requestMovingQuote")}</h2>
+              <h2 className="text-2xl font-bold text-heading mb-6">{t("requestMovingQuote")}</h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
                   <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("name")}</label><input required type="text" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>

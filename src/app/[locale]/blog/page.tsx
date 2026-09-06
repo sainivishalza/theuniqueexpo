@@ -73,7 +73,7 @@ export default async function BlogPage({
                 </div>
                 <div className="p-5">
                   <span className="text-xs font-bold text-emerald-600 uppercase tracking-wide">{t(`categories.${post.category}`)}</span>
-                  <h3 className="text-lg font-bold text-gray-900 mt-1 mb-2 line-clamp-2">{post.title}</h3>
+                  <h3 className="text-lg font-bold text-heading mt-1 mb-2 line-clamp-2">{post.title}</h3>
                   <p className="text-sm text-gray-500 line-clamp-3">{post.excerpt}</p>
                   {post.publishedAt && (
                     <p className="text-xs text-gray-400 mt-3">{new Date(post.publishedAt).toLocaleDateString()}</p>
@@ -86,7 +86,7 @@ export default async function BlogPage({
           {posts.length === 0 && (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">📝</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t("noResultsTitle")}</h3>
+              <h3 className="text-xl font-bold text-heading mb-2">{t("noResultsTitle")}</h3>
               <p className="text-gray-500">{t("noResultsSubtitle")}</p>
             </div>
           )}

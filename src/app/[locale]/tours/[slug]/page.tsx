@@ -55,7 +55,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("notFound")}</h1>
+          <h1 className="text-2xl font-bold text-heading">{t("notFound")}</h1>
           <Link href="/tours" className="mt-4 inline-block text-emerald-600 hover:underline">
             {t("browseAll")}
           </Link>
@@ -150,13 +150,13 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
           <div className="grid gap-8 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-8">
               <Card shadow="sm" bordered={false} className="p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("aboutThisTour")}</h2>
+                <h2 className="text-2xl font-bold text-heading mb-4">{t("aboutThisTour")}</h2>
                 <p className="text-gray-600 leading-relaxed whitespace-pre-line">{tour.description}</p>
               </Card>
 
               {tour.highlights.length > 0 && (
                 <Card shadow="sm" bordered={false} className="p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("tourHighlights")}</h2>
+                  <h2 className="text-2xl font-bold text-heading mb-5">{t("tourHighlights")}</h2>
                   <div className="grid gap-4 md:grid-cols-2">
                     {tour.highlights.map((h, i) => (
                       <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-cream-50 border border-gray-100">
@@ -170,7 +170,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
 
               {tour.galleryImages && tour.galleryImages.length > 0 && (
                 <Card shadow="sm" bordered={false} className="p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("photoGallery")}</h2>
+                  <h2 className="text-2xl font-bold text-heading mb-5">{t("photoGallery")}</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {tour.galleryImages.map((img, i) => (
                       <button
@@ -200,7 +200,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
             {/* Sidebar */}
             <div className="space-y-6">
               <Card shadow="sm" className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{t("bookThisTour")}</h3>
+                <h3 className="text-lg font-bold text-heading mb-2">{t("bookThisTour")}</h3>
                 <p className="text-sm text-gray-500 mb-5">
                   {tour.registrationEnabled
                     ? t("bookThisTourHint")
@@ -218,7 +218,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
               </Card>
 
               <Card shadow="sm" className="p-6">
-                <h3 className="text-sm font-bold text-gray-900 mb-2">{t("organizedBy")}</h3>
+                <h3 className="text-sm font-bold text-heading mb-2">{t("organizedBy")}</h3>
                 <p className="text-sm text-gray-500">{tour.organizer}</p>
               </Card>
             </div>

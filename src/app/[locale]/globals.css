@@ -75,9 +75,14 @@
   }
   /* One heading font applied globally via the tag selector, rather than a
      className on every h1-h6 across ~40+ pages, so the whole site's
-     headings stay consistent from a single place. */
+     headings stay consistent from a single place. Color here only covers
+     the minority of headings with no explicit text-color className at all
+     (this is @layer base, so any text-white/text-emerald-* class -- e.g.
+     a hero heading over a dark photo -- still wins, on purpose: those are
+     deliberately not the admin's "heading color" role). */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading), "Oswald", system-ui, -apple-system, sans-serif;
+    color: var(--color-heading);
   }
   /* Sparse accent/script typography (short slogans, signature-style
      phrases) -- opt in per element with `font-script`, never the default. */
@@ -87,6 +92,14 @@
 }
 
 @layer utilities {
+  /* Drop-in replacement for a heading's own text-gray-900 (swept sitewide
+     -- see the "Add admin-controlled heading color" commit) so a normal
+     content heading follows the admin's Heading Color instead of a fixed
+     gray. Deliberately not applied to text-white/other explicit heading
+     colors on dark sections, which keep their own contrast-critical class. */
+  .text-heading {
+    color: var(--color-heading);
+  }
   .gradient-hero {
     background: linear-gradient(135deg, #011714 0%, #03483f 45%, #0b6b5b 100%);
   }

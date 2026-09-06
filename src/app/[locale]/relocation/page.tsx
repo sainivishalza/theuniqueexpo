@@ -40,7 +40,7 @@ export default function RelocationPage() {
     <div className="min-h-[60vh] flex items-center justify-center">
       <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
         <div className="text-6xl mb-4">🏡</div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("requestReceived")}</h1>
+        <h1 className="text-2xl font-bold text-heading mb-2">{t("requestReceived")}</h1>
         <p className="text-gray-500 mb-6">{t("requestReceivedHint")}</p>
         <button onClick={() => setSubmitted(false)} className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("submitAnother")}</button>
       </div>
@@ -62,7 +62,7 @@ export default function RelocationPage() {
       <section className="py-16 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 grid gap-12 lg:grid-cols-2">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("whatWeHelpWith")}</h2>
+            <h2 className="text-2xl font-bold text-heading mb-6">{t("whatWeHelpWith")}</h2>
             <div className="space-y-4">
               {[
                 { key: "housing", icon: "🏠" },
@@ -73,7 +73,7 @@ export default function RelocationPage() {
                 <div key={s.key} className="flex items-start gap-4 p-4 rounded-xl bg-white shadow-sm">
                   <span className="text-2xl">{s.icon}</span>
                   <div>
-                    <h3 className="font-bold text-gray-900">{t(`topics.${s.key}.title`)}</h3>
+                    <h3 className="font-bold text-heading">{t(`topics.${s.key}.title`)}</h3>
                     <p className="text-sm text-gray-500">{t(`topics.${s.key}.desc`)}</p>
                   </div>
                 </div>
@@ -89,13 +89,13 @@ export default function RelocationPage() {
             </div>
             <Link href="/services/relocation-cost-estimator" className="mt-4 flex items-center gap-4 p-4 rounded-xl bg-emerald-50 border border-emerald-100 hover:border-emerald-300 transition-colors">
               <span className="text-2xl">🧮</span>
-              <div><h3 className="font-bold text-gray-900">{t("costEstimatorTeaser.title")}</h3><p className="text-sm text-gray-500">{t("costEstimatorTeaser.desc")}</p></div>
+              <div><h3 className="font-bold text-heading">{t("costEstimatorTeaser.title")}</h3><p className="text-sm text-gray-500">{t("costEstimatorTeaser.desc")}</p></div>
             </Link>
           </div>
 
           <div>
             <div className="bg-white rounded-2xl p-8 shadow-sm sticky top-24">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("requestConsultation")}</h2>
+              <h2 className="text-2xl font-bold text-heading mb-6">{t("requestConsultation")}</h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
                   <div>

@@ -129,13 +129,13 @@ export default function ServicesPage() {
 
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-6 text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">{t("whyChooseTitle")}</h2>
+          <h2 className="text-3xl font-extrabold text-heading mb-4">{t("whyChooseTitle")}</h2>
           <p className="text-gray-500 max-w-2xl mx-auto mb-12">{t("whyChooseSubtitle")}</p>
           <div className="grid gap-8 md:grid-cols-4">
             {benefits.map((b) => (
               <div key={b.key} className="text-center">
                 <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-50 flex items-center justify-center text-3xl mb-4">{b.icon}</div>
-                <h3 className="font-bold text-gray-900 mb-1">{b.title}</h3>
+                <h3 className="font-bold text-heading mb-1">{b.title}</h3>
                 <p className="text-sm text-gray-500">{b.desc}</p>
               </div>
             ))}

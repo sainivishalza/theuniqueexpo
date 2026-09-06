@@ -60,7 +60,7 @@ export default async function AboutPage() {
       <section className="py-14 bg-cream-50">
         <div className="mx-auto max-w-4xl px-6 space-y-8">
           <Card shadow="sm" bordered={false} className="p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("ourStory")}</h2>
+            <h2 className="text-2xl font-bold text-heading mb-4">{t("ourStory")}</h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
               {storyParagraphs.map((p, i) => (
                 <p key={i}>{p}</p>
@@ -71,12 +71,12 @@ export default async function AboutPage() {
           <div className="grid gap-6 md:grid-cols-2">
             <Card shadow="sm" bordered={false} className="p-8">
               <IconBadge size="sm" icon="🎯" bgClassName="gradient-brand text-white" className="mb-4" />
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{t("ourMission")}</h3>
+              <h3 className="text-lg font-bold text-heading mb-2">{t("ourMission")}</h3>
               <p className="text-sm text-gray-600 leading-relaxed">{content.mission}</p>
             </Card>
             <Card shadow="sm" bordered={false} className="p-8">
               <IconBadge size="sm" icon="🔭" bgClassName="gradient-brand text-white" className="mb-4" />
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{t("ourVision")}</h3>
+              <h3 className="text-lg font-bold text-heading mb-2">{t("ourVision")}</h3>
               <p className="text-sm text-gray-600 leading-relaxed">{content.vision}</p>
             </Card>
           </div>

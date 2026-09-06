@@ -42,7 +42,7 @@ export default function ConsultationPage() {
     <div className="min-h-[60vh] flex items-center justify-center">
       <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
         <div className="text-6xl mb-4">💬</div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("consultationBooked")}</h1>
+        <h1 className="text-2xl font-bold text-heading mb-2">{t("consultationBooked")}</h1>
         <p className="text-gray-500 mb-6">{t("consultationBookedHint")}</p>
         <Button onClick={() => setSubmitted(false)} variant="gradientPlain" size="wide">{t("bookAnother")}</Button>
       </Card>
@@ -64,17 +64,17 @@ export default function ConsultationPage() {
       <section className="py-16 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 grid gap-12 lg:grid-cols-2">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("ourConsultationTopics")}</h2>
+            <h2 className="text-2xl font-bold text-heading mb-6">{t("ourConsultationTopics")}</h2>
             <div className="space-y-4">
               {[{key:"marketEntry",icon:"🎯"},{key:"supplierSourcing",icon:"🔍"},{key:"qualityInspection",icon:"✅"},{key:"legalCompliance",icon:"⚖️"},{key:"culturalEtiquette",icon:"🤝"},{key:"tradeCompliance",icon:"📦"},{key:"ipProtectionDetail",icon:"🛡️"}].map((topic) => (
                 <div key={topic.key} className="flex items-start gap-4 p-4 rounded-xl bg-white shadow-sm">
                   <span className="text-2xl">{topic.icon}</span>
-                  <div><h3 className="font-bold text-gray-900">{t(`topics.${topic.key}.title`)}</h3><p className="text-sm text-gray-500">{t(`topics.${topic.key}.desc`)}</p></div>
+                  <div><h3 className="font-bold text-heading">{t(`topics.${topic.key}.title`)}</h3><p className="text-sm text-gray-500">{t(`topics.${topic.key}.desc`)}</p></div>
                 </div>
               ))}
             </div>
             <Card shadow="sm" bordered={false} className="mt-8 p-6">
-              <h3 className="font-bold text-gray-900 mb-3">{t("pricing")}</h3>
+              <h3 className="font-bold text-heading mb-3">{t("pricing")}</h3>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm"><span className="text-gray-600">{t("singleSession")}</span><span className="font-bold text-gray-900">$150 USD</span></div>
                 <div className="flex justify-between text-sm"><span className="text-gray-600">{t("packageOf4")}</span><span className="font-bold text-gray-900">$500 USD</span></div>
@@ -85,7 +85,7 @@ export default function ConsultationPage() {
           </div>
           <div>
             <Card shadow="sm" bordered={false} className="p-8 sticky top-24">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("bookAConsultation")}</h2>
+              <h2 className="text-2xl font-bold text-heading mb-6">{t("bookAConsultation")}</h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
                   <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("name")}</label><input required type="text" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>

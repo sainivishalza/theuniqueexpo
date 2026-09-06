@@ -81,7 +81,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-xl font-bold text-gray-900">{t("loginPrompt")}</h1>
+          <h1 className="text-xl font-bold text-heading">{t("loginPrompt")}</h1>
           <Link href="/login" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("logIn")}</Link>
         </div>
       </div>
@@ -96,7 +96,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-xl font-bold text-gray-900">{t("notFound")}</h1>
+          <h1 className="text-xl font-bold text-heading">{t("notFound")}</h1>
           <Link href="/messages" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("backToMessages")}</Link>
         </div>
       </div>
@@ -112,7 +112,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
 
       <Card shadow="sm" className="mt-4">
         <div className="border-b border-gray-100 p-5">
-          <h1 className="font-bold text-gray-900">{thread.rfqTitle}</h1>
+          <h1 className="font-bold text-heading">{thread.rfqTitle}</h1>
           <p className="text-sm text-gray-500 mt-0.5">
             {t("withParty", { name: otherParty })} • {t("quote", { price: thread.quotePrice })}
           </p>

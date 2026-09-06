@@ -51,21 +51,21 @@ export default function ExhibitorDashboard() {
             <Card href="/exhibitions" shadow="sm" className="p-6 flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-xl">🏗️</div>
               <div>
-                <h3 className="font-bold text-gray-900">{t("bookABooth")}</h3>
+                <h3 className="font-bold text-heading">{t("bookABooth")}</h3>
                 <p className="text-sm text-gray-500 mt-1">{t("bookABoothDesc")}</p>
               </div>
             </Card>
             <Card href="/exhibitor/ex-1" shadow="sm" className="p-6 flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-xl">🎨</div>
               <div>
-                <h3 className="font-bold text-gray-900">{t("companyProfile")}</h3>
+                <h3 className="font-bold text-heading">{t("companyProfile")}</h3>
                 <p className="text-sm text-gray-500 mt-1">{t("companyProfileDesc")}</p>
               </div>
             </Card>
             <Card shadow="sm" className="p-6 flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-xl">📊</div>
               <div>
-                <h3 className="font-bold text-gray-900">{t("leadsCrm")}</h3>
+                <h3 className="font-bold text-heading">{t("leadsCrm")}</h3>
                 <p className="text-sm text-gray-500 mt-1">{t("leadsCrmDesc")}</p>
                 <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">{tc("comingSoon")}</span>
               </div>
@@ -73,11 +73,11 @@ export default function ExhibitorDashboard() {
           </div>
 
           {/* Bookings */}
-          <h2 className="text-xl font-bold text-gray-900 mb-5">{t("myBoothBookings")}</h2>
+          <h2 className="text-xl font-bold text-heading mb-5">{t("myBoothBookings")}</h2>
           {bookings.length === 0 ? (
             <div className="rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center bg-white">
               <div className="text-5xl mb-4">🏗️</div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">{t("noBookingsTitle")}</h3>
+              <h3 className="text-lg font-bold text-heading mb-2">{t("noBookingsTitle")}</h3>
               <p className="text-gray-500 mb-6">{t("noBookingsSubtitle")}</p>
               <Button href="/exhibitions" variant="gradientCta" size="wide">
                 {t("browseExhibitions")}

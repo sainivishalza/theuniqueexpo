@@ -127,7 +127,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
           {!loading && !error && registrations.length === 0 ? (
             <Card shadow="sm" bordered={false} className="text-center py-20">
               <div className="text-5xl mb-4">📝</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t("noResultsTitle")}</h3>
+              <h3 className="text-xl font-bold text-heading mb-2">{t("noResultsTitle")}</h3>
               <p className="text-gray-500">{t("noResultsSubtitle")}</p>
             </Card>
           ) : !error && (
@@ -179,7 +179,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
             ) : detail && (
               <>
                 <div className="flex items-start justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">{displayName(detail, tr("registrationNumber", { id: detail.id }))}</h2>
+                  <h2 className="text-2xl font-bold text-heading">{displayName(detail, tr("registrationNumber", { id: detail.id }))}</h2>
                   <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600">✕</button>
                 </div>
                 {detail.customAnswers ? (

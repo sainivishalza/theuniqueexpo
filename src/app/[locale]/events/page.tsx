@@ -90,7 +90,7 @@ export default function EventsPage() {
                   </div>
                 </div>
                 <div className="p-5">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">{event.title}</h3>
+                  <h3 className="text-lg font-bold text-heading mb-2 line-clamp-2">{event.title}</h3>
                   <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-1.5">
                     <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -120,7 +120,7 @@ export default function EventsPage() {
           {!loading && events.length === 0 && (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">🎉</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t("noResultsTitle")}</h3>
+              <h3 className="text-xl font-bold text-heading mb-2">{t("noResultsTitle")}</h3>
               <p className="text-gray-500">{t("noResultsSubtitle")}</p>
             </div>
           )}

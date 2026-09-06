@@ -124,7 +124,7 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
             <>
               <Card shadow="sm" bordered={false} className="p-6 flex items-center justify-between">
                 <div>
-                  <h2 className="font-bold text-gray-900">{tb("registrationStatus")}</h2>
+                  <h2 className="font-bold text-heading">{tb("registrationStatus")}</h2>
                   <p className="text-sm text-gray-500 mt-1">
                     {enabled ? t("enabledHint") : t("disabledHint")}
                   </p>
@@ -138,7 +138,7 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6">
-                <h2 className="font-bold text-gray-900 mb-4">{t("registrationQuestions")}</h2>
+                <h2 className="font-bold text-heading mb-4">{t("registrationQuestions")}</h2>
                 <div className="space-y-4">
                   {fields.length === 0 && (
                     <p className="text-sm text-gray-400 text-center py-6">{tb("noFieldsYet")}</p>

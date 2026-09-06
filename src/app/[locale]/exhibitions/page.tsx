@@ -191,7 +191,7 @@ export default function ExhibitionsPage() {
           {!loading && filtered.length === 0 && (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">🔍</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{t("noResultsTitle")}</h3>
+              <h3 className="text-xl font-bold text-heading mb-2">{t("noResultsTitle")}</h3>
               <p className="text-gray-500">{t("noResultsSubtitle")}</p>
             </div>
           )}

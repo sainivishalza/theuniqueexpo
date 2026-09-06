@@ -72,7 +72,7 @@ export default function RegisterPage() {
       <div className="flex-1 flex items-center justify-center px-6 py-12 bg-cream-50">
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-8"><Logo /></div>
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-2">{t("createAccount")}</h2>
+          <h2 className="text-3xl font-extrabold text-heading mb-2">{t("createAccount")}</h2>
           <p className="text-gray-500 mb-8">{t("createAccountSubtitle")}</p>
 
           {error && <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700">{error}</div>}

@@ -101,7 +101,7 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
           ) : (
             <>
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
-                <h2 className="font-bold text-gray-900">{t("header")}</h2>
+                <h2 className="font-bold text-heading">{t("header")}</h2>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heading")}</label>
                   <input
@@ -123,7 +123,7 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-3">
-                <h2 className="font-bold text-gray-900">{t("bodyText")}</h2>
+                <h2 className="font-bold text-heading">{t("bodyText")}</h2>
                 <p className="text-xs text-gray-400">{t("bodyHint")}</p>
                 <textarea
                   value={content.body}
@@ -134,7 +134,7 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-4">
-                <h2 className="font-bold text-gray-900">{t("contactDetails")}</h2>
+                <h2 className="font-bold text-heading">{t("contactDetails")}</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="block text-xs font-semibold text-gray-500 mb-1">{ta("email")}</label>
@@ -161,7 +161,7 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-4">
                 <div>
-                  <h2 className="font-bold text-gray-900">{t("itemsList")}</h2>
+                  <h2 className="font-bold text-heading">{t("itemsList")}</h2>
                   <label className="block text-xs font-semibold text-gray-500 mt-3 mb-1">{t("sectionHeading")}</label>
                   <input
                     type="text"

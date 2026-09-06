@@ -57,7 +57,7 @@ export default function FloorPlanPage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("notFound")}</h1>
+          <h1 className="text-2xl font-bold text-heading">{t("notFound")}</h1>
           <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">{t("browseAll")}</Link>
         </div>
       </div>
@@ -105,7 +105,7 @@ export default function FloorPlanPage() {
           <div className="grid gap-8 lg:grid-cols-4">
             {/* Floor plan */}
             <div className="lg:col-span-3 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
-              <h2 className="text-lg font-bold text-gray-900 mb-6">{t("hallMap")}</h2>
+              <h2 className="text-lg font-bold text-heading mb-6">{t("hallMap")}</h2>
               <div className="overflow-x-auto">
                 <div className="inline-block min-w-[500px]">
                   {/* Column headers */}
@@ -174,7 +174,7 @@ export default function FloorPlanPage() {
               {selected ? (
                 <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
                   <div className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center text-white text-sm font-bold mb-4">✓</div>
-                  <h3 className="text-lg font-bold text-gray-900">{t("boothLabel", { id: `${selected.row}${selected.col}` })}</h3>
+                  <h3 className="text-lg font-bold text-heading">{t("boothLabel", { id: `${selected.row}${selected.col}` })}</h3>
                   <div className="mt-4 space-y-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-500">{t("size")}</span>
@@ -208,14 +208,14 @@ export default function FloorPlanPage() {
               ) : (
                 <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100 text-center">
                   <div className="text-4xl mb-3">🗺️</div>
-                  <h3 className="text-lg font-bold text-gray-900">{t("selectABooth")}</h3>
+                  <h3 className="text-lg font-bold text-heading">{t("selectABooth")}</h3>
                   <p className="mt-2 text-sm text-gray-500">{t("selectABoothHint")}</p>
                 </div>
               )}
 
               {/* Quick stats */}
               <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                <h3 className="text-sm font-bold text-gray-900 mb-4">{t("boothStats")}</h3>
+                <h3 className="text-sm font-bold text-heading mb-4">{t("boothStats")}</h3>
                 <div className="space-y-3">
                   {[
                     { label: t("totalBooths"), value: booths.length, color: "text-gray-900" },

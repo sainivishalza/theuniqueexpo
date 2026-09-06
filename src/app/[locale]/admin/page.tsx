@@ -57,7 +57,7 @@ export default function AdminPage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">🔒</div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("accessDenied")}</h1>
+          <h1 className="text-2xl font-bold text-heading">{t("accessDenied")}</h1>
           <p className="mt-2 text-gray-500">{ta("accessRequired")}</p>
           <p className="mt-1 text-xs text-gray-400">{t("loginTip")}</p>
           <Link href="/" className="mt-4 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("goHome")}</Link>
@@ -109,7 +109,7 @@ export default function AdminPage() {
                 {s.icon}
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-gray-900">{s.title}</h3>
+                <h3 className="font-bold text-heading">{s.title}</h3>
                 <p className="text-sm text-gray-500 mt-1">{s.description}</p>
                 {s.comingSoon && <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">{t("comingSoon")}</span>}
               </div>

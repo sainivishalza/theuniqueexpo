@@ -48,7 +48,7 @@ export default async function BlogPostPage({
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("notFound")}</h1>
+          <h1 className="text-2xl font-bold text-heading">{t("notFound")}</h1>
           <Link href="/blog" className="mt-4 inline-block text-emerald-600 hover:underline">{t("browseAll")}</Link>
         </div>
       </div>
@@ -138,11 +138,11 @@ export default async function BlogPostPage({
 
           {post.faqItems.length > 0 && (
             <Card shadow="sm" bordered={false} className="mt-6 p-6">
-              <h2 className="font-bold text-gray-900 mb-4">{t("faqTitle")}</h2>
+              <h2 className="font-bold text-heading mb-4">{t("faqTitle")}</h2>
               <div className="space-y-4">
                 {post.faqItems.map((item) => (
                   <div key={item.question}>
-                    <h3 className="font-semibold text-gray-900 text-sm">{item.question}</h3>
+                    <h3 className="font-semibold text-heading text-sm">{item.question}</h3>
                     <p className="text-sm text-gray-500 mt-1">{item.answer}</p>
                   </div>
                 ))}

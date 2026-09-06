@@ -70,7 +70,7 @@ export default function SubsidiesPage() {
                         </Badge>
                         <span className="text-sm text-gray-400">{sub.exhibitionTitle}</span>
                       </div>
-                      <h2 className="text-2xl font-bold text-gray-900">{sub.title}</h2>
+                      <h2 className="text-2xl font-bold text-heading">{sub.title}</h2>
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-extrabold text-emerald-600">{sub.amount}</div>
@@ -80,19 +80,19 @@ export default function SubsidiesPage() {
                   <p className="text-gray-600 mb-6">{sub.description}</p>
                   <div className="grid md:grid-cols-3 gap-6">
                     <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-3">{t("eligibility")}</h3>
+                      <h3 className="text-sm font-bold text-heading mb-3">{t("eligibility")}</h3>
                       <ul className="space-y-2">
                         {sub.eligibility.map((e) => (<li key={e} className="flex items-start gap-2 text-sm text-gray-600"><span className="text-emerald-500">•</span>{e}</li>))}
                       </ul>
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-3">{t("requiredDocuments")}</h3>
+                      <h3 className="text-sm font-bold text-heading mb-3">{t("requiredDocuments")}</h3>
                       <ul className="space-y-2">
                         {sub.documents.map((d) => (<li key={d} className="flex items-start gap-2 text-sm text-gray-600"><span className="text-amber-500">📄</span>{d}</li>))}
                       </ul>
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-gray-900 mb-3">{t("howToApply")}</h3>
+                      <h3 className="text-sm font-bold text-heading mb-3">{t("howToApply")}</h3>
                       <ol className="space-y-2">
                         {sub.howToApply.map((h, i) => (<li key={i} className="flex items-start gap-2 text-sm text-gray-600"><span className="text-green-500 font-bold">{i + 1}.</span>{h}</li>))}
                       </ol>

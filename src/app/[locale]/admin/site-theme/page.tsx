@@ -64,7 +64,7 @@ export default function AdminSiteThemePage() {
     return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{ta("accessRequired")}</p></div>;
   }
 
-  const colorField = (key: "primaryColor" | "goldColor" | "backgroundColor" | "footerColor", label: string, hint: string) => (
+  const colorField = (key: "primaryColor" | "goldColor" | "backgroundColor" | "footerColor" | "headingColor", label: string, hint: string) => (
     <div>
       <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
       <p className="text-xs text-gray-400 mb-2">{hint}</p>
@@ -104,7 +104,7 @@ export default function AdminSiteThemePage() {
             <>
               <Card shadow="sm" bordered={false} className="p-6 space-y-6">
                 <div>
-                  <h2 className="font-bold text-gray-900">{t("colors")}</h2>
+                  <h2 className="font-bold text-heading">{t("colors")}</h2>
                   <p className="text-xs text-gray-400">{t("colorsHint")}</p>
                 </div>
                 <div className="grid gap-6 sm:grid-cols-2">
@@ -112,12 +112,13 @@ export default function AdminSiteThemePage() {
                   {colorField("goldColor", t("goldColor"), t("goldColorHint"))}
                   {colorField("backgroundColor", t("backgroundColor"), t("backgroundColorHint"))}
                   {colorField("footerColor", t("footerColor"), t("footerColorHint"))}
+                  {colorField("headingColor", t("headingColor"), t("headingColorHint"))}
                 </div>
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-6">
                 <div>
-                  <h2 className="font-bold text-gray-900">{t("fonts")}</h2>
+                  <h2 className="font-bold text-heading">{t("fonts")}</h2>
                   <p className="text-xs text-gray-400">{t("fontsHint")}</p>
                 </div>
                 <div className="grid gap-5 sm:grid-cols-3">
@@ -155,9 +156,9 @@ export default function AdminSiteThemePage() {
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6">
-                <h2 className="font-bold text-gray-900 mb-4">{t("preview")}</h2>
+                <h2 className="font-bold text-heading mb-4">{t("preview")}</h2>
                 <div className="rounded-2xl border border-gray-100 p-6 space-y-4" style={{ backgroundColor: theme.backgroundColor }}>
-                  <h3 style={{ fontFamily: headingFontStack(theme.headingFont), color: theme.primaryColor }} className="text-2xl font-bold uppercase">
+                  <h3 style={{ fontFamily: headingFontStack(theme.headingFont), color: theme.headingColor }} className="text-2xl font-bold uppercase">
                     {t("previewHeading")}
                   </h3>
                   <p style={{ fontFamily: bodyFontStack(theme.bodyFont) }} className="text-sm text-gray-600">

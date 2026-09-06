@@ -90,7 +90,7 @@ export default function MarketplacePage() {
       <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex items-center justify-between mb-6 md:hidden">
-            <h2 className="text-lg font-bold text-gray-900">{t("buyRequests")}</h2>
+            <h2 className="text-lg font-bold text-heading">{t("buyRequests")}</h2>
             <Link
               href="/marketplace/new"
               className="rounded-xl gradient-brand px-4 py-2 text-xs font-semibold text-white"
@@ -105,7 +105,7 @@ export default function MarketplacePage() {
             ) : rfqs.length === 0 ? (
               <Card shadow="sm" bordered={false} className="text-center py-20">
                 <div className="text-5xl mb-4">📋</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{t("noResultsTitle")}</h3>
+                <h3 className="text-xl font-bold text-heading mb-2">{t("noResultsTitle")}</h3>
                 <p className="text-gray-500 mb-6">{t("noResultsSubtitle")}</p>
                 <Link
                   href="/marketplace/new"
@@ -120,7 +120,7 @@ export default function MarketplacePage() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
-                        <h2 className="text-lg font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">
+                        <h2 className="text-lg font-bold text-heading group-hover:text-emerald-600 transition-colors">
                           {rfq.title}
                         </h2>
                         <span className={`rounded-lg border px-2.5 py-0.5 text-xs font-bold ${STATUS_STYLES[rfq.status]}`}>

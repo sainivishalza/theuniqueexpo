@@ -72,7 +72,7 @@ export default function ExhibitionDetailPage({
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("notFound")}</h1>
+          <h1 className="text-2xl font-bold text-heading">{t("notFound")}</h1>
           <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">
             {t("browseAll")}
           </Link>
@@ -181,13 +181,13 @@ export default function ExhibitionDetailPage({
             <div className="lg:col-span-2 space-y-8">
               {/* About */}
               <Card shadow="sm" bordered={false} className="p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("aboutThisExhibition")}</h2>
+                <h2 className="text-2xl font-bold text-heading mb-4">{t("aboutThisExhibition")}</h2>
                 <p className="text-gray-600 leading-relaxed whitespace-pre-line">{expo.description}</p>
               </Card>
 
               {/* Highlights */}
               <Card shadow="sm" bordered={false} className="p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("eventHighlights")}</h2>
+                <h2 className="text-2xl font-bold text-heading mb-5">{t("eventHighlights")}</h2>
                 <div className="grid gap-4 md:grid-cols-2">
                   {expo.highlights.map((h, i) => (
                     <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-cream-50 border border-gray-100">
@@ -201,7 +201,7 @@ export default function ExhibitionDetailPage({
               {/* Photo gallery */}
               {expo.galleryImages && expo.galleryImages.length > 0 && (
                 <Card shadow="sm" bordered={false} className="p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("photoGallery")}</h2>
+                  <h2 className="text-2xl font-bold text-heading mb-5">{t("photoGallery")}</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {expo.galleryImages.map((img, i) => (
                       <button
@@ -225,7 +225,7 @@ export default function ExhibitionDetailPage({
 
               {/* Exhibitor preview */}
               <Card shadow="sm" bordered={false} className="p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-5">{t("featuredExhibitors")}</h2>
+                <h2 className="text-2xl font-bold text-heading mb-5">{t("featuredExhibitors")}</h2>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
                   {exhibitorLogos.map((e) => (
                     <div key={e.name} className="flex flex-col items-center gap-2 group cursor-pointer">
@@ -250,7 +250,7 @@ export default function ExhibitionDetailPage({
               {/* Buyer/Visitor registration CTA */}
               {expo.registrationEnabled && (
                 <Card shadow="sm" className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{t("registerToAttend")}</h3>
+                  <h3 className="text-lg font-bold text-heading mb-2">{t("registerToAttend")}</h3>
                   <p className="text-sm text-gray-500 mb-5">{t("registerToAttendHint")}</p>
                   <Button href={`/exhibitions/${expo.slug}/register`} variant="gradientCta" size="block">
                     {t("registerAsBuyerVisitor")}
@@ -260,7 +260,7 @@ export default function ExhibitionDetailPage({
 
               {/* Booking CTA */}
               <Card shadow="sm" className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">{t("bookYourBooth")}</h3>
+                <h3 className="text-lg font-bold text-heading mb-4">{t("bookYourBooth")}</h3>
                 <p className="text-sm text-gray-500 mb-5">{t("bookYourBoothHint")}</p>
                 {isUpcoming ? (
                   <Button href={`/exhibitions/${expo.slug}/floor-plan`} variant="gradientCta" size="block">
@@ -275,7 +275,7 @@ export default function ExhibitionDetailPage({
 
               {/* Hotels */}
               <Card shadow="sm" className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">{t("hotelsNearby")}</h3>
+                <h3 className="text-lg font-bold text-heading mb-3">{t("hotelsNearby")}</h3>
                 <div className="relative h-32 rounded-xl overflow-hidden mb-4">
                   <Image
                     src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=200&fit=crop&q=80"
@@ -299,7 +299,7 @@ export default function ExhibitionDetailPage({
 
               {/* Share */}
               <Card shadow="sm" className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">{t("shareThisEvent")}</h3>
+                <h3 className="text-lg font-bold text-heading mb-3">{t("shareThisEvent")}</h3>
                 <div className="flex gap-2">
                   {["𝕏", "in", "f", "✉"].map((icon, i) => (
                     <button
@@ -314,7 +314,7 @@ export default function ExhibitionDetailPage({
 
               {/* Organizer */}
               <Card shadow="sm" className="p-6">
-                <h3 className="text-sm font-bold text-gray-900 mb-2">{t("organizedBy")}</h3>
+                <h3 className="text-sm font-bold text-heading mb-2">{t("organizedBy")}</h3>
                 <p className="text-sm text-gray-500">{expo.organizer}</p>
                 <a
                   href={expo.website}

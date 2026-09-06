@@ -278,7 +278,7 @@ export default function AdminExhibitionsPage() {
       {showForm && (
         <section className="py-8 bg-white border-b border-gray-200">
           <div className="mx-auto max-w-4xl px-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{editingId ? t("editExhibition") : t("newExhibitionHeading")}</h2>
+            <h2 className="text-xl font-bold text-heading mb-4">{editingId ? t("editExhibition") : t("newExhibitionHeading")}</h2>
             {formError && <div className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{formError}</div>}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field
@@ -473,7 +473,7 @@ export default function AdminExhibitionsPage() {
                   {expo.image && <img src={expo.image} alt={expo.title} className="img-cover" />}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h2 className="font-bold text-gray-900 truncate">{expo.title}</h2>
+                  <h2 className="font-bold text-heading truncate">{expo.title}</h2>
                   <p className="text-sm text-gray-500">{t("summaryLine", { start: expo.startDate, end: expo.endDate, city: expo.city, count: expo.exhibitors })}</p>
                 </div>
               </div>

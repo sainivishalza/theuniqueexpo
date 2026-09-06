@@ -30,7 +30,7 @@ export default function ExhibitorProfilePage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("notFound")}</h1>
+          <h1 className="text-2xl font-bold text-heading">{t("notFound")}</h1>
           <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">{t("browseExhibitions")}</Link>
         </div>
       </div>
@@ -63,7 +63,7 @@ export default function ExhibitorProfilePage() {
             </div>
             <div className="pb-2">
               <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-extrabold text-gray-900">{profile.name}</h1>
+                <h1 className="text-3xl font-extrabold text-heading">{profile.name}</h1>
                 <span className="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-700 border border-green-200">
                   {t("verifiedSupplier")}
                 </span>
@@ -82,13 +82,13 @@ export default function ExhibitorProfilePage() {
             <div className="lg:col-span-2 space-y-8">
               {/* About */}
               <Card shadow="sm" className="p-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">{t("about")}</h2>
+                <h2 className="text-xl font-bold text-heading mb-4">{t("about")}</h2>
                 <p className="text-gray-600 leading-relaxed">{profile.description}</p>
               </Card>
 
               {/* Products */}
               <Card shadow="sm" className="p-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-5">{t("productsAndServices")}</h2>
+                <h2 className="text-xl font-bold text-heading mb-5">{t("productsAndServices")}</h2>
                 <div className="grid grid-cols-2 gap-3">
                   {profile.products.map((p) => (
                     <div key={p} className="flex items-center gap-3 p-3 rounded-xl bg-cream-50 border border-gray-100">
@@ -101,7 +101,7 @@ export default function ExhibitorProfilePage() {
 
               {/* Certifications */}
               <Card shadow="sm" className="p-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-5">{t("certifications")}</h2>
+                <h2 className="text-xl font-bold text-heading mb-5">{t("certifications")}</h2>
                 <div className="flex flex-wrap gap-2">
                   {profile.certifications.map((c) => (
                     <span key={c} className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700">
@@ -118,7 +118,7 @@ export default function ExhibitorProfilePage() {
             <div className="space-y-6">
               {/* Actions */}
               <Card shadow="sm" className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">{t("connect")}</h3>
+                <h3 className="text-lg font-bold text-heading mb-4">{t("connect")}</h3>
                 <Button href="/register" variant="gradientCta" size="block">
                   {t("requestMeeting")}
                 </Button>
@@ -129,7 +129,7 @@ export default function ExhibitorProfilePage() {
 
               {/* Quick facts */}
               <Card shadow="sm" className="p-6">
-                <h3 className="text-sm font-bold text-gray-900 mb-4">{t("quickFacts")}</h3>
+                <h3 className="text-sm font-bold text-heading mb-4">{t("quickFacts")}</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-500">{t("industry")}</span>
@@ -152,7 +152,7 @@ export default function ExhibitorProfilePage() {
 
               {/* Share */}
               <Card shadow="sm" className="p-6">
-                <h3 className="text-sm font-bold text-gray-900 mb-3">{t("shareProfile")}</h3>
+                <h3 className="text-sm font-bold text-heading mb-3">{t("shareProfile")}</h3>
                 <div className="flex gap-2">
                   {["𝕏", "in", "f", "✉"].map((icon, i) => (
                     <button key={i} className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors text-sm">

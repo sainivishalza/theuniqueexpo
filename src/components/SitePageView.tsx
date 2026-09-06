@@ -55,11 +55,11 @@ export default function SitePageView({ content }: { content: SitePageContent }) 
 
           {content.items.length > 0 && (
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">{content.itemsLabel}</h2>
+              <h2 className="text-xl font-bold text-heading mb-4">{content.itemsLabel}</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 {content.items.map((item, i) => (
                   <div key={i} className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                    <h3 className="font-bold text-gray-900 mb-1.5">{item.title}</h3>
+                    <h3 className="font-bold text-heading mb-1.5">{item.title}</h3>
                     <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
                   </div>
                 ))}

@@ -17,6 +17,7 @@ export interface SiteTheme {
   goldColor: string; // premium/highlight accents -- the gold-* scale
   backgroundColor: string; // main warm page background -- the cream-* scale
   footerColor: string; // footer background, independent of primaryColor
+  headingColor: string; // h1-h6 text color, independent of primaryColor
   headingFont: HeadingFontKey;
   bodyFont: BodyFontKey;
   scriptFont: ScriptFontKey;
@@ -25,11 +26,15 @@ export interface SiteTheme {
 // Matches what's already live -- picking these as defaults means a site
 // with no saved row (or a row missing a field) renders identically to
 // today, and the admin panel just shows the current look pre-filled.
+// headingColor's default (#111827) is Tailwind's own gray-900, which is
+// what every heading already renders in today via plain text-gray-900
+// classNames -- so a missing/default value changes nothing.
 export const DEFAULT_SITE_THEME: SiteTheme = {
   primaryColor: "#075b4f",
   goldColor: "#c9a24a",
   backgroundColor: "#fefdfb",
   footerColor: "#011714",
+  headingColor: "#111827",
   headingFont: "oswald",
   bodyFont: "inter",
   scriptFont: "caveat",
@@ -101,6 +106,7 @@ export function normalizeSiteTheme(input: unknown): SiteTheme {
     goldColor: hex("goldColor") as string,
     backgroundColor: hex("backgroundColor") as string,
     footerColor: hex("footerColor") as string,
+    headingColor: hex("headingColor") as string,
     headingFont: heading,
     bodyFont: body,
     scriptFont: script,

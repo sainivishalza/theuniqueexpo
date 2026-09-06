@@ -2074,6 +2074,8 @@
     "previewButton": "Primary Button",
     "previewAccent": "Gold Accent",
     "previewFooter": "Footer",
-    "previewScript": "A short signature phrase"
+    "previewScript": "A short signature phrase",
+    "headingColor": "Heading Text Color",
+    "headingColorHint": "The color of every page heading, independent of the primary brand color."
   }
 }

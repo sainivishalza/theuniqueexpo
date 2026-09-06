@@ -90,7 +90,7 @@ export default function AdminCompanyProfilePage() {
           ) : (
             <>
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
-                <h2 className="font-bold text-gray-900">{t("identity")}</h2>
+                <h2 className="font-bold text-heading">{t("identity")}</h2>
                 <p className="text-xs text-gray-400">{t("identityHint")}</p>
                 {field("legalName", t("legalName"))}
                 {field("logoUrl", t("logoUrl"), "https://...")}
@@ -99,7 +99,7 @@ export default function AdminCompanyProfilePage() {
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
-                <h2 className="font-bold text-gray-900">{t("address")}</h2>
+                <h2 className="font-bold text-heading">{t("address")}</h2>
                 <p className="text-xs text-gray-400">{t("addressHint")}</p>
                 {field("addressLine", t("addressLine"))}
                 <div className="grid grid-cols-2 gap-4">
@@ -109,7 +109,7 @@ export default function AdminCompanyProfilePage() {
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
-                <h2 className="font-bold text-gray-900">{t("social")}</h2>
+                <h2 className="font-bold text-heading">{t("social")}</h2>
                 <p className="text-xs text-gray-400">{t("socialHint")}</p>
                 {field("socialLinkedIn", "LinkedIn", "https://linkedin.com/company/...")}
                 {field("socialFacebook", "Facebook", "https://facebook.com/...")}

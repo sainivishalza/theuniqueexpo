@@ -70,7 +70,7 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
     <div className="min-h-[60vh] flex items-center justify-center">
       <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
         <div className="text-6xl mb-4">✅</div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("applicationSubmitted")}</h1>
+        <h1 className="text-2xl font-bold text-heading mb-2">{t("applicationSubmitted")}</h1>
         <p className="text-gray-500 mb-6">{t.rich("applicationSubmittedHint", { name: tour.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
         <Link href="/services/business-tours" className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("backToTours")}</Link>
       </div>
@@ -81,12 +81,12 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
     <div className="py-12 bg-cream-50 min-h-screen">
       <div className="mx-auto max-w-3xl px-6">
         <Link href={"/services/business-tours/" + tour.slug} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">{t("backTo", { name: tour.title })}</Link>
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{t("applyFor", { name: tour.title })}</h1>
+        <h1 className="text-3xl font-extrabold text-heading mb-2">{t("applyFor", { name: tour.title })}</h1>
         <p className="text-gray-500 mb-8">{t("detailsLine", { dates: tour.dates, duration: tour.duration, price: tour.price })}</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
-            <h2 className="text-xl font-bold text-gray-900">{t("personalInformation")}</h2>
+            <h2 className="text-xl font-bold text-heading">{t("personalInformation")}</h2>
             <div className="grid gap-5 md:grid-cols-2">
               <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("fullName")}</label><input required type="text" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
               <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("email")}</label><input required type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
@@ -98,7 +98,7 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
           </div>
 
           <div className="bg-white rounded-2xl p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{t("selectServices")}</h2>
+            <h2 className="text-xl font-bold text-heading mb-4">{t("selectServices")}</h2>
             <p className="text-sm text-gray-500 mb-4">{t("selectServicesHint")}</p>
             <div className="grid gap-3 md:grid-cols-2">
               {TOUR_SERVICES.map((s) => (
@@ -111,7 +111,7 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
           </div>
 
           <div className="bg-white rounded-2xl p-8 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{t("specialRequests")}</h2>
+            <h2 className="text-xl font-bold text-heading mb-4">{t("specialRequests")}</h2>
             <textarea value={form.specialRequests} onChange={(e) => setForm({...form, specialRequests: e.target.value})} rows={4} placeholder={t("specialRequestsPlaceholder")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" />
           </div>
 

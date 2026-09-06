@@ -39,7 +39,7 @@ export default function MessagesInboxPage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-4">💬</div>
-          <h1 className="text-xl font-bold text-gray-900">{tr("loginPrompt")}</h1>
+          <h1 className="text-xl font-bold text-heading">{tr("loginPrompt")}</h1>
           <Link href="/login" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">{tr("logIn")}</Link>
         </div>
       </div>
@@ -48,7 +48,7 @@ export default function MessagesInboxPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-10">
-      <h1 className="text-2xl font-bold text-gray-900">{tr("title")}</h1>
+      <h1 className="text-2xl font-bold text-heading">{tr("title")}</h1>
       <p className="mt-1 text-sm text-gray-500">{tr("subtitle")}</p>
 
       {loading && <p className="mt-10 text-center text-gray-400">{tr("loading")}</p>}

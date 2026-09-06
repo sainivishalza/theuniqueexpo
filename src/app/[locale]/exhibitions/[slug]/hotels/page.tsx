@@ -124,7 +124,7 @@ export default function HotelsPage() {
           {hotels.length === 0 ? (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">🏨</div>
-              <h3 className="text-xl font-bold text-gray-900">{t("noHotels")}</h3>
+              <h3 className="text-xl font-bold text-heading">{t("noHotels")}</h3>
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -150,7 +150,7 @@ export default function HotelsPage() {
                   </div>
                   <div className="p-5">
                     <div className="flex items-center gap-2 mb-1">
-                      <h2 className="font-bold text-gray-900">{hotel.name}</h2>
+                      <h2 className="font-bold text-heading">{hotel.name}</h2>
                       <div className="text-amber-400 text-xs">{"★".repeat(hotel.stars)}</div>
                     </div>
                     <p className="text-sm text-gray-500">{hotel.address}</p>
@@ -179,7 +179,7 @@ export default function HotelsPage() {
           {/* Booking form */}
           {selectedHotel && (
             <div className="mt-10 rounded-2xl bg-white p-8 shadow-sm border border-gray-100 max-w-2xl mx-auto">
-              <h2 className="text-xl font-bold text-gray-900 mb-5">{t("bookHotel", { name: selectedHotel.name })}</h2>
+              <h2 className="text-xl font-bold text-heading mb-5">{t("bookHotel", { name: selectedHotel.name })}</h2>
               {submitted ? (
                 <div className="rounded-xl bg-green-50 border border-green-200 p-6 text-center">
                   <div className="text-4xl mb-3">✅</div>

@@ -28,10 +28,10 @@ export default function VisaSetupPage() {
                   <Image src={svc.image} alt={svc.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
                 </div>
                 <div className="p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">{svc.title}</h2>
+                  <h2 className="text-2xl font-bold text-heading mb-3">{svc.title}</h2>
                   <p className="text-gray-500 mb-6">{svc.description}</p>
                   <div className="mb-6">
-                    <h3 className="text-sm font-bold text-gray-900 mb-3">{t("whatsIncluded")}</h3>
+                    <h3 className="text-sm font-bold text-heading mb-3">{t("whatsIncluded")}</h3>
                     <div className="grid grid-cols-2 gap-2">
                       {svc.features.map((f) => (
                         <div key={f} className="flex items-start gap-2 text-sm text-gray-600">
@@ -48,7 +48,7 @@ export default function VisaSetupPage() {
                 </div>
               </div>
               <div className="border-t border-gray-100 px-8 py-6">
-                <h3 className="text-sm font-bold text-gray-900 mb-3">{t("process")}</h3>
+                <h3 className="text-sm font-bold text-heading mb-3">{t("process")}</h3>
                 <div className="flex flex-wrap gap-3">
                   {svc.process.map((step) => (
                     <div key={step.step} className="flex items-center gap-2 bg-cream-50 rounded-xl px-4 py-2">

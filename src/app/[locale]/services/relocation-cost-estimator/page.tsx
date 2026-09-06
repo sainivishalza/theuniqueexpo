@@ -75,7 +75,7 @@ export default function RelocationCostEstimatorPage() {
     <div className="min-h-[60vh] flex items-center justify-center">
       <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
         <div className="text-6xl mb-4">📦</div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("quoteRequested")}</h1>
+        <h1 className="text-2xl font-bold text-heading mb-2">{t("quoteRequested")}</h1>
         <p className="text-gray-500 mb-6">{t("quoteRequestedHint")}</p>
         <Button onClick={() => setSubmitted(false)} variant="gradientPlain" size="wide">{t("startOver")}</Button>
       </Card>
@@ -98,7 +98,7 @@ export default function RelocationCostEstimatorPage() {
       <section className="py-16 bg-cream-50">
         <div className="mx-auto max-w-4xl px-6">
           <Card shadow="sm" bordered={false} className="p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-1">{t("calculatorTitle")}</h2>
+            <h2 className="text-2xl font-bold text-heading mb-1">{t("calculatorTitle")}</h2>
             <p className="text-sm text-gray-500 mb-6">{t("calculatorSubtitle")}</p>
 
             <div className="grid gap-4 sm:grid-cols-3 mb-8">
@@ -132,7 +132,7 @@ export default function RelocationCostEstimatorPage() {
             <p className="text-xs text-gray-400 text-center mb-10">{t("disclaimer")}</p>
 
             <div className="border-t border-gray-100 pt-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">{t("requestExactQuote")}</h2>
+              <h2 className="text-xl font-bold text-heading mb-6">{t("requestExactQuote")}</h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
                   <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("name")}</label><input required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>

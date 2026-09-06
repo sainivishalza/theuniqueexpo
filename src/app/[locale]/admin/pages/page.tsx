@@ -30,7 +30,7 @@ export default function AdminSitePagesIndex() {
           {SITE_PAGES.map((p) => (
             <Card key={p.slug} href={`/admin/pages/${p.slug}`} shadow="sm" className="p-5 flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-gray-900">{p.navLabel}</h3>
+                <h3 className="font-bold text-heading">{p.navLabel}</h3>
                 <p className="text-xs text-gray-400 mt-1">{p.path}</p>
               </div>
               <span className="text-sm font-semibold text-emerald-600">{ta("edit")}</span>

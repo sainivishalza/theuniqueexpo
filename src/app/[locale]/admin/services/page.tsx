@@ -85,7 +85,7 @@ export default function AdminServicesPage() {
             <Card key={s.title} href={s.href} shadow="sm" className="p-6 flex items-start gap-4">
               <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center text-xl flex-shrink-0`}>{s.icon}</div>
               <div>
-                <h3 className="font-bold text-gray-900">{s.title}</h3>
+                <h3 className="font-bold text-heading">{s.title}</h3>
                 <p className="text-sm text-gray-500 mt-1">{s.description}</p>
                 <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">{t("items", { count: s.count })}</span>
               </div>

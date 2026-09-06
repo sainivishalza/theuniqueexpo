@@ -180,7 +180,7 @@ export default function AdminBlogPage() {
       {showForm && (
         <section className="py-8 bg-white border-b border-gray-200">
           <div className="mx-auto max-w-4xl px-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{editingId ? t("editPost") : t("newPostHeading")}</h2>
+            <h2 className="text-xl font-bold text-heading mb-4">{editingId ? t("editPost") : t("newPostHeading")}</h2>
             {formError && <div className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{formError}</div>}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field
@@ -288,7 +288,7 @@ export default function AdminBlogPage() {
             <Card key={post.id} shadow="sm" hoverable className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <h2 className="font-bold text-gray-900 truncate">{post.title}</h2>
+                  <h2 className="font-bold text-heading truncate">{post.title}</h2>
                   <Badge tone={post.published ? "success" : "gray"} size="status">
                     {post.published ? t("publishedBadge") : t("draftBadge")}
                   </Badge>

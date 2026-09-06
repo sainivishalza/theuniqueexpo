@@ -47,7 +47,7 @@ export default function VisitorDashboard() {
                   {f.icon}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-gray-900">{f.title}</h3>
+                  <h3 className="font-bold text-heading">{f.title}</h3>
                   <p className="text-sm text-gray-500 mt-1">{f.description}</p>
                   {!f.href && (
                     <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">{tc("comingSoon")}</span>

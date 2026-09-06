@@ -58,7 +58,7 @@ export default function BuyerDashboard() {
       {/* Actions */}
       <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">{t("quickActions")}</h2>
+          <h2 className="text-xl font-bold text-heading mb-6">{t("quickActions")}</h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {actions.map((a) => (
               <Card key={a.title} href={a.href} shadow="sm" hoverable className="p-6 h-full flex items-start gap-4">
@@ -66,7 +66,7 @@ export default function BuyerDashboard() {
                   {a.icon}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-gray-900">{a.title}</h3>
+                  <h3 className="font-bold text-heading">{a.title}</h3>
                   <p className="text-sm text-gray-500 mt-1">{a.description}</p>
                   {a.comingSoon && (
                     <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">

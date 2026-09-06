@@ -22,7 +22,7 @@ export default function AdminToursPage() {
       <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 space-y-8">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{t("businessTours")}</h2>
+            <h2 className="text-xl font-bold text-heading mb-4">{t("businessTours")}</h2>
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.tour")}</th>
@@ -44,7 +44,7 @@ export default function AdminToursPage() {
             </div>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{t("chinaTours")}</h2>
+            <h2 className="text-xl font-bold text-heading mb-4">{t("chinaTours")}</h2>
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.tour")}</th>

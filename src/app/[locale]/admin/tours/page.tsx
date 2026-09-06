@@ -267,7 +267,7 @@ export default function AdminToursPage() {
       {showForm && (
         <section className="py-8 bg-white border-b border-gray-200">
           <div className="mx-auto max-w-4xl px-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{editingId ? t("editTour") : t("newTourHeading")}</h2>
+            <h2 className="text-xl font-bold text-heading mb-4">{editingId ? t("editTour") : t("newTourHeading")}</h2>
             {formError && <div className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{formError}</div>}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field
@@ -461,7 +461,7 @@ export default function AdminToursPage() {
                   {tour.image && <img src={tour.image} alt={tour.title} className="img-cover" />}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h2 className="font-bold text-gray-900 truncate">{tour.title}</h2>
+                  <h2 className="font-bold text-heading truncate">{tour.title}</h2>
                   <p className="text-sm text-gray-500">{tour.startDate} → {tour.endDate} • {tour.departureCity} → {tour.destination} • {tour.currency}{tour.price}</p>
                 </div>
               </div>

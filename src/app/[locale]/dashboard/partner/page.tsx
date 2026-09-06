@@ -52,7 +52,7 @@ export default function PartnerDashboard() {
         <div className="mx-auto max-w-7xl px-6">
           {/* Referral Link */}
           <Card shadow="sm" className="p-8 mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">{t("referralLinkTitle")}</h2>
+            <h2 className="text-xl font-bold text-heading mb-2">{t("referralLinkTitle")}</h2>
             <p className="text-sm text-gray-500 mb-4">{t("referralLinkSubtitle")}</p>
             <div className="flex gap-2">
               <input
@@ -70,12 +70,12 @@ export default function PartnerDashboard() {
           {/* Referrals Table */}
           <Card shadow="sm">
             <div className="p-6 border-b border-gray-100">
-              <h2 className="text-xl font-bold text-gray-900">{t("referredUsers", { count: referrals.length })}</h2>
+              <h2 className="text-xl font-bold text-heading">{t("referredUsers", { count: referrals.length })}</h2>
             </div>
             {referrals.length === 0 ? (
               <div className="p-12 text-center">
                 <div className="text-5xl mb-4">📋</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{t("noReferralsTitle")}</h3>
+                <h3 className="text-lg font-bold text-heading mb-2">{t("noReferralsTitle")}</h3>
                 <p className="text-gray-500">{t("noReferralsSubtitle")}</p>
               </div>
             ) : (
@@ -113,7 +113,7 @@ export default function PartnerDashboard() {
 
           {/* Marketing Kit */}
           <Card shadow="sm" className="mt-8 p-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">{t("marketingKit")}</h2>
+            <h2 className="text-xl font-bold text-heading mb-2">{t("marketingKit")}</h2>
             <p className="text-sm text-gray-500 mb-5">{t("marketingKitSubtitle")}</p>
             <div className="flex flex-wrap gap-3">
               {[

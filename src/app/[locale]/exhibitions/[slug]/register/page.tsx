@@ -243,7 +243,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("notFound")}</h1>
+          <h1 className="text-2xl font-bold text-heading">{t("notFound")}</h1>
           <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">{t("browseAll")}</Link>
         </div>
       </div>
@@ -254,7 +254,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       <div className="min-h-[60vh] flex items-center justify-center">
         <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
           <div className="text-5xl mb-4">🚫</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("registrationClosed")}</h1>
+          <h1 className="text-2xl font-bold text-heading mb-2">{t("registrationClosed")}</h1>
           <p className="text-gray-500 mb-6">{t.rich("registrationClosedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
           <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("backTo", { name: expo.title })}</Link>
         </Card>
@@ -266,7 +266,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       <div className="min-h-[60vh] flex items-center justify-center">
         <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
           <div className="text-6xl mb-4">✅</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("registrationSubmitted")}</h1>
+          <h1 className="text-2xl font-bold text-heading mb-2">{t("registrationSubmitted")}</h1>
           <p className="text-gray-500 mb-6">{t.rich("registrationSubmittedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
           <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("backTo", { name: expo.title })}</Link>
         </Card>
@@ -280,13 +280,13 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       <div className="py-12 bg-cream-50 min-h-screen">
         <div className="mx-auto max-w-3xl px-6">
           <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">{t("backTo", { name: expo.title })}</Link>
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{t("registerFor", { name: expo.title })}</h1>
+          <h1 className="text-3xl font-extrabold text-heading mb-2">{t("registerFor", { name: expo.title })}</h1>
           <p className="text-gray-500 mb-8">{t("datesLine", { dates: expo.dates })}</p>
 
           <form onSubmit={(e) => handleCustomSubmit(e, customSchema)} className="space-y-6">
             {!user && (
               <Card shadow="sm" bordered={false} className="p-8 space-y-5">
-                <h2 className="text-xl font-bold text-gray-900">{t("yourAccount")}</h2>
+                <h2 className="text-xl font-bold text-heading">{t("yourAccount")}</h2>
                 <p className="text-sm text-gray-500">{t("yourAccountHint")}</p>
                 <div className="grid gap-5 md:grid-cols-2">
                   <TextField label={t("fullName")} required value={accountName} onChange={setAccountName} />
@@ -329,13 +329,13 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
     <div className="py-12 bg-cream-50 min-h-screen">
       <div className="mx-auto max-w-3xl px-6">
         <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">{t("backTo", { name: expo.title })}</Link>
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{t("registerFor", { name: expo.title })}</h1>
+        <h1 className="text-3xl font-extrabold text-heading mb-2">{t("registerFor", { name: expo.title })}</h1>
         <p className="text-gray-500 mb-8">{t("datesLine", { dates: expo.dates })}</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Registration type */}
           <Card shadow="sm" bordered={false} className="p-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{t("registeringAs")}</h2>
+            <h2 className="text-xl font-bold text-heading mb-4">{t("registeringAs")}</h2>
             <div className="grid grid-cols-2 gap-3">
               {(["buyer", "visitor"] as RegistrationType[]).map((rt) => (
                 <button key={rt} type="button" onClick={() => setForm({ ...form, registrationType: rt })}
@@ -348,7 +348,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
 
           {/* Personal details */}
           <Card shadow="sm" bordered={false} className="p-8 space-y-5">
-            <h2 className="text-xl font-bold text-gray-900">{t("personalInformation")}</h2>
+            <h2 className="text-xl font-bold text-heading">{t("personalInformation")}</h2>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">{t("genderRequired")}</label>
               <div className="flex gap-3">
@@ -374,7 +374,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
 
           {/* Company details */}
           <Card shadow="sm" bordered={false} className="p-8 space-y-5">
-            <h2 className="text-xl font-bold text-gray-900">{t("companyInformation")}</h2>
+            <h2 className="text-xl font-bold text-heading">{t("companyInformation")}</h2>
             <div className="grid gap-5 md:grid-cols-2">
               <TextField label={t("companyName")} required value={form.companyName} onChange={(v) => setForm({ ...form, companyName: v })} />
               <TextField label={t("companyWebsite")} value={form.companyWebsite} onChange={(v) => setForm({ ...form, companyWebsite: v })} placeholder={t("optional")} />
@@ -392,7 +392,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
 
           {/* Visit details */}
           <Card shadow="sm" bordered={false} className="p-8 space-y-5">
-            <h2 className="text-xl font-bold text-gray-900">{t("visitDetails")}</h2>
+            <h2 className="text-xl font-bold text-heading">{t("visitDetails")}</h2>
             <OptionGroup label={t("purposeOfVisit")} required options={PURPOSES_OF_VISIT as unknown as string[]} value={form.purposeOfVisit} onChange={(v) => setForm({ ...form, purposeOfVisit: v })} />
             <OptionGroup label={t("infoSource")} required options={INFO_SOURCES as unknown as string[]} value={form.infoSource} onChange={(v) => setForm({ ...form, infoSource: v })} />
             {form.infoSource === "Other" && (
@@ -418,7 +418,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
 
           {/* Documents */}
           <Card shadow="sm" bordered={false} className="p-8 space-y-5">
-            <h2 className="text-xl font-bold text-gray-900">{t("uploadDocuments")}</h2>
+            <h2 className="text-xl font-bold text-heading">{t("uploadDocuments")}</h2>
             <p className="text-sm text-gray-500">{t("uploadDocumentsHint")}</p>
             <div className="grid gap-4 md:grid-cols-2">
               {DOCUMENT_FIELDS.map(({ key, label, required }) => {

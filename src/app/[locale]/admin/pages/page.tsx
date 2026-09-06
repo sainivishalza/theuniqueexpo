@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { SITE_PAGES } from "@/lib/site-pages";
+import Card from "@/components/ui/Card";
 
 export default function AdminSitePagesIndex() {
   const t = useTranslations("adminPagesIndex");
@@ -27,17 +28,13 @@ export default function AdminSitePagesIndex() {
       <section className="py-10 bg-gray-50">
         <div className="mx-auto max-w-4xl px-6 grid gap-4 sm:grid-cols-2">
           {SITE_PAGES.map((p) => (
-            <Link
-              key={p.slug}
-              href={`/admin/pages/${p.slug}`}
-              className="flex items-center justify-between p-5 rounded-2xl bg-white border border-gray-100 shadow-sm card-hover"
-            >
+            <Card key={p.slug} href={`/admin/pages/${p.slug}`} shadow="sm" className="p-5 flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-gray-900">{p.navLabel}</h3>
                 <p className="text-xs text-gray-400 mt-1">{p.path}</p>
               </div>
               <span className="text-sm font-semibold text-emerald-600">{ta("edit")}</span>
-            </Link>
+            </Card>
           ))}
         </div>
       </section>

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import Badge from "@/components/ui/Badge";
+import Card from "@/components/ui/Card";
 
 interface Tour {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -64,11 +66,7 @@ export default function ToursPage() {
           {loading && <p className="text-center py-20 text-gray-400">{t("loading")}</p>}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {tours.map((tour) => (
-              <Link
-                key={tour.id}
-                href={`/tours/${tour.slug}`}
-                className="group block rounded-2xl overflow-hidden bg-white shadow-md shadow-gray-200/50 card-hover"
-              >
+              <Card key={tour.id} href={`/tours/${tour.slug}`} bordered={false}>
                 <div className="relative h-52 overflow-hidden bg-gray-900">
                   {tour.image && (
                     <>
@@ -91,9 +89,7 @@ export default function ToursPage() {
                   )}
                   <div className="absolute inset-0 gradient-overlay" />
                   <div className="absolute top-4 left-4">
-                    <span className="rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold text-gray-900 shadow-sm">
-                      {tour.duration}
-                    </span>
+                    <Badge tone="white" size="tag">{tour.duration}</Badge>
                   </div>
                   <div className="absolute bottom-4 left-4 right-4">
                     <h3 className="text-lg font-bold text-white line-clamp-2 leading-tight drop-shadow-lg">
@@ -126,7 +122,7 @@ export default function ToursPage() {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </Card>
             ))}
           </div>
 

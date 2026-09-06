@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { listPublishedPosts, type BlogCategory } from "@/lib/server/blog-repo";
+import Card from "@/components/ui/Card";
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
@@ -56,11 +57,7 @@ export default async function BlogPage({
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
-              <Link
-                key={post.id}
-                href={`/blog/${post.slug}`}
-                className="group block rounded-2xl overflow-hidden bg-white shadow-md shadow-gray-200/50 card-hover"
-              >
+              <Card key={post.id} href={`/blog/${post.slug}`} bordered={false}>
                 <div className="relative h-44 overflow-hidden bg-gray-900 flex items-center justify-center">
                   {post.coverImage ? (
                     <Image
@@ -82,7 +79,7 @@ export default async function BlogPage({
                     <p className="text-xs text-gray-400 mt-3">{new Date(post.publishedAt).toLocaleDateString()}</p>
                   )}
                 </div>
-              </Link>
+              </Card>
             ))}
           </div>
 

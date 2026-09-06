@@ -6,6 +6,7 @@ import { useRouter } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
+import Button from "@/components/ui/Button";
 
 const CATEGORIES = [
   "Consumer Goods", "Electronics", "Industrial", "Automotive",
@@ -116,9 +117,9 @@ export default function NewRFQPage() {
               <input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
             </Field>
             {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-            <button type="submit" disabled={!canSubmit || submitting} className="w-full rounded-xl gradient-brand py-3.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:hover:scale-100">
+            <Button type="submit" disabled={!canSubmit || submitting} variant="gradientCta" size="blockMd">
               {submitting ? t("posting") : t("postBuyRequest")}
-            </button>
+            </Button>
           </form>
         </div>
       </section>

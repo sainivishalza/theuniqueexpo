@@ -28,7 +28,16 @@ jobs:
           DEPLOY_REF: ${{ github.event.inputs.ref }}
         run: |
           set -euo pipefail
-          SSH="sshpass -e ssh -o StrictHostKeyChecking=accept-new -p $SSH_PORT $SSH_USER@$SSH_HOST"
+          # ServerAliveInterval/CountMax: the deploy step runs the whole
+          # remote script (including `next build`, which can go several
+          # minutes with zero output during webpack compilation) over one
+          # SSH session -- without a keepalive, an idle-connection timeout
+          # on the path to Hostinger can silently kill it mid-build
+          # ("Broken pipe", exit 255) even though the remote process is
+          # still running fine. A probe every 30s for up to 5 minutes of
+          # missed responses is generous enough to ride out that without
+          # masking an actually-dead connection.
+          SSH="sshpass -e ssh -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -p $SSH_PORT $SSH_USER@$SSH_HOST"
 
           echo "==> Locating the app directory on the server..."
           APP_DIR=$($SSH 'for f in $(find ~ -maxdepth 4 -name "package.json" -not -path "*/node_modules/*" -not -path "*/.*/*" 2>/dev/null); do grep -q "\"name\": *\"expobridge\"" "$f" 2>/dev/null && dirname "$f" && break; done')

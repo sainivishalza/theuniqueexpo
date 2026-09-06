@@ -87,6 +87,10 @@ export default function RelocationPage() {
                 })}
               </p>
             </div>
+            <Link href="/services/relocation-cost-estimator" className="mt-4 flex items-center gap-4 p-4 rounded-xl bg-emerald-50 border border-emerald-100 hover:border-emerald-300 transition-colors">
+              <span className="text-2xl">🧮</span>
+              <div><h3 className="font-bold text-gray-900">{t("costEstimatorTeaser.title")}</h3><p className="text-sm text-gray-500">{t("costEstimatorTeaser.desc")}</p></div>
+            </Link>
           </div>
 
           <div>

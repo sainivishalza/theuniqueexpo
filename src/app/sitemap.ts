@@ -31,6 +31,7 @@ const STATIC_ROUTES = [
   "/services/consultation",
   "/services/visa-setup",
   "/services/moving-assistance",
+  "/services/relocation-cost-estimator",
   "/services/transport-subsidies",
   "/login",
   "/register",

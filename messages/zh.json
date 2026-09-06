@@ -63,7 +63,8 @@
       "boothSetupTips": "展位搭建技巧",
       "apiDocumentation": "API 文档",
       "events": "活动",
-      "relocation": "移居服务"
+      "relocation": "移居服务",
+      "costEstimator": "成本估算器"
     },
     "copyright": "© {year} The Unique Expo. 保留所有权利。",
     "privacyPolicy": "隐私政策",
@@ -1546,7 +1547,11 @@
     "additionalDetailsPlaceholder": "预估体积、特殊物品、时间限制……",
     "submitQuoteRequest": "提交报价请求",
     "requestFailed": "提交失败,请重试。",
-    "submitting": "提交中..."
+    "submitting": "提交中...",
+    "costEstimatorTeaser": {
+      "title": "不确定费用大概是多少?",
+      "desc": "试试我们的免费搬迁成本估算器,快速获取预算区间。"
+    }
   },
   "consultationPage": {
     "consultationBooked": "咨询已预约!",
@@ -1911,7 +1916,11 @@
     "requestFailed": "提交失败，请重试。",
     "requestReceived": "请求已收到！",
     "requestReceivedHint": "我们会尽快与您联系，安排咨询时间。",
-    "submitAnother": "提交另一个请求"
+    "submitAnother": "提交另一个请求",
+    "costEstimatorTeaser": {
+      "title": "不确定费用大概是多少?",
+      "desc": "试试我们的免费搬迁成本估算器,快速获取预算区间。"
+    }
   },
   "reviews": {
     "reviews": "点评",
@@ -1989,5 +1998,47 @@
     "questionPlaceholder": "问题",
     "answerPlaceholder": "答案",
     "addQuestion": "+ 添加问题"
+  },
+  "relocationEstimatorPage": {
+    "ourServices": "我们的服务",
+    "title": "搬迁成本估算器",
+    "subtitle": "几秒钟内获得搬迁至中国或中国境内搬迁的大致预算估算,然后向我们的团队索取精确报价。",
+    "calculatorTitle": "估算您的成本",
+    "calculatorSubtitle": "选择最符合您情况的选项 -- 这是规划性估算,并非正式报价。",
+    "movingType": "搬迁类型",
+    "movingTypes": {
+      "office": "办公室搬迁",
+      "residential": "住宅搬迁",
+      "freight": "仅货运",
+      "pet": "宠物运输"
+    },
+    "scope": "规模",
+    "scopes": {
+      "small": "小型",
+      "medium": "中型",
+      "large": "大型"
+    },
+    "route": "路线",
+    "routes": {
+      "domestic": "中国境内",
+      "international": "国际至中国"
+    },
+    "estimatedRange": "预估成本区间",
+    "disclaimer": "这是基于典型搬迁成本的规划性估算,并非 TheUniqueExpo 的正式报价。实际费用取决于您搬迁的具体情况 -- 请在下方索取精确报价。",
+    "requestExactQuote": "索取精确报价",
+    "name": "姓名 *",
+    "email": "邮箱 *",
+    "phone": "电话",
+    "company": "公司",
+    "originCity": "出发城市 *",
+    "destinationCity": "目的地城市 *",
+    "preferredMoveDate": "期望搬迁日期",
+    "additionalDetails": "补充说明",
+    "submitQuoteRequest": "提交报价请求",
+    "submitting": "提交中...",
+    "requestFailed": "提交失败,请重试。",
+    "quoteRequested": "报价请求已提交!",
+    "quoteRequestedHint": "我们的搬迁团队将准备定制报价,并在 24 小时内与您联系。",
+    "startOver": "估算另一次搬迁"
   }
 }

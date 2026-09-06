@@ -63,7 +63,8 @@
       "boothSetupTips": "Booth Setup Tips",
       "apiDocumentation": "API Documentation",
       "events": "Events",
-      "relocation": "Relocation"
+      "relocation": "Relocation",
+      "costEstimator": "Cost Estimator"
     },
     "copyright": "© {year} The Unique Expo. All rights reserved.",
     "privacyPolicy": "Privacy Policy",
@@ -1546,7 +1547,11 @@
     "additionalDetailsPlaceholder": "Volume estimate, special items, timeline constraints...",
     "submitQuoteRequest": "Submit Quote Request",
     "requestFailed": "Request failed. Please try again.",
-    "submitting": "Submitting..."
+    "submitting": "Submitting...",
+    "costEstimatorTeaser": {
+      "title": "Not sure what it'll cost?",
+      "desc": "Try our free relocation cost estimator for a quick planning range."
+    }
   },
   "consultationPage": {
     "consultationBooked": "Consultation Booked!",
@@ -1911,7 +1916,11 @@
     "requestFailed": "Request failed. Please try again.",
     "requestReceived": "Request Received!",
     "requestReceivedHint": "We'll reach out to you shortly to schedule your consultation.",
-    "submitAnother": "Submit Another Request"
+    "submitAnother": "Submit Another Request",
+    "costEstimatorTeaser": {
+      "title": "Not sure what it'll cost?",
+      "desc": "Try our free relocation cost estimator for a quick planning range."
+    }
   },
   "reviews": {
     "reviews": "Reviews",
@@ -1989,5 +1998,47 @@
     "questionPlaceholder": "Question",
     "answerPlaceholder": "Answer",
     "addQuestion": "+ Add Question"
+  },
+  "relocationEstimatorPage": {
+    "ourServices": "Our Services",
+    "title": "Relocation Cost Estimator",
+    "subtitle": "Get a rough planning estimate for your move to or within China in seconds, then request an exact quote from our team.",
+    "calculatorTitle": "Estimate Your Cost",
+    "calculatorSubtitle": "Pick the options closest to your situation -- this is a planning estimate, not a quote.",
+    "movingType": "Moving Type",
+    "movingTypes": {
+      "office": "Office Relocation",
+      "residential": "Residential Moving",
+      "freight": "Freight Only",
+      "pet": "Pet Relocation"
+    },
+    "scope": "Size",
+    "scopes": {
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large"
+    },
+    "route": "Route",
+    "routes": {
+      "domestic": "Within China",
+      "international": "International to China"
+    },
+    "estimatedRange": "Estimated Cost Range",
+    "disclaimer": "This is a general planning estimate based on typical relocation costs, not a quote from TheUniqueExpo. Your actual cost depends on the specifics of your move -- request an exact quote below.",
+    "requestExactQuote": "Request Your Exact Quote",
+    "name": "Name *",
+    "email": "Email *",
+    "phone": "Phone",
+    "company": "Company",
+    "originCity": "Origin City *",
+    "destinationCity": "Destination City *",
+    "preferredMoveDate": "Preferred Move Date",
+    "additionalDetails": "Additional Details",
+    "submitQuoteRequest": "Submit Quote Request",
+    "submitting": "Submitting...",
+    "requestFailed": "Request failed. Please try again.",
+    "quoteRequested": "Quote Requested!",
+    "quoteRequestedHint": "Our moving team will prepare a custom quote and contact you within 24 hours.",
+    "startOver": "Estimate Another Move"
   }
 }

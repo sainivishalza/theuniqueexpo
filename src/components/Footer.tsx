@@ -29,6 +29,7 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
       { label: t("links.helpCenter"), href: "/help" },
       { label: t("links.exhibitionGuide"), href: "/exhibition-guide" },
       { label: t("links.boothSetupTips"), href: "/booth-setup-tips" },
+      { label: t("links.costEstimator"), href: "/services/relocation-cost-estimator" },
       { label: t("links.apiDocumentation"), href: "/api-documentation" },
     ],
   };

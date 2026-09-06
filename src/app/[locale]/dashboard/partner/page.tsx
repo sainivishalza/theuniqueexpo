@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { getReferralsForPartner, getPartnerStats, generateReferralLink } from "@/lib/partners";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 export default function PartnerDashboard() {
   const t = useTranslations("partnerDashboard");
@@ -49,7 +51,7 @@ export default function PartnerDashboard() {
       <section className="py-10 bg-gray-50">
         <div className="mx-auto max-w-7xl px-6">
           {/* Referral Link */}
-          <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100 mb-8">
+          <Card shadow="sm" className="p-8 mb-8">
             <h2 className="text-xl font-bold text-gray-900 mb-2">{t("referralLinkTitle")}</h2>
             <p className="text-sm text-gray-500 mb-4">{t("referralLinkSubtitle")}</p>
             <div className="flex gap-2">
@@ -59,17 +61,14 @@ export default function PartnerDashboard() {
                 readOnly
                 className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-mono text-gray-700"
               />
-              <button
-                onClick={() => navigator.clipboard.writeText(referralLink)}
-                className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
-              >
+              <Button onClick={() => navigator.clipboard.writeText(referralLink)} variant="gradientCta" size="wide">
                 {t("copyLink")}
-              </button>
+              </Button>
             </div>
-          </div>
+          </Card>
 
           {/* Referrals Table */}
-          <div className="rounded-2xl bg-white shadow-sm border border-gray-100 overflow-hidden">
+          <Card shadow="sm">
             <div className="p-6 border-b border-gray-100">
               <h2 className="text-xl font-bold text-gray-900">{t("referredUsers", { count: referrals.length })}</h2>
             </div>
@@ -110,10 +109,10 @@ export default function PartnerDashboard() {
                 </tbody>
               </table>
             )}
-          </div>
+          </Card>
 
           {/* Marketing Kit */}
-          <div className="mt-8 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
+          <Card shadow="sm" className="mt-8 p-8">
             <h2 className="text-xl font-bold text-gray-900 mb-2">{t("marketingKit")}</h2>
             <p className="text-sm text-gray-500 mb-5">{t("marketingKitSubtitle")}</p>
             <div className="flex flex-wrap gap-3">
@@ -127,7 +126,7 @@ export default function PartnerDashboard() {
                 </button>
               ))}
             </div>
-          </div>
+          </Card>
         </div>
       </section>
     </div>

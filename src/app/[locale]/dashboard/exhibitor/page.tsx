@@ -1,10 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { getBookingsForExhibitor } from "@/lib/booths";
 import { formatCurrency } from "@/lib/format";
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 export default function ExhibitorDashboard() {
   const t = useTranslations("exhibitorDashboard");
@@ -46,28 +48,28 @@ export default function ExhibitorDashboard() {
         <div className="mx-auto max-w-7xl px-6">
           {/* Quick actions */}
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-10">
-            <Link href="/exhibitions" className="flex items-start gap-4 p-6 rounded-2xl bg-white border border-gray-100 shadow-sm card-hover">
+            <Card href="/exhibitions" shadow="sm" className="p-6 flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-xl">🏗️</div>
               <div>
                 <h3 className="font-bold text-gray-900">{t("bookABooth")}</h3>
                 <p className="text-sm text-gray-500 mt-1">{t("bookABoothDesc")}</p>
               </div>
-            </Link>
-            <Link href="/exhibitor/ex-1" className="flex items-start gap-4 p-6 rounded-2xl bg-white border border-gray-100 shadow-sm card-hover">
+            </Card>
+            <Card href="/exhibitor/ex-1" shadow="sm" className="p-6 flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-xl">🎨</div>
               <div>
                 <h3 className="font-bold text-gray-900">{t("companyProfile")}</h3>
                 <p className="text-sm text-gray-500 mt-1">{t("companyProfileDesc")}</p>
               </div>
-            </Link>
-            <div className="flex items-start gap-4 p-6 rounded-2xl bg-white border border-gray-100 shadow-sm">
+            </Card>
+            <Card shadow="sm" className="p-6 flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-xl">📊</div>
               <div>
                 <h3 className="font-bold text-gray-900">{t("leadsCrm")}</h3>
                 <p className="text-sm text-gray-500 mt-1">{t("leadsCrmDesc")}</p>
                 <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">{tc("comingSoon")}</span>
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Bookings */}
@@ -77,17 +79,14 @@ export default function ExhibitorDashboard() {
               <div className="text-5xl mb-4">🏗️</div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">{t("noBookingsTitle")}</h3>
               <p className="text-gray-500 mb-6">{t("noBookingsSubtitle")}</p>
-              <Link
-                href="/exhibitions"
-                className="inline-flex items-center gap-2 rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
-              >
+              <Button href="/exhibitions" variant="gradientCta" size="wide">
                 {t("browseExhibitions")}
-              </Link>
+              </Button>
             </div>
           ) : (
             <div className="space-y-4">
               {bookings.map((bk) => (
-                <div key={bk.id} className="flex items-center justify-between rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+                <Card key={bk.id} shadow="sm" className="p-6 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-sm font-bold">
                       {bk.boothId.split("-").pop()?.slice(0, 3) || "BK"}
@@ -98,14 +97,12 @@ export default function ExhibitorDashboard() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className={`inline-block rounded-lg px-3 py-1 text-xs font-bold ${
-                      bk.status === "confirmed" ? "bg-green-100 text-green-700" : bk.status === "pending" ? "bg-yellow-100 text-yellow-700" : "bg-red-100 text-red-700"
-                    }`}>
+                    <Badge tone={bk.status === "confirmed" ? "success" : bk.status === "pending" ? "warning" : "danger"} size="tag">
                       {t(`statuses.${bk.status}`)}
-                    </span>
+                    </Badge>
                     <p className="mt-1 text-lg font-bold text-gray-900">{formatCurrency(bk.amount)}</p>
                   </div>
-                </div>
+                </Card>
               ))}
             </div>
           )}

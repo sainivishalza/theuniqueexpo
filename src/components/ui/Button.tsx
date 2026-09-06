@@ -43,7 +43,7 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   ghostDanger: "border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50",
 };
 
-export type ButtonSize = "md" | "sm" | "block" | "blockSm" | "blockMd" | "blockLg" | "inline" | "compact" | "xs";
+export type ButtonSize = "md" | "sm" | "block" | "blockSm" | "blockMd" | "blockLg" | "inline" | "compact" | "wide" | "xs";
 
 // Padding/text-size live on a size variant rather than being left to an
 // overriding className -- two same-specificity Tailwind utility classes
@@ -65,6 +65,8 @@ const SIZE_CLASSES: Record<ButtonSize, string> = {
   inline: "text-xs",
   // Admin form/header action button (new item, save, cancel).
   compact: "px-5 py-2.5 text-sm",
+  // Inline (non-full-width) gradient CTA, e.g. a dashboard panel's action button.
+  wide: "px-6 py-3 text-sm",
   // Admin list-row action button (view, edit, delete).
   xs: "px-4 py-2 text-xs",
 };

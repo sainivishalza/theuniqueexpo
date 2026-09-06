@@ -1,8 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import Card from "@/components/ui/Card";
 
 const ACTION_KEYS = [
   { key: "browseExhibitions", href: "/exhibitions", icon: "🎯", color: "from-teal-500 to-cyan-600" },
@@ -60,29 +60,22 @@ export default function BuyerDashboard() {
         <div className="mx-auto max-w-7xl px-6">
           <h2 className="text-xl font-bold text-gray-900 mb-6">{t("quickActions")}</h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {actions.map((a) => {
-              const content = (
-                <div className="flex items-start gap-4 p-6 rounded-2xl bg-white border border-gray-100 shadow-sm card-hover h-full">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${a.color} flex items-center justify-center text-xl flex-shrink-0`}>
-                    {a.icon}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-gray-900">{a.title}</h3>
-                    <p className="text-sm text-gray-500 mt-1">{a.description}</p>
-                    {a.comingSoon && (
-                      <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">
-                        {tc("comingSoon")}
-                      </span>
-                    )}
-                  </div>
+            {actions.map((a) => (
+              <Card key={a.title} href={a.href} shadow="sm" hoverable className="p-6 h-full flex items-start gap-4">
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${a.color} flex items-center justify-center text-xl flex-shrink-0`}>
+                  {a.icon}
                 </div>
-              );
-              return a.href ? (
-                <Link key={a.title} href={a.href}>{content}</Link>
-              ) : (
-                <div key={a.title}>{content}</div>
-              );
-            })}
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900">{a.title}</h3>
+                  <p className="text-sm text-gray-500 mt-1">{a.description}</p>
+                  {a.comingSoon && (
+                    <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">
+                      {tc("comingSoon")}
+                    </span>
+                  )}
+                </div>
+              </Card>
+            ))}
           </div>
         </div>
       </section>

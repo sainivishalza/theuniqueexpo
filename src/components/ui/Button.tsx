@@ -8,6 +8,7 @@ export type ButtonVariant =
   | "gradient"
   | "gold"
   | "gradientCta"
+  | "gradientPlain"
   | "save"
   | "linkDanger"
   | "dashedAdd"
@@ -29,6 +30,9 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   gold: "bg-gold-500 text-white shadow-lg shadow-gold-500/25 hover:bg-gold-600 hover:scale-105",
   // Full-width gradient CTA on a detail-page sidebar panel (register/book buttons).
   gradientCta: "gradient-brand text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100",
+  // Flat gradient fill with no hover/disabled treatment at all -- a "try again"/
+  // "log in" link after a success or gated state.
+  gradientPlain: "gradient-brand text-white",
   // Admin form save/submit button.
   save: "gradient-brand text-white hover:opacity-90 disabled:opacity-50",
   // Plain text "remove/delete" action in an admin list row.

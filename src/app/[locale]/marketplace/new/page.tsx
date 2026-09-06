@@ -56,7 +56,7 @@ export default function NewRFQPage() {
         <div className="text-center">
           <div className="text-5xl mb-4">🔒</div>
           <p className="text-gray-500 mb-4">{t("pleaseLogIn")}</p>
-          <Link href="/login" className="inline-flex items-center gap-2 rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("logIn")}</Link>
+          <Button href="/login" variant="gradientPlain" size="wide">{t("logIn")}</Button>
         </div>
       </div>
     );

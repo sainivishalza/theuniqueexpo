@@ -1,4 +1,3 @@
-import { cache } from "react";
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
 import { toDateOnlyString, formatDateRange, safeParseArray, safeParseJson } from "@/lib/server/db-helpers";
@@ -84,12 +83,7 @@ export function mapExhibitionRow(row: RowDataPacket, locale?: string) {
 // the hundreds of KB each -- 20+ of those turned every list fetch into a
 // multi-megabyte payload). Point at the dedicated image endpoint instead;
 // plain external URLs (short, already cheap) pass through unchanged.
-// Wrapped in React's cache() so multiple components in the same render pass
-// (e.g. the homepage's hero badge count and its featured-exhibitions grid,
-// split into separate Suspense boundaries for streaming) share one query
-// instead of each re-fetching the full list. Scoped to a single request --
-// this is not a persistent cache like `revalidate`.
-export const listExhibitions = cache(async function listExhibitions(locale?: string) {
+export async function listExhibitions(locale?: string) {
   const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT id, slug, title, start_date, end_date, venue, city, country, industry, description,
             highlights, description_ru, description_zh, highlights_ru, highlights_zh,
@@ -99,7 +93,7 @@ export const listExhibitions = cache(async function listExhibitions(locale?: str
      FROM exhibitions ORDER BY start_date ASC`
   );
   return rows.map((row) => mapExhibitionRow(row, locale));
-});
+}
 
 export async function getExhibitionBySlugOrId(slugOrId: string, locale?: string) {
   const [rows] = await pool.query<RowDataPacket[]>(

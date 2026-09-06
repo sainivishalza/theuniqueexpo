@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import Image from "next/image";
 import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -31,12 +30,23 @@ const INDUSTRY_KEYS = [
 ];
 
 export default async function Home() {
-  // Only translations here -- no DB call. The exhibitions/FAQ queries that
-  // used to block this entire page (including the fully-static hero image,
-  // this page's LCP element) now live in their own Suspense-wrapped
-  // components below, so the server can stream the hero out immediately
-  // instead of waiting on the database first.
-  const t = await getTranslations("home");
+  // getFaqItems() doesn't depend on locale/translations, so it doesn't need
+  // to wait behind them -- exhibitions still has to wait for locale to
+  // resolve first since it's an input to the query.
+  const [t, locale, faqItems] = await Promise.all([getTranslations("home"), getLocale(), getFaqItems()]);
+  const exhibitions = await listExhibitions(locale);
+  const featured = exhibitions.slice(0, FEATURED_COUNT);
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
+  const faqSchemaJson = JSON.stringify(faqSchema).replace(/</g, "\\u003c");
 
   const stats = [
     { value: "20+", label: t("stats.exhibitions"), icon: "🎯" },
@@ -72,9 +82,7 @@ export default async function Home() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-sm mb-6">
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <Suspense fallback={<span className="inline-block h-4 w-40 rounded bg-white/20 animate-pulse" />}>
-                <ExhibitionsBadge />
-              </Suspense>
+              {t("badge", { count: exhibitions.length })}
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight">
               {t("heroTitleLine1")}
@@ -129,9 +137,73 @@ export default async function Home() {
               admin-editable exhibitions as /exhibitions and the detail
               pages, so editing one in the admin panel updates everywhere
               at once instead of drifting out of sync. */}
-          <Suspense fallback={<FeaturedExhibitionsSkeleton />}>
-            <FeaturedExhibitions t={t} />
-          </Suspense>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {featured.map((evt) => (
+              <Link
+                key={evt.id}
+                href={`/exhibitions/${evt.slug}`}
+                className="group block rounded-2xl overflow-hidden bg-white shadow-lg shadow-gray-200/60 card-hover border border-gray-100"
+              >
+                {/* Header */}
+                <div className="relative p-6 text-white" style={{ backgroundColor: ensureDarkEnoughForWhiteText(evt.color) }}>
+                  <div className="absolute top-4 right-4 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1 text-xs font-bold">
+                    {evt.dates.split(",")[0]}
+                  </div>
+                  <h3 className="text-xl font-extrabold leading-tight pr-20">{evt.title}</h3>
+                  <div className="mt-3 flex items-center gap-2 text-xs text-white">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    {evt.venue}, {evt.city}
+                  </div>
+                </div>
+
+                {/* Image */}
+                {evt.image && (
+                  <div className="relative h-44 overflow-hidden">
+                    <FavoriteButton exhibitionId={evt.id} className="absolute top-3 right-3 z-10 w-9 h-9 text-lg shadow-md" />
+                    <Image
+                      src={evt.image}
+                      alt={evt.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                  </div>
+                )}
+
+                {/* Highlights */}
+                <div className="p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-xs font-bold text-gray-900">★</span>
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t("highlights")}</span>
+                  </div>
+                  <ul className="space-y-1.5 mb-4">
+                    {evt.highlights.slice(0, 3).map((h) => (
+                      <li key={h} className="text-xs text-gray-600 flex items-start gap-2">
+                        <span className="text-emerald-500 mt-0.5 shrink-0">✦</span>
+                        {h}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA */}
+                  <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+                    <span className="text-xs text-gray-600">{formatNumber(evt.exhibitors)}{t("exhibitorsSuffix")}</span>
+                    <span className="inline-flex items-center gap-1 rounded-lg bg-gray-900 px-4 py-2 text-xs font-semibold text-white group-hover:bg-emerald-600 transition-colors">
+                      {t("viewDetails")}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link href="/exhibitions" className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-8 py-3.5 text-sm font-semibold text-white hover:bg-gray-800 transition-colors">
+              {t("viewAll", { count: exhibitions.length })}
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -197,9 +269,27 @@ export default async function Home() {
       </section>
 
       {/* ── FAQ Section ── */}
-      <Suspense fallback={null}>
-        <FaqSection />
-      </Suspense>
+      {faqItems.length > 0 && (
+        <section className="py-20 bg-white">
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchemaJson }} />
+          <div className="mx-auto max-w-3xl px-6">
+            <div className="text-center mb-12">
+              <span className="inline-block rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-semibold text-emerald-700 mb-4">
+                {t("faqBadge")}
+              </span>
+              <h2 className="text-4xl font-extrabold text-gray-900">{t("faqTitle")}</h2>
+            </div>
+            <div className="space-y-4">
+              {faqItems.map((item) => (
+                <div key={item.question} className="rounded-2xl bg-gray-50 p-6 border border-gray-100">
+                  <h3 className="font-bold text-gray-900 mb-2">{item.question}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── CTA Section ── */}
       <section className="py-20 bg-gradient-to-r from-emerald-600 via-teal-600 to-purple-700">
@@ -221,147 +311,5 @@ export default async function Home() {
         </div>
       </section>
     </main>
-  );
-}
-
-// Streams in separately from the static hero above it -- listExhibitions()
-// is wrapped in React's cache(), so this and FeaturedExhibitions share one
-// query instead of each fetching the full list.
-async function ExhibitionsBadge() {
-  const [t, locale] = await Promise.all([getTranslations("home"), getLocale()]);
-  const exhibitions = await listExhibitions(locale);
-  return <>{t("badge", { count: exhibitions.length })}</>;
-}
-
-async function FeaturedExhibitions({ t }: { t: Awaited<ReturnType<typeof getTranslations<"home">>> }) {
-  const locale = await getLocale();
-  const exhibitions = await listExhibitions(locale);
-  const featured = exhibitions.slice(0, FEATURED_COUNT);
-
-  return (
-    <>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {featured.map((evt) => (
-          <Link
-            key={evt.id}
-            href={`/exhibitions/${evt.slug}`}
-            className="group block rounded-2xl overflow-hidden bg-white shadow-lg shadow-gray-200/60 card-hover border border-gray-100"
-          >
-            {/* Header */}
-            <div className="relative p-6 text-white" style={{ backgroundColor: ensureDarkEnoughForWhiteText(evt.color) }}>
-              <div className="absolute top-4 right-4 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1 text-xs font-bold">
-                {evt.dates.split(",")[0]}
-              </div>
-              <h3 className="text-xl font-extrabold leading-tight pr-20">{evt.title}</h3>
-              <div className="mt-3 flex items-center gap-2 text-xs text-white">
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                {evt.venue}, {evt.city}
-              </div>
-            </div>
-
-            {/* Image */}
-            {evt.image && (
-              <div className="relative h-44 overflow-hidden">
-                <FavoriteButton exhibitionId={evt.id} className="absolute top-3 right-3 z-10 w-9 h-9 text-lg shadow-md" />
-                <Image
-                  src={evt.image}
-                  alt={evt.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-              </div>
-            )}
-
-            {/* Highlights */}
-            <div className="p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-xs font-bold text-gray-900">★</span>
-                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t("highlights")}</span>
-              </div>
-              <ul className="space-y-1.5 mb-4">
-                {evt.highlights.slice(0, 3).map((h) => (
-                  <li key={h} className="text-xs text-gray-600 flex items-start gap-2">
-                    <span className="text-emerald-500 mt-0.5 shrink-0">✦</span>
-                    {h}
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA */}
-              <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-                <span className="text-xs text-gray-600">{formatNumber(evt.exhibitors)}{t("exhibitorsSuffix")}</span>
-                <span className="inline-flex items-center gap-1 rounded-lg bg-gray-900 px-4 py-2 text-xs font-semibold text-white group-hover:bg-emerald-600 transition-colors">
-                  {t("viewDetails")}
-                </span>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      <div className="mt-12 text-center">
-        <Link href="/exhibitions" className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-8 py-3.5 text-sm font-semibold text-white hover:bg-gray-800 transition-colors">
-          {t("viewAll", { count: exhibitions.length })}
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-        </Link>
-      </div>
-    </>
-  );
-}
-
-function FeaturedExhibitionsSkeleton() {
-  return (
-    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: FEATURED_COUNT }).map((_, i) => (
-        <div key={i} className="rounded-2xl overflow-hidden bg-white shadow-lg shadow-gray-200/60 border border-gray-100 animate-pulse">
-          <div className="h-32 bg-gray-200" />
-          <div className="p-5 space-y-2">
-            <div className="h-3 w-1/3 rounded bg-gray-200" />
-            <div className="h-3 w-full rounded bg-gray-200" />
-            <div className="h-3 w-2/3 rounded bg-gray-200" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-async function FaqSection() {
-  const [t, faqItems] = await Promise.all([getTranslations("home"), getFaqItems()]);
-  if (faqItems.length === 0) return null;
-
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqItems.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: { "@type": "Answer", text: item.answer },
-    })),
-  };
-  const faqSchemaJson = JSON.stringify(faqSchema).replace(/</g, "\\u003c");
-
-  return (
-    <section className="py-20 bg-white">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchemaJson }} />
-      <div className="mx-auto max-w-3xl px-6">
-        <div className="text-center mb-12">
-          <span className="inline-block rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-semibold text-emerald-700 mb-4">
-            {t("faqBadge")}
-          </span>
-          <h2 className="text-4xl font-extrabold text-gray-900">{t("faqTitle")}</h2>
-        </div>
-        <div className="space-y-4">
-          {faqItems.map((item) => (
-            <div key={item.question} className="rounded-2xl bg-gray-50 p-6 border border-gray-100">
-              <h3 className="font-bold text-gray-900 mb-2">{item.question}</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">{item.answer}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }

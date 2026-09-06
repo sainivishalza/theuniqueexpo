@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import { errorMessage } from "@/lib/format";
 import Badge from "@/components/ui/Badge";
+import Card from "@/components/ui/Card";
 
 interface Booking {
   id: string;
@@ -85,10 +86,7 @@ export default function AdminHotelsPage() {
       ) : (
         <div className="mt-6 space-y-3">
           {bookings.map((bk) => (
-            <div
-              key={bk.id}
-              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg border border-gray-200 p-4"
-            >
+            <Card key={bk.id} shadow="sm" hoverable className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="min-w-0">
                 <h2 className="font-semibold">{bk.hotelName}</h2>
                 <p className="text-sm text-gray-500">
@@ -118,7 +116,7 @@ export default function AdminHotelsPage() {
                   </>
                 )}
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

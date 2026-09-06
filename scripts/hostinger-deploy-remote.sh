@@ -126,6 +126,7 @@ $MYSQL < schema-migrations/016-company-profile.sql
 $MYSQL < schema-migrations/017-blog-author.sql
 $MYSQL < schema-migrations/018-blog-pillar-cluster-content.sql
 $MYSQL < schema-migrations/019-faq-content.sql
+$MYSQL < schema-migrations/020-site-theme.sql
 
 echo "Installing dependencies and building ..."
 npm install

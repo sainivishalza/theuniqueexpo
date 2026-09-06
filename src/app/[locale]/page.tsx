@@ -5,6 +5,7 @@ import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 import { getFaqItems } from "@/lib/server/faq-content-repo";
+import { ensureDarkEnoughForWhiteText } from "@/lib/color";
 
 // How many of the soonest upcoming exhibitions to feature on the homepage.
 const FEATURED_COUNT = 6;
@@ -142,12 +143,12 @@ export default async function Home() {
                 className="group block rounded-2xl overflow-hidden bg-white shadow-lg shadow-gray-200/60 card-hover border border-gray-100"
               >
                 {/* Header */}
-                <div className="relative p-6 text-white" style={{ backgroundColor: evt.color }}>
-                  <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm rounded-lg px-3 py-1 text-xs font-bold">
+                <div className="relative p-6 text-white" style={{ backgroundColor: ensureDarkEnoughForWhiteText(evt.color) }}>
+                  <div className="absolute top-4 right-4 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1 text-xs font-bold">
                     {evt.dates.split(",")[0]}
                   </div>
                   <h3 className="text-xl font-extrabold leading-tight pr-20">{evt.title}</h3>
-                  <div className="mt-3 flex items-center gap-2 text-xs text-white/70">
+                  <div className="mt-3 flex items-center gap-2 text-xs text-white">
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     {evt.venue}, {evt.city}
                   </div>
@@ -185,7 +186,7 @@ export default async function Home() {
 
                   {/* CTA */}
                   <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-                    <span className="text-xs text-gray-400">{formatNumber(evt.exhibitors)}{t("exhibitorsSuffix")}</span>
+                    <span className="text-xs text-gray-600">{formatNumber(evt.exhibitors)}{t("exhibitorsSuffix")}</span>
                     <span className="inline-flex items-center gap-1 rounded-lg bg-gray-900 px-4 py-2 text-xs font-semibold text-white group-hover:bg-emerald-600 transition-colors">
                       {t("viewDetails")}
                     </span>
@@ -229,7 +230,7 @@ export default async function Home() {
                 <div className={`absolute inset-0 bg-gradient-to-br ${ind.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
                 <div className="relative text-4xl mb-3">{ind.icon}</div>
                 <div className="relative text-sm font-bold text-gray-900">{ind.name}</div>
-                <div className="relative text-xs text-gray-400 mt-1">{ind.count}+ events</div>
+                <div className="relative text-xs text-gray-600 mt-1">{ind.count}+ events</div>
               </Link>
             ))}
           </div>
@@ -256,7 +257,7 @@ export default async function Home() {
             ].map((item) => (
               <div key={item.step} className="relative rounded-2xl bg-white p-8 border border-gray-100 shadow-sm card-hover">
                 <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} text-white text-xl mb-5`}>{item.icon}</div>
-                <div className="text-xs font-bold text-gray-300 mb-2">{t("step", { number: item.step })}</div>
+                <div className="text-xs font-bold text-gray-600 mb-2">{t("step", { number: item.step })}</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{t(`steps.${item.key}.title`)}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{t(`steps.${item.key}.desc`)}</p>
               </div>

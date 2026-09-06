@@ -42,7 +42,7 @@ export default function ExhibitorProfilePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative h-56 bg-gray-900 overflow-hidden">
+      <section className="relative h-56 bg-[var(--color-hero-bg)] overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&h=300&fit=crop&q=80"
           alt=""

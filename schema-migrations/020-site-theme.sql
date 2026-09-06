@@ -16,6 +16,7 @@ VALUES (1, JSON_OBJECT(
   'goldColor', '#c9a24a',
   'backgroundColor', '#fefdfb',
   'footerColor', '#011714',
+  'heroColor', '#111827',
   'headingColor', '#111827',
   'headingFont', 'oswald',
   'bodyFont', 'inter',

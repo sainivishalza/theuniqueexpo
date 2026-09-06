@@ -64,7 +64,7 @@ export default function AdminSiteThemePage() {
     return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{ta("accessRequired")}</p></div>;
   }
 
-  const colorField = (key: "primaryColor" | "goldColor" | "backgroundColor" | "footerColor" | "headingColor", label: string, hint: string) => (
+  const colorField = (key: "primaryColor" | "goldColor" | "backgroundColor" | "footerColor" | "heroColor" | "headingColor", label: string, hint: string) => (
     <div>
       <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
       <p className="text-xs text-gray-400 mb-2">{hint}</p>
@@ -112,6 +112,7 @@ export default function AdminSiteThemePage() {
                   {colorField("goldColor", t("goldColor"), t("goldColorHint"))}
                   {colorField("backgroundColor", t("backgroundColor"), t("backgroundColorHint"))}
                   {colorField("footerColor", t("footerColor"), t("footerColorHint"))}
+                  {colorField("heroColor", t("heroColor"), t("heroColorHint"))}
                   {colorField("headingColor", t("headingColor"), t("headingColorHint"))}
                 </div>
               </Card>
@@ -202,6 +203,9 @@ export default function AdminSiteThemePage() {
                     <span className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white" style={{ backgroundColor: theme.footerColor, borderRadius: cornerRadii(theme.cornerStyle)["--radius-button"] }}>
                       {t("previewFooter")}
                     </span>
+                    <span className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white" style={{ backgroundColor: theme.heroColor, borderRadius: cornerRadii(theme.cornerStyle)["--radius-button"] }}>
+                      {t("previewHero")}
+                    </span>
                   </div>
                   <p style={{ fontFamily: scriptFontStack(theme.scriptFont), color: theme.primaryColor }} className="text-2xl">
                     {t("previewScript")}
@@ -211,9 +215,17 @@ export default function AdminSiteThemePage() {
 
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
               {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{t("saved")}</div>}
-              <Button onClick={handleSave} disabled={saving} variant="save" size="blockLg">
-                {saving ? ta("saving") : t("saveButton")}
-              </Button>
+              <div className="flex gap-3">
+                <Button onClick={() => setTheme(DEFAULT_SITE_THEME)} disabled={saving} variant="ghost" size="compact">
+                  {t("resetButton")}
+                </Button>
+                <div className="flex-1">
+                  <Button onClick={handleSave} disabled={saving} variant="save" size="blockLg">
+                    {saving ? ta("saving") : t("saveButton")}
+                  </Button>
+                </div>
+              </div>
+              <p className="text-xs text-gray-400">{t("resetHint")}</p>
             </>
           )}
         </div>

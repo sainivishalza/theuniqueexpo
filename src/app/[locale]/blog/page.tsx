@@ -28,7 +28,7 @@ export default async function BlogPage({
 
   return (
     <div>
-      <section className="bg-gray-900 py-16">
+      <section className="bg-[var(--color-hero-bg)] py-16">
         <div className="mx-auto max-w-7xl px-6 text-white">
           <h1 className="text-4xl md:text-5xl font-extrabold">{t("title")}</h1>
           <p className="mt-3 text-lg text-gray-300 max-w-xl">{t("subtitle")}</p>

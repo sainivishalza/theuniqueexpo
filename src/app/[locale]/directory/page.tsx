@@ -58,7 +58,7 @@ export default function DirectoryPage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gray-900 py-20">
+      <section className="relative overflow-hidden bg-[var(--color-hero-bg)] py-20">
         <div className="absolute inset-0 opacity-15">
           <Image
             src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&h=600&fit=crop&q=80"

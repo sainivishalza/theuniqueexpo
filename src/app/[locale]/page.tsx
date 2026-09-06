@@ -67,7 +67,7 @@ export default async function Home() {
   return (
     <main>
       {/* ── Hero Section ── */}
-      <section className="relative overflow-hidden bg-gray-900 min-h-[85vh] flex items-center">
+      <section className="relative overflow-hidden bg-[var(--color-hero-bg)] min-h-[85vh] flex items-center">
         <div className="absolute inset-0 opacity-20">
           <Image
             src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&h=900&fit=crop&q=80"

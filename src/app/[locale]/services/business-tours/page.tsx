@@ -12,7 +12,7 @@ export default function BusinessToursPage() {
   const businessTours = businessToursData.map((tour) => localizeTour(tour, locale));
   return (
     <div>
-      <section className="relative overflow-hidden bg-gray-900 py-20">
+      <section className="relative overflow-hidden bg-[var(--color-hero-bg)] py-20">
         <div className="absolute inset-0 opacity-15">
           <Image
             src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&h=600&fit=crop&q=80"

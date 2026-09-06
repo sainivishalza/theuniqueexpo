@@ -18,6 +18,7 @@ export interface SiteTheme {
   goldColor: string; // premium/highlight accents -- the gold-* scale
   backgroundColor: string; // main warm page background -- the cream-* scale
   footerColor: string; // footer background, independent of primaryColor
+  heroColor: string; // dark hero/section-header background, independent of footerColor
   headingColor: string; // h1-h6 text color, independent of primaryColor
   headingFont: HeadingFontKey;
   bodyFont: BodyFontKey;
@@ -36,6 +37,7 @@ export const DEFAULT_SITE_THEME: SiteTheme = {
   goldColor: "#c9a24a",
   backgroundColor: "#fefdfb",
   footerColor: "#011714",
+  heroColor: "#111827",
   headingColor: "#111827",
   headingFont: "oswald",
   bodyFont: "inter",
@@ -144,6 +146,7 @@ export function normalizeSiteTheme(input: unknown): SiteTheme {
     goldColor: hex("goldColor") as string,
     backgroundColor: hex("backgroundColor") as string,
     footerColor: hex("footerColor") as string,
+    heroColor: hex("heroColor") as string,
     headingColor: hex("headingColor") as string,
     headingFont: heading,
     bodyFont: body,

@@ -2083,6 +2083,11 @@
       "sharp": "Sharp",
       "soft": "Soft",
       "rounded": "Rounded"
-    }
+    },
+    "heroColor": "Hero / Dark Section Color",
+    "heroColorHint": "The dark background behind hero banners and page headers, independent of the footer.",
+    "previewHero": "Hero Section",
+    "resetButton": "Reset to Defaults",
+    "resetHint": "Fills the form with the original site look -- click Save Theme afterward to apply it."
   }
 }

@@ -2083,6 +2083,11 @@
       "sharp": "锐利",
       "soft": "柔和",
       "rounded": "圆润"
-    }
+    },
+    "heroColor": "英雄区/深色区块颜色",
+    "heroColorHint": "英雄横幅和页面标题后面的深色背景，独立于页脚。",
+    "previewHero": "英雄区块",
+    "resetButton": "恢复默认",
+    "resetHint": "将表单填充为网站的原始外观 -- 之后点击保存主题以应用。"
   }
 }

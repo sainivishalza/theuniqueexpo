@@ -73,7 +73,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
 
   return (
     <div>
-      <section className="bg-gray-900 py-8 md:py-10">
+      <section className="bg-[var(--color-hero-bg)] py-8 md:py-10">
         <div className="mx-auto max-w-5xl px-6">
           <Badge tone="outline-light" size="pill" className="capitalize">
             {CATEGORY_ICONS[event.category] || "📅"} {t(`categories.${event.category}`)}

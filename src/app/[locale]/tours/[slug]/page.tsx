@@ -69,7 +69,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
   return (
     <div>
       {/* Title header */}
-      <section className="bg-gray-900 py-8 md:py-10">
+      <section className="bg-[var(--color-hero-bg)] py-8 md:py-10">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-wrap gap-2 mb-4">
             <Badge tone="outline-light" size="pill">{tour.duration}</Badge>

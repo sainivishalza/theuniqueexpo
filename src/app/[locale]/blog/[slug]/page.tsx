@@ -89,7 +89,7 @@ export default async function BlogPostPage({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schemaJson }} />
       {faqSchemaJson && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchemaJson }} />}
 
-      <section className="bg-gray-900 py-12">
+      <section className="bg-[var(--color-hero-bg)] py-12">
         <div className="mx-auto max-w-3xl px-6 text-white">
           <Link href={`/blog?category=${post.category}`} className="text-sm text-emerald-300 hover:underline font-semibold uppercase tracking-wide">
             {t(`categories.${post.category}`)}

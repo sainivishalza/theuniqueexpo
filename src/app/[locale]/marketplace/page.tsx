@@ -42,7 +42,7 @@ export default function MarketplacePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gray-900 py-20">
+      <section className="relative overflow-hidden bg-[var(--color-hero-bg)] py-20">
         <div className="absolute inset-0 opacity-15">
           <Image
             src="https://images.unsplash.com/photo-1556740758-90de374c12ad?w=1600&h=600&fit=crop&q=80"

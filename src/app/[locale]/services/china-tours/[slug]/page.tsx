@@ -35,7 +35,7 @@ export default async function TourDetailPage({ params }: { params: Promise<{ loc
 
   return (
     <div>
-      <section className="relative h-80 overflow-hidden bg-gray-900">
+      <section className="relative h-80 overflow-hidden bg-[var(--color-hero-bg)]">
         <Image src={tour.image} alt={tour.title} fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 gradient-overlay" />
         <div className="absolute inset-0 flex items-end">

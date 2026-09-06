@@ -97,7 +97,7 @@ export default function HotelsPage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative h-56 bg-gray-900 overflow-hidden">
+      <section className="relative h-56 bg-[var(--color-hero-bg)] overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1400&h=300&fit=crop&q=80"
           alt=""

@@ -2076,6 +2076,13 @@
     "previewFooter": "页脚",
     "previewScript": "一句简短的签名短语",
     "headingColor": "标题文字颜色",
-    "headingColorHint": "所有页面标题的颜色，独立于主品牌色。"
+    "headingColorHint": "所有页面标题的颜色，独立于主品牌色。",
+    "cornerStyle": "圆角样式",
+    "cornerStyleHint": "全站按钮、卡片、徽章和图标块的圆角程度。",
+    "cornerStyles": {
+      "sharp": "锐利",
+      "soft": "柔和",
+      "rounded": "圆润"
+    }
   }
 }

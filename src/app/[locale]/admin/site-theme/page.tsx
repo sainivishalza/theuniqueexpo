@@ -5,9 +5,9 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import {
-  DEFAULT_SITE_THEME, HEADING_FONT_OPTIONS, BODY_FONT_OPTIONS, SCRIPT_FONT_OPTIONS,
-  headingFontStack, bodyFontStack, scriptFontStack,
-  type SiteTheme, type HeadingFontKey, type BodyFontKey, type ScriptFontKey,
+  DEFAULT_SITE_THEME, HEADING_FONT_OPTIONS, BODY_FONT_OPTIONS, SCRIPT_FONT_OPTIONS, CORNER_STYLE_OPTIONS,
+  headingFontStack, bodyFontStack, scriptFontStack, cornerRadii,
+  type SiteTheme, type HeadingFontKey, type BodyFontKey, type ScriptFontKey, type CornerStyleKey,
 } from "@/lib/site-theme";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -155,6 +155,34 @@ export default function AdminSiteThemePage() {
                 </div>
               </Card>
 
+              <Card shadow="sm" bordered={false} className="p-6 space-y-6">
+                <div>
+                  <h2 className="font-bold text-heading">{t("cornerStyle")}</h2>
+                  <p className="text-xs text-gray-400">{t("cornerStyleHint")}</p>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  {CORNER_STYLE_OPTIONS.map((o) => {
+                    const radii = cornerRadii(o.key);
+                    return (
+                      <button
+                        key={o.key}
+                        type="button"
+                        onClick={() => update({ cornerStyle: o.key as CornerStyleKey })}
+                        className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-colors ${
+                          theme.cornerStyle === o.key ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <span
+                          className="w-12 h-12 bg-gray-300"
+                          style={{ borderRadius: radii["--radius-card"] }}
+                        />
+                        <span className="text-sm font-medium text-gray-700">{t(`cornerStyles.${o.key}`)}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </Card>
+
               <Card shadow="sm" bordered={false} className="p-6">
                 <h2 className="font-bold text-heading mb-4">{t("preview")}</h2>
                 <div className="rounded-2xl border border-gray-100 p-6 space-y-4" style={{ backgroundColor: theme.backgroundColor }}>
@@ -165,13 +193,13 @@ export default function AdminSiteThemePage() {
                     {t("previewBody")}
                   </p>
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="inline-flex items-center rounded-xl px-5 py-2.5 text-sm font-semibold text-white" style={{ backgroundColor: theme.primaryColor }}>
+                    <span className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white" style={{ backgroundColor: theme.primaryColor, borderRadius: cornerRadii(theme.cornerStyle)["--radius-button"] }}>
                       {t("previewButton")}
                     </span>
-                    <span className="inline-flex items-center rounded-xl px-5 py-2.5 text-sm font-semibold text-white" style={{ backgroundColor: theme.goldColor }}>
+                    <span className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white" style={{ backgroundColor: theme.goldColor, borderRadius: cornerRadii(theme.cornerStyle)["--radius-button"] }}>
                       {t("previewAccent")}
                     </span>
-                    <span className="inline-flex items-center rounded-xl px-5 py-2.5 text-sm font-semibold text-white" style={{ backgroundColor: theme.footerColor }}>
+                    <span className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white" style={{ backgroundColor: theme.footerColor, borderRadius: cornerRadii(theme.cornerStyle)["--radius-button"] }}>
                       {t("previewFooter")}
                     </span>
                   </div>

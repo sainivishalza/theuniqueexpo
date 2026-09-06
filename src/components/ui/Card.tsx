@@ -9,7 +9,7 @@ const SHADOW_CLASSES: Record<CardShadow, string> = {
   lg: "shadow-lg shadow-gray-200/60",
 };
 
-const BASE_CLASSES = "block rounded-2xl overflow-hidden bg-white";
+const BASE_CLASSES = "block rounded-[var(--radius-card)] overflow-hidden bg-white";
 
 interface CardOwnProps {
   href?: string;

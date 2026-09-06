@@ -75,7 +75,7 @@ const SIZE_CLASSES: Record<ButtonSize, string> = {
   xs: "px-4 py-2 text-xs",
 };
 
-const BASE_CLASSES = "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300";
+const BASE_CLASSES = "inline-flex items-center justify-center gap-2 rounded-[var(--radius-button)] font-semibold transition-all duration-300";
 
 interface ButtonOwnProps {
   variant?: ButtonVariant;

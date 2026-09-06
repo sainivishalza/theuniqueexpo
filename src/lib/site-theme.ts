@@ -11,6 +11,7 @@
 export type HeadingFontKey = "oswald" | "bebasNeue" | "anton" | "robotoCondensed" | "archivoNarrow";
 export type BodyFontKey = "inter" | "manrope" | "montserrat" | "openSans";
 export type ScriptFontKey = "caveat" | "dancingScript" | "pacifico";
+export type CornerStyleKey = "sharp" | "soft" | "rounded";
 
 export interface SiteTheme {
   primaryColor: string; // buttons, links, badges -- the emerald-* scale
@@ -21,6 +22,7 @@ export interface SiteTheme {
   headingFont: HeadingFontKey;
   bodyFont: BodyFontKey;
   scriptFont: ScriptFontKey;
+  cornerStyle: CornerStyleKey; // rounding of every button/card/badge/icon tile
 }
 
 // Matches what's already live -- picking these as defaults means a site
@@ -38,7 +40,39 @@ export const DEFAULT_SITE_THEME: SiteTheme = {
   headingFont: "oswald",
   bodyFont: "inter",
   scriptFont: "caveat",
+  cornerStyle: "soft",
 };
+
+export const CORNER_STYLE_OPTIONS: { key: CornerStyleKey; label: string }[] = [
+  { key: "sharp", label: "Sharp" },
+  { key: "soft", label: "Soft" },
+  { key: "rounded", label: "Rounded" },
+];
+
+// One role per shared component's radius (see src/components/ui/*.tsx),
+// each currently a fixed Tailwind rounded-* class -- "soft" reproduces
+// those exact original values so the default corner style changes
+// nothing. eyebrow/status badges stay a fixed pill (rounded-full) in the
+// component itself regardless of corner style -- a "sharp" pill isn't a
+// smaller pill, it's a different shape, so it's not part of this control.
+const CORNER_RADIUS_PX: Record<CornerStyleKey, { button: number; card: number; badge: number; iconXs: number; iconSm: number; iconMd: number; iconLg: number }> = {
+  sharp: { button: 6, card: 8, badge: 4, iconXs: 6, iconSm: 6, iconMd: 8, iconLg: 8 },
+  soft: { button: 12, card: 16, badge: 8, iconXs: 8, iconSm: 12, iconMd: 16, iconLg: 16 },
+  rounded: { button: 16, card: 24, badge: 12, iconXs: 12, iconSm: 16, iconMd: 20, iconLg: 24 },
+};
+
+export function cornerRadii(style: CornerStyleKey): Record<string, string> {
+  const px = CORNER_RADIUS_PX[style] ?? CORNER_RADIUS_PX.soft;
+  return {
+    "--radius-button": `${px.button}px`,
+    "--radius-card": `${px.card}px`,
+    "--radius-badge": `${px.badge}px`,
+    "--radius-icon-xs": `${px.iconXs}px`,
+    "--radius-icon-sm": `${px.iconSm}px`,
+    "--radius-icon-md": `${px.iconMd}px`,
+    "--radius-icon-lg": `${px.iconLg}px`,
+  };
+}
 
 export const HEADING_FONT_OPTIONS: { key: HeadingFontKey; label: string; variable: string; fallback: string }[] = [
   { key: "oswald", label: "Oswald", variable: "--font-oswald", fallback: '"Oswald", sans-serif' },
@@ -83,6 +117,7 @@ export function scriptFontStack(key: ScriptFontKey): string {
 const HEADING_KEYS = new Set(HEADING_FONT_OPTIONS.map((o) => o.key));
 const BODY_KEYS = new Set(BODY_FONT_OPTIONS.map((o) => o.key));
 const SCRIPT_KEYS = new Set(SCRIPT_FONT_OPTIONS.map((o) => o.key));
+const CORNER_KEYS = new Set(CORNER_STYLE_OPTIONS.map((o) => o.key));
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
 export function normalizeSiteTheme(input: unknown): SiteTheme {
@@ -100,6 +135,9 @@ export function normalizeSiteTheme(input: unknown): SiteTheme {
   const script = typeof record.scriptFont === "string" && SCRIPT_KEYS.has(record.scriptFont as ScriptFontKey)
     ? (record.scriptFont as ScriptFontKey)
     : DEFAULT_SITE_THEME.scriptFont;
+  const corner = typeof record.cornerStyle === "string" && CORNER_KEYS.has(record.cornerStyle as CornerStyleKey)
+    ? (record.cornerStyle as CornerStyleKey)
+    : DEFAULT_SITE_THEME.cornerStyle;
 
   return {
     primaryColor: hex("primaryColor") as string,
@@ -110,5 +148,6 @@ export function normalizeSiteTheme(input: unknown): SiteTheme {
     headingFont: heading,
     bodyFont: body,
     scriptFont: script,
+    cornerStyle: corner,
   };
 }

@@ -4,11 +4,11 @@ export type IconBadgeSize = "xs" | "sm" | "md" | "lg";
 
 const SIZE_CLASSES: Record<IconBadgeSize, string> = {
   // Numbered highlight marker, e.g. a detail page's highlight list.
-  xs: "w-8 h-8 rounded-lg text-sm",
+  xs: "w-8 h-8 rounded-[var(--radius-icon-xs)] text-sm",
   // Quick-stat icon tile, e.g. a detail page's stats bar.
-  sm: "w-10 h-10 rounded-xl text-lg",
-  md: "w-14 h-14 rounded-2xl text-xl",
-  lg: "w-16 h-16 rounded-2xl text-3xl",
+  sm: "w-10 h-10 rounded-[var(--radius-icon-sm)] text-lg",
+  md: "w-14 h-14 rounded-[var(--radius-icon-md)] text-xl",
+  lg: "w-16 h-16 rounded-[var(--radius-icon-lg)] text-3xl",
 };
 
 interface IconBadgeProps {

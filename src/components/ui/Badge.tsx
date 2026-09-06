@@ -26,9 +26,9 @@ const SIZE_CLASSES: Record<BadgeSize, string> = {
   // Section eyebrow above a heading, e.g. "Featured Experiences".
   eyebrow: "rounded-full px-4 py-1.5 text-sm font-semibold",
   // Small label on a card/image, e.g. industry or "Upcoming".
-  tag: "rounded-lg px-3 py-1 text-xs font-bold",
+  tag: "rounded-[var(--radius-badge)] px-3 py-1 text-xs font-bold",
   // Meta tag on a detail page's dark header bar.
-  pill: "rounded-lg px-3 py-1 text-sm font-medium",
+  pill: "rounded-[var(--radius-badge)] px-3 py-1 text-sm font-medium",
   // Admin record status pill (booking/application/order status).
   status: "rounded-full px-2 py-0.5 text-xs font-medium",
 };

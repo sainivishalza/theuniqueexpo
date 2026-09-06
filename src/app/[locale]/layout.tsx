@@ -14,7 +14,7 @@ import OrganizationSchema from "@/components/OrganizationSchema";
 import { routing } from "@/i18n/routing";
 import { getCompanyProfile } from "@/lib/server/company-profile-repo";
 import { getSiteTheme } from "@/lib/server/site-theme-repo";
-import { headingFontStack, bodyFontStack, scriptFontStack } from "@/lib/site-theme";
+import { headingFontStack, bodyFontStack, scriptFontStack, cornerRadii } from "@/lib/site-theme";
 import { generateScale, deriveTints } from "@/lib/theme-colors";
 import { ADMIN_NAMESPACES, DASHBOARD_NAMESPACES, omitMessages } from "@/lib/client-message-namespaces";
 
@@ -119,6 +119,7 @@ export default async function RootLayout({
     "--font-heading": headingFontStack(siteTheme.headingFont),
     "--font-body": bodyFontStack(siteTheme.bodyFont),
     "--font-script": scriptFontStack(siteTheme.scriptFont),
+    ...cornerRadii(siteTheme.cornerStyle),
   } as React.CSSProperties;
 
   return (

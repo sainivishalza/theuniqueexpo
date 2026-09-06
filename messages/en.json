@@ -2076,6 +2076,13 @@
     "previewFooter": "Footer",
     "previewScript": "A short signature phrase",
     "headingColor": "Heading Text Color",
-    "headingColorHint": "The color of every page heading, independent of the primary brand color."
+    "headingColorHint": "The color of every page heading, independent of the primary brand color.",
+    "cornerStyle": "Corner Style",
+    "cornerStyleHint": "How rounded every button, card, badge, and icon tile is, sitewide.",
+    "cornerStyles": {
+      "sharp": "Sharp",
+      "soft": "Soft",
+      "rounded": "Rounded"
+    }
   }
 }

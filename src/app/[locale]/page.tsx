@@ -30,11 +30,12 @@ const INDUSTRY_KEYS = [
 ];
 
 export default async function Home() {
-  const t = await getTranslations("home");
-  const locale = await getLocale();
+  // getFaqItems() doesn't depend on locale/translations, so it doesn't need
+  // to wait behind them -- exhibitions still has to wait for locale to
+  // resolve first since it's an input to the query.
+  const [t, locale, faqItems] = await Promise.all([getTranslations("home"), getLocale(), getFaqItems()]);
   const exhibitions = await listExhibitions(locale);
   const featured = exhibitions.slice(0, FEATURED_COUNT);
-  const faqItems = await getFaqItems();
 
   const faqSchema = {
     "@context": "https://schema.org",
@@ -69,6 +70,7 @@ export default async function Home() {
             alt=""
             fill
             priority
+            fetchPriority="high"
             sizes="100vw"
             className="object-cover"
           />

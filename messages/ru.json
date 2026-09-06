@@ -33,7 +33,9 @@
       "lifeInChina": "Жизнь в Китае",
       "relocationTips": "Советы по переезду",
       "exhibitionReviews": "Обзоры выставок"
-    }
+    },
+    "openMenu": "Открыть меню",
+    "closeMenu": "Закрыть меню"
   },
   "footer": {
     "newsletterTitle": "Будьте в курсе",

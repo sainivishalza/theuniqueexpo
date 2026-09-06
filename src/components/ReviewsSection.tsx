@@ -23,6 +23,7 @@ function Stars({ value, onSelect }: { value: number; onSelect?: (n: number) => v
           type="button"
           disabled={!onSelect}
           onClick={() => onSelect?.(n)}
+          aria-label={`${n} star${n === 1 ? "" : "s"}`}
           className={`text-lg leading-none ${onSelect ? "cursor-pointer" : "cursor-default"} ${n <= value ? "text-amber-400" : "text-gray-200"}`}
         >
           ★

@@ -33,7 +33,9 @@
       "lifeInChina": "在中国的生活",
       "relocationTips": "移居贴士",
       "exhibitionReviews": "展会点评"
-    }
+    },
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单"
   },
   "footer": {
     "newsletterTitle": "获取最新资讯",

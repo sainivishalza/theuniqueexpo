@@ -33,7 +33,9 @@
       "lifeInChina": "Life in China",
       "relocationTips": "Relocation Tips",
       "exhibitionReviews": "Exhibition Reviews"
-    }
+    },
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "footer": {
     "newsletterTitle": "Stay Updated",

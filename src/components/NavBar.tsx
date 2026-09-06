@@ -138,6 +138,9 @@ export default function NavBar() {
         <button
           className="lg:hidden p-2 text-gray-600 hover:text-gray-900"
           onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-nav-menu"
         >
           {mobileOpen ? (
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -153,7 +156,7 @@ export default function NavBar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="lg:hidden border-t border-gray-200/60 bg-white/95 backdrop-blur-xl px-6 py-4 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <div id="mobile-nav-menu" className="lg:hidden border-t border-gray-200/60 bg-white/95 backdrop-blur-xl px-6 py-4 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
           {navGroups.map((group) => (
             <div key={group.key} className="border-b border-gray-100 last:border-0">
               <div className="flex items-center justify-between">

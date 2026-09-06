@@ -12,6 +12,34 @@
   --color-brand-800: #065f46;
   --color-brand-900: #064e3b;
   --color-brand-950: #022c22;
+
+  /* Warm gold accent -- used sparingly for highlights/badges alongside the
+     emerald brand scale, not as a replacement for it. */
+  --color-gold-50: #fdf8ec;
+  --color-gold-100: #faeecc;
+  --color-gold-200: #f4dd99;
+  --color-gold-300: #edc85e;
+  --color-gold-400: #e6b73a;
+  --color-gold-500: #d4a017;
+  --color-gold-600: #b3830f;
+  --color-gold-700: #8a640c;
+  --color-gold-800: #6b4d0a;
+  --color-gold-900: #4a3507;
+  --color-gold-950: #2b1e04;
+
+  /* Cream neutral -- warm off-white for section backgrounds, an alternative
+     to plain gray-50 where a softer tone is wanted. */
+  --color-cream-50: #fffdf9;
+  --color-cream-100: #fdf9f0;
+  --color-cream-200: #faf3e3;
+  --color-cream-300: #f5e9cf;
+  --color-cream-400: #ecd9ab;
+  --color-cream-500: #ddc17e;
+  --color-cream-600: #c4a35a;
+  --color-cream-700: #a3823f;
+  --color-cream-800: #7d6230;
+  --color-cream-900: #574522;
+  --color-cream-950: #332813;
 }
 
 @layer base {

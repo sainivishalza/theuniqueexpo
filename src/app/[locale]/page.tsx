@@ -3,6 +3,10 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
+import Button from "@/components/ui/Button";
+import Badge from "@/components/ui/Badge";
+import Card from "@/components/ui/Card";
+import IconBadge from "@/components/ui/IconBadge";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 import { getFaqItems } from "@/lib/server/faq-content-repo";
 import { ensureDarkEnoughForWhiteText } from "@/lib/color";
@@ -95,13 +99,13 @@ export default async function Home() {
               {t("heroSubtitle")}
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
-              <Link href="/exhibitions" className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-semibold text-emerald-700 shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <Button href="/exhibitions" variant="primary">
                 {t("browseExhibitions")}
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-              </Link>
-              <Link href="/services" className="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
+              </Button>
+              <Button href="/services" variant="outline">
                 {t("ourServices")}
-              </Link>
+              </Button>
             </div>
           </div>
 
@@ -122,9 +126,7 @@ export default async function Home() {
       <section className="py-20 bg-gray-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
-            <span className="inline-block rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-semibold text-emerald-700 mb-4">
-              {t("featuredBadge")}
-            </span>
+            <Badge tone="emerald" className="mb-4">{t("featuredBadge")}</Badge>
             <h2 className="text-4xl font-extrabold text-gray-900">
               {t("featuredTitle")}
             </h2>
@@ -139,11 +141,7 @@ export default async function Home() {
               at once instead of drifting out of sync. */}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {featured.map((evt) => (
-              <Link
-                key={evt.id}
-                href={`/exhibitions/${evt.slug}`}
-                className="group block rounded-2xl overflow-hidden bg-white shadow-lg shadow-gray-200/60 card-hover border border-gray-100"
-              >
+              <Card key={evt.id} href={`/exhibitions/${evt.slug}`} shadow="lg">
                 {/* Header */}
                 <div className="relative p-6 text-white" style={{ backgroundColor: ensureDarkEnoughForWhiteText(evt.color) }}>
                   <div className="absolute top-4 right-4 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1 text-xs font-bold">
@@ -194,15 +192,15 @@ export default async function Home() {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </Card>
             ))}
           </div>
 
           <div className="mt-12 text-center">
-            <Link href="/exhibitions" className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-8 py-3.5 text-sm font-semibold text-white hover:bg-gray-800 transition-colors">
+            <Button href="/exhibitions" variant="dark" size="sm">
               {t("viewAll", { count: exhibitions.length })}
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-            </Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -211,9 +209,7 @@ export default async function Home() {
       <section className="py-20 bg-white">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
-            <span className="inline-block rounded-full bg-purple-100 px-4 py-1.5 text-sm font-semibold text-purple-700 mb-4">
-              {t("industryBadge")}
-            </span>
+            <Badge tone="purple" className="mb-4">{t("industryBadge")}</Badge>
             <h2 className="text-4xl font-extrabold text-gray-900">
               {t("industryTitle")}
             </h2>
@@ -243,9 +239,7 @@ export default async function Home() {
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
-            <span className="inline-block rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-semibold text-emerald-700 mb-4">
-              {t("processBadge")}
-            </span>
+            <Badge tone="emerald" className="mb-4">{t("processBadge")}</Badge>
             <h2 className="text-4xl font-extrabold text-gray-900">
               {t("processTitle")}
             </h2>
@@ -258,7 +252,7 @@ export default async function Home() {
               { step: "03", key: "connect" as const, icon: "🤝", color: "from-amber-500 to-orange-600" },
             ].map((item) => (
               <div key={item.step} className="relative rounded-2xl bg-white p-8 border border-gray-100 shadow-sm card-hover">
-                <div className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} text-white text-xl mb-5`}>{item.icon}</div>
+                <IconBadge icon={item.icon} gradient={item.color} className="mb-5" />
                 <div className="text-xs font-bold text-gray-600 mb-2">{t("step", { number: item.step })}</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{t(`steps.${item.key}.title`)}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{t(`steps.${item.key}.desc`)}</p>
@@ -274,9 +268,7 @@ export default async function Home() {
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchemaJson }} />
           <div className="mx-auto max-w-3xl px-6">
             <div className="text-center mb-12">
-              <span className="inline-block rounded-full bg-emerald-100 px-4 py-1.5 text-sm font-semibold text-emerald-700 mb-4">
-                {t("faqBadge")}
-              </span>
+              <Badge tone="emerald" className="mb-4">{t("faqBadge")}</Badge>
               <h2 className="text-4xl font-extrabold text-gray-900">{t("faqTitle")}</h2>
             </div>
             <div className="space-y-4">
@@ -301,12 +293,12 @@ export default async function Home() {
             {t("ctaSubtitle")}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/register" className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-semibold text-emerald-700 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+            <Button href="/register" variant="primary">
               {t("getStarted")}
-            </Link>
-            <Link href="/services" className="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 px-8 py-4 text-base font-semibold text-white hover:bg-white/10 transition-all duration-300">
+            </Button>
+            <Button href="/services" variant="outline">
               {t("exploreServices")}
-            </Link>
+            </Button>
           </div>
         </div>
       </section>

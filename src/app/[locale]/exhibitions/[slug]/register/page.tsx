@@ -10,6 +10,8 @@ import {
 } from "@/lib/expo-registrations";
 import { validateCustomAnswers, type CustomFormField, type CustomFormSchema } from "@/lib/custom-registration-form";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 interface Exhibition {
   id: string; slug: string; title: string; dates: string;
@@ -250,24 +252,24 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
   if (!expo.registrationEnabled) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
+        <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
           <div className="text-5xl mb-4">🚫</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("registrationClosed")}</h1>
           <p className="text-gray-500 mb-6">{t.rich("registrationClosedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
           <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("backTo", { name: expo.title })}</Link>
-        </div>
+        </Card>
       </div>
     );
   }
   if (submitted) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
+        <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
           <div className="text-6xl mb-4">✅</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("registrationSubmitted")}</h1>
           <p className="text-gray-500 mb-6">{t.rich("registrationSubmittedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
           <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("backTo", { name: expo.title })}</Link>
-        </div>
+        </Card>
       </div>
     );
   }
@@ -283,7 +285,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
 
           <form onSubmit={(e) => handleCustomSubmit(e, customSchema)} className="space-y-6">
             {!user && (
-              <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
+              <Card shadow="sm" bordered={false} className="p-8 space-y-5">
                 <h2 className="text-xl font-bold text-gray-900">{t("yourAccount")}</h2>
                 <p className="text-sm text-gray-500">{t("yourAccountHint")}</p>
                 <div className="grid gap-5 md:grid-cols-2">
@@ -291,10 +293,10 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
                   <TextField label={t("email")} type="email" required value={accountEmail} onChange={setAccountEmail} />
                   <TextField label={t("password")} type="password" required value={password} onChange={setPassword} placeholder={t("passwordPlaceholder")} />
                 </div>
-              </div>
+              </Card>
             )}
 
-            <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
+            <Card shadow="sm" bordered={false} className="p-8 space-y-5">
               {customSchema.map((field) => (
                 <CustomField
                   key={field.id}
@@ -306,7 +308,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
                   fileError={customFileErrors[field.id]}
                 />
               ))}
-            </div>
+            </Card>
 
             {error && (
               <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -314,9 +316,9 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
                 {accountExists && <Link href="/login" className="underline font-semibold">{t("signIn")}</Link>}
               </div>
             )}
-            <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
+            <Button type="submit" disabled={submitting} variant="save" size="blockLg">
               {submitting ? t("submitting") : t("submitRegistration")}
-            </button>
+            </Button>
           </form>
         </div>
       </div>
@@ -332,7 +334,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Registration type */}
-          <div className="bg-white rounded-2xl p-8 shadow-sm">
+          <Card shadow="sm" bordered={false} className="p-8">
             <h2 className="text-xl font-bold text-gray-900 mb-4">{t("registeringAs")}</h2>
             <div className="grid grid-cols-2 gap-3">
               {(["buyer", "visitor"] as RegistrationType[]).map((rt) => (
@@ -342,10 +344,10 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
                 </button>
               ))}
             </div>
-          </div>
+          </Card>
 
           {/* Personal details */}
-          <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
+          <Card shadow="sm" bordered={false} className="p-8 space-y-5">
             <h2 className="text-xl font-bold text-gray-900">{t("personalInformation")}</h2>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">{t("genderRequired")}</label>
@@ -368,10 +370,10 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
                 <TextField label={t("password")} type="password" required value={password} onChange={setPassword} placeholder={t("passwordCreatesAccount")} />
               )}
             </div>
-          </div>
+          </Card>
 
           {/* Company details */}
-          <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
+          <Card shadow="sm" bordered={false} className="p-8 space-y-5">
             <h2 className="text-xl font-bold text-gray-900">{t("companyInformation")}</h2>
             <div className="grid gap-5 md:grid-cols-2">
               <TextField label={t("companyName")} required value={form.companyName} onChange={(v) => setForm({ ...form, companyName: v })} />
@@ -386,10 +388,10 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
               <label className="block text-sm font-medium text-gray-700 mb-1">{t("companyIntro")}</label>
               <textarea value={form.companyIntro} onChange={(e) => setForm({ ...form, companyIntro: e.target.value })} rows={3} placeholder={t("optional")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" />
             </div>
-          </div>
+          </Card>
 
           {/* Visit details */}
-          <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
+          <Card shadow="sm" bordered={false} className="p-8 space-y-5">
             <h2 className="text-xl font-bold text-gray-900">{t("visitDetails")}</h2>
             <OptionGroup label={t("purposeOfVisit")} required options={PURPOSES_OF_VISIT as unknown as string[]} value={form.purposeOfVisit} onChange={(v) => setForm({ ...form, purposeOfVisit: v })} />
             <OptionGroup label={t("infoSource")} required options={INFO_SOURCES as unknown as string[]} value={form.infoSource} onChange={(v) => setForm({ ...form, infoSource: v })} />
@@ -412,10 +414,10 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
                 </div>
               )}
             </div>
-          </div>
+          </Card>
 
           {/* Documents */}
-          <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
+          <Card shadow="sm" bordered={false} className="p-8 space-y-5">
             <h2 className="text-xl font-bold text-gray-900">{t("uploadDocuments")}</h2>
             <p className="text-sm text-gray-500">{t("uploadDocumentsHint")}</p>
             <div className="grid gap-4 md:grid-cols-2">
@@ -439,7 +441,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
                 );
               })}
             </div>
-          </div>
+          </Card>
 
           {error && (
             <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -447,9 +449,9 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
               {accountExists && <Link href="/login" className="underline font-semibold">{t("signIn")}</Link>}
             </div>
           )}
-          <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
+          <Button type="submit" disabled={submitting} variant="save" size="blockLg">
             {submitting ? t("submitting") : t("submitRegistration")}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

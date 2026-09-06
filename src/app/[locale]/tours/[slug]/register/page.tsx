@@ -6,6 +6,8 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage, isAbortError } from "@/lib/format";
 import { validateCustomAnswers, type CustomFormField, type CustomFormSchema } from "@/lib/custom-registration-form";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 interface Tour {
   id: string; slug: string; title: string; dates: string;
@@ -122,24 +124,24 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
   if (!tour.registrationEnabled) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
+        <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
           <div className="text-5xl mb-4">🚫</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("registrationClosed")}</h1>
           <p className="text-gray-500 mb-6">{t.rich("registrationClosedHint", { name: tour.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
           <Link href={`/tours/${tour.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("backTo", { name: tour.title })}</Link>
-        </div>
+        </Card>
       </div>
     );
   }
   if (submitted) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
+        <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
           <div className="text-6xl mb-4">✅</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("registrationSubmitted")}</h1>
           <p className="text-gray-500 mb-6">{t.rich("registrationSubmittedHint", { name: tour.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
           <Link href={`/tours/${tour.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("backTo", { name: tour.title })}</Link>
-        </div>
+        </Card>
       </div>
     );
   }
@@ -155,7 +157,7 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
 
         <form onSubmit={(e) => handleSubmit(e, schema)} className="space-y-6">
           {!user && (
-            <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
+            <Card shadow="sm" bordered={false} className="p-8 space-y-5">
               <h2 className="text-xl font-bold text-gray-900">{t("yourAccount")}</h2>
               <p className="text-sm text-gray-500">{t("yourAccountHint")}</p>
               <div className="grid gap-5 md:grid-cols-2">
@@ -163,10 +165,10 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
                 <TextField label={t("email")} type="email" required value={accountEmail} onChange={setAccountEmail} />
                 <TextField label={t("password")} type="password" required value={password} onChange={setPassword} placeholder={t("passwordPlaceholder")} />
               </div>
-            </div>
+            </Card>
           )}
 
-          <div className="bg-white rounded-2xl p-8 shadow-sm space-y-5">
+          <Card shadow="sm" bordered={false} className="p-8 space-y-5">
             {schema.map((field) => (
               <CustomField
                 key={field.id}
@@ -178,7 +180,7 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
                 fileError={customFileErrors[field.id]}
               />
             ))}
-          </div>
+          </Card>
 
           {error && (
             <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -186,9 +188,9 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
               {accountExists && <Link href="/login" className="underline font-semibold">{t("signIn")}</Link>}
             </div>
           )}
-          <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
+          <Button type="submit" disabled={submitting} variant="save" size="blockLg">
             {submitting ? t("submitting") : t("submitRegistration")}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

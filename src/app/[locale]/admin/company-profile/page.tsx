@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import { DEFAULT_COMPANY_PROFILE, type CompanyProfile } from "@/lib/company-profile";
 import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 export default function AdminCompanyProfilePage() {
   const t = useTranslations("adminCompanyProfile");
@@ -88,16 +89,16 @@ export default function AdminCompanyProfilePage() {
             <p className="text-center text-gray-500 py-10">{ta("loading")}</p>
           ) : (
             <>
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-5">
+              <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-gray-900">{t("identity")}</h2>
                 <p className="text-xs text-gray-400">{t("identityHint")}</p>
                 {field("legalName", t("legalName"))}
                 {field("logoUrl", t("logoUrl"), "https://...")}
                 {field("contactEmail", t("contactEmail"))}
                 {field("phone", t("phone"), "+86 ...")}
-              </div>
+              </Card>
 
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-5">
+              <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-gray-900">{t("address")}</h2>
                 <p className="text-xs text-gray-400">{t("addressHint")}</p>
                 {field("addressLine", t("addressLine"))}
@@ -105,9 +106,9 @@ export default function AdminCompanyProfilePage() {
                   {field("addressCity", t("addressCity"))}
                   {field("addressCountry", t("addressCountry"))}
                 </div>
-              </div>
+              </Card>
 
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-5">
+              <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-gray-900">{t("social")}</h2>
                 <p className="text-xs text-gray-400">{t("socialHint")}</p>
                 {field("socialLinkedIn", "LinkedIn", "https://linkedin.com/company/...")}
@@ -115,7 +116,7 @@ export default function AdminCompanyProfilePage() {
                 {field("socialInstagram", "Instagram", "https://instagram.com/...")}
                 {field("socialX", "X (Twitter)", "https://x.com/...")}
                 {field("socialYoutube", "YouTube", "https://youtube.com/@...")}
-              </div>
+              </Card>
 
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
               {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{t("saved")}</div>}

@@ -11,6 +11,7 @@ import {
   type CustomFieldType,
 } from "@/lib/custom-registration-form";
 import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 interface TourSummary { id: string; title: string; slug: string; }
 
@@ -121,7 +122,7 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
             <p className="text-center text-red-600 py-10">{error}</p>
           ) : (
             <>
-              <div className="bg-white rounded-2xl p-6 shadow-sm flex items-center justify-between">
+              <Card shadow="sm" bordered={false} className="p-6 flex items-center justify-between">
                 <div>
                   <h2 className="font-bold text-gray-900">{tb("registrationStatus")}</h2>
                   <p className="text-sm text-gray-500 mt-1">
@@ -134,9 +135,9 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
                 >
                   <span className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-transform ${enabled ? "translate-x-7" : "translate-x-1"}`} />
                 </button>
-              </div>
+              </Card>
 
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <Card shadow="sm" bordered={false} className="p-6">
                 <h2 className="font-bold text-gray-900 mb-4">{t("registrationQuestions")}</h2>
                 <div className="space-y-4">
                   {fields.length === 0 && (
@@ -209,7 +210,7 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
                     {tb("addField")}
                   </Button>
                 </div>
-              </div>
+              </Card>
 
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
               {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{tb("saved")}</div>}

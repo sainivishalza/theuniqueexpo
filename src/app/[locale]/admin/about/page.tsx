@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import { DEFAULT_ABOUT_CONTENT, type AboutContent, type AboutStat } from "@/lib/about-content";
 import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 export default function AdminAboutPage() {
   const t = useTranslations("adminAbout");
@@ -92,7 +93,7 @@ export default function AdminAboutPage() {
             <p className="text-center text-gray-500 py-10">{ta("loading")}</p>
           ) : (
             <>
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-5">
+              <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-gray-900">{t("header")}</h2>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heading")}</label>
@@ -122,9 +123,9 @@ export default function AdminAboutPage() {
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
                   />
                 </div>
-              </div>
+              </Card>
 
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-3">
+              <Card shadow="sm" bordered={false} className="p-6 space-y-3">
                 <h2 className="font-bold text-gray-900">{t("ourStory")}</h2>
                 <p className="text-xs text-gray-400">{t("storyHint")}</p>
                 <textarea
@@ -133,10 +134,10 @@ export default function AdminAboutPage() {
                   rows={8}
                   className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-y"
                 />
-              </div>
+              </Card>
 
               <div className="grid gap-6 md:grid-cols-2">
-                <div className="bg-white rounded-2xl p-6 shadow-sm space-y-3">
+                <Card shadow="sm" bordered={false} className="p-6 space-y-3">
                   <h2 className="font-bold text-gray-900">{t("mission")}</h2>
                   <textarea
                     value={content.mission}
@@ -144,8 +145,8 @@ export default function AdminAboutPage() {
                     rows={4}
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-y"
                   />
-                </div>
-                <div className="bg-white rounded-2xl p-6 shadow-sm space-y-3">
+                </Card>
+                <Card shadow="sm" bordered={false} className="p-6 space-y-3">
                   <h2 className="font-bold text-gray-900">{t("vision")}</h2>
                   <textarea
                     value={content.vision}
@@ -153,10 +154,10 @@ export default function AdminAboutPage() {
                     rows={4}
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-y"
                   />
-                </div>
+                </Card>
               </div>
 
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
+              <Card shadow="sm" bordered={false} className="p-6 space-y-4">
                 <h2 className="font-bold text-gray-900">{t("stats")}</h2>
                 {content.stats.map((stat, i) => (
                   <div key={i} className="flex items-center gap-3">
@@ -180,7 +181,7 @@ export default function AdminAboutPage() {
                 <Button onClick={addStat} variant="dashedAdd" size="blockSm">
                   {t("addStat")}
                 </Button>
-              </div>
+              </Card>
 
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
               {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{t("saved")}</div>}

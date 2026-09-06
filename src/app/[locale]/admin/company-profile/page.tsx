@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import { DEFAULT_COMPANY_PROFILE, type CompanyProfile } from "@/lib/company-profile";
+import Button from "@/components/ui/Button";
 
 export default function AdminCompanyProfilePage() {
   const t = useTranslations("adminCompanyProfile");
@@ -118,13 +119,9 @@ export default function AdminCompanyProfilePage() {
 
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
               {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{t("saved")}</div>}
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50"
-              >
+              <Button onClick={handleSave} disabled={saving} variant="save" size="blockLg">
                 {saving ? ta("saving") : t("saveButton")}
-              </button>
+              </Button>
             </>
           )}
         </div>

@@ -10,6 +10,7 @@ import {
   type CustomFormField,
   type CustomFieldType,
 } from "@/lib/custom-registration-form";
+import Button from "@/components/ui/Button";
 
 interface TourSummary { id: string; title: string; slug: string; }
 
@@ -200,28 +201,21 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
                           />
                           {tb("required")}
                         </label>
-                        <button onClick={() => removeField(field.id)} className="text-xs font-semibold text-red-600 hover:underline">{tb("removeField")}</button>
+                        <Button onClick={() => removeField(field.id)} variant="linkDanger" size="inline">{tb("removeField")}</Button>
                       </div>
                     </div>
                   ))}
-                  <button
-                    onClick={addField}
-                    className="w-full rounded-xl border-2 border-dashed border-gray-300 py-3 text-sm font-semibold text-gray-500 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
-                  >
+                  <Button onClick={addField} variant="dashedAdd" size="block">
                     {tb("addField")}
-                  </button>
+                  </Button>
                 </div>
               </div>
 
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
               {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{tb("saved")}</div>}
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50"
-              >
+              <Button onClick={handleSave} disabled={saving} variant="save" size="blockLg">
                 {saving ? ta("saving") : tb("saveRegistrationForm")}
-              </button>
+              </Button>
             </>
           )}
         </div>

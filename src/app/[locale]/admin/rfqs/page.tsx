@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import { errorMessage } from "@/lib/format";
+import Button from "@/components/ui/Button";
 
 interface RFQ {
   id: string;
@@ -178,12 +179,9 @@ export default function AdminRFQsPage() {
                     <option key={s} value={s}>{t(`rfqStatuses.${s}`)}</option>
                   ))}
                 </select>
-                <button
-                  onClick={() => handleDelete(rfq.id)}
-                  className="text-xs font-medium text-red-600 hover:underline"
-                >
+                <Button onClick={() => handleDelete(rfq.id)} variant="linkDanger" size="inline">
                   {t("delete")}
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -226,12 +224,9 @@ export default function AdminRFQsPage() {
                             <option key={s} value={s}>{t(`quoteStatuses.${s}`)}</option>
                           ))}
                         </select>
-                        <button
-                          onClick={() => handleQuoteDelete(rfq.id, q.id)}
-                          className="text-xs font-medium text-red-600 hover:underline"
-                        >
+                        <Button onClick={() => handleQuoteDelete(rfq.id, q.id)} variant="linkDanger" size="inline">
                           {t("delete")}
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>

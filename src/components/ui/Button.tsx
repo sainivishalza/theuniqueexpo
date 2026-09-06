@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { Link } from "@/i18n/navigation";
 
-export type ButtonVariant = "primary" | "dark" | "outline" | "gradient" | "gold" | "gradientCta";
+export type ButtonVariant = "primary" | "dark" | "outline" | "gradient" | "gold" | "gradientCta" | "save" | "linkDanger" | "dashedAdd";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   // White pill on a dark/colored background -- main hero/CTA buttons.
@@ -17,9 +17,15 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   gold: "bg-gold-500 text-white shadow-lg shadow-gold-500/25 hover:bg-gold-600 hover:scale-105",
   // Full-width gradient CTA on a detail-page sidebar panel (register/book buttons).
   gradientCta: "gradient-brand text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02]",
+  // Admin form save/submit button.
+  save: "gradient-brand text-white hover:opacity-90 disabled:opacity-50",
+  // Plain text "remove/delete" action in an admin list row.
+  linkDanger: "text-red-600 hover:underline",
+  // "Add another item" action in an admin repeatable-item list.
+  dashedAdd: "border-2 border-dashed border-gray-300 text-gray-500 hover:border-emerald-400 hover:text-emerald-600",
 };
 
-export type ButtonSize = "md" | "sm" | "block";
+export type ButtonSize = "md" | "sm" | "block" | "blockSm" | "blockLg" | "inline";
 
 // Padding/text-size live on a size variant rather than being left to an
 // overriding className -- two same-specificity Tailwind utility classes
@@ -31,6 +37,12 @@ const SIZE_CLASSES: Record<ButtonSize, string> = {
   sm: "px-8 py-3.5 text-sm",
   // Full-width sidebar CTA -- no horizontal padding, text centered by the width itself.
   block: "w-full py-3 text-sm",
+  // Full-width admin "add item" action.
+  blockSm: "w-full py-2.5 text-sm",
+  // Full-width admin save button.
+  blockLg: "w-full py-4 text-sm",
+  // Plain inline text action, no padding/width -- e.g. a row's delete link.
+  inline: "text-xs",
 };
 
 const BASE_CLASSES = "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300";

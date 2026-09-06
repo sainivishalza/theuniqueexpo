@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { slugify } from "@/lib/slugify";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { errorMessage } from "@/lib/format";
+import Button from "@/components/ui/Button";
 
 interface Exhibition {
   id: string;
@@ -339,13 +340,14 @@ export default function AdminExhibitionsPage() {
                       />
                     </label>
                     {form.image && (
-                      <button
+                      <Button
                         type="button"
                         onClick={() => setForm((prev) => ({ ...prev, image: "" }))}
-                        className="text-xs font-semibold text-red-600 hover:underline"
+                        variant="linkDanger"
+                        size="inline"
                       >
                         {t("removeImage")}
-                      </button>
+                      </Button>
                     )}
                   </div>
                   {imageError && <p className="text-xs text-red-600">{imageError}</p>}

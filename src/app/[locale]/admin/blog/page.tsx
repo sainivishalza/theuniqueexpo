@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { slugify } from "@/lib/slugify";
 import { errorMessage } from "@/lib/format";
 import type { FaqItem } from "@/lib/faq-content";
+import Button from "@/components/ui/Button";
 
 interface Post {
   id: string;
@@ -242,7 +243,7 @@ export default function AdminBlogPage() {
                         placeholder={t("fields.faqQuestionPlaceholder")}
                         className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold"
                       />
-                      <button onClick={() => removeFaqItem(i)} className="text-xs font-semibold text-red-600 hover:underline whitespace-nowrap py-2">{ta("delete")}</button>
+                      <Button onClick={() => removeFaqItem(i)} variant="linkDanger" size="inline" className="whitespace-nowrap py-2">{ta("delete")}</Button>
                     </div>
                     <textarea
                       value={item.answer}
@@ -253,12 +254,9 @@ export default function AdminBlogPage() {
                     />
                   </div>
                 ))}
-                <button
-                  onClick={addFaqItem}
-                  className="w-full rounded-xl border-2 border-dashed border-gray-300 py-2 text-sm font-semibold text-gray-500 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
-                >
+                <Button onClick={addFaqItem} variant="dashedAdd" size="blockSm">
                   {t("fields.addFaqItem")}
-                </button>
+                </Button>
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2">

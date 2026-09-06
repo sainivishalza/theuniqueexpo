@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import type { FaqItem } from "@/lib/faq-content";
+import Button from "@/components/ui/Button";
 
 export default function AdminFaqPage() {
   const t = useTranslations("adminFaq");
@@ -93,7 +94,7 @@ export default function AdminFaqPage() {
                         placeholder={t("questionPlaceholder")}
                         className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold"
                       />
-                      <button onClick={() => removeItem(i)} className="text-xs font-semibold text-red-600 hover:underline whitespace-nowrap py-2">{ta("delete")}</button>
+                      <Button onClick={() => removeItem(i)} variant="linkDanger" size="inline" className="whitespace-nowrap py-2">{ta("delete")}</Button>
                     </div>
                     <textarea
                       value={item.answer}
@@ -104,23 +105,16 @@ export default function AdminFaqPage() {
                     />
                   </div>
                 ))}
-                <button
-                  onClick={addItem}
-                  className="w-full rounded-xl border-2 border-dashed border-gray-300 py-2.5 text-sm font-semibold text-gray-500 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
-                >
+                <Button onClick={addItem} variant="dashedAdd" size="blockSm">
                   {t("addQuestion")}
-                </button>
+                </Button>
               </div>
 
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
               {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{t("saved")}</div>}
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="w-full rounded-xl gradient-brand py-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50"
-              >
+              <Button onClick={handleSave} disabled={saving} variant="save" size="blockLg">
                 {saving ? ta("saving") : t("saveButton")}
-              </button>
+              </Button>
             </>
           )}
         </div>

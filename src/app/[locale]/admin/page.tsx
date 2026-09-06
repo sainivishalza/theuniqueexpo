@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import Card from "@/components/ui/Card";
 
 const SECTION_KEYS = [
   { key: "exhibitionManagement", href: "/admin/exhibitions", icon: "🎪", color: "from-emerald-500 to-emerald-600" },
@@ -101,21 +102,18 @@ export default function AdminPage() {
 
       <section className="py-10 bg-gray-50">
         <div className="mx-auto max-w-7xl px-6 grid gap-5 sm:grid-cols-2">
-          {sections.map((s) => {
-            const content = (
-              <div className="flex items-start gap-4 p-6 rounded-2xl bg-white border border-gray-100 shadow-sm card-hover h-full">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center text-xl flex-shrink-0`}>
-                  {s.icon}
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-gray-900">{s.title}</h3>
-                  <p className="text-sm text-gray-500 mt-1">{s.description}</p>
-                  {s.comingSoon && <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">{t("comingSoon")}</span>}
-                </div>
+          {sections.map((s) => (
+            <Card key={s.title} href={s.href} shadow="sm" hoverable className="p-6 h-full flex items-start gap-4">
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center text-xl flex-shrink-0`}>
+                {s.icon}
               </div>
-            );
-            return s.href ? <Link key={s.title} href={s.href}>{content}</Link> : <div key={s.title}>{content}</div>;
-          })}
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-900">{s.title}</h3>
+                <p className="text-sm text-gray-500 mt-1">{s.description}</p>
+                {s.comingSoon && <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">{t("comingSoon")}</span>}
+              </div>
+            </Card>
+          ))}
         </div>
       </section>
     </div>

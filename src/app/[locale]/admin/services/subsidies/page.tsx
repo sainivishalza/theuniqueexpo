@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { subsidies } from "@/lib/subsidies";
+import Badge from "@/components/ui/Badge";
 
 export default function AdminSubsidiesPage() {
   const t = useTranslations("adminSubsidies");
@@ -35,7 +36,7 @@ export default function AdminSubsidiesPage() {
                   <td className="px-6 py-4 text-gray-500">{s.exhibitionTitle}</td>
                   <td className="px-6 py-4 text-gray-900">{s.amount}</td>
                   <td className="px-6 py-4 text-gray-500">{s.deadline}</td>
-                  <td className="px-6 py-4"><span className={`rounded-lg px-2 py-1 text-xs font-bold ${s.status === "open" ? "bg-green-100 text-green-700" : s.status === "closing-soon" ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-500"}`}>{s.status}</span></td>
+                  <td className="px-6 py-4"><Badge tone={s.status === "open" ? "success" : s.status === "closing-soon" ? "warning" : "gray"} size="tag">{s.status}</Badge></td>
                 </tr>
               ))}
             </tbody></table>

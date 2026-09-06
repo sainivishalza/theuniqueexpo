@@ -3,6 +3,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { errorMessage } from "@/lib/format";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 const TOPIC_KEYS = ["marketEntry", "supplierSourcing", "qualityInspection", "legalCompliance", "culturalEtiquette", "tradeCompliance", "ipProtection", "generalConsultation"];
 
@@ -38,12 +40,12 @@ export default function ConsultationPage() {
 
   if (submitted) return (
     <div className="min-h-[60vh] flex items-center justify-center">
-      <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
+      <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
         <div className="text-6xl mb-4">💬</div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("consultationBooked")}</h1>
         <p className="text-gray-500 mb-6">{t("consultationBookedHint")}</p>
         <button onClick={() => setSubmitted(false)} className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("bookAnother")}</button>
-      </div>
+      </Card>
     </div>
   );
 
@@ -71,7 +73,7 @@ export default function ConsultationPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-8 p-6 bg-white rounded-2xl shadow-sm">
+            <Card shadow="sm" bordered={false} className="mt-8 p-6">
               <h3 className="font-bold text-gray-900 mb-3">{t("pricing")}</h3>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm"><span className="text-gray-600">{t("singleSession")}</span><span className="font-bold text-gray-900">$150 USD</span></div>
@@ -79,10 +81,10 @@ export default function ConsultationPage() {
                 <div className="flex justify-between text-sm"><span className="text-gray-600">{t("monthlyRetainer")}</span><span className="font-bold text-gray-900">$1,200 USD</span></div>
                 <div className="flex justify-between text-sm"><span className="text-gray-600">{t("freeDiscoveryCall")}</span><span className="font-bold text-green-600">{t("free")}</span></div>
               </div>
-            </div>
+            </Card>
           </div>
           <div>
-            <div className="bg-white rounded-2xl p-8 shadow-sm sticky top-24">
+            <Card shadow="sm" bordered={false} className="p-8 sticky top-24">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">{t("bookAConsultation")}</h2>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
@@ -98,9 +100,9 @@ export default function ConsultationPage() {
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("preferredDate")}</label><input type="date" value={form.date} onChange={(e) => setForm({...form, date: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
                 <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("questionsToCover")}</label><textarea value={form.questions} onChange={(e) => setForm({...form, questions: e.target.value})} rows={4} placeholder={t("questionsPlaceholder")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
                 {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-                <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">{submitting ? t("booking") : t("bookConsultation")}</button>
+                <Button type="submit" disabled={submitting} variant="save" size="block">{submitting ? t("booking") : t("bookConsultation")}</Button>
               </form>
-            </div>
+            </Card>
           </div>
         </div>
       </section>

@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { visaServices } from "@/lib/visa-setup";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
 
 export default function VisaSetupPage() {
   const t = useTranslations("visaSetupPage");
@@ -21,7 +22,7 @@ export default function VisaSetupPage() {
       <section className="py-16 bg-gray-50">
         <div className="mx-auto max-w-7xl px-6 space-y-12">
           {visaServices.map((svc) => (
-            <div key={svc.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <Card key={svc.id} shadow="sm" bordered={false}>
               <div className="grid md:grid-cols-2 gap-0">
                 <div className="relative h-64 md:h-auto">
                   <Image src={svc.image} alt={svc.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
@@ -43,7 +44,7 @@ export default function VisaSetupPage() {
                     <div><span className="text-gray-400">{t("pricing")}</span> <span className="font-semibold text-gray-900">{svc.pricing}</span></div>
                     <div><span className="text-gray-400">{t("timeline")}</span> <span className="font-semibold text-gray-900">{svc.estimatedTime}</span></div>
                   </div>
-                  <Link href={"/services/visa-setup/apply?service=" + svc.id} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity">{t("getStarted")}</Link>
+                  <Button href={"/services/visa-setup/apply?service=" + svc.id} variant="save" size="wide">{t("getStarted")}</Button>
                 </div>
               </div>
               <div className="border-t border-gray-100 px-8 py-6">
@@ -57,7 +58,7 @@ export default function VisaSetupPage() {
                   ))}
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </section>

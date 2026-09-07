@@ -9,6 +9,7 @@ import {
   headingFontStack, bodyFontStack, scriptFontStack, cornerRadii,
   type SiteTheme, type HeadingFontKey, type BodyFontKey, type ScriptFontKey, type CornerStyleKey,
 } from "@/lib/site-theme";
+import { contrastRatio, MIN_READABLE_CONTRAST } from "@/lib/theme-colors";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 
@@ -21,6 +22,7 @@ export default function AdminSiteThemePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [contrastAcknowledged, setContrastAcknowledged] = useState(false);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -36,9 +38,21 @@ export default function AdminSiteThemePage() {
 
   function update(patch: Partial<SiteTheme>) {
     setTheme((prev) => ({ ...prev, ...patch }));
+    setContrastAcknowledged(false);
   }
 
+  // Hero sections hardcode white headline/body text sitewide (they're
+  // meant for a dark photo background), and headings render against the
+  // cream/white page background -- so a poorly chosen Hero or Heading
+  // color here doesn't just look off, it can make site-wide text
+  // genuinely unreadable. Checked against white specifically because
+  // that's the actual hardcoded text color those sections use.
+  const heroContrast = contrastRatio(theme.heroColor, "#ffffff");
+  const headingContrast = contrastRatio(theme.headingColor, theme.backgroundColor);
+  const hasContrastWarning = heroContrast < MIN_READABLE_CONTRAST || headingContrast < MIN_READABLE_CONTRAST;
+
   async function handleSave() {
+    if (hasContrastWarning && !contrastAcknowledged) return;
     setSaving(true);
     setError("");
     setSaved(false);
@@ -53,7 +67,7 @@ export default function AdminSiteThemePage() {
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err) {
-      setError(errorMessage(err, "Something went wrong"));
+      setError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setSaving(false);
     }
@@ -213,6 +227,24 @@ export default function AdminSiteThemePage() {
                 </div>
               </Card>
 
+              {hasContrastWarning && (
+                <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 space-y-2">
+                  <p className="text-sm font-semibold text-amber-800">{t("contrastWarningTitle")}</p>
+                  <p className="text-sm text-amber-700">
+                    {heroContrast < MIN_READABLE_CONTRAST && t("contrastWarningHero")}
+                    {heroContrast < MIN_READABLE_CONTRAST && headingContrast < MIN_READABLE_CONTRAST && " "}
+                    {headingContrast < MIN_READABLE_CONTRAST && t("contrastWarningHeading")}
+                  </p>
+                  <label className="flex items-center gap-2 text-sm text-amber-800">
+                    <input
+                      type="checkbox"
+                      checked={contrastAcknowledged}
+                      onChange={(e) => setContrastAcknowledged(e.target.checked)}
+                    />
+                    {t("contrastWarningAcknowledge")}
+                  </label>
+                </div>
+              )}
               {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
               {saved && <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{t("saved")}</div>}
               <div className="flex gap-3">
@@ -220,7 +252,7 @@ export default function AdminSiteThemePage() {
                   {t("resetButton")}
                 </Button>
                 <div className="flex-1">
-                  <Button onClick={handleSave} disabled={saving} variant="save" size="blockLg">
+                  <Button onClick={handleSave} disabled={saving || (hasContrastWarning && !contrastAcknowledged)} variant="save" size="blockLg">
                     {saving ? ta("saving") : t("saveButton")}
                   </Button>
                 </div>

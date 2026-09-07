@@ -11,6 +11,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "serviceId, name, and email are required" }, { status: 400 });
   }
 
-  const id = await createVisaApplication({ ...body, userId: user.id });
+  const asString = (v: unknown) => (typeof v === "string" ? v : "");
+  const id = await createVisaApplication({
+    ...body,
+    phone: asString(body.phone),
+    company: asString(body.company),
+    nationality: asString(body.nationality),
+    serviceType: asString(body.serviceType),
+    details: asString(body.details),
+    userId: user.id,
+  });
   return NextResponse.json({ id }, { status: 201 });
 }

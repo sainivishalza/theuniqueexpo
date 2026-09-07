@@ -20,6 +20,7 @@ interface Booking {
 
 export default function AdminHotelsPage() {
   const t = useTranslations("adminHotels");
+  const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +50,7 @@ export default function AdminHotelsPage() {
       if (!res.ok) throw new Error((await res.json()).error || t("updateFailed"));
       setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setUpdatingId(null);
     }

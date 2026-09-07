@@ -30,6 +30,7 @@ interface ThreadContext {
 export default function MessageThreadPage({ params }: { params: Promise<{ quoteId: string }> }) {
   const { quoteId } = use(params);
   const t = useTranslations("messageThreadPage");
+  const tc = useTranslations("common");
   const { user, loading: authLoading } = useAuth();
   const [thread, setThread] = useState<ThreadContext | null | undefined>(undefined);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -69,7 +70,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
       setMessages((prev) => [...prev, data.message]);
       setText("");
     } catch (err) {
-      setError(errorMessage(err, "Something went wrong"));
+      setError(errorMessage(err, tc("somethingWentWrong")));
     } finally {
       setSending(false);
     }

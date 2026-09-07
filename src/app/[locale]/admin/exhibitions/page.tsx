@@ -78,7 +78,7 @@ export default function AdminExhibitionsPage() {
       if (!res.ok) throw new Error(data.error || t("loadFailed"));
       setExhibitions(data.exhibitions);
     } catch (err) {
-      setError(errorMessage(err, "Something went wrong"));
+      setError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setLoading(false);
     }
@@ -161,7 +161,7 @@ export default function AdminExhibitionsPage() {
       closeForm();
       await loadExhibitions();
     } catch (err) {
-      setFormError(errorMessage(err, "Something went wrong"));
+      setFormError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setSaving(false);
     }
@@ -240,7 +240,7 @@ export default function AdminExhibitionsPage() {
       }
       setExhibitions((prev) => prev.filter((e) => e.id !== id));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setDeletingId(null);
     }
@@ -359,12 +359,12 @@ export default function AdminExhibitionsPage() {
                 <div className="mb-3 grid grid-cols-3 sm:grid-cols-4 gap-3">
                   {form.galleryImages.map((img, i) => (
                     <div key={i} className="relative aspect-video rounded-xl overflow-hidden bg-gray-900 border border-gray-200 group">
-                      <img src={img} alt={`Gallery photo ${i + 1}`} className="absolute inset-0 w-full h-full object-cover" />
+                      <img src={img} alt={t("galleryPhoto", { n: i + 1 })} className="absolute inset-0 w-full h-full object-cover" />
                       <button
                         type="button"
                         onClick={() => removeGalleryImage(i)}
                         className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white text-xs font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                        aria-label={`Remove photo ${i + 1}`}
+                        aria-label={t("removePhoto", { n: i + 1 })}
                       >
                         ×
                       </button>
@@ -409,7 +409,7 @@ export default function AdminExhibitionsPage() {
               />
             </div>
             <div className="mt-6 rounded-xl border border-gray-100 bg-cream-50 p-4">
-              <h4 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-3">{t("translationsOptional")}</h4>
+              <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-3">{t("translationsOptional")}</h3>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">{t("descriptionRu")}</label>

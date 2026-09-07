@@ -28,6 +28,7 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs = 6
 
 export default function TourRegisterPage({ params }: { params: Promise<{ slug: string }> }) {
   const t = useTranslations("tourRegisterPage");
+  const tc = useTranslations("common");
   const { slug } = use(params);
   const { user, loading: authLoading, setUser } = useAuth();
   const [tour, setTour] = useState<Tour | null | undefined>(undefined);
@@ -101,7 +102,7 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
       if (data.user) setUser(data.user);
       setSubmitted(true);
     } catch (err) {
-      setError(isAbortError(err) ? t("timeoutError") : errorMessage(err, "Something went wrong"));
+      setError(isAbortError(err) ? t("timeoutError") : errorMessage(err, tc("somethingWentWrong")));
     } finally {
       setSubmitting(false);
     }

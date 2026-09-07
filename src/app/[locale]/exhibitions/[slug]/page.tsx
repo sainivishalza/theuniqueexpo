@@ -279,7 +279,7 @@ export default function ExhibitionDetailPage({
                 <div className="relative h-32 rounded-xl overflow-hidden mb-4">
                   <Image
                     src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=200&fit=crop&q=80"
-                    alt="Hotels"
+                    alt={t("hotelsNearby")}
                     fill
                     sizes="(max-width: 768px) 100vw, 400px"
                     className="object-cover"

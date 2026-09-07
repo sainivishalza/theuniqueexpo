@@ -73,8 +73,13 @@ CREATE TABLE IF NOT EXISTS consultation_bookings (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert default admin user (password: TheUniqueExpo2026!)
--- In production, change this password immediately!
+-- Insert default admin user. This is a bootstrap credential for a brand
+-- new install only -- schema.sql is never re-run against an existing
+-- database (see hostinger-deploy-remote.sh, which only applies numbered
+-- migrations on redeploy), so changing the password afterward through
+-- normal means sticks. Change it immediately after any fresh install;
+-- the plaintext is intentionally not committed here -- generate a real
+-- one and hash it with bcrypt before using this file.
 INSERT INTO users (name, email, password_hash, role, country) VALUES
 ('Admin', 'admin@theuniqueexpo.com', '$2b$10$W2RX8zFZ.9gxdmF8CPsnZe7YiHPK4IY41IRUwGXjfI56cfq0lVdZ.', 'admin', 'China')
 ON DUPLICATE KEY UPDATE password_hash=VALUES(password_hash);

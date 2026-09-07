@@ -37,7 +37,7 @@ export default function AdminEventRegistrationsPage({ params }: { params: Promis
         setEvent(data.event);
         setRegistrations(data.registrations || []);
       })
-      .catch((err) => setError(errorMessage(err, "Something went wrong")))
+      .catch((err) => setError(errorMessage(err, ta("somethingWentWrong"))))
       .finally(() => setLoading(false));
   }, [user, slug]);
 
@@ -52,7 +52,7 @@ export default function AdminEventRegistrationsPage({ params }: { params: Promis
       if (!res.ok) throw new Error((await res.json()).error || t("updateFailed"));
       setRegistrations((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setUpdatingId(null);
     }

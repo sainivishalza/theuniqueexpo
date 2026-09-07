@@ -109,7 +109,6 @@ git pull origin "$DEPLOY_REF"
 
 echo "Applying new migrations ..."
 $MYSQL < schema-migrations/002-expo-registrations.sql
-$MYSQL < schema-migrations/003-reset-admin-password.sql
 $MYSQL < schema-migrations/004-custom-registration-forms.sql
 $MYSQL < schema-migrations/005-about-content.sql
 $MYSQL < schema-migrations/006-site-pages.sql
@@ -127,6 +126,7 @@ $MYSQL < schema-migrations/017-blog-author.sql
 $MYSQL < schema-migrations/018-blog-pillar-cluster-content.sql
 $MYSQL < schema-migrations/019-faq-content.sql
 $MYSQL < schema-migrations/020-site-theme.sql
+$MYSQL < schema-migrations/021-rotate-admin-password.sql
 
 echo "Installing dependencies and building ..."
 npm install

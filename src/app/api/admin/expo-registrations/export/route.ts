@@ -9,8 +9,15 @@ const COLUMNS = [
   "exportingMarkets", "passportNumber", "status", "createdAt",
 ] as const;
 
+// CSV/formula injection: a registrant-controlled field (name, company,
+// custom form answer) that starts with =, +, -, or @ is interpreted by
+// Excel/Sheets as a formula when this file is opened, not as plain text --
+// e.g. a company name of '=HYPERLINK("http://evil.com","x")' becomes a
+// live, clickable formula for whoever opens the export. Prefixing with a
+// leading apostrophe forces spreadsheet apps to treat it as literal text.
 function csvCell(value: unknown): string {
-  const text = Array.isArray(value) ? value.join("; ") : String(value ?? "");
+  let text = Array.isArray(value) ? value.join("; ") : String(value ?? "");
+  if (/^[=+\-@\t\r]/.test(text)) text = `'${text}`;
   return `"${text.replace(/"/g, '""')}"`;
 }
 

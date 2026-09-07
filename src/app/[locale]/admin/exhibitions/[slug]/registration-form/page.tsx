@@ -100,7 +100,7 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err) {
-      setError(errorMessage(err, "Something went wrong"));
+      setError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setSaving(false);
     }

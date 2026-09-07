@@ -28,6 +28,7 @@ const STATUS_STYLES: Record<string, string> = {
 
 export default function RFQDetailPage() {
   const t = useTranslations("rfqDetailPage");
+  const tc = useTranslations("common");
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "";
   const { user } = useAuth();
@@ -105,7 +106,7 @@ export default function RFQDetailPage() {
       setQuoteSubmitted(true);
       setShowQuoteForm(false);
     } catch (err) {
-      setQuoteError(errorMessage(err, "Something went wrong"));
+      setQuoteError(errorMessage(err, tc("somethingWentWrong")));
     } finally {
       setSubmitting(false);
     }

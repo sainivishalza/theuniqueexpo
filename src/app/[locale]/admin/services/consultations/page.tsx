@@ -39,7 +39,7 @@ export default function AdminConsultationsPage() {
       if (!res.ok) throw new Error((await res.json()).error || t("updateFailed"));
       setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setUpdatingId(null);
     }

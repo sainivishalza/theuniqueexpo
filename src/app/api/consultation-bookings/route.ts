@@ -1,10 +1,17 @@
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth-server";
 import { createConsultationBooking } from "@/lib/server/service-apps-repo";
+import { rateLimitOrNull } from "@/lib/server/rate-limit";
+
+const LEAD_FORM_LIMIT = 5;
+const LEAD_FORM_WINDOW_MS = 60 * 60 * 1000;
 
 // Doesn't require login -- the consultation/relocation request forms are
 // public-facing lead capture, same as the RFQ marketplace's public forms.
 export async function POST(request: Request) {
+  const limited = rateLimitOrNull(request, "consultation-bookings", LEAD_FORM_LIMIT, LEAD_FORM_WINDOW_MS);
+  if (limited) return limited;
+
   try {
     const user = await getSessionUser(request);
     const body = await request.json();

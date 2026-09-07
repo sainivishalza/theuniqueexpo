@@ -93,7 +93,7 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err) {
-      setError(errorMessage(err, "Something went wrong"));
+      setError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setSaving(false);
     }

@@ -64,7 +64,7 @@ export default function AdminAboutPage() {
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch (err) {
-      setError(errorMessage(err, "Something went wrong"));
+      setError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setSaving(false);
     }
@@ -172,7 +172,7 @@ export default function AdminAboutPage() {
                       type="text"
                       value={stat.label}
                       onChange={(e) => updateStat(i, { label: e.target.value })}
-                      placeholder="Exhibitions Supported"
+                      placeholder={t("statLabelPlaceholder")}
                       className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm"
                     />
                     <Button onClick={() => removeStat(i)} variant="linkDanger" size="inline" className="whitespace-nowrap">{ta("delete")}</Button>

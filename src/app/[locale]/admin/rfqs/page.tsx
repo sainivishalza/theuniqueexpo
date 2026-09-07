@@ -35,6 +35,7 @@ const QUOTE_STATUSES = ["submitted", "accepted", "rejected"];
 
 export default function AdminRFQsPage() {
   const t = useTranslations("adminRfqs");
+  const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,7 +66,7 @@ export default function AdminRFQsPage() {
       if (!res.ok) throw new Error((await res.json()).error || t("updateFailed"));
       setRfqs((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setUpdatingId(null);
     }
@@ -78,7 +79,7 @@ export default function AdminRFQsPage() {
       if (!res.ok) throw new Error((await res.json()).error || t("deleteFailed"));
       setRfqs((prev) => prev.filter((r) => r.id !== id));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     }
   }
 
@@ -115,7 +116,7 @@ export default function AdminRFQsPage() {
         [rfqId]: prev[rfqId].map((q) => (q.id === quoteId ? { ...q, status } : q)),
       }));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setUpdatingQuoteId(null);
     }
@@ -131,7 +132,7 @@ export default function AdminRFQsPage() {
         [rfqId]: prev[rfqId].filter((q) => q.id !== quoteId),
       }));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     }
   }
 

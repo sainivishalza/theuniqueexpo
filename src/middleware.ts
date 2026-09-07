@@ -28,7 +28,14 @@ export default function middleware(request: NextRequest) {
     );
     return NextResponse.redirect(destination, 308);
   }
-  return intlMiddleware(request);
+  const response = intlMiddleware(request);
+  // Root layout's generateMetadata needs the current path (locale prefix
+  // included) to build correct canonical/hreflang alternate tags per page,
+  // but a Server Component has no direct way to read the request URL --
+  // only middleware sees it. Setting a header on a "next"/"rewrite"
+  // response here is the documented way to forward it to the render.
+  response.headers.set("x-pathname", request.nextUrl.pathname);
+  return response;
 }
 
 export const config = {

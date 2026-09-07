@@ -2,12 +2,19 @@ import { NextResponse } from "next/server";
 import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { createUserAccount, setSessionCookie } from "@/lib/auth-server";
+import { rateLimitOrNull } from "@/lib/server/rate-limit";
 
 // "admin" is deliberately excluded -- it's a UserRole (for session/UI typing)
 // but not something the public sign-up endpoint may hand out.
 const REGISTERABLE_ROLES = ["buyer", "exhibitor", "visitor", "partner"];
 
+const REGISTER_LIMIT = 5;
+const REGISTER_WINDOW_MS = 60 * 60 * 1000;
+
 export async function POST(request: Request) {
+  const limited = rateLimitOrNull(request, "register", REGISTER_LIMIT, REGISTER_WINDOW_MS);
+  if (limited) return limited;
+
   try {
     const { name, email, password, role, country } = await request.json();
 

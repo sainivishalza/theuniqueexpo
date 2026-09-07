@@ -27,6 +27,39 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Applies to every route. CSP keeps 'unsafe-inline' for style-src
+        // deliberately -- the admin-controlled site theme (colors, fonts,
+        // corner radius) works by setting CSS custom properties via a
+        // React inline `style` attribute on <html> and other elements
+        // (see src/app/[locale]/layout.tsx), which a stricter style-src
+        // would block outright. script-src keeps 'unsafe-inline' for the
+        // same reason Next/GA need it here (GoogleAnalytics.tsx's inline
+        // gtag init script) without wiring up a nonce.
+        source: "/(.*)",
+        headers: [
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' https: data:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://www.google-analytics.com https://analytics.google.com",
+              "frame-ancestors 'self'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "upgrade-insecure-requests",
+            ].join("; "),
+          },
+        ],
+      },
+      {
         // Admin pages are auth-gated, client-rendered dashboards -- they must
         // never be served from a long-lived edge/CDN cache, or a redeploy's
         // changes (styling, features) can appear "stuck" on stale content.

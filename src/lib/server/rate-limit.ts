@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+
 // In-memory, per-process fixed-window rate limiter. Good enough for a
 // single Node server (see AGENTS.md: no separate backend service for the
 // MVP) -- if this ever runs across multiple instances, swap the Map for a
@@ -57,6 +59,23 @@ export function resetRateLimit(key: string): void {
 // in front of this app, which a remote client can't forge as long as
 // that hop overwrites/appends rather than passing the header through
 // untouched. Falls back to X-Real-IP (set outright by some proxies).
+// Shared helper for the common "no-login-required" public form/endpoint
+// case (register, RFQ posting, consultation/moving-quote/visa/tour lead
+// forms, etc.) -- these have no session to key on, so IP is the only
+// signal available. Returns a ready-to-return 429 response, or null if
+// the request is within the limit.
+export function rateLimitOrNull(request: Request, keyPrefix: string, limit: number, windowMs: number): NextResponse | null {
+  const key = `${keyPrefix}:${getClientIp(request)}`;
+  const { allowed, retryAfterSeconds } = checkRateLimit(key, limit, windowMs);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } }
+    );
+  }
+  return null;
+}
+
 export function getClientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {

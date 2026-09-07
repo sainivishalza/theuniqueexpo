@@ -224,7 +224,8 @@
   },
   "common": {
     "redirecting": "正在跳转…",
-    "comingSoon": "即将推出"
+    "comingSoon": "即将推出",
+    "somethingWentWrong": "出了点问题"
   },
   "visitorDashboard": {
     "title": "观众控制台",
@@ -415,7 +416,8 @@
     "name": "姓名",
     "email": "邮箱",
     "date": "日期",
-    "confirmDelete": "确定要删除吗?"
+    "confirmDelete": "确定要删除吗?",
+    "somethingWentWrong": "出了点问题"
   },
   "adminHome": {
     "accessDenied": "访问被拒绝",
@@ -661,7 +663,8 @@
     "stats": "数据统计",
     "addStat": "+ 添加统计项",
     "saved": "已保存。",
-    "saveButton": "保存关于我们页面"
+    "saveButton": "保存关于我们页面",
+    "statLabelPlaceholder": "例如：支持的展会"
   },
   "adminSitePageEditor": {
     "saveFailed": "保存失败",
@@ -843,7 +846,9 @@
     "registrationForm": "报名表单",
     "editButton": "编辑",
     "deleting": "删除中...",
-    "noToursYet": "暂无旅游线路,创建一个开始吧。"
+    "noToursYet": "暂无旅游线路,创建一个开始吧。",
+    "galleryPhoto": "图库照片 {n}",
+    "removePhoto": "删除照片 {n}"
   },
   "adminExhibitionsCrud": {
     "loadFailed": "加载展会失败",
@@ -905,7 +910,9 @@
     "registrationForm": "报名表单",
     "editButton": "编辑",
     "deleting": "删除中...",
-    "noExhibitionsYet": "暂无展会,创建一个开始吧。"
+    "noExhibitionsYet": "暂无展会,创建一个开始吧。",
+    "galleryPhoto": "图库照片 {n}",
+    "removePhoto": "删除照片 {n}"
   },
   "adminPagesIndex": {
     "title": "网站页面",
@@ -1878,7 +1885,8 @@
     "draftBadge": "草稿",
     "noPostsYet": "暂无文章。",
     "accessDenied": "需要管理员权限。",
-    "confirmDelete": "确定删除此文章？"
+    "confirmDelete": "确定删除此文章？",
+    "authorNamePlaceholder": "例如：张三"
   },
   "relocationPage": {
     "title": "移居服务",
@@ -2088,6 +2096,10 @@
     "heroColorHint": "英雄横幅和页面标题后面的深色背景，独立于页脚。",
     "previewHero": "英雄区块",
     "resetButton": "恢复默认",
-    "resetHint": "将表单填充为网站的原始外观 -- 之后点击保存主题以应用。"
+    "resetHint": "将表单填充为网站的原始外观 -- 之后点击保存主题以应用。",
+    "contrastWarningTitle": "低对比度警告",
+    "contrastWarningHero": "英雄区颜色与白色过于接近 -- 英雄区的标题和文字（始终为白色）可能变得难以阅读。",
+    "contrastWarningHeading": "标题颜色与背景颜色过于接近 -- 标题可能变得难以阅读。",
+    "contrastWarningAcknowledge": "我理解这可能难以阅读，仍要保存。"
   }
 }

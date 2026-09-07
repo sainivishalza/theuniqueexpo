@@ -68,6 +68,7 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs = 6
 export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const t = useTranslations("expoRegisterPage");
+  const tc = useTranslations("common");
   const DOCUMENT_FIELDS = DOCUMENT_FIELD_KEYS.map((d) => ({ ...d, label: t(`documents.${d.labelKey}`) }));
   const { user, loading: authLoading, setUser } = useAuth();
   const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
@@ -195,7 +196,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       if (data.user) setUser(data.user);
       setSubmitted(true);
     } catch (err) {
-      setError(isAbortError(err) ? t("timeoutError") : errorMessage(err, "Something went wrong"));
+      setError(isAbortError(err) ? t("timeoutError") : errorMessage(err, tc("somethingWentWrong")));
     } finally {
       setSubmitting(false);
     }
@@ -229,7 +230,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       if (data.user) setUser(data.user);
       setSubmitted(true);
     } catch (err) {
-      setError(isAbortError(err) ? t("timeoutError") : errorMessage(err, "Something went wrong"));
+      setError(isAbortError(err) ? t("timeoutError") : errorMessage(err, tc("somethingWentWrong")));
     } finally {
       setSubmitting(false);
     }

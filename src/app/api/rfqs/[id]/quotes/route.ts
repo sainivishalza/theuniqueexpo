@@ -1,8 +1,20 @@
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth-server";
 import { getRfqById, listQuotesForRfq, createQuote } from "@/lib/server/rfqs-repo";
+import { rateLimitOrNull } from "@/lib/server/rate-limit";
+
+// Quotes are intentionally public (the marketplace UI shows them to signed-
+// out visitors browsing a single RFQ, by design), but with no auth at all
+// an anonymous scraper can enumerate every RFQ id and harvest all quote
+// pricing/notes platform-wide -- rate-limit by IP to slow that down
+// without breaking normal single-RFQ browsing.
+const QUOTES_READ_LIMIT = 60;
+const QUOTES_READ_WINDOW_MS = 60 * 1000;
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const limited = rateLimitOrNull(request, "rfq-quotes-read", QUOTES_READ_LIMIT, QUOTES_READ_WINDOW_MS);
+  if (limited) return limited;
+
   const { id } = await params;
   const quotes = await listQuotesForRfq(Number(id));
   return NextResponse.json({ quotes });

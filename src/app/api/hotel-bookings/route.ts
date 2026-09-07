@@ -10,7 +10,11 @@ export async function POST(request: Request) {
   if (!body.hotelId || !body.checkIn || !body.checkOut) {
     return NextResponse.json({ error: "hotelId, checkIn, and checkOut are required" }, { status: 400 });
   }
+  const rooms = Number(body.rooms);
+  if (!Number.isInteger(rooms) || rooms < 1 || rooms > 20) {
+    return NextResponse.json({ error: "rooms must be a whole number between 1 and 20" }, { status: 400 });
+  }
 
-  const id = await createHotelBooking({ ...body, userId: user.id, userName: user.name });
+  const id = await createHotelBooking({ ...body, rooms, userId: user.id, userName: user.name });
   return NextResponse.json({ id }, { status: 201 });
 }

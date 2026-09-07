@@ -28,6 +28,7 @@ const hotelImages = [
 
 export default function HotelsPage() {
   const t = useTranslations("hotelsPage");
+  const tc = useTranslations("common");
   const params = useParams();
   const slug = typeof params.slug === "string" ? params.slug : "";
   const { user } = useAuth();
@@ -88,7 +89,7 @@ export default function HotelsPage() {
       if (!res.ok) throw new Error((await res.json()).error || t("bookingFailed"));
       setSubmitted(true);
     } catch (err) {
-      setError(errorMessage(err, "Something went wrong"));
+      setError(errorMessage(err, tc("somethingWentWrong")));
     } finally {
       setSubmitting(false);
     }

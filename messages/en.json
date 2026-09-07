@@ -224,7 +224,8 @@
   },
   "common": {
     "redirecting": "Redirecting…",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "somethingWentWrong": "Something went wrong"
   },
   "visitorDashboard": {
     "title": "Visitor Dashboard",
@@ -415,7 +416,8 @@
     "name": "Name",
     "email": "Email",
     "date": "Date",
-    "confirmDelete": "Are you sure you want to delete this?"
+    "confirmDelete": "Are you sure you want to delete this?",
+    "somethingWentWrong": "Something went wrong"
   },
   "adminHome": {
     "accessDenied": "Access Denied",
@@ -661,7 +663,8 @@
     "stats": "Stats",
     "addStat": "+ Add Stat",
     "saved": "Saved.",
-    "saveButton": "Save About Page"
+    "saveButton": "Save About Page",
+    "statLabelPlaceholder": "e.g. Exhibitions Supported"
   },
   "adminSitePageEditor": {
     "saveFailed": "Save failed",
@@ -843,7 +846,9 @@
     "registrationForm": "Registration Form",
     "editButton": "Edit",
     "deleting": "Deleting...",
-    "noToursYet": "No tours yet. Create one to get started."
+    "noToursYet": "No tours yet. Create one to get started.",
+    "galleryPhoto": "Gallery photo {n}",
+    "removePhoto": "Remove photo {n}"
   },
   "adminExhibitionsCrud": {
     "loadFailed": "Failed to load exhibitions",
@@ -905,7 +910,9 @@
     "registrationForm": "Registration Form",
     "editButton": "Edit",
     "deleting": "Deleting...",
-    "noExhibitionsYet": "No exhibitions yet. Create one to get started."
+    "noExhibitionsYet": "No exhibitions yet. Create one to get started.",
+    "galleryPhoto": "Gallery photo {n}",
+    "removePhoto": "Remove photo {n}"
   },
   "adminPagesIndex": {
     "title": "Website Pages",
@@ -1878,7 +1885,8 @@
     "draftBadge": "Draft",
     "noPostsYet": "No posts yet.",
     "accessDenied": "Admin access required.",
-    "confirmDelete": "Delete this post?"
+    "confirmDelete": "Delete this post?",
+    "authorNamePlaceholder": "e.g. Jane Doe"
   },
   "relocationPage": {
     "title": "Relocation Services",
@@ -2088,6 +2096,10 @@
     "heroColorHint": "The dark background behind hero banners and page headers, independent of the footer.",
     "previewHero": "Hero Section",
     "resetButton": "Reset to Defaults",
-    "resetHint": "Fills the form with the original site look -- click Save Theme afterward to apply it."
+    "resetHint": "Fills the form with the original site look -- click Save Theme afterward to apply it.",
+    "contrastWarningTitle": "Low contrast warning",
+    "contrastWarningHero": "The Hero color is too close to white -- hero headlines and text (which are always white) may become hard or impossible to read.",
+    "contrastWarningHeading": "The Heading color is too close to the background color -- headings may become hard to read.",
+    "contrastWarningAcknowledge": "I understand this may be hard to read and want to save anyway."
   }
 }

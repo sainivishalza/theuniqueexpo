@@ -74,7 +74,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
       if (!res.ok) throw new Error((await res.json()).error || tr("updateFailed"));
       setRegistrations((prev) => prev.map((r) => (r.id === id ? { ...r, status: status as RegistrationSummary["status"] } : r)));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setUpdatingId(null);
     }
@@ -88,7 +88,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
       if (!res.ok) throw new Error(data.error || tr("loadDetailFailed"));
       setDetail(data.registration);
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setDetailLoading(false);
     }

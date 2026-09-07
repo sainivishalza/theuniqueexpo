@@ -1,6 +1,6 @@
--- Sets the admin login password to TheUniqueExpo2026!
--- Run this directly in the Hostinger MySQL panel (phpMyAdmin) against the
--- live database — schema.sql only sets this on a fresh install.
-UPDATE users
-SET password_hash = '$2b$10$W2RX8zFZ.9gxdmF8CPsnZe7YiHPK4IY41IRUwGXjfI56cfq0lVdZ.'
-WHERE email = 'admin@theuniqueexpo.com';
+-- Retired: this used to reset the admin password to a fixed value on
+-- every single deploy (see hostinger-deploy-remote.sh), which meant a
+-- password committed in plaintext in this file's original comment was
+-- silently re-applied to the live database forever, even after being
+-- changed by hand. No longer run -- see 021-rotate-admin-password.sql,
+-- which rotates the password once and is self-disarming.

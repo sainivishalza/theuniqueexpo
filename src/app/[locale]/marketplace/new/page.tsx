@@ -15,6 +15,7 @@ const CATEGORIES = [
 
 export default function NewRFQPage() {
   const t = useTranslations("newRfqPage");
+  const tc = useTranslations("common");
   const { user } = useAuth();
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -45,7 +46,7 @@ export default function NewRFQPage() {
       setSubmitted(true);
       setTimeout(() => router.push("/marketplace"), 1500);
     } catch (err) {
-      setError(errorMessage(err, "Something went wrong"));
+      setError(errorMessage(err, tc("somethingWentWrong")));
       setSubmitting(false);
     }
   };
@@ -90,24 +91,24 @@ export default function NewRFQPage() {
       <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-3xl px-6">
           <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100 space-y-5">
-            <Field label={t("title")} placeholder={t("titlePlaceholder")}>
-              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
+            <Field label={t("title")} placeholder={t("titlePlaceholder")} required>
+              <input required type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
             </Field>
-            <Field label={t("productOrService")} placeholder={t("productPlaceholder")}>
-              <input type="text" value={product} onChange={(e) => setProduct(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
+            <Field label={t("productOrService")} placeholder={t("productPlaceholder")} required>
+              <input required type="text" value={product} onChange={(e) => setProduct(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
             </Field>
-            <Field label={t("category")}>
-              <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
+            <Field label={t("category")} required>
+              <select required value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
                 <option value="">{t("selectCategory")}</option>
                 {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </Field>
-            <Field label={t("description")} placeholder={t("descriptionPlaceholder")}>
-              <textarea rows={4} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none resize-none" />
+            <Field label={t("description")} placeholder={t("descriptionPlaceholder")} required>
+              <textarea required rows={4} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none resize-none" />
             </Field>
             <div className="grid grid-cols-2 gap-4">
-              <Field label={t("quantity")} placeholder={t("quantityPlaceholder")}>
-                <input type="text" value={quantity} onChange={(e) => setQuantity(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
+              <Field label={t("quantity")} placeholder={t("quantityPlaceholder")} required>
+                <input required type="text" value={quantity} onChange={(e) => setQuantity(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
               </Field>
               <Field label={t("targetPriceOptional")} placeholder={t("targetPricePlaceholder")}>
                 <input type="text" value={targetPrice} onChange={(e) => setTargetPrice(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
@@ -127,10 +128,10 @@ export default function NewRFQPage() {
   );
 }
 
-function Field({ label, placeholder, children }: { label: string; placeholder?: string; children: React.ReactNode }) {
+function Field({ label, placeholder, required, children }: { label: string; placeholder?: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{label}</label>
+      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{label} {required && "*"}</label>
       {placeholder ? <>{children}</> : children}
     </div>
   );

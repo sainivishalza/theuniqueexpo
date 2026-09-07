@@ -28,6 +28,9 @@ export const SITE_PAGES: SitePageDef[] = [
   { slug: "exhibition-guide", navLabel: "Exhibition Guide", path: "/exhibition-guide" },
   { slug: "booth-setup-tips", navLabel: "Booth Setup Tips", path: "/booth-setup-tips" },
   { slug: "api-documentation", navLabel: "API Documentation", path: "/api-documentation" },
+  { slug: "privacy-policy", navLabel: "Privacy Policy", path: "/privacy" },
+  { slug: "terms-of-service", navLabel: "Terms of Service", path: "/terms" },
+  { slug: "cookie-policy", navLabel: "Cookie Policy", path: "/cookies" },
 ];
 
 export function isValidSitePageSlug(slug: string): boolean {
@@ -124,6 +127,83 @@ export const DEFAULT_SITE_PAGE_CONTENT: Record<string, SitePageContent> = {
       { title: "POST /api/expo-registrations", description: "Submit a buyer/visitor registration for an exhibition (requires sign-in)." },
     ],
     contactEmail: "developers@theuniqueexpo.com",
+    contactPhone: "",
+  },
+  "privacy-policy": {
+    heading: "Privacy Policy",
+    tagline: "How The Unique Expo collects, uses, and protects your information.",
+    body: `Last updated: 2026. This policy explains what information The Unique Expo ("we", "us") collects when you use our platform, how we use it, and the choices you have.
+
+1. Information We Collect. Account information: name, email address, and password (stored as a one-way hash, never in plain text) when you register. Registration documents: when you register for a specific exhibition, we may collect a passport photo page, business card, visa page, business license, and/or order list, as required by that exhibition's organizer. Business and marketplace data: RFQ (request for quote) details, quotes, prices, lead times, and messages you exchange with other users through the platform. Usage data: pages visited and general interaction data, collected via Google Analytics where enabled.
+
+2. How We Use Your Information. To create and manage your account, to process exhibition, tour, and hotel registrations, to connect buyers with exhibitors through the RFQ marketplace, to communicate with you about your registrations and quotes, and to improve the platform's content and performance.
+
+3. Sharing With Third Parties. Registration documents you submit for a specific exhibition are shared with that exhibition's organizer, as required to process your registration -- we do not share them with unrelated third parties. RFQ details and quotes are visible to other users of the marketplace as part of its normal, transparent operation. We do not sell your personal information. We may share information with service providers who help us operate the platform (e.g. hosting, analytics), bound to use it only for that purpose.
+
+4. Data Retention and Security. Passwords are hashed with bcrypt and never stored or transmitted in plain text. We retain account and registration data for as long as your account is active, or as required to fulfill a specific exhibition registration, plus any period required by law. You may request deletion of your account and associated data at any time (see Section 5).
+
+5. Your Rights. You may request access to, correction of, or deletion of your personal information by emailing the address below. We will respond within a reasonable time, subject to any documents we are required to retain for a specific exhibition organizer or by law.
+
+6. Cookies. We use a small number of cookies, described in our Cookie Policy.
+
+7. Changes to This Policy. We may update this policy from time to time; material changes will be reflected by an updated "Last updated" date above.
+
+8. Contact. Questions about this policy can be sent to the email address below.`,
+    itemsLabel: "",
+    items: [],
+    contactEmail: "privacy@theuniqueexpo.com",
+    contactPhone: "",
+  },
+  "terms-of-service": {
+    heading: "Terms of Service",
+    tagline: "The terms that govern your use of The Unique Expo platform.",
+    body: `Last updated: 2026. By creating an account or using The Unique Expo ("we", "us", "the platform"), you agree to these terms.
+
+1. What We Are. The Unique Expo is a platform that helps buyers and exhibitors discover trade fairs and exhibitions, register for them, request and submit quotes through our RFQ marketplace, and arrange related services such as business tours, hotel bookings, visa setup, and relocation assistance. We are not the organizer of any exhibition listed on the platform, not a travel agency, and not a visa-issuing authority -- we facilitate connections and registrations on behalf of the relevant organizers and providers.
+
+2. Accounts. You must provide accurate information when creating an account and registering for exhibitions or services. You are responsible for maintaining the confidentiality of your password and for all activity under your account.
+
+3. Acceptable Use. You agree not to use the platform to submit false information, impersonate another person or business, scrape or bulk-harvest data beyond normal use, or interfere with the platform's operation or other users' use of it.
+
+4. The RFQ Marketplace. Requests for quotes, quotes, prices, and lead times submitted by buyers and exhibitors are user-generated content. We do not verify the accuracy of quotes or the ability of any party to fulfill them, and we are not a party to any agreement reached between a buyer and an exhibitor.
+
+5. Registrations and Fees. Submitting a registration through the platform does not guarantee acceptance by the relevant exhibition organizer. Fees for exhibition registration, tours, hotel bookings, visa services, or other paid services are set by the relevant organizer or service provider and, unless stated otherwise at the time of booking, are arranged and collected directly between you and that organizer or provider.
+
+6. Intellectual Property. The platform's design, code, and content (excluding user-submitted content and exhibitor/organizer-provided material) belong to The Unique Expo. You retain ownership of content you submit, and grant us a license to display it as needed to operate the platform.
+
+7. Disclaimer and Limitation of Liability. The platform is provided "as is." We are not liable for the accuracy of exhibitor-provided or user-submitted information, for the actions of exhibition organizers or third-party service providers, or for indirect or consequential damages arising from your use of the platform, to the maximum extent permitted by law.
+
+8. Termination. We may suspend or terminate an account that violates these terms. You may stop using the platform and request account deletion at any time.
+
+9. Changes to These Terms. We may update these terms from time to time; continued use of the platform after an update constitutes acceptance of the revised terms.
+
+10. Contact. Questions about these terms can be sent to the email address below.`,
+    itemsLabel: "",
+    items: [],
+    contactEmail: "legal@theuniqueexpo.com",
+    contactPhone: "",
+  },
+  "cookie-policy": {
+    heading: "Cookie Policy",
+    tagline: "What cookies we use and why.",
+    body: `Last updated: 2026. This policy explains how The Unique Expo uses cookies and similar technologies.
+
+1. What Are Cookies. Cookies are small text files stored in your browser that let a website remember information between visits.
+
+2. Essential Cookies. We use a single essential cookie ("token") to keep you signed in after you log in. This cookie is required for the platform to function -- it cannot be disabled without also disabling sign-in.
+
+3. Analytics Cookies. Where enabled, we use Google Analytics to understand how visitors use the platform (pages viewed, general navigation patterns), which sets its own cookies. This is optional and can be blocked using your browser's privacy settings or an ad-blocking extension without affecting your ability to use the platform.
+
+4. Cookies We Do Not Use. We do not use third-party advertising or cross-site tracking cookies.
+
+5. Managing Cookies. Most browsers let you view, delete, and block cookies through their settings. Blocking the essential "token" cookie will prevent you from staying signed in.
+
+6. Changes to This Policy. We may update this policy from time to time; material changes will be reflected by an updated "Last updated" date above.
+
+7. Contact. Questions about this policy can be sent to the email address below.`,
+    itemsLabel: "",
+    items: [],
+    contactEmail: "privacy@theuniqueexpo.com",
     contactPhone: "",
   },
 };

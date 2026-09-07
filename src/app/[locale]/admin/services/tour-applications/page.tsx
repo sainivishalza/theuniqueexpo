@@ -40,7 +40,7 @@ export default function AdminTourAppsPage() {
       if (!res.ok) throw new Error((await res.json()).error || t("updateFailed"));
       setApps((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setUpdatingId(null);
     }

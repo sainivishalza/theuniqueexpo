@@ -61,7 +61,7 @@ export default function AdminBlogPage() {
       if (!res.ok) throw new Error(data.error || t("loadFailed"));
       setPosts(data.posts);
     } catch (err) {
-      setError(errorMessage(err, "Something went wrong"));
+      setError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setLoading(false);
     }
@@ -125,7 +125,7 @@ export default function AdminBlogPage() {
       closeForm();
       await loadPosts();
     } catch (err) {
-      setFormError(errorMessage(err, "Something went wrong"));
+      setFormError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setSaving(false);
     }
@@ -142,7 +142,7 @@ export default function AdminBlogPage() {
       }
       setPosts((prev) => prev.filter((p) => p.id !== id));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setDeletingId(null);
     }
@@ -205,7 +205,7 @@ export default function AdminBlogPage() {
                 </select>
               </div>
               <Field label={t("fields.coverImageUrl")} value={form.coverImage} onChange={(v) => setForm({ ...form, coverImage: v })} placeholder="https://..." />
-              <Field label={t("fields.authorName")} value={form.authorName} onChange={(v) => setForm({ ...form, authorName: v })} placeholder="Vishal Saini" />
+              <Field label={t("fields.authorName")} value={form.authorName} onChange={(v) => setForm({ ...form, authorName: v })} placeholder={t("authorNamePlaceholder")} />
               <Field label={t("fields.authorBio")} value={form.authorBio} onChange={(v) => setForm({ ...form, authorBio: v })} placeholder={t("fields.authorBioPlaceholder")} />
             </div>
             <div className="mt-4">

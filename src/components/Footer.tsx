@@ -107,9 +107,9 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
         <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
           <span>{t("copyright", { year: new Date().getFullYear() })}</span>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-white transition-colors">{t("privacyPolicy")}</a>
-            <a href="#" className="hover:text-white transition-colors">{t("termsOfService")}</a>
-            <a href="#" className="hover:text-white transition-colors">{t("cookiePolicy")}</a>
+            <Link href="/privacy" className="hover:text-white transition-colors">{t("privacyPolicy")}</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">{t("termsOfService")}</Link>
+            <Link href="/cookies" className="hover:text-white transition-colors">{t("cookiePolicy")}</Link>
           </div>
         </div>
       </div>

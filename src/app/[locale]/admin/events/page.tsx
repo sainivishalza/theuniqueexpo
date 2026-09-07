@@ -62,7 +62,7 @@ export default function AdminEventsPage() {
       if (!res.ok) throw new Error(data.error || t("loadFailed"));
       setEvents(data.events);
     } catch (err) {
-      setError(errorMessage(err, "Something went wrong"));
+      setError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setLoading(false);
     }
@@ -113,7 +113,7 @@ export default function AdminEventsPage() {
       closeForm();
       await loadEvents();
     } catch (err) {
-      setFormError(errorMessage(err, "Something went wrong"));
+      setFormError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setSaving(false);
     }
@@ -130,7 +130,7 @@ export default function AdminEventsPage() {
       }
       setEvents((prev) => prev.filter((e) => e.id !== id));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setDeletingId(null);
     }

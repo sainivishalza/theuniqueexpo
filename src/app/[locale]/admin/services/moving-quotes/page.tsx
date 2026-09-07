@@ -39,7 +39,7 @@ export default function AdminMovingQuotesPage() {
       if (!res.ok) throw new Error((await res.json()).error || t("updateFailed"));
       setQuotes((prev) => prev.map((q) => (q.id === id ? { ...q, status } : q)));
     } catch (err) {
-      alert(errorMessage(err, "Something went wrong"));
+      alert(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setUpdatingId(null);
     }

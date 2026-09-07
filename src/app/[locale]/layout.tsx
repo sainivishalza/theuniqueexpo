@@ -7,6 +7,7 @@ import {
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import "./globals.css";
 import ClientShell from "@/components/ClientShell";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
@@ -50,26 +51,52 @@ const SITE_NAME = "The Unique Expo";
 const DEFAULT_DESCRIPTION =
   "Discover Something Unique Together — The world's leading B2B exhibition, trade-fair & sourcing platform connecting buyers with exhibitors worldwide.";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: `${SITE_NAME} — Discover Something Unique Together`,
-    template: `%s | ${SITE_NAME}`,
-  },
-  description: DEFAULT_DESCRIPTION,
-  openGraph: {
-    type: "website",
-    siteName: SITE_NAME,
-    title: `${SITE_NAME} — Discover Something Unique Together`,
+// Per-page canonical + hreflang alternates without touching every one of
+// the ~70+ individual page files: the sitemap already carries hreflang
+// alternates, but search engines primarily read canonical/hreflang from
+// the page <head>, and that was entirely absent there -- risking en/ru/zh
+// being treated as duplicate content. middleware.ts forwards the current
+// request path (locale prefix included) via an x-pathname header, since a
+// layout Server Component has no other way to know the current URL;
+// individual pages' own generateMetadata (title/description/og:image)
+// still take precedence and are merged with this, per Next's metadata
+// resolution.
+async function localeAlternates() {
+  const pathname = (await headers()).get("x-pathname") || "/en";
+  const withoutLocale = pathname.replace(/^\/(en|ru|zh)(?=\/|$)/, "") || "/";
+  const languages: Record<string, string> = {};
+  for (const locale of routing.locales) {
+    languages[locale] = `${SITE_URL}/${locale}${withoutLocale === "/" ? "" : withoutLocale}`;
+  }
+  return {
+    canonical: `${SITE_URL}${pathname}`,
+    languages: { ...languages, "x-default": languages[routing.defaultLocale] },
+  };
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: `${SITE_NAME} — Discover Something Unique Together`,
+      template: `%s | ${SITE_NAME}`,
+    },
     description: DEFAULT_DESCRIPTION,
-    url: SITE_URL,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${SITE_NAME} — Discover Something Unique Together`,
-    description: DEFAULT_DESCRIPTION,
-  },
-};
+    alternates: await localeAlternates(),
+    openGraph: {
+      type: "website",
+      siteName: SITE_NAME,
+      title: `${SITE_NAME} — Discover Something Unique Together`,
+      description: DEFAULT_DESCRIPTION,
+      url: SITE_URL,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${SITE_NAME} — Discover Something Unique Together`,
+      description: DEFAULT_DESCRIPTION,
+    },
+  };
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

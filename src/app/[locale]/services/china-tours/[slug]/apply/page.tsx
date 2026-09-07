@@ -19,6 +19,7 @@ const TOUR_SERVICE_KEYS = [
 
 export default function ApplyPage({ params }: { params: Promise<{ slug: string }> }) {
   const t = useTranslations("serviceTourApplyPage");
+  const tc = useTranslations("common");
   const locale = useLocale();
   const TOUR_SERVICES = TOUR_SERVICE_KEYS.map((key) => t(`services.${key}`));
   const { slug } = use(params);
@@ -59,7 +60,7 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
       if (!res.ok) throw new Error((await res.json()).error || t("submissionFailed"));
       setSubmitted(true);
     } catch (err) {
-      setError(errorMessage(err, "Something went wrong"));
+      setError(errorMessage(err, tc("somethingWentWrong")));
     } finally {
       setSubmitting(false);
     }

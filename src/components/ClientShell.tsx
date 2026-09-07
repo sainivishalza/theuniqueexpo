@@ -3,6 +3,7 @@
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/lib/auth-context";
+import { CompanyProfileProvider } from "@/lib/company-profile-context";
 import type { CompanyProfile } from "@/lib/company-profile";
 
 export default function ClientShell({
@@ -13,12 +14,14 @@ export default function ClientShell({
   companyProfile: CompanyProfile;
 }) {
   return (
-    <AuthProvider>
-      <div className="flex min-h-screen flex-col">
-        <NavBar />
-        <main className="flex-1 pt-16">{children}</main>
-        <Footer companyProfile={companyProfile} />
-      </div>
-    </AuthProvider>
+    <CompanyProfileProvider profile={companyProfile}>
+      <AuthProvider>
+        <div className="flex min-h-screen flex-col">
+          <NavBar />
+          <main className="flex-1 pt-16">{children}</main>
+          <Footer companyProfile={companyProfile} />
+        </div>
+      </AuthProvider>
+    </CompanyProfileProvider>
   );
 }

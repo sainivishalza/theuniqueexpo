@@ -94,6 +94,7 @@ export default function AdminCompanyProfilePage() {
                 <p className="text-xs text-gray-400">{t("identityHint")}</p>
                 {field("legalName", t("legalName"))}
                 {field("logoUrl", t("logoUrl"), "https://...")}
+                {field("faviconUrl", t("faviconUrl"), "https://...")}
                 {field("contactEmail", t("contactEmail"))}
                 {field("phone", t("phone"), "+86 ...")}
               </Card>

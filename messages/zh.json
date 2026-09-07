@@ -2001,7 +2001,8 @@
     "addressCity": "城市",
     "addressCountry": "国家",
     "social": "社交媒体链接",
-    "socialHint": "只有在此处填写的链接才会显示在网站页脚和 Organization 结构化数据中 -- 留空即可隐藏。"
+    "socialHint": "只有在此处填写的链接才会显示在网站页脚和 Organization 结构化数据中 -- 留空即可隐藏。",
+    "faviconUrl": "网站图标 URL"
   },
   "adminFaq": {
     "title": "常见问题管理",
@@ -2100,6 +2101,13 @@
     "contrastWarningTitle": "低对比度警告",
     "contrastWarningHero": "英雄区颜色与白色过于接近 -- 英雄区的标题和文字（始终为白色）可能变得难以阅读。",
     "contrastWarningHeading": "标题颜色与背景颜色过于接近 -- 标题可能变得难以阅读。",
-    "contrastWarningAcknowledge": "我理解这可能难以阅读，仍要保存。"
+    "contrastWarningAcknowledge": "我理解这可能难以阅读，仍要保存。",
+    "cardShadowStyle": "卡片阴影样式",
+    "cardShadowStyleHint": "全站卡片的立体感程度。",
+    "cardShadowStyles": {
+      "flat": "平面",
+      "soft": "柔和",
+      "bold": "强烈"
+    }
   }
 }

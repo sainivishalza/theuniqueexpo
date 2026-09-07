@@ -21,6 +21,7 @@ VALUES (1, JSON_OBJECT(
   'headingFont', 'oswald',
   'bodyFont', 'inter',
   'scriptFont', 'caveat',
-  'cornerStyle', 'soft'
+  'cornerStyle', 'soft',
+  'cardShadowStyle', 'soft'
 ))
 ON DUPLICATE KEY UPDATE id = id;

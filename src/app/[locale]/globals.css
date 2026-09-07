@@ -100,11 +100,17 @@
   .text-heading {
     color: var(--color-heading);
   }
+  /* These four were still hardcoded to the exact hex the emerald/gold
+     scales happened to have at rebrand time -- meaning the admin's
+     Primary/Gold color pickers silently had zero effect on any of the
+     many CTAs and hero backgrounds using these classes. Switched to the
+     same CSS vars every emerald/gold utility class already reads, so
+     they follow the admin's saved theme like everything else. */
   .gradient-hero {
-    background: linear-gradient(135deg, #011714 0%, #03483f 45%, #0b6b5b 100%);
+    background: linear-gradient(135deg, var(--color-emerald-950) 0%, var(--color-emerald-800) 45%, var(--color-emerald-500) 100%);
   }
   .gradient-brand {
-    background: linear-gradient(135deg, #0b6b5b 0%, #075b4f 100%);
+    background: linear-gradient(135deg, var(--color-emerald-500) 0%, var(--color-emerald-600) 100%);
   }
   .gradient-warm {
     background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
@@ -113,10 +119,10 @@
     background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
   }
   .gradient-green {
-    background: linear-gradient(135deg, #0b6b5b 0%, #075b4f 100%);
+    background: linear-gradient(135deg, var(--color-emerald-500) 0%, var(--color-emerald-600) 100%);
   }
   .gradient-gold {
-    background: linear-gradient(135deg, #d4af5a 0%, #c9a24a 100%);
+    background: linear-gradient(135deg, var(--color-gold-400) 0%, var(--color-gold-500) 100%);
   }
   .gradient-overlay {
     background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.1) 100%);

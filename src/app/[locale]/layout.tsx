@@ -15,7 +15,7 @@ import OrganizationSchema from "@/components/OrganizationSchema";
 import { routing } from "@/i18n/routing";
 import { getCompanyProfile } from "@/lib/server/company-profile-repo";
 import { getSiteTheme } from "@/lib/server/site-theme-repo";
-import { headingFontStack, bodyFontStack, scriptFontStack, cornerRadii } from "@/lib/site-theme";
+import { headingFontStack, bodyFontStack, scriptFontStack, cornerRadii, cardShadows } from "@/lib/site-theme";
 import { generateScale, deriveTints } from "@/lib/theme-colors";
 import { ADMIN_NAMESPACES, DASHBOARD_NAMESPACES, omitMessages } from "@/lib/client-message-namespaces";
 
@@ -75,6 +75,7 @@ async function localeAlternates() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
+  const companyProfile = await getCompanyProfile();
   return {
     metadataBase: new URL(SITE_URL),
     title: {
@@ -83,6 +84,10 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: DEFAULT_DESCRIPTION,
     alternates: await localeAlternates(),
+    // Admin-set favicon (Company Profile -> Favicon URL) overrides the
+    // framework default when set; omitted entirely otherwise so Next
+    // falls back to its own default favicon handling.
+    ...(companyProfile.faviconUrl ? { icons: { icon: companyProfile.faviconUrl } } : {}),
     openGraph: {
       type: "website",
       siteName: SITE_NAME,
@@ -148,6 +153,7 @@ export default async function RootLayout({
     "--font-body": bodyFontStack(siteTheme.bodyFont),
     "--font-script": scriptFontStack(siteTheme.scriptFont),
     ...cornerRadii(siteTheme.cornerStyle),
+    ...cardShadows(siteTheme.cardShadowStyle),
   } as React.CSSProperties;
 
   return (

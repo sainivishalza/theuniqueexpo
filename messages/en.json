@@ -2001,7 +2001,8 @@
     "addressCity": "City",
     "addressCountry": "Country",
     "social": "Social Links",
-    "socialHint": "Only links you enter here will appear in the site footer and Organization schema -- leave any blank to hide them."
+    "socialHint": "Only links you enter here will appear in the site footer and Organization schema -- leave any blank to hide them.",
+    "faviconUrl": "Favicon URL"
   },
   "adminFaq": {
     "title": "FAQ Management",
@@ -2100,6 +2101,13 @@
     "contrastWarningTitle": "Low contrast warning",
     "contrastWarningHero": "The Hero color is too close to white -- hero headlines and text (which are always white) may become hard or impossible to read.",
     "contrastWarningHeading": "The Heading color is too close to the background color -- headings may become hard to read.",
-    "contrastWarningAcknowledge": "I understand this may be hard to read and want to save anyway."
+    "contrastWarningAcknowledge": "I understand this may be hard to read and want to save anyway.",
+    "cardShadowStyle": "Card Shadow Style",
+    "cardShadowStyleHint": "How much elevation every card has, sitewide.",
+    "cardShadowStyles": {
+      "flat": "Flat",
+      "soft": "Soft",
+      "bold": "Bold"
+    }
   }
 }

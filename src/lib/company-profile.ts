@@ -1,6 +1,7 @@
 export interface CompanyProfile {
   legalName: string;
   logoUrl: string;
+  faviconUrl: string;
   contactEmail: string;
   phone: string;
   addressLine: string;
@@ -21,6 +22,7 @@ export interface CompanyProfile {
 export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
   legalName: "The Unique Expo",
   logoUrl: "",
+  faviconUrl: "",
   contactEmail: "info@theuniqueexpo.com",
   phone: "",
   addressLine: "",
@@ -39,6 +41,7 @@ export function normalizeCompanyProfile(input: unknown): CompanyProfile {
   return {
     legalName: str("legalName"),
     logoUrl: str("logoUrl"),
+    faviconUrl: str("faviconUrl"),
     contactEmail: str("contactEmail"),
     phone: str("phone"),
     addressLine: str("addressLine"),

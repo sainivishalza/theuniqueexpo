@@ -4,9 +4,9 @@ import { Link } from "@/i18n/navigation";
 export type CardShadow = "sm" | "md" | "lg";
 
 const SHADOW_CLASSES: Record<CardShadow, string> = {
-  sm: "shadow-sm",
-  md: "shadow-md shadow-gray-200/50",
-  lg: "shadow-lg shadow-gray-200/60",
+  sm: "shadow-[var(--shadow-card-sm)]",
+  md: "shadow-[var(--shadow-card-md)]",
+  lg: "shadow-[var(--shadow-card-lg)]",
 };
 
 const BASE_CLASSES = "block rounded-[var(--radius-card)] overflow-hidden bg-white";

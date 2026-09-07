@@ -5,9 +5,9 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import {
-  DEFAULT_SITE_THEME, HEADING_FONT_OPTIONS, BODY_FONT_OPTIONS, SCRIPT_FONT_OPTIONS, CORNER_STYLE_OPTIONS,
-  headingFontStack, bodyFontStack, scriptFontStack, cornerRadii,
-  type SiteTheme, type HeadingFontKey, type BodyFontKey, type ScriptFontKey, type CornerStyleKey,
+  DEFAULT_SITE_THEME, HEADING_FONT_OPTIONS, BODY_FONT_OPTIONS, SCRIPT_FONT_OPTIONS, CORNER_STYLE_OPTIONS, CARD_SHADOW_OPTIONS,
+  headingFontStack, bodyFontStack, scriptFontStack, cornerRadii, cardShadows,
+  type SiteTheme, type HeadingFontKey, type BodyFontKey, type ScriptFontKey, type CornerStyleKey, type CardShadowStyleKey,
 } from "@/lib/site-theme";
 import { contrastRatio, MIN_READABLE_CONTRAST } from "@/lib/theme-colors";
 import Button from "@/components/ui/Button";
@@ -192,6 +192,34 @@ export default function AdminSiteThemePage() {
                           style={{ borderRadius: radii["--radius-card"] }}
                         />
                         <span className="text-sm font-medium text-gray-700">{t(`cornerStyles.${o.key}`)}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </Card>
+
+              <Card shadow="sm" bordered={false} className="p-6 space-y-6">
+                <div>
+                  <h2 className="font-bold text-heading">{t("cardShadowStyle")}</h2>
+                  <p className="text-xs text-gray-400">{t("cardShadowStyleHint")}</p>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  {CARD_SHADOW_OPTIONS.map((o) => {
+                    const shadows = cardShadows(o.key);
+                    return (
+                      <button
+                        key={o.key}
+                        type="button"
+                        onClick={() => update({ cardShadowStyle: o.key as CardShadowStyleKey })}
+                        className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-colors ${
+                          theme.cardShadowStyle === o.key ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <span
+                          className="w-12 h-12 rounded-lg bg-white"
+                          style={{ boxShadow: shadows["--shadow-card-lg"] }}
+                        />
+                        <span className="text-sm font-medium text-gray-700">{t(`cardShadowStyles.${o.key}`)}</span>
                       </button>
                     );
                   })}

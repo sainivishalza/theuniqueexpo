@@ -12,6 +12,7 @@ export type HeadingFontKey = "oswald" | "bebasNeue" | "anton" | "robotoCondensed
 export type BodyFontKey = "inter" | "manrope" | "montserrat" | "openSans";
 export type ScriptFontKey = "caveat" | "dancingScript" | "pacifico";
 export type CornerStyleKey = "sharp" | "soft" | "rounded";
+export type CardShadowStyleKey = "flat" | "soft" | "bold";
 
 export interface SiteTheme {
   primaryColor: string; // buttons, links, badges -- the emerald-* scale
@@ -24,6 +25,7 @@ export interface SiteTheme {
   bodyFont: BodyFontKey;
   scriptFont: ScriptFontKey;
   cornerStyle: CornerStyleKey; // rounding of every button/card/badge/icon tile
+  cardShadowStyle: CardShadowStyleKey; // elevation of every Card
 }
 
 // Matches what's already live -- picking these as defaults means a site
@@ -43,6 +45,7 @@ export const DEFAULT_SITE_THEME: SiteTheme = {
   bodyFont: "inter",
   scriptFont: "caveat",
   cornerStyle: "soft",
+  cardShadowStyle: "soft",
 };
 
 export const CORNER_STYLE_OPTIONS: { key: CornerStyleKey; label: string }[] = [
@@ -73,6 +76,42 @@ export function cornerRadii(style: CornerStyleKey): Record<string, string> {
     "--radius-icon-sm": `${px.iconSm}px`,
     "--radius-icon-md": `${px.iconMd}px`,
     "--radius-icon-lg": `${px.iconLg}px`,
+  };
+}
+
+export const CARD_SHADOW_OPTIONS: { key: CardShadowStyleKey; label: string }[] = [
+  { key: "flat", label: "Flat" },
+  { key: "soft", label: "Soft" },
+  { key: "bold", label: "Bold" },
+];
+
+// "soft" reproduces Card.tsx's original fixed values exactly (Tailwind's
+// own shadow-sm/md/lg, with md/lg tinted gray-200 at 50%/60% the way the
+// component previously hardcoded), so the default changes nothing.
+const CARD_SHADOW_VALUES: Record<CardShadowStyleKey, { sm: string; md: string; lg: string }> = {
+  flat: {
+    sm: "0 1px 1px 0 rgb(0 0 0 / 0.03)",
+    md: "0 1px 3px 0 rgb(0 0 0 / 0.05)",
+    lg: "0 2px 6px 0 rgb(0 0 0 / 0.06)",
+  },
+  soft: {
+    sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+    md: "0 4px 6px -1px rgb(229 231 235 / 0.5), 0 2px 4px -2px rgb(229 231 235 / 0.5)",
+    lg: "0 10px 15px -3px rgb(229 231 235 / 0.6), 0 4px 6px -4px rgb(229 231 235 / 0.6)",
+  },
+  bold: {
+    sm: "0 2px 4px 0 rgb(0 0 0 / 0.08)",
+    md: "0 8px 12px -2px rgb(0 0 0 / 0.15), 0 4px 6px -3px rgb(0 0 0 / 0.12)",
+    lg: "0 20px 28px -6px rgb(0 0 0 / 0.18), 0 8px 12px -6px rgb(0 0 0 / 0.14)",
+  },
+};
+
+export function cardShadows(style: CardShadowStyleKey): Record<string, string> {
+  const v = CARD_SHADOW_VALUES[style] ?? CARD_SHADOW_VALUES.soft;
+  return {
+    "--shadow-card-sm": v.sm,
+    "--shadow-card-md": v.md,
+    "--shadow-card-lg": v.lg,
   };
 }
 
@@ -120,6 +159,7 @@ const HEADING_KEYS = new Set(HEADING_FONT_OPTIONS.map((o) => o.key));
 const BODY_KEYS = new Set(BODY_FONT_OPTIONS.map((o) => o.key));
 const SCRIPT_KEYS = new Set(SCRIPT_FONT_OPTIONS.map((o) => o.key));
 const CORNER_KEYS = new Set(CORNER_STYLE_OPTIONS.map((o) => o.key));
+const CARD_SHADOW_KEYS = new Set(CARD_SHADOW_OPTIONS.map((o) => o.key));
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
 export function normalizeSiteTheme(input: unknown): SiteTheme {
@@ -140,6 +180,9 @@ export function normalizeSiteTheme(input: unknown): SiteTheme {
   const corner = typeof record.cornerStyle === "string" && CORNER_KEYS.has(record.cornerStyle as CornerStyleKey)
     ? (record.cornerStyle as CornerStyleKey)
     : DEFAULT_SITE_THEME.cornerStyle;
+  const cardShadow = typeof record.cardShadowStyle === "string" && CARD_SHADOW_KEYS.has(record.cardShadowStyle as CardShadowStyleKey)
+    ? (record.cardShadowStyle as CardShadowStyleKey)
+    : DEFAULT_SITE_THEME.cardShadowStyle;
 
   return {
     primaryColor: hex("primaryColor") as string,
@@ -152,5 +195,6 @@ export function normalizeSiteTheme(input: unknown): SiteTheme {
     bodyFont: body,
     scriptFont: script,
     cornerStyle: corner,
+    cardShadowStyle: cardShadow,
   };
 }

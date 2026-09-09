@@ -3,6 +3,7 @@ import { requireAdmin } from "@/lib/auth-server";
 import { isDuplicateEntryError } from "@/lib/db";
 import { listExhibitions, createExhibition } from "@/lib/server/exhibitions-repo";
 import { slugify } from "@/lib/slugify";
+import { isValidImageField, isValidImageFieldArray } from "@/lib/server/validate-upload";
 
 export async function GET(request: Request) {
   const admin = await requireAdmin(request);
@@ -26,6 +27,13 @@ export async function POST(request: Request) {
   body.slug = slugify(body.slug);
   if (!body.slug) {
     return NextResponse.json({ error: "Slug must contain at least one letter or number" }, { status: 400 });
+  }
+  // The client's own compression/size checks are JS running in the
+  // browser and don't apply to a direct API call -- re-validate here so a
+  // non-image (or oversized) payload can never reach the DB, and so the
+  // public image-serving route never has to trust an unvalidated MIME type.
+  if (!isValidImageField(body.image) || !isValidImageFieldArray(body.galleryImages)) {
+    return NextResponse.json({ error: "Image must be a valid image file or URL" }, { status: 400 });
   }
 
   try {

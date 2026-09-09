@@ -32,9 +32,20 @@ export default function middleware(request: NextRequest) {
   // Root layout's generateMetadata needs the current path (locale prefix
   // included) to build correct canonical/hreflang alternate tags per page,
   // but a Server Component has no direct way to read the request URL --
-  // only middleware sees it. Setting a header on a "next"/"rewrite"
-  // response here is the documented way to forward it to the render.
-  response.headers.set("x-pathname", request.nextUrl.pathname);
+  // only middleware sees it. `response.headers.set()` would put this on
+  // the *response* Next sends to the browser (confirmed live -- it was
+  // leaking into every page's headers); NextResponse.next({request:
+  // {headers}})'s `x-middleware-request-*`/`x-middleware-override-headers`
+  // convention is what actually forwards a header into the request context
+  // Server Components read via headers(), without exposing it to the
+  // client. next-intl already built `response` for us, so replicate that
+  // convention manually rather than reconstructing its whole response.
+  response.headers.set("x-middleware-request-x-pathname", request.nextUrl.pathname);
+  const overrideKeys = new Set(
+    (response.headers.get("x-middleware-override-headers") || "").split(",").map((k) => k.trim()).filter(Boolean)
+  );
+  overrideKeys.add("x-pathname");
+  response.headers.set("x-middleware-override-headers", Array.from(overrideKeys).join(","));
   return response;
 }
 

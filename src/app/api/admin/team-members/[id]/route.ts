@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { updateTeamMember, deleteTeamMember } from "@/lib/server/team-members-repo";
+import { isValidImageField } from "@/lib/server/validate-upload";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const admin = await requireAdmin(request);
@@ -10,6 +11,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   const body = await request.json();
   if (!body.name || !body.role) {
     return NextResponse.json({ error: "name and role are required" }, { status: 400 });
+  }
+  if (!isValidImageField(body.photo)) {
+    return NextResponse.json({ error: "Photo must be a valid image file or URL" }, { status: 400 });
   }
 
   try {

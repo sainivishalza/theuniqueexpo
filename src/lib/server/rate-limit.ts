@@ -76,6 +76,39 @@ export function rateLimitOrNull(request: Request, keyPrefix: string, limit: numb
   return null;
 }
 
+const LOGIN_ATTEMPT_LIMIT = 10;
+const LOGIN_ATTEMPT_WINDOW_MS = 5 * 60 * 1000;
+
+// A distributed attacker (many IPs, one target account) would sail through
+// a per-IP-only limit -- this second, per-account bucket is intentionally
+// a bit looser than the per-IP one (a shared office/NAT legitimately fails
+// a password more often from one IP than one specific account should ever
+// need to across everyone hitting it).
+const LOGIN_ACCOUNT_ATTEMPT_LIMIT = 20;
+const LOGIN_ACCOUNT_ATTEMPT_WINDOW_MS = 5 * 60 * 1000;
+
+// Shared by every code path that checks a password against the DB --
+// /api/auth/login, and the inline sign-in branch of expo/tour registration
+// (which also creates a session for an existing account by verifying its
+// password). All draw from the same per-IP (and, when an email is known,
+// per-account) buckets so brute-forcing one account can't bypass the limit
+// just by hitting a different endpoint or spreading requests across IPs.
+export function checkLoginRateLimit(request: Request, email?: string): RateLimitResult {
+  const byIp = checkRateLimit(`login:${getClientIp(request)}`, LOGIN_ATTEMPT_LIMIT, LOGIN_ATTEMPT_WINDOW_MS);
+  if (!byIp.allowed || !email) return byIp;
+  const byAccount = checkRateLimit(
+    `login-account:${email.trim().toLowerCase()}`,
+    LOGIN_ACCOUNT_ATTEMPT_LIMIT,
+    LOGIN_ACCOUNT_ATTEMPT_WINDOW_MS
+  );
+  return byAccount.allowed ? byIp : byAccount;
+}
+
+export function resetLoginRateLimit(request: Request, email?: string): void {
+  resetRateLimit(`login:${getClientIp(request)}`);
+  if (email) resetRateLimit(`login-account:${email.trim().toLowerCase()}`);
+}
+
 export function getClientIp(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {

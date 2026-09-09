@@ -47,7 +47,7 @@ export async function createUserAccount(
   role: string,
   country: string
 ): Promise<{ user: SessionUser; token: string }> {
-  const passwordHash = await bcrypt.hash(password, 10);
+  const passwordHash = await bcrypt.hash(password, 12);
   const [result] = await pool.query<ResultSetHeader>(
     "INSERT INTO users (name, email, password_hash, role, country) VALUES (?, ?, ?, ?, ?)",
     [name, email, passwordHash, role, country || ""]
@@ -56,13 +56,24 @@ export async function createUserAccount(
   return { user, token: signSessionToken(user) };
 }
 
+// A bcrypt hash of an unguessable, never-issued password -- used only to
+// give a "no such user" lookup the same bcrypt.compare cost as a real
+// password check below, so response latency can't be used to tell "email
+// doesn't exist" apart from "email exists, wrong password" (the error
+// message is already identical either way; this closes the timing gap
+// between the two, not just the message).
+const DUMMY_HASH_FOR_TIMING = "$2a$12$C6UzMDM.H6dfI/f/IKcEeOa8jTiJfyGX0mF/HzL8XeDQmJgb0e7Uy";
+
 export async function verifyUserPassword(email: string, password: string): Promise<SessionUser | null> {
   const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT id, name, email, role, country, password_hash FROM users WHERE email = ?",
     [email]
   );
   const row = rows[0];
-  if (!row) return null;
+  if (!row) {
+    await bcrypt.compare(password, DUMMY_HASH_FOR_TIMING);
+    return null;
+  }
   const valid = await bcrypt.compare(password, row.password_hash);
   if (!valid) return null;
   return { id: row.id, name: row.name, email: row.email, role: row.role, country: row.country };

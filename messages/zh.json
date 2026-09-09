@@ -774,6 +774,7 @@
     "registrationNumber": "报名 #{id}",
     "view": "查看",
     "viewFile": "📄 查看文件",
+    "invalidFile": "⚠️ 无效文件——无法安全打开",
     "statuses": {
       "pending": "待处理",
       "approved": "已批准",

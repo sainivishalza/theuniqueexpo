@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getAboutContent, updateAboutContent } from "@/lib/server/about-content-repo";
 import { normalizeAboutContent } from "@/lib/about-content";
+import { isValidImageField } from "@/lib/server/validate-upload";
 
 export async function GET(request: Request) {
   const admin = await requireAdmin(request);
@@ -18,6 +19,9 @@ export async function PUT(request: Request) {
   const body = await request.json();
   if (!body.heading || !body.tagline) {
     return NextResponse.json({ error: "Heading and tagline are required" }, { status: 400 });
+  }
+  if (!isValidImageField(body.heroImage)) {
+    return NextResponse.json({ error: "Hero image must be a valid image file or URL" }, { status: 400 });
   }
 
   await updateAboutContent(normalizeAboutContent(body));

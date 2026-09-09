@@ -3,6 +3,9 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Framework/version fingerprinting -- off by default upstream would be
+  // nicer, but Next.js sends this unless explicitly disabled.
+  poweredByHeader: false,
   images: {
     // Admins can paste any external image URL for a poster or hero image
     // (not just Unsplash), so a fixed allowlist of hostnames would break

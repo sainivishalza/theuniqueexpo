@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getCompanyProfile, updateCompanyProfile } from "@/lib/server/company-profile-repo";
 import { normalizeCompanyProfile } from "@/lib/company-profile";
+import { isValidImageField } from "@/lib/server/validate-upload";
 
 export async function GET(request: Request) {
   const admin = await requireAdmin(request);
@@ -18,6 +19,9 @@ export async function PUT(request: Request) {
   const body = await request.json();
   if (!body.legalName) {
     return NextResponse.json({ error: "Legal name is required" }, { status: 400 });
+  }
+  if (!isValidImageField(body.logoUrl) || !isValidImageField(body.faviconUrl)) {
+    return NextResponse.json({ error: "Logo/favicon must be a valid image file or URL" }, { status: 400 });
   }
 
   await updateCompanyProfile(normalizeCompanyProfile(body));

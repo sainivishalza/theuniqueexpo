@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getExhibitionImageValue } from "@/lib/server/exhibitions-repo";
+import { isAllowedImageContentType } from "@/lib/server/validate-upload";
 
 // Serves the exhibition poster as an actual image response instead of
 // inline base64 JSON, so browsers can cache it across page navigations
@@ -23,6 +24,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     return NextResponse.json({ error: "Malformed image data" }, { status: 500 });
   }
   const [, contentType, base64Data] = match;
+  if (!isAllowedImageContentType(contentType)) {
+    return NextResponse.json({ error: "Unsupported content type" }, { status: 415 });
+  }
   const bytes = Buffer.from(base64Data, "base64");
 
   return new NextResponse(bytes, {

@@ -774,6 +774,7 @@
     "registrationNumber": "Registration #{id}",
     "view": "View",
     "viewFile": "📄 View file",
+    "invalidFile": "⚠️ Not a valid file -- can't be safely opened",
     "statuses": {
       "pending": "pending",
       "approved": "approved",

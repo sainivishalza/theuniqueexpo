@@ -1,3 +1,5 @@
+import { isValidUploadedDocument } from "@/lib/server/validate-upload";
+
 export type RegistrationType = "buyer" | "visitor";
 export type Gender = "male" | "female";
 
@@ -106,6 +108,18 @@ const REQUIRED_DOCUMENT_FIELDS: { field: keyof ExpoRegistrationInput; label: str
   { field: "docBusinessLicense", label: "Business license" },
 ];
 
+// docOrderList is optional but still goes through the same upload check
+// whenever it's present -- every document field, required or not, must be
+// a real image/PDF upload, never an arbitrary data: URL an admin's browser
+// would later navigate to when reviewing the submission.
+const ALL_DOCUMENT_FIELDS: (keyof ExpoRegistrationInput)[] = [
+  "docPassportFront",
+  "docBusinessCard",
+  "docVisaPage",
+  "docBusinessLicense",
+  "docOrderList",
+];
+
 export function validateExpoRegistration(input: Partial<ExpoRegistrationInput>): string | null {
   for (const { field, label } of REQUIRED_TEXT_FIELDS) {
     if (!input[field] || String(input[field]).trim() === "") {
@@ -127,6 +141,12 @@ export function validateExpoRegistration(input: Partial<ExpoRegistrationInput>):
   for (const { field, label } of REQUIRED_DOCUMENT_FIELDS) {
     if (!input[field] || String(input[field]).trim() === "") {
       return `Please upload: ${label}`;
+    }
+  }
+  for (const field of ALL_DOCUMENT_FIELDS) {
+    const value = input[field];
+    if (value && !isValidUploadedDocument(value)) {
+      return "One of your uploaded documents isn't a valid image or PDF file";
     }
   }
   return null;

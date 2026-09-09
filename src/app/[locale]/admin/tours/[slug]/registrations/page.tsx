@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import type { CustomFormField } from "@/lib/custom-registration-form";
+import { isValidUploadedDocument } from "@/lib/server/validate-upload";
 import Card from "@/components/ui/Card";
 
 interface Tour { id: string; slug: string; title: string; }
@@ -172,13 +173,17 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
                       <div key={field.id}>
                         <p className="text-xs font-semibold text-gray-400 uppercase mb-1">{field.label}</p>
                         {field.type === "file" && typeof value === "string" && value ? (
-                          <a href={value} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-gray-200 p-2 hover:border-emerald-400 max-w-xs">
-                            {value.startsWith("data:image") ? (
-                              <img src={value} alt={field.label} className="h-28 w-full object-contain rounded-lg bg-cream-50" />
-                            ) : (
-                              <div className="h-28 w-full flex items-center justify-center rounded-lg bg-cream-50 text-sm text-gray-500">{tr("viewFile")}</div>
-                            )}
-                          </a>
+                          isValidUploadedDocument(value) ? (
+                            <a href={value} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-gray-200 p-2 hover:border-emerald-400 max-w-xs">
+                              {value.startsWith("data:image") ? (
+                                <img src={value} alt={field.label} className="h-28 w-full object-contain rounded-lg bg-cream-50" />
+                              ) : (
+                                <div className="h-28 w-full flex items-center justify-center rounded-lg bg-cream-50 text-sm text-gray-500">{tr("viewFile")}</div>
+                              )}
+                            </a>
+                          ) : (
+                            <div className="max-w-xs rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-600">{tr("invalidFile")}</div>
+                          )
                         ) : (
                           <p className="text-gray-900 text-sm">{formatAnswer(value)}</p>
                         )}

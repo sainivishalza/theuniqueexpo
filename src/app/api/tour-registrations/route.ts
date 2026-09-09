@@ -5,6 +5,7 @@ import { getSessionUser, createUserAccount, verifyUserPassword, setSessionCookie
 import { getTourBySlugOrId } from "@/lib/server/tours-repo";
 import { createTourRegistration, findExistingTourRegistration } from "@/lib/server/tour-registrations-repo";
 import { validateCustomAnswers } from "@/lib/custom-registration-form";
+import { checkLoginRateLimit, resetLoginRateLimit } from "@/lib/server/rate-limit";
 
 export async function POST(request: Request) {
   try {
@@ -43,6 +44,16 @@ async function handlePost(request: Request): Promise<NextResponse> {
 
     const [rows] = await pool.query<RowDataPacket[]>("SELECT id FROM users WHERE email = ?", [trimmedEmail]);
     if (rows.length > 0) {
+      // Same password check as /api/auth/login -- draws from the same
+      // per-IP bucket so this can't be used to brute-force a password
+      // without ever touching the rate-limited login endpoint.
+      const { allowed, retryAfterSeconds } = checkLoginRateLimit(request, trimmedEmail);
+      if (!allowed) {
+        return NextResponse.json(
+          { error: "Too many attempts. Please try again later." },
+          { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } }
+        );
+      }
       const verified = await verifyUserPassword(trimmedEmail, password);
       if (!verified) {
         return NextResponse.json(
@@ -50,6 +61,7 @@ async function handlePost(request: Request): Promise<NextResponse> {
           { status: 401 }
         );
       }
+      resetLoginRateLimit(request, trimmedEmail);
       user = verified;
     } else {
       if (password.length < 6) {

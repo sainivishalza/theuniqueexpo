@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getTeamMemberPhotoValue } from "@/lib/server/team-members-repo";
+import { isAllowedImageContentType } from "@/lib/server/validate-upload";
 
 // Serves a team member's photo as an actual image response instead of
 // inline base64 JSON, so browsers can cache it across page navigations --
@@ -22,6 +23,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: "Malformed photo data" }, { status: 500 });
   }
   const [, contentType, base64Data] = match;
+  if (!isAllowedImageContentType(contentType)) {
+    return NextResponse.json({ error: "Unsupported content type" }, { status: 415 });
+  }
   const bytes = Buffer.from(base64Data, "base64");
 
   return new NextResponse(bytes, {

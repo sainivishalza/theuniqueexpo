@@ -1,3 +1,5 @@
+import { isValidUploadedDocument } from "@/lib/server/validate-upload";
+
 export type CustomFieldType = "text" | "textarea" | "radio" | "checkbox" | "file";
 
 export interface CustomFormField {
@@ -25,6 +27,14 @@ export function validateCustomAnswers(
 ): string | null {
   for (const field of schema) {
     const value = answers[field.id];
+
+    // File fields are validated whenever a value is present, required or
+    // not -- an optional field can't be used to smuggle in something that
+    // isn't a real image/PDF upload just because it's optional.
+    if (field.type === "file" && value && !isValidUploadedDocument(value)) {
+      return `${field.label} isn't a valid image or PDF file`;
+    }
+
     if (!field.required) continue;
 
     if (field.type === "checkbox") {

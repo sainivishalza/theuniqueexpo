@@ -3,6 +3,7 @@ import { requireAdmin } from "@/lib/auth-server";
 import { isDuplicateEntryError } from "@/lib/db";
 import { listTours, createTour } from "@/lib/server/tours-repo";
 import { slugify } from "@/lib/slugify";
+import { isValidImageField, isValidImageFieldArray } from "@/lib/server/validate-upload";
 
 export async function GET(request: Request) {
   const admin = await requireAdmin(request);
@@ -23,6 +24,9 @@ export async function POST(request: Request) {
   body.slug = slugify(body.slug);
   if (!body.slug) {
     return NextResponse.json({ error: "Slug must contain at least one letter or number" }, { status: 400 });
+  }
+  if (!isValidImageField(body.image) || !isValidImageFieldArray(body.galleryImages)) {
+    return NextResponse.json({ error: "Image must be a valid image file or URL" }, { status: 400 });
   }
 
   try {

@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyUserPassword, signSessionToken, setSessionCookie } from "@/lib/auth-server";
-import { checkRateLimit, resetRateLimit, getClientIp } from "@/lib/server/rate-limit";
-
-const LOGIN_ATTEMPT_LIMIT = 10;
-const LOGIN_ATTEMPT_WINDOW_MS = 5 * 60 * 1000;
+import { checkLoginRateLimit, resetLoginRateLimit } from "@/lib/server/rate-limit";
 
 export async function POST(request: Request) {
   try {
@@ -13,8 +10,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
     }
 
-    const rateLimitKey = `login:${getClientIp(request)}`;
-    const { allowed, retryAfterSeconds } = checkRateLimit(rateLimitKey, LOGIN_ATTEMPT_LIMIT, LOGIN_ATTEMPT_WINDOW_MS);
+    const { allowed, retryAfterSeconds } = checkLoginRateLimit(request, email);
     if (!allowed) {
       return NextResponse.json(
         { error: "Too many login attempts. Please try again later." },
@@ -26,7 +22,7 @@ export async function POST(request: Request) {
     if (!user) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
-    resetRateLimit(rateLimitKey);
+    resetLoginRateLimit(request, email);
 
     const token = signSessionToken(user);
     const response = NextResponse.json({ user });

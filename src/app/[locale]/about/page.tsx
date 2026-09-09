@@ -86,7 +86,7 @@ export default async function AboutPage() {
       </section>
 
       {teamMembers.length > 0 && (
-        <section className="py-14 bg-white border-t border-gray-100">
+        <section id="team" className="py-14 bg-white border-t border-gray-100 scroll-mt-20">
           <div className="mx-auto max-w-5xl px-6">
             <div className="text-center mb-10">
               <h2 className="text-2xl md:text-3xl font-bold text-heading">{t("meetTheTeam")}</h2>

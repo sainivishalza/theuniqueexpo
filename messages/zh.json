@@ -57,6 +57,7 @@
       "rfqMarketplace": "询价采购市场",
       "partnerProgram": "合作伙伴计划",
       "aboutUs": "关于我们",
+      "ourTeam": "我们的团队",
       "contact": "联系我们",
       "careers": "招聘信息",
       "blog": "博客",
@@ -1755,7 +1756,11 @@
     "getStarted": "免费开始",
     "exploreServices": "探索我们的服务",
     "faqBadge": "常见问题",
-    "faqTitle": "常见问题解答"
+    "faqTitle": "常见问题解答",
+    "teamBadge": "我们的团队",
+    "teamTitle": "认识我们的团队",
+    "teamSubtitle": "TheUniqueExpo 背后的团队成员。",
+    "meetTheTeam": "查看完整团队"
   },
   "eventsPage": {
     "title": "活动",

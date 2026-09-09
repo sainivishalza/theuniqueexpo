@@ -57,6 +57,7 @@
       "rfqMarketplace": "Маркетплейс запросов",
       "partnerProgram": "Партнёрская программа",
       "aboutUs": "О нас",
+      "ourTeam": "Наша команда",
       "contact": "Контакты",
       "careers": "Карьера",
       "blog": "Блог",
@@ -1755,7 +1756,11 @@
     "getStarted": "Начать бесплатно",
     "exploreServices": "Изучить услуги",
     "faqBadge": "Частые вопросы",
-    "faqTitle": "Часто задаваемые вопросы"
+    "faqTitle": "Часто задаваемые вопросы",
+    "teamBadge": "Наша команда",
+    "teamTitle": "Наша команда",
+    "teamSubtitle": "Люди, которые стоят за TheUniqueExpo.",
+    "meetTheTeam": "Познакомиться со всей командой"
   },
   "eventsPage": {
     "title": "События",

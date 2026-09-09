@@ -21,6 +21,7 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
     ],
     [t("columns.company")]: [
       { label: t("links.aboutUs"), href: "/about" },
+      { label: t("links.ourTeam"), href: "/about#team" },
       { label: t("links.contact"), href: "/contact" },
       { label: t("links.careers"), href: "/careers" },
       { label: t("links.blog"), href: "/blog" },

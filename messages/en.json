@@ -57,6 +57,7 @@
       "rfqMarketplace": "RFQ Marketplace",
       "partnerProgram": "Partner Program",
       "aboutUs": "About Us",
+      "ourTeam": "Our Team",
       "contact": "Contact",
       "careers": "Careers",
       "blog": "Blog",
@@ -1755,7 +1756,11 @@
     "getStarted": "Get Started Free",
     "exploreServices": "Explore Our Services",
     "faqBadge": "Common Questions",
-    "faqTitle": "Frequently Asked Questions"
+    "faqTitle": "Frequently Asked Questions",
+    "teamBadge": "Our People",
+    "teamTitle": "Meet the Team",
+    "teamSubtitle": "The people behind TheUniqueExpo.",
+    "meetTheTeam": "Meet the Full Team"
   },
   "eventsPage": {
     "title": "Events",

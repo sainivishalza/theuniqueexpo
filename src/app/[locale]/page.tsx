@@ -9,6 +9,7 @@ import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 import { getFaqItems } from "@/lib/server/faq-content-repo";
+import { listTeamMembers } from "@/lib/server/team-members-repo";
 import { ensureDarkEnoughForWhiteText } from "@/lib/color";
 
 // How many of the soonest upcoming exhibitions to feature on the homepage.
@@ -37,7 +38,12 @@ export default async function Home() {
   // getFaqItems() doesn't depend on locale/translations, so it doesn't need
   // to wait behind them -- exhibitions still has to wait for locale to
   // resolve first since it's an input to the query.
-  const [t, locale, faqItems] = await Promise.all([getTranslations("home"), getLocale(), getFaqItems()]);
+  const [t, locale, faqItems, teamMembers] = await Promise.all([
+    getTranslations("home"),
+    getLocale(),
+    getFaqItems(),
+    listTeamMembers(),
+  ]);
   const exhibitions = await listExhibitions(locale);
   const featured = exhibitions.slice(0, FEATURED_COUNT);
 
@@ -261,6 +267,43 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── Team Section ── */}
+      {teamMembers.length > 0 && (
+        <section className="py-20 bg-white">
+          <div className="mx-auto max-w-6xl px-6">
+            <div className="text-center mb-14">
+              <Badge tone="emerald" className="mb-4">{t("teamBadge")}</Badge>
+              <h2 className="text-4xl font-extrabold text-heading">{t("teamTitle")}</h2>
+              <p className="mt-3 text-gray-500 max-w-xl mx-auto">{t("teamSubtitle")}</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {teamMembers.map((member) => (
+                <div key={member.id} className="text-center">
+                  <div className="mx-auto w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden bg-gray-100 shadow-md">
+                    {member.photo && (
+                      <Image
+                        src={member.photo}
+                        alt={member.name}
+                        width={224}
+                        height={224}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <h3 className="mt-4 font-bold text-heading">{member.name}</h3>
+                  <p className="text-sm text-emerald-600">{member.role}</p>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-10">
+              <Button href="/about#team" variant="ghost" size="wide">
+                {t("meetTheTeam")}
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── FAQ Section ── */}
       {faqItems.length > 0 && (

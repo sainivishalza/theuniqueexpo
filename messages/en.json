@@ -76,7 +76,9 @@
   "about": {
     "ourStory": "Our Story",
     "ourMission": "Our Mission",
-    "ourVision": "Our Vision"
+    "ourVision": "Our Vision",
+    "meetTheTeam": "Meet the Team",
+    "meetTheTeamSubtitle": "The people behind TheUniqueExpo."
   },
   "exhibitionsPage": {
     "title": "Exhibitions",
@@ -457,6 +459,10 @@
         "title": "About Us Page",
         "description": "Edit the company story, mission, vision, and stats shown to visitors."
       },
+      "teamManagement": {
+        "title": "Team Management",
+        "description": "Add, edit, and reorder the team members shown on the About Us page."
+      },
       "websitePages": {
         "title": "Website Pages",
         "description": "Edit Contact, Careers, Blog, Help Center, and other footer pages."
@@ -647,6 +653,37 @@
       "accepted": "accepted",
       "rejected": "rejected"
     }
+  },
+  "adminTeam": {
+    "title": "Team Management",
+    "subtitle": "Add, edit, and reorder the team members shown on the About Us page.",
+    "accessDenied": "Access denied",
+    "loadFailed": "Failed to load team members",
+    "loadingMembers": "Loading team members...",
+    "noMembersYet": "No team members yet.",
+    "backToAdmin": "Back to Admin",
+    "newMember": "+ New Member",
+    "editMember": "Edit Team Member",
+    "newMemberHeading": "New Team Member",
+    "requiredFieldsError": "Name and role are required",
+    "saveFailed": "Save failed",
+    "saveChanges": "Save Changes",
+    "createMember": "Create Member",
+    "confirmDelete": "Delete this team member?",
+    "deleteFailed": "Failed to delete team member",
+    "deleting": "Deleting...",
+    "editButton": "Edit",
+    "fields": {
+      "name": "Name",
+      "role": "Role / Title",
+      "displayOrder": "Display Order"
+    },
+    "photo": "Photo",
+    "uploadPhoto": "Upload Photo",
+    "removePhoto": "Remove Photo",
+    "choosePhotoFile": "Please choose an image file",
+    "photoTooLarge": "Image is too large (max 8MB)",
+    "couldNotReadFile": "Could not read that file"
   },
   "adminAbout": {
     "saveFailed": "Save failed",

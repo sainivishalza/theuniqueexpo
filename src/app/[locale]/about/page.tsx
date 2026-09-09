@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { getAboutContent } from "@/lib/server/about-content-repo";
+import { listTeamMembers } from "@/lib/server/team-members-repo";
 import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
 
@@ -17,6 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AboutPage() {
   const t = await getTranslations("about");
   const content = await getAboutContent();
+  const teamMembers = await listTeamMembers();
   const storyParagraphs = content.story.split(/\n{2,}/).filter(Boolean);
 
   return (
@@ -82,6 +84,36 @@ export default async function AboutPage() {
           </div>
         </div>
       </section>
+
+      {teamMembers.length > 0 && (
+        <section className="py-14 bg-white border-t border-gray-100">
+          <div className="mx-auto max-w-5xl px-6">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl md:text-3xl font-bold text-heading">{t("meetTheTeam")}</h2>
+              <p className="mt-2 text-gray-500">{t("meetTheTeamSubtitle")}</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {teamMembers.map((member) => (
+                <div key={member.id} className="text-center">
+                  <div className="mx-auto w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden bg-gray-100 shadow-md">
+                    {member.photo && (
+                      <Image
+                        src={member.photo}
+                        alt={member.name}
+                        width={256}
+                        height={256}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <h3 className="mt-4 font-bold text-heading">{member.name}</h3>
+                  <p className="text-sm text-emerald-600">{member.role}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

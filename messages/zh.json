@@ -76,7 +76,9 @@
   "about": {
     "ourStory": "我们的故事",
     "ourMission": "我们的使命",
-    "ourVision": "我们的愿景"
+    "ourVision": "我们的愿景",
+    "meetTheTeam": "认识我们的团队",
+    "meetTheTeamSubtitle": "TheUniqueExpo 背后的团队成员。"
   },
   "exhibitionsPage": {
     "title": "展会",
@@ -457,6 +459,10 @@
         "title": "关于我们页面",
         "description": "编辑向访客展示的公司故事、使命、愿景及数据。"
       },
+      "teamManagement": {
+        "title": "团队管理",
+        "description": "添加、编辑并排序在关于我们页面展示的团队成员。"
+      },
       "websitePages": {
         "title": "网站页面",
         "description": "编辑联系我们、招聘信息、博客、帮助中心等页面。"
@@ -647,6 +653,37 @@
       "accepted": "已接受",
       "rejected": "已拒绝"
     }
+  },
+  "adminTeam": {
+    "title": "团队管理",
+    "subtitle": "添加、编辑并排序在关于我们页面展示的团队成员。",
+    "accessDenied": "访问被拒绝",
+    "loadFailed": "加载团队成员失败",
+    "loadingMembers": "正在加载团队成员...",
+    "noMembersYet": "暂无团队成员。",
+    "backToAdmin": "返回管理后台",
+    "newMember": "+ 新增成员",
+    "editMember": "编辑团队成员",
+    "newMemberHeading": "新增团队成员",
+    "requiredFieldsError": "姓名和职位为必填项",
+    "saveFailed": "保存失败",
+    "saveChanges": "保存更改",
+    "createMember": "创建成员",
+    "confirmDelete": "确定删除该团队成员吗？",
+    "deleteFailed": "删除团队成员失败",
+    "deleting": "删除中...",
+    "editButton": "编辑",
+    "fields": {
+      "name": "姓名",
+      "role": "职位",
+      "displayOrder": "显示顺序"
+    },
+    "photo": "照片",
+    "uploadPhoto": "上传照片",
+    "removePhoto": "移除照片",
+    "choosePhotoFile": "请选择一个图片文件",
+    "photoTooLarge": "图片过大（最大 8MB）",
+    "couldNotReadFile": "无法读取该文件"
   },
   "adminAbout": {
     "saveFailed": "保存失败",

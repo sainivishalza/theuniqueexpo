@@ -17,7 +17,14 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install sshpass
-        run: sudo apt-get update && sudo apt-get install -y sshpass
+        # This job only needs sshpass, from Ubuntu's own repos -- but the
+        # runner image also has Google's Chrome apt repo pre-configured
+        # (for unrelated browser-testing tooling), and `apt-get update`
+        # fails the whole command if that repo's index is broken upstream,
+        # even though apt still falls back to cached/older lists that are
+        # perfectly fine for installing sshpass. Don't let a repo this job
+        # never uses block every deploy.
+        run: sudo apt-get update || true; sudo apt-get install -y sshpass
 
       - name: Deploy over SSH
         env:

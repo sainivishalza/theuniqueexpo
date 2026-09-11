@@ -43,6 +43,17 @@ fi
 echo "--- stopping any existing app process before deploying (in case it's crash-looping) ---"
 pm2 stop theuniqueexpo 2>&1 || true
 
+# Several previous deploy attempts had their `next build` worker abort
+# (SIGABRT) or hit "fork: retry: Resource temporarily unavailable" --
+# confirmed NOT a real memory shortage (host has 500GB+ RAM, mostly free)
+# but the account's own process/fork quota. Leftover build-worker
+# processes from those aborted attempts don't always get reaped and sit
+# there still counting against that quota. Clean them up before trying
+# again.
+echo "--- cleaning up any stray build-worker processes from previous attempts ---"
+pkill -u "$(id -un)" -f "next build" 2>/dev/null || true
+pkill -u "$(id -un)" -f "jest-worker" 2>/dev/null || true
+
 # Diagnostics up front, before anything else touches the DB or rebuilds --
 # the last few deploys broke in different ways (runtime 500s after a clean
 # build, then the build itself aborting/core-dumping) even though the app
@@ -55,6 +66,10 @@ echo "--- host memory ---"
 free -h 2>&1 || true
 echo "--- disk space ---"
 df -h "$HOME" 2>&1 || true
+echo "--- account process/fork limits (ulimit) ---"
+ulimit -a 2>&1 || true
+echo "--- current process count for this account ---"
+ps -u "$(id -un)" --no-headers 2>/dev/null | wc -l || true
 echo "--- pm2 process list ---"
 pm2 list 2>&1 || true
 echo "--- currently-running app's pm2 error log tail ---"

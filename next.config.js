@@ -28,9 +28,15 @@ const nextConfig = {
   experimental: {
     // Defaults to os.cpus().length - 1, which on shared hosting reports the
     // host's full core count (60+) rather than what the account can actually
-    // spawn — the build then hits the account's process-spawn limit (EAGAIN)
-    // while collecting page data. Cap it low so builds succeed there.
-    cpus: 2,
+    // spawn — the build then hits the account's process-spawn limit (EAGAIN,
+    // or a build worker aborting outright) while collecting page data. The
+    // host itself has ample memory (500GB+) -- this is a per-account
+    // process/fork quota, not real resource pressure, and cpus: 2 alone
+    // stopped being enough once other processes on the account (a
+    // crash-looping app instance, leftover build workers from previous
+    // aborted attempts) were also competing for it. Single-worker page-data
+    // collection is slower but survives that.
+    cpus: 1,
   },
   async headers() {
     return [

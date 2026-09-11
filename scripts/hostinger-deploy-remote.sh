@@ -107,6 +107,29 @@ git fetch origin "$DEPLOY_REF"
 git checkout "$DEPLOY_REF"
 git pull origin "$DEPLOY_REF"
 
+# The last two deploys both failed here with "Can't connect to local
+# server through socket '/var/lib/mysql/mysql.sock'" -- immediately after
+# mysqldump above succeeded via the exact same connection parameters, at
+# the exact same point, in two independent SSH sessions. That's not
+# transient noise, it's reproducible: something on this shared host (a
+# resource-limit trip from the dump itself, most likely) briefly restarts
+# the local MySQL socket right in this window. Ride it out with a short
+# retry loop instead of failing the whole deploy over a multi-second blip.
+echo "Confirming the database is reachable before applying migrations ..."
+DB_READY=0
+for i in 1 2 3 4 5 6 7 8 9 10; do
+  if $MYSQL -e "SELECT 1" >/dev/null 2>&1; then
+    DB_READY=1
+    break
+  fi
+  echo "  database not reachable yet (attempt $i/10), waiting 3s..."
+  sleep 3
+done
+if [ "$DB_READY" -ne 1 ]; then
+  echo "Database still unreachable after 30s -- aborting before touching migrations." >&2
+  exit 1
+fi
+
 echo "Applying new migrations ..."
 $MYSQL < schema-migrations/002-expo-registrations.sql
 $MYSQL < schema-migrations/004-custom-registration-forms.sql

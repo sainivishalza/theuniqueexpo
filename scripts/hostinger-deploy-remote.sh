@@ -169,6 +169,39 @@ if [ -f "$APP_DIR/.env.local" ]; then
 
   if [ -n "$PASSENGER_CONFIG_BIN" ]; then
     echo "Using passenger-config at: $PASSENGER_CONFIG_BIN"
+    echo "--- passenger-config shebang ---"
+    head -3 "$PASSENGER_CONFIG_BIN" 2>&1 || true
+    echo "--- ruby on PATH before any fix attempt ---"
+    command -v ruby 2>&1 || echo "(no ruby on PATH)"
+    ruby -v 2>&1 || true
+
+    # The restart call below is expected to fail right now with a Ruby
+    # LoadError ("cannot load such file -- rubygems.rb") confirmed by the
+    # previous deploy's log -- passenger-config is a Ruby script, and
+    # whatever `ruby` a non-interactive shell resolves here apparently
+    # can't find its own RubyGems (a mismatched/shim ruby, missing the
+    # env vars a login shell's profile would normally set up -- the same
+    # class of problem nvm.sh sourcing had for Node). Try prepending a
+    # handful of common alternate-Ruby install roots to PATH and see if
+    # any of them make `ruby -rrubygems` actually work before giving up
+    # and running passenger-config with whatever's already on PATH.
+    for _ruby_bin_dir in \
+      /opt/alt/ruby*/bin \
+      /opt/cpanel/ea-ruby*/root/bin \
+      /usr/local/rvm/rubies/*/bin \
+      "$HOME"/.rbenv/versions/*/bin \
+      /opt/passenger/bin
+    do
+      [ -d "$_ruby_bin_dir" ] || continue
+      if PATH="$_ruby_bin_dir:$PATH" ruby -rrubygems -e '' >/dev/null 2>&1; then
+        echo "Found a working Ruby+RubyGems at: $_ruby_bin_dir"
+        export PATH="$_ruby_bin_dir:$PATH"
+        break
+      fi
+    done
+    echo "--- ruby on PATH after fix attempt ---"
+    command -v ruby 2>&1 || echo "(no ruby on PATH)"
+    ruby -rrubygems -e 'puts "rubygems ok, ruby #{RUBY_VERSION}"' 2>&1 || true
     # The real serving process's cwd is hbuilds/versions/<uuid>/nodejs -- a
     # fresh UUID-named directory on every deploy, not the "current" symlink
     # path. Passenger registers an app by its exact resolved path, so

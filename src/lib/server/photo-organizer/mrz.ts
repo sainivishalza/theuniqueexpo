@@ -14,16 +14,27 @@ export interface MrzNameResult {
   fullName: string;
 }
 
-const MRZ_LINE1_RE = /^P[A-Z<][A-Z]{3}[A-Z<]{28,39}$/;
+// A clean TD3 line 1 is exactly 44 chars, but real OCR on a phone-photo
+// passport routinely drops or inserts a stray character (confirmed
+// against an actual OCR run: "JOSE" came back as "J0OSE", one character
+// too long) -- an exact-length match would reject that entirely. Widen
+// the tolerance rather than demand a pixel-perfect read.
+const MRZ_LINE1_RE = /^P[A-Z<][A-Z]{3}[A-Z<]{22,44}$/;
+
+// The name portion of MRZ line 1 is letters and '<' only, by spec, never
+// digits -- so a stray digit there is always an OCR misread of a
+// similar-looking letter (confirmed against a real OCR run: "JOSE" came
+// back as "J0OSE"). Safe to correct before pattern-matching, unlike line
+// 2, which legitimately contains real digits (passport number, dates).
+function normalizeLine1Digits(line: string): string {
+  return line.replace(/0/g, "O").replace(/1/g, "I").replace(/5/g, "S").replace(/8/g, "B");
+}
 
 export function parseMrzName(ocrText: string): MrzNameResult | null {
   const lines = ocrText
     .split(/\r?\n/)
-    .map((l) => l.replace(/\s+/g, "").toUpperCase())
-    // OCR sometimes reads 'O' as '0' or vice versa inside the letter
-    // portion -- normalize the common case since MRZ names are letters
-    // and '<' only, never digits.
-    .filter((l) => l.length >= 30);
+    .map((l) => normalizeLine1Digits(l.replace(/\s+/g, "").toUpperCase()))
+    .filter((l) => l.length >= 26);
 
   for (const line of lines) {
     if (!line.startsWith("P") || !line.includes("<<")) continue;

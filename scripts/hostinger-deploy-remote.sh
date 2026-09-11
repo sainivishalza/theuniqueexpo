@@ -211,6 +211,7 @@ run_mysql schema-migrations/025-conference-city-content.sql
 run_mysql schema-migrations/026-photo-organizer.sql
 run_mysql schema-migrations/027-user-management.sql
 run_mysql schema-migrations/028-partner-referrals.sql
+run_mysql schema-migrations/029-merge-visitor-into-buyer-role.sql
 
 echo "Installing dependencies and building ..."
 npm install

@@ -17,7 +17,7 @@ interface AdminUser {
   createdAt: number;
 }
 
-const ROLES = ["buyer", "exhibitor", "visitor", "partner", "admin"];
+const ROLES = ["buyer", "exhibitor", "partner", "admin"];
 
 export default function AdminUsersPage() {
   const t = useTranslations("adminUsers");
@@ -102,8 +102,15 @@ export default function AdminUsersPage() {
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             {t("backToAdmin")}
           </Link>
-          <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
-          <p className="mt-1 text-gray-400 text-sm">{t("subtitle", { count: users.length })}</p>
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
+              <p className="mt-1 text-gray-400 text-sm">{t("subtitle", { count: users.length })}</p>
+            </div>
+            <Link href="/admin/users/bulk">
+              <Button variant="save" size="sm">{t("bulkAddUsers")}</Button>
+            </Link>
+          </div>
         </div>
       </section>
 

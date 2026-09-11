@@ -67,7 +67,7 @@ async function handlePost(request: Request): Promise<NextResponse> {
       if (password.length < 6) {
         return NextResponse.json({ error: "Password must be at least 6 characters" }, { status: 400 });
       }
-      const created = await createUserAccount(fullName?.trim() || trimmedEmail, trimmedEmail, password, "visitor", "");
+      const created = await createUserAccount(fullName?.trim() || trimmedEmail, trimmedEmail, password, "buyer", "");
       user = created.user;
       newSessionToken = created.token;
     }

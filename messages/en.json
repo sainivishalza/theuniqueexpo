@@ -195,10 +195,6 @@
         "label": "Exhibitor",
         "desc": "Showcase products at exhibitions"
       },
-      "visitor": {
-        "label": "Visitor",
-        "desc": "Attend exhibitions & explore"
-      },
       "partner": {
         "label": "Partner",
         "desc": "Refer clients & earn commissions"
@@ -233,40 +229,6 @@
     "redirecting": "Redirecting…",
     "comingSoon": "Coming soon",
     "somethingWentWrong": "Something went wrong"
-  },
-  "visitorDashboard": {
-    "title": "Visitor Dashboard",
-    "welcome": "Welcome back{name}. Explore, attend, connect.",
-    "features": {
-      "browseExhibitions": {
-        "title": "Browse Exhibitions",
-        "description": "Upcoming events near you"
-      },
-      "visitPlanner": {
-        "title": "Visit Planner",
-        "description": "Build your show-day itinerary"
-      },
-      "savedExhibitions": {
-        "title": "Saved Exhibitions",
-        "description": "Exhibitions you've bookmarked"
-      },
-      "savedExhibitors": {
-        "title": "Saved Exhibitors",
-        "description": "Your bookmarked profiles"
-      },
-      "myRegistrations": {
-        "title": "My Registrations",
-        "description": "Events you're attending"
-      },
-      "messages": {
-        "title": "Messages",
-        "description": "Conversations with exhibitors"
-      },
-      "content": {
-        "title": "Content",
-        "description": "Magazine articles and videos"
-      }
-    }
   },
   "buyerDashboard": {
     "title": "Buyer Dashboard",
@@ -306,6 +268,18 @@
       "meetings": {
         "title": "Meetings",
         "description": "Upcoming meeting requests"
+      },
+      "messages": {
+        "title": "Messages",
+        "description": "Conversations with exhibitors"
+      },
+      "myRegistrations": {
+        "title": "My Registrations",
+        "description": "Events you're attending"
+      },
+      "visitPlanner": {
+        "title": "Visit Planner",
+        "description": "Build your show-day itinerary"
       }
     }
   },
@@ -950,10 +924,10 @@
     "roles": {
       "buyer": "Buyer",
       "exhibitor": "Exhibitor",
-      "visitor": "Visitor",
       "partner": "Partner",
       "admin": "Admin"
-    }
+    },
+    "bulkAddUsers": "Bulk Add Users"
   },
   "adminPartnerReferrals": {
     "title": "Partner Referrals",
@@ -2379,12 +2353,30 @@
     "subtitle": "Bring your own conference, forum, or summit to life -- we handle the venue, registration, attendee logistics, and on-site staffing.",
     "whatsIncluded": "What's Included",
     "included": {
-      "venueSourcing": { "title": "Venue Sourcing", "desc": "Access to venues across our exhibition network in major Chinese cities." },
-      "registrationWebsite": { "title": "Registration Website", "desc": "A branded, custom registration site for your attendees." },
-      "attendeeManagement": { "title": "Attendee Management", "desc": "Check-in, badges, and speaker/session scheduling." },
-      "hotelTourBundling": { "title": "Hotel & Tour Bundling", "desc": "Accommodation and city tours for out-of-town guests." },
-      "onSiteStaffing": { "title": "On-Site Staffing", "desc": "Registration desks, translators, and event-day support." },
-      "sponsorshipPackaging": { "title": "Sponsorship Packaging", "desc": "Help structuring and selling sponsorship tiers." }
+      "venueSourcing": {
+        "title": "Venue Sourcing",
+        "desc": "Access to venues across our exhibition network in major Chinese cities."
+      },
+      "registrationWebsite": {
+        "title": "Registration Website",
+        "desc": "A branded, custom registration site for your attendees."
+      },
+      "attendeeManagement": {
+        "title": "Attendee Management",
+        "desc": "Check-in, badges, and speaker/session scheduling."
+      },
+      "hotelTourBundling": {
+        "title": "Hotel & Tour Bundling",
+        "desc": "Accommodation and city tours for out-of-town guests."
+      },
+      "onSiteStaffing": {
+        "title": "On-Site Staffing",
+        "desc": "Registration desks, translators, and event-day support."
+      },
+      "sponsorshipPackaging": {
+        "title": "Sponsorship Packaging",
+        "desc": "Help structuring and selling sponsorship tiers."
+      }
     },
     "requestAQuote": "Request a Quote",
     "name": "Name",
@@ -2409,10 +2401,22 @@
     "subtitle": "Partner with us to put your city in front of the buyers and exhibitors already using our platform for China's major trade fairs.",
     "whyPartner": "Why Partner With Us",
     "benefits": {
-      "reachBuyers": { "title": "Reach an Active Audience", "desc": "Thousands of buyers and exhibitors already planning trips to China." },
-      "exhibitorSpotlight": { "title": "Destination Spotlights", "desc": "Featured placement on relevant exhibition and tour pages." },
-      "coMarketing": { "title": "Co-Marketing", "desc": "Joint content, social posts, and newsletter features." },
-      "delegationSupport": { "title": "Delegation Support", "desc": "Help hosting buyer delegations visiting your city." }
+      "reachBuyers": {
+        "title": "Reach an Active Audience",
+        "desc": "Thousands of buyers and exhibitors already planning trips to China."
+      },
+      "exhibitorSpotlight": {
+        "title": "Destination Spotlights",
+        "desc": "Featured placement on relevant exhibition and tour pages."
+      },
+      "coMarketing": {
+        "title": "Co-Marketing",
+        "desc": "Joint content, social posts, and newsletter features."
+      },
+      "delegationSupport": {
+        "title": "Delegation Support",
+        "desc": "Help hosting buyer delegations visiting your city."
+      }
     },
     "startAConversation": "Start a Conversation",
     "name": "Name",
@@ -2542,5 +2546,30 @@
       "soft": "Soft",
       "bold": "Bold"
     }
+  },
+  "adminUsersBulk": {
+    "backToUsers": "Back to Users",
+    "title": "Bulk Add Users",
+    "subtitle": "Create many accounts at once from a pasted list",
+    "accessDenied": "Access denied. Admin login required.",
+    "roleLabel": "Role for these users",
+    "roles": {
+      "buyer": "Buyer",
+      "exhibitor": "Exhibitor",
+      "partner": "Partner"
+    },
+    "dataLabel": "User list",
+    "dataHint": "One user per line: Name, Email, Phone[, Country]. Phone becomes their password (they can change it later).",
+    "rowsDetected": "{count} row(s) detected",
+    "noRowsParsed": "No valid rows found in the pasted list",
+    "creating": "Creating...",
+    "createUsersButton": "Create {count} user(s)",
+    "importFailed": "Import failed",
+    "resultsSummary": "{created} created, {failed} failed",
+    "downloadCsv": "Download results (CSV)",
+    "email": "Email",
+    "passwordColumn": "Password",
+    "statusColumn": "Status",
+    "statusCreated": "Created"
   }
 }

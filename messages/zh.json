@@ -195,10 +195,6 @@
         "label": "展商",
         "desc": "在展会上展示产品"
       },
-      "visitor": {
-        "label": "观众",
-        "desc": "参观展会,探索市场"
-      },
       "partner": {
         "label": "合作伙伴",
         "desc": "推荐客户,赚取佣金"
@@ -233,40 +229,6 @@
     "redirecting": "正在跳转…",
     "comingSoon": "即将推出",
     "somethingWentWrong": "出了点问题"
-  },
-  "visitorDashboard": {
-    "title": "观众控制台",
-    "welcome": "欢迎回来{name}。去探索、参与、建立联系吧。",
-    "features": {
-      "browseExhibitions": {
-        "title": "浏览展会",
-        "description": "您附近的近期活动"
-      },
-      "visitPlanner": {
-        "title": "参观规划",
-        "description": "规划您的展会行程"
-      },
-      "savedExhibitions": {
-        "title": "收藏的展会",
-        "description": "您收藏的展会"
-      },
-      "savedExhibitors": {
-        "title": "收藏的展商",
-        "description": "您收藏的展商资料"
-      },
-      "myRegistrations": {
-        "title": "我的报名",
-        "description": "您将参加的活动"
-      },
-      "messages": {
-        "title": "消息",
-        "description": "与展商的对话"
-      },
-      "content": {
-        "title": "内容",
-        "description": "杂志文章与视频"
-      }
-    }
   },
   "buyerDashboard": {
     "title": "买家控制台",
@@ -306,6 +268,18 @@
       "meetings": {
         "title": "会面安排",
         "description": "即将到来的会面请求"
+      },
+      "messages": {
+        "title": "消息",
+        "description": "与展商的对话"
+      },
+      "myRegistrations": {
+        "title": "我的报名",
+        "description": "您将参加的活动"
+      },
+      "visitPlanner": {
+        "title": "参观规划",
+        "description": "规划您的展会行程"
       }
     }
   },
@@ -950,10 +924,10 @@
     "roles": {
       "buyer": "买家",
       "exhibitor": "参展商",
-      "visitor": "访客",
       "partner": "合作伙伴",
       "admin": "管理员"
-    }
+    },
+    "bulkAddUsers": "批量添加用户"
   },
   "adminPartnerReferrals": {
     "title": "合作伙伴推荐记录",
@@ -2379,12 +2353,30 @@
     "subtitle": "让您自己的会议、论坛或峰会成真——我们负责场地、注册、参会者物流和现场人员安排。",
     "whatsIncluded": "服务内容",
     "included": {
-      "venueSourcing": { "title": "场地寻找", "desc": "使用我们在中国主要城市展会网络中的场地资源。" },
-      "registrationWebsite": { "title": "注册网站", "desc": "为您的参会者定制品牌注册网站。" },
-      "attendeeManagement": { "title": "参会者管理", "desc": "签到、胸牌及演讲嘉宾/日程安排。" },
-      "hotelTourBundling": { "title": "酒店与游览搭配", "desc": "为外地嘉宾安排住宿和城市游览。" },
-      "onSiteStaffing": { "title": "现场人员支持", "desc": "注册台、翻译人员及活动当天支持。" },
-      "sponsorshipPackaging": { "title": "赞助套餐策划", "desc": "协助设计和销售赞助等级。" }
+      "venueSourcing": {
+        "title": "场地寻找",
+        "desc": "使用我们在中国主要城市展会网络中的场地资源。"
+      },
+      "registrationWebsite": {
+        "title": "注册网站",
+        "desc": "为您的参会者定制品牌注册网站。"
+      },
+      "attendeeManagement": {
+        "title": "参会者管理",
+        "desc": "签到、胸牌及演讲嘉宾/日程安排。"
+      },
+      "hotelTourBundling": {
+        "title": "酒店与游览搭配",
+        "desc": "为外地嘉宾安排住宿和城市游览。"
+      },
+      "onSiteStaffing": {
+        "title": "现场人员支持",
+        "desc": "注册台、翻译人员及活动当天支持。"
+      },
+      "sponsorshipPackaging": {
+        "title": "赞助套餐策划",
+        "desc": "协助设计和销售赞助等级。"
+      }
     },
     "requestAQuote": "获取报价",
     "name": "姓名",
@@ -2409,10 +2401,22 @@
     "subtitle": "与我们合作，将您的城市展示给已经在使用我们平台参加中国主要展会的买家和参展商。",
     "whyPartner": "为什么与我们合作",
     "benefits": {
-      "reachBuyers": { "title": "触达活跃受众", "desc": "数千名买家和参展商已在计划前往中国的行程。" },
-      "exhibitorSpotlight": { "title": "目的地专题展示", "desc": "在相关展会和旅游页面上获得重点展示位置。" },
-      "coMarketing": { "title": "联合营销", "desc": "联合内容、社交媒体发布及通讯特写。" },
-      "delegationSupport": { "title": "代表团支持", "desc": "协助接待访问贵市的买家代表团。" }
+      "reachBuyers": {
+        "title": "触达活跃受众",
+        "desc": "数千名买家和参展商已在计划前往中国的行程。"
+      },
+      "exhibitorSpotlight": {
+        "title": "目的地专题展示",
+        "desc": "在相关展会和旅游页面上获得重点展示位置。"
+      },
+      "coMarketing": {
+        "title": "联合营销",
+        "desc": "联合内容、社交媒体发布及通讯特写。"
+      },
+      "delegationSupport": {
+        "title": "代表团支持",
+        "desc": "协助接待访问贵市的买家代表团。"
+      }
     },
     "startAConversation": "开始沟通",
     "name": "姓名",
@@ -2542,5 +2546,30 @@
       "soft": "柔和",
       "bold": "强烈"
     }
+  },
+  "adminUsersBulk": {
+    "backToUsers": "返回用户列表",
+    "title": "批量添加用户",
+    "subtitle": "从粘贴的列表中一次性创建多个账户",
+    "accessDenied": "拒绝访问。需要管理员登录。",
+    "roleLabel": "这些用户的角色",
+    "roles": {
+      "buyer": "买家",
+      "exhibitor": "参展商",
+      "partner": "合作伙伴"
+    },
+    "dataLabel": "用户列表",
+    "dataHint": "每行一个用户:姓名、邮箱、电话[,国家]。电话将作为初始密码(之后可以修改)。",
+    "rowsDetected": "检测到 {count} 行",
+    "noRowsParsed": "粘贴的列表中未找到有效行",
+    "creating": "创建中...",
+    "createUsersButton": "创建 {count} 个用户",
+    "importFailed": "导入失败",
+    "resultsSummary": "成功 {created} 个,失败 {failed} 个",
+    "downloadCsv": "下载结果 (CSV)",
+    "email": "邮箱",
+    "passwordColumn": "密码",
+    "statusColumn": "状态",
+    "statusCreated": "已创建"
   }
 }

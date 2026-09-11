@@ -7,7 +7,7 @@ import { isValidPartnerId, createReferral } from "@/lib/server/partner-referrals
 
 // "admin" is deliberately excluded -- it's a UserRole (for session/UI typing)
 // but not something the public sign-up endpoint may hand out.
-const REGISTERABLE_ROLES = ["buyer", "exhibitor", "visitor", "partner"];
+const REGISTERABLE_ROLES = ["buyer", "exhibitor", "partner"];
 
 const REGISTER_LIMIT = 5;
 const REGISTER_WINDOW_MS = 60 * 60 * 1000;

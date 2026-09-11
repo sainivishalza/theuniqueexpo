@@ -4,6 +4,9 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import Card from "@/components/ui/Card";
 
+// This dashboard used to be split between "buyer" and "visitor" roles --
+// merged into one role/one dashboard, so it now carries both sets of
+// quick actions (the "visitor"-only ones flagged below).
 const ACTION_KEYS = [
   { key: "browseExhibitions", href: "/exhibitions", icon: "🎯", color: "from-teal-500 to-cyan-600" },
   { key: "exhibitorDirectory", href: "/directory", icon: "🏢", color: "from-purple-500 to-purple-600" },
@@ -11,6 +14,9 @@ const ACTION_KEYS = [
   { key: "marketplace", href: "/marketplace", icon: "🛒", color: "from-orange-500 to-red-500" },
   { key: "savedExhibitions", href: "/favorites", icon: "❤️", color: "from-red-400 to-pink-500" },
   { key: "savedSuppliers", icon: "⭐", color: "from-yellow-400 to-amber-500", comingSoon: true },
+  { key: "messages", href: "/messages", icon: "💬", color: "from-pink-500 to-rose-500" },
+  { key: "myRegistrations", icon: "🎫", color: "from-emerald-500 to-green-600", comingSoon: true },
+  { key: "visitPlanner", icon: "📅", color: "from-purple-500 to-purple-600", comingSoon: true },
   { key: "meetings", icon: "📅", color: "from-pink-500 to-rose-500", comingSoon: true },
 ];
 

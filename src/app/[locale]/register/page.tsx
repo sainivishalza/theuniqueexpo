@@ -13,7 +13,6 @@ import Button from "@/components/ui/Button";
 const ROLE_KEYS: { value: UserRole; icon: string }[] = [
   { value: "buyer", icon: "🛒" },
   { value: "exhibitor", icon: "🏢" },
-  { value: "visitor", icon: "👁️" },
   { value: "partner", icon: "🤝" },
 ];
 

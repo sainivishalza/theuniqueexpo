@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getUserById, updateUser, deleteUser, countAdmins } from "@/lib/server/users-repo";
 
-const VALID_ROLES = ["buyer", "exhibitor", "visitor", "partner", "admin"];
+const VALID_ROLES = ["buyer", "exhibitor", "partner", "admin"];
 const VALID_STATUSES = ["active", "suspended"];
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {

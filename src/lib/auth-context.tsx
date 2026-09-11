@@ -2,7 +2,10 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-export type UserRole = "buyer" | "exhibitor" | "visitor" | "partner" | "admin";
+// "visitor" used to be a separate role/dashboard from "buyer" -- merged into
+// a single "buyer" role site-wide (one signup option, one dashboard) since
+// the two were never meaningfully different in practice.
+export type UserRole = "buyer" | "exhibitor" | "partner" | "admin";
 
 export interface MockUser {
   id: number;

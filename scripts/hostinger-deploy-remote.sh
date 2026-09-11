@@ -193,6 +193,16 @@ echo "  --- direct DB check: exhibitions row count ---"
 $MYSQL -e "SELECT COUNT(*) AS exhibitions_count FROM exhibitions;" 2>&1
 
 echo "--- pm2 error log tail (diagnosing a 500 above, if any) ---"
-pm2 logs theuniqueexpo --lines 150 --nostream --err 2>&1 || true
+# `pm2 logs --nostream` still attaches to the log bus over a non-interactive
+# SSH session on this host and never returns, hanging the whole deploy step
+# until the workflow times it out. Read the underlying log file directly
+# instead -- pm2's default location, non-interactive-safe.
+PM2_ERR_LOG=$(pm2 jlist 2>/dev/null | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const a=JSON.parse(d);const p=a.find(x=>x.name==='theuniqueexpo');console.log(p&&p.pm2_env&&p.pm2_env.pm_err_log_path||'');}catch(e){console.log('');}})" 2>/dev/null || true)
+if [ -n "$PM2_ERR_LOG" ] && [ -f "$PM2_ERR_LOG" ]; then
+  tail -n 150 "$PM2_ERR_LOG"
+else
+  echo "(could not resolve pm2 error log path; falling back to default location)"
+  tail -n 150 ~/.pm2/logs/theuniqueexpo-error.log 2>&1 || true
+fi
 
 echo "Backup saved at: $BACKUP_FILE (keep this until you've confirmed everything works)"

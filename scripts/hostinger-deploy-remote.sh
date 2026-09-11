@@ -171,28 +171,25 @@ if [ -f "$APP_DIR/.env.local" ]; then
     echo "Using passenger-config at: $PASSENGER_CONFIG_BIN"
     echo "--- passenger-config shebang ---"
     head -3 "$PASSENGER_CONFIG_BIN" 2>&1 || true
-    # The previous deploy proved PATH tricks are irrelevant here:
-    # passenger-config's shebang is the hardcoded absolute path
-    # "#!/usr/bin/ruby", not "/usr/bin/env ruby" -- prepending a different
-    # ruby to PATH can never change which interpreter actually runs it.
-    # And /usr/bin/ruby itself is the one failing to load its own bundled
-    # rubygems.rb, which almost always means some inherited env var
-    # (RUBYLIB/RUBYOPT/GEM_HOME/GEM_PATH) is overriding its default load
-    # path with something that doesn't apply to this ruby -- print them
-    # directly, then retry with them stripped rather than guessing at a
-    # different interpreter.
-    echo "--- ruby-related environment variables inherited by this shell ---"
-    env | grep -iE '^(ruby|gem)' || echo "(none set)"
-    echo "--- /usr/bin/ruby -v, with and without a clean env ---"
-    /usr/bin/ruby -v 2>&1 || true
-    env -u RUBYLIB -u RUBYOPT -u GEM_HOME -u GEM_PATH -u GEM_ROOT /usr/bin/ruby -rrubygems -e 'puts "rubygems ok, ruby #{RUBY_VERSION}"' 2>&1 || true
-    RUBY_ENV_CLEAN=0
-    if env -u RUBYLIB -u RUBYOPT -u GEM_HOME -u GEM_PATH -u GEM_ROOT /usr/bin/ruby -rrubygems -e '' >/dev/null 2>&1; then
-      RUBY_ENV_CLEAN=1
-      echo "Clearing RUBYLIB/RUBYOPT/GEM_HOME/GEM_PATH/GEM_ROOT makes /usr/bin/ruby load rubygems successfully -- using that for passenger-config calls below."
-    else
-      echo "Still broken even with those env vars cleared -- something deeper than env is wrong with /usr/bin/ruby itself."
-    fi
+    # Two dead ends already ruled out: (1) PATH tricks -- the shebang is
+    # the hardcoded absolute path "#!/usr/bin/ruby", not "/usr/bin/env
+    # ruby", so PATH can't change which interpreter runs it; (2) inherited
+    # env vars -- confirmed none of RUBYLIB/RUBYOPT/GEM_HOME/GEM_PATH/
+    # GEM_ROOT are even set, yet /usr/bin/ruby still can't load its own
+    # bundled rubygems.rb, meaning that system ruby is genuinely broken at
+    # the filesystem level (relocated/partial stdlib), not an env problem.
+    # /opt/alt/ruby21/bin/ruby was already confirmed working with rubygems
+    # in an earlier deploy -- bypass the shebang entirely and run
+    # passenger-config's own script through that interpreter directly.
+    WORKING_RUBY=""
+    for _ruby_candidate in /opt/alt/ruby*/bin/ruby /usr/local/rvm/rubies/*/bin/ruby "$HOME"/.rbenv/versions/*/bin/ruby; do
+      [ -x "$_ruby_candidate" ] || continue
+      if "$_ruby_candidate" -rrubygems -e '' >/dev/null 2>&1; then
+        WORKING_RUBY="$_ruby_candidate"
+        echo "Bypassing passenger-config's broken #!/usr/bin/ruby shebang -- running it via $WORKING_RUBY instead."
+        break
+      fi
+    done
     # The real serving process's cwd is hbuilds/versions/<uuid>/nodejs -- a
     # fresh UUID-named directory on every deploy, not the "current" symlink
     # path. Passenger registers an app by its exact resolved path, so
@@ -204,8 +201,8 @@ if [ -f "$APP_DIR/.env.local" ]; then
     echo "Resolved: $REAL_HBUILDS_ROOT"
 
     run_passenger_config() {
-      if [ "$RUBY_ENV_CLEAN" = "1" ]; then
-        env -u RUBYLIB -u RUBYOPT -u GEM_HOME -u GEM_PATH -u GEM_ROOT "$PASSENGER_CONFIG_BIN" "$@" 2>&1 || true
+      if [ -n "$WORKING_RUBY" ]; then
+        "$WORKING_RUBY" "$PASSENGER_CONFIG_BIN" "$@" 2>&1 || true
       else
         "$PASSENGER_CONFIG_BIN" "$@" 2>&1 || true
       fi

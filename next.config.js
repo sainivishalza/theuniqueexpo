@@ -7,7 +7,7 @@ const nextConfig = {
   // nicer, but Next.js sends this unless explicitly disabled.
   poweredByHeader: false,
   // Confirmed live in production (via a temporary diagnostics endpoint):
-  // node_modules/tesseract.js is entirely absent from the deployed app,
+  // node_modules/tesseract.js was entirely absent from the deployed app,
   // even though node_modules itself exists and tesseract.js is a regular
   // (non-dev) dependency -- Next's build-time file tracing decides which
   // node_modules files actually ship, and tesseract.js's Node worker
@@ -19,11 +19,30 @@ const nextConfig = {
   // `new Worker(workerPath)` call inside it then points at a file that
   // was never deployed -- which is why every OCR run hung indefinitely
   // instead of erroring: the thread spawns but has no script to execute.
-  // Force-including the whole package (not just the one worker script
-  // file) here, since that file's own runtime requires the rest of the
-  // package tree too.
+  //
+  // Including just node_modules/tesseract.js/** (below) got the worker
+  // script itself deployed, but createWorker() *still* hung identically
+  // afterward -- because that script's own top-level requires reach
+  // several more packages the tracer can't see either, for the same
+  // reason (all only ever required from inside the worker thread's
+  // runtime-resolved entry file, never from this app's own static import
+  // graph): tesseract.js-core (the actual WASM OCR engine, ~44MB),
+  // wasm-feature-detect, regenerator-runtime, is-url, and node-fetch.
+  // Force-including all of them so nothing the worker thread needs is
+  // missing this time, rather than chasing one broken `require()` per
+  // deploy cycle.
   outputFileTracingIncludes: {
-    "/api/admin/photo-organizer/**": ["node_modules/tesseract.js/**"],
+    "/api/admin/photo-organizer/**": [
+      "node_modules/tesseract.js/**",
+      "node_modules/tesseract.js-core/**",
+      "node_modules/wasm-feature-detect/**",
+      "node_modules/regenerator-runtime/**",
+      "node_modules/is-url/**",
+      "node_modules/node-fetch/**",
+      "node_modules/bmp-js/**",
+      "node_modules/idb-keyval/**",
+      "node_modules/zlibjs/**",
+    ],
   },
   images: {
     // Admins can paste any external image URL for a poster or hero image

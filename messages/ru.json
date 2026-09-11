@@ -679,6 +679,42 @@
       "rejected": "отклонено"
     }
   },
+  "adminConferenceHostingContent": {
+    "title": "Страница организации конференций",
+    "subtitle": "Редактируйте, что видят посетители на <link>публичной странице организации конференций и форумов</link>.",
+    "backToServicesAdmin": "Назад к управлению услугами",
+    "header": "Заголовок",
+    "includedItems": "Что включено",
+    "addItem": "+ Добавить пункт",
+    "saveFailed": "Не удалось сохранить",
+    "saved": "Сохранено.",
+    "saveButton": "Сохранить изменения",
+    "fields": {
+      "title": "Название",
+      "subtitle": "Подзаголовок",
+      "heroImage": "URL изображения-обложки",
+      "itemTitle": "Название пункта",
+      "itemDesc": "Описание пункта"
+    }
+  },
+  "adminCityPartnershipsContent": {
+    "title": "Страница партнёрства с городами",
+    "subtitle": "Редактируйте, что видят посетители на <link>публичной странице партнёрства с городами</link>.",
+    "backToInquiries": "Назад к заявкам",
+    "header": "Заголовок",
+    "benefitItems": "Преимущества",
+    "addItem": "+ Добавить пункт",
+    "saveFailed": "Не удалось сохранить",
+    "saved": "Сохранено.",
+    "saveButton": "Сохранить изменения",
+    "fields": {
+      "title": "Название",
+      "subtitle": "Подзаголовок",
+      "heroImage": "URL изображения-обложки",
+      "itemTitle": "Название пункта",
+      "itemDesc": "Описание пункта"
+    }
+  },
   "adminMagazine": {
     "title": "Журнал",
     "accessDenied": "Доступ запрещён",
@@ -756,6 +792,7 @@
   "adminConferenceInquiries": {
     "title": "Заявки на конференции и форумы",
     "backToServicesAdmin": "Назад к управлению услугами",
+    "editPageContent": "Редактировать содержимое страницы",
     "inquiriesReceived": "Заявок получено: {count}",
     "updateFailed": "Не удалось обновить",
     "noResultsTitle": "Пока нет заявок",
@@ -770,6 +807,7 @@
   },
   "adminCityPartnershipInquiries": {
     "title": "Заявки на партнёрство с городами",
+    "editPageContent": "Редактировать содержимое страницы",
     "inquiriesReceived": "Заявок получено: {count}",
     "updateFailed": "Не удалось обновить",
     "noResultsTitle": "Пока нет заявок",

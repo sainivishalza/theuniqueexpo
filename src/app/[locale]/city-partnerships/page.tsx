@@ -1,19 +1,26 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { errorMessage } from "@/lib/format";
+import { DEFAULT_CITY_PARTNERSHIPS_CONTENT, type CityPartnershipsContent } from "@/lib/city-partnerships-content";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 
-const BENEFIT_KEYS = ["reachBuyers", "exhibitorSpotlight", "coMarketing", "delegationSupport"];
-
 export default function CityPartnershipsPage() {
   const t = useTranslations("cityPartnershipsPage");
+  const [content, setContent] = useState<CityPartnershipsContent>(DEFAULT_CITY_PARTNERSHIPS_CONTENT);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({ name: "", email: "", organization: "", city: "", country: "", message: "" });
+
+  useEffect(() => {
+    fetch("/api/city-partnerships-content")
+      .then((res) => res.json())
+      .then((data) => data.content && setContent(data.content))
+      .catch(() => {});
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,12 +56,12 @@ export default function CityPartnershipsPage() {
     <div>
       <section className="relative overflow-hidden bg-[var(--color-hero-bg)] py-20">
         <div className="absolute inset-0 opacity-15">
-          <Image src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1600&h=600&fit=crop&q=80" alt="" fill priority sizes="100vw" className="object-cover" />
+          <Image src={content.heroImage} alt="" fill priority sizes="100vw" className="object-cover" />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
           <p className="text-emerald-300 font-semibold mb-2">{t("eyebrow")}</p>
-          <h1 className="text-4xl md:text-5xl font-extrabold">{t("title")}</h1>
-          <p className="mt-3 text-lg text-gray-300 max-w-2xl">{t("subtitle")}</p>
+          <h1 className="text-4xl md:text-5xl font-extrabold">{content.title}</h1>
+          <p className="mt-3 text-lg text-gray-300 max-w-2xl">{content.subtitle}</p>
         </div>
       </section>
       <section className="py-16 bg-cream-50">
@@ -62,10 +69,10 @@ export default function CityPartnershipsPage() {
           <div>
             <h2 className="text-2xl font-bold text-heading mb-6">{t("whyPartner")}</h2>
             <div className="space-y-4">
-              {BENEFIT_KEYS.map((key, i) => (
-                <div key={key} className="flex items-start gap-4 p-4 rounded-xl bg-white shadow-sm">
-                  <span className="text-2xl">{["🌍","🏆","📣","🧭"][i]}</span>
-                  <div><h3 className="font-bold text-heading">{t(`benefits.${key}.title`)}</h3><p className="text-sm text-gray-500">{t(`benefits.${key}.desc`)}</p></div>
+              {content.benefits.map((item) => (
+                <div key={item.title} className="flex items-start gap-4 p-4 rounded-xl bg-white shadow-sm">
+                  <span className="text-2xl">{item.icon}</span>
+                  <div><h3 className="font-bold text-heading">{item.title}</h3><p className="text-sm text-gray-500">{item.desc}</p></div>
                 </div>
               ))}
             </div>

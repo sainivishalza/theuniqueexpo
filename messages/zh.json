@@ -679,6 +679,42 @@
       "rejected": "已拒绝"
     }
   },
+  "adminConferenceHostingContent": {
+    "title": "会议承办页面",
+    "subtitle": "编辑访客在<link>公开的会议与论坛承办页面</link>上看到的内容。",
+    "backToServicesAdmin": "返回服务管理",
+    "header": "页眉",
+    "includedItems": "服务内容",
+    "addItem": "+ 新增项目",
+    "saveFailed": "保存失败",
+    "saved": "已保存。",
+    "saveButton": "保存更改",
+    "fields": {
+      "title": "标题",
+      "subtitle": "副标题",
+      "heroImage": "封面图片链接",
+      "itemTitle": "项目标题",
+      "itemDesc": "项目描述"
+    }
+  },
+  "adminCityPartnershipsContent": {
+    "title": "城市合作页面",
+    "subtitle": "编辑访客在<link>公开的城市合作页面</link>上看到的内容。",
+    "backToInquiries": "返回申请列表",
+    "header": "页眉",
+    "benefitItems": "合作权益",
+    "addItem": "+ 新增项目",
+    "saveFailed": "保存失败",
+    "saved": "已保存。",
+    "saveButton": "保存更改",
+    "fields": {
+      "title": "标题",
+      "subtitle": "副标题",
+      "heroImage": "封面图片链接",
+      "itemTitle": "项目标题",
+      "itemDesc": "项目描述"
+    }
+  },
   "adminMagazine": {
     "title": "杂志",
     "accessDenied": "访问被拒绝",
@@ -756,6 +792,7 @@
   "adminConferenceInquiries": {
     "title": "会议与论坛申请",
     "backToServicesAdmin": "返回服务管理",
+    "editPageContent": "编辑页面内容",
     "inquiriesReceived": "已收到 {count} 份申请",
     "updateFailed": "更新失败",
     "noResultsTitle": "暂无申请",
@@ -770,6 +807,7 @@
   },
   "adminCityPartnershipInquiries": {
     "title": "城市合作申请",
+    "editPageContent": "编辑页面内容",
     "inquiriesReceived": "已收到 {count} 份申请",
     "updateFailed": "更新失败",
     "noResultsTitle": "暂无申请",

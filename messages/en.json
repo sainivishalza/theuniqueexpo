@@ -679,6 +679,42 @@
       "rejected": "rejected"
     }
   },
+  "adminConferenceHostingContent": {
+    "title": "Conference Hosting Page",
+    "subtitle": "Edit what visitors see on <link>the public Conference & Forum Hosting page</link>.",
+    "backToServicesAdmin": "Back to Services Admin",
+    "header": "Header",
+    "includedItems": "What's Included",
+    "addItem": "+ Add Item",
+    "saveFailed": "Save failed",
+    "saved": "Saved.",
+    "saveButton": "Save Changes",
+    "fields": {
+      "title": "Title",
+      "subtitle": "Subtitle",
+      "heroImage": "Hero Image URL",
+      "itemTitle": "Item title",
+      "itemDesc": "Item description"
+    }
+  },
+  "adminCityPartnershipsContent": {
+    "title": "City Partnerships Page",
+    "subtitle": "Edit what visitors see on <link>the public City Partnerships page</link>.",
+    "backToInquiries": "Back to Inquiries",
+    "header": "Header",
+    "benefitItems": "Benefits",
+    "addItem": "+ Add Item",
+    "saveFailed": "Save failed",
+    "saved": "Saved.",
+    "saveButton": "Save Changes",
+    "fields": {
+      "title": "Title",
+      "subtitle": "Subtitle",
+      "heroImage": "Hero Image URL",
+      "itemTitle": "Item title",
+      "itemDesc": "Item description"
+    }
+  },
   "adminMagazine": {
     "title": "Magazine",
     "accessDenied": "Access denied",
@@ -756,6 +792,7 @@
   "adminConferenceInquiries": {
     "title": "Conference & Forum Inquiries",
     "backToServicesAdmin": "Back to Services Admin",
+    "editPageContent": "Edit page content",
     "inquiriesReceived": "{count} inquiries received",
     "updateFailed": "Update failed",
     "noResultsTitle": "No inquiries yet",
@@ -770,6 +807,7 @@
   },
   "adminCityPartnershipInquiries": {
     "title": "City Partnership Inquiries",
+    "editPageContent": "Edit page content",
     "inquiriesReceived": "{count} inquiries received",
     "updateFailed": "Update failed",
     "noResultsTitle": "No inquiries yet",

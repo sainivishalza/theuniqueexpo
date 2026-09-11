@@ -128,6 +128,7 @@ $MYSQL < schema-migrations/019-faq-content.sql
 $MYSQL < schema-migrations/020-site-theme.sql
 $MYSQL < schema-migrations/021-rotate-admin-password.sql
 $MYSQL < schema-migrations/022-team-members.sql
+$MYSQL < schema-migrations/023-partner-program.sql
 
 echo "Installing dependencies and building ..."
 npm install

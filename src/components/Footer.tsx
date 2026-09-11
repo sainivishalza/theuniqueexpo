@@ -17,7 +17,7 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
       { label: t("links.relocation"), href: "/relocation" },
       { label: t("links.exhibitorDirectory"), href: "/directory" },
       { label: t("links.rfqMarketplace"), href: "/marketplace" },
-      { label: t("links.partnerProgram"), href: "/register" },
+      { label: t("links.partnerProgram"), href: "/partner-program" },
     ],
     [t("columns.company")]: [
       { label: t("links.aboutUs"), href: "/about" },

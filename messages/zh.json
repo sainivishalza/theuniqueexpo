@@ -464,6 +464,10 @@
         "title": "团队管理",
         "description": "添加、编辑并排序在关于我们页面展示的团队成员。"
       },
+      "partnerProgram": {
+        "title": "合作伙伴计划",
+        "description": "管理合作伙伴等级、权益并审核合作申请。"
+      },
       "websitePages": {
         "title": "网站页面",
         "description": "编辑联系我们、招聘信息、博客、帮助中心等页面。"
@@ -652,6 +656,53 @@
     "quoteStatuses": {
       "submitted": "已提交",
       "accepted": "已接受",
+      "rejected": "已拒绝"
+    }
+  },
+  "adminPartnerTiers": {
+    "title": "合作伙伴计划",
+    "subtitle": "管理合作伙伴计划页面展示的等级、权益和价格。",
+    "viewApplications": "查看申请",
+    "accessDenied": "访问被拒绝",
+    "loadFailed": "加载合作伙伴等级失败",
+    "loadingTiers": "正在加载合作伙伴等级...",
+    "noTiersYet": "暂无合作伙伴等级。",
+    "backToAdmin": "返回管理后台",
+    "newTier": "+ 新增等级",
+    "editTier": "编辑合作伙伴等级",
+    "newTierHeading": "新增合作伙伴等级",
+    "requiredFieldsError": "名称、标语和价格标签为必填项",
+    "saveFailed": "保存失败",
+    "saveChanges": "保存更改",
+    "createTier": "创建等级",
+    "confirmDelete": "确定删除该合作伙伴等级吗？",
+    "deleteFailed": "删除合作伙伴等级失败",
+    "deleting": "删除中...",
+    "editButton": "编辑",
+    "benefitsCount": "项权益",
+    "benefitsHint": "每行一项权益。",
+    "fields": {
+      "name": "等级名称",
+      "tagline": "标语",
+      "priceLabel": "价格标签",
+      "commissionRate": "佣金比例",
+      "badgeTone": "徽章颜色",
+      "benefits": "权益",
+      "displayOrder": "显示顺序"
+    }
+  },
+  "adminPartnerApplications": {
+    "title": "合作伙伴申请",
+    "backToTiers": "返回合作伙伴等级",
+    "applicationsReceived": "已收到 {count} 份申请",
+    "updateFailed": "更新失败",
+    "noResultsTitle": "暂无申请",
+    "noResultsSubtitle": "合作伙伴计划的申请将显示在这里。",
+    "company": "公司",
+    "tier": "等级",
+    "statuses": {
+      "pending": "待处理",
+      "approved": "已批准",
       "rejected": "已拒绝"
     }
   },
@@ -2056,6 +2107,23 @@
     "questionPlaceholder": "问题",
     "answerPlaceholder": "答案",
     "addQuestion": "+ 添加问题"
+  },
+  "partnerProgramPage": {
+    "eyebrow": "合作伙伴计划",
+    "title": "与我们携手发展业务",
+    "subtitle": "成为推荐合作伙伴，或者如果您是与中国的买家和参展商合作的旅行社、搬迁公司或旅游运营商，可申请认证或战略合作伙伴等级。",
+    "loading": "正在加载合作伙伴等级...",
+    "apply": "申请",
+    "name": "姓名",
+    "email": "邮箱",
+    "phone": "电话",
+    "company": "公司",
+    "messagePlaceholder": "介绍一下您的业务（可选）",
+    "submitting": "提交中...",
+    "submitApplication": "提交申请",
+    "cancel": "取消",
+    "applicationReceived": "感谢您——我们已收到您的申请，将尽快与您联系。",
+    "requestFailed": "出现问题，请重试。"
   },
   "relocationEstimatorPage": {
     "ourServices": "我们的服务",

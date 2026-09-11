@@ -464,6 +464,10 @@
         "title": "Team Management",
         "description": "Add, edit, and reorder the team members shown on the About Us page."
       },
+      "partnerProgram": {
+        "title": "Partner Program",
+        "description": "Manage partner tiers, benefits, and review partnership applications."
+      },
       "websitePages": {
         "title": "Website Pages",
         "description": "Edit Contact, Careers, Blog, Help Center, and other footer pages."
@@ -652,6 +656,53 @@
     "quoteStatuses": {
       "submitted": "submitted",
       "accepted": "accepted",
+      "rejected": "rejected"
+    }
+  },
+  "adminPartnerTiers": {
+    "title": "Partner Program",
+    "subtitle": "Manage the tiers, benefits, and pricing shown on the public Partner Program page.",
+    "viewApplications": "View applications",
+    "accessDenied": "Access denied",
+    "loadFailed": "Failed to load partner tiers",
+    "loadingTiers": "Loading partner tiers...",
+    "noTiersYet": "No partner tiers yet.",
+    "backToAdmin": "Back to Admin",
+    "newTier": "+ New Tier",
+    "editTier": "Edit Partner Tier",
+    "newTierHeading": "New Partner Tier",
+    "requiredFieldsError": "Name, tagline, and price label are required",
+    "saveFailed": "Save failed",
+    "saveChanges": "Save Changes",
+    "createTier": "Create Tier",
+    "confirmDelete": "Delete this partner tier?",
+    "deleteFailed": "Failed to delete partner tier",
+    "deleting": "Deleting...",
+    "editButton": "Edit",
+    "benefitsCount": "benefits",
+    "benefitsHint": "One benefit per line.",
+    "fields": {
+      "name": "Tier Name",
+      "tagline": "Tagline",
+      "priceLabel": "Price Label",
+      "commissionRate": "Commission Rate",
+      "badgeTone": "Badge Color",
+      "benefits": "Benefits",
+      "displayOrder": "Display Order"
+    }
+  },
+  "adminPartnerApplications": {
+    "title": "Partner Applications",
+    "backToTiers": "Back to Partner Tiers",
+    "applicationsReceived": "{count} applications received",
+    "updateFailed": "Update failed",
+    "noResultsTitle": "No applications yet",
+    "noResultsSubtitle": "Partner program applications will appear here.",
+    "company": "Company",
+    "tier": "Tier",
+    "statuses": {
+      "pending": "pending",
+      "approved": "approved",
       "rejected": "rejected"
     }
   },
@@ -2056,6 +2107,23 @@
     "questionPlaceholder": "Question",
     "answerPlaceholder": "Answer",
     "addQuestion": "+ Add Question"
+  },
+  "partnerProgramPage": {
+    "eyebrow": "Partner Program",
+    "title": "Grow your business alongside ours",
+    "subtitle": "Join as a referral partner, or apply for a certified/strategic tier if you're a travel agency, relocation firm, or tour operator working with buyers and exhibitors in China.",
+    "loading": "Loading partner tiers...",
+    "apply": "Apply",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Company",
+    "messagePlaceholder": "Tell us about your business (optional)",
+    "submitting": "Submitting...",
+    "submitApplication": "Submit Application",
+    "cancel": "Cancel",
+    "applicationReceived": "Thanks -- we've received your application and will be in touch.",
+    "requestFailed": "Something went wrong. Please try again."
   },
   "relocationEstimatorPage": {
     "ourServices": "Our Services",

@@ -33,3 +33,7 @@ export default pool;
 export function isDuplicateEntryError(err: unknown): boolean {
   return typeof err === "object" && err !== null && (err as { code?: unknown }).code === "ER_DUP_ENTRY";
 }
+
+export function isForeignKeyConstraintError(err: unknown): boolean {
+  return typeof err === "object" && err !== null && (err as { code?: unknown }).code === "ER_ROW_IS_REFERENCED_2";
+}

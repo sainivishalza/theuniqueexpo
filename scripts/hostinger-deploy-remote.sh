@@ -192,4 +192,7 @@ echo "  /api/exhibitions -> $(curl -s -o /dev/null -w '%{http_code}' http://loca
 echo "  --- direct DB check: exhibitions row count ---"
 $MYSQL -e "SELECT COUNT(*) AS exhibitions_count FROM exhibitions;" 2>&1
 
+echo "--- pm2 error log tail (diagnosing a 500 above, if any) ---"
+pm2 logs theuniqueexpo --lines 150 --nostream --err 2>&1 || true
+
 echo "Backup saved at: $BACKUP_FILE (keep this until you've confirmed everything works)"

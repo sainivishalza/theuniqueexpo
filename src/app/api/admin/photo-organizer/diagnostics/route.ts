@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { NextResponse } from "next/server";
+import { createWorker } from "tesseract.js";
 import { requireAdmin } from "@/lib/auth-server";
 import { findTessdataDir, TESSDATA_FILE_RELATIVE } from "@/lib/server/photo-organizer/ocr";
 
@@ -48,6 +49,40 @@ export async function GET(request: Request) {
     cdnReachable = { ok: false, error: err instanceof Error ? err.message : String(err), ms: Date.now() - started };
   }
 
+  // The path/network checks above all came back clean, yet a real OCR run
+  // still times out -- so the next suspect is worker_threads.Worker
+  // spawning itself (what tesseract.js's Node adapter actually uses, per
+  // its own spawnWorker.js, despite that file's misleading "using
+  // child_process" header comment) silently hanging under whatever
+  // process/thread quota Passenger's managed environment enforces here --
+  // this host has a long history this session of exactly that kind of
+  // resource ceiling (pm2 crash-loop fork exhaustion, "Resource
+  // temporarily unavailable" during builds). Attempt a real worker
+  // creation with a logger attached and a short timeout, and report
+  // exactly which (if any) lifecycle events fired before it either
+  // finished or ran out of time -- zero events means the worker thread
+  // itself never came up; a "loading language traineddata" event with no
+  // completion means the earlier path-resolution work is where it's still
+  // stuck despite the checks above.
+  const workerEvents: { t: number; status: string; progress: number }[] = [];
+  const workerStartedAt = Date.now();
+  let workerOutcome: { ok: boolean; ms: number; error?: string };
+  try {
+    const workerPromise = createWorker("eng", 1, {
+      cachePath: resolvedDir,
+      logger: (m) => workerEvents.push({ t: Date.now() - workerStartedAt, status: m.status, progress: m.progress }),
+    });
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("diagnostic worker creation timed out after 15s")), 15_000)
+    );
+    const worker = await Promise.race([workerPromise, timeoutPromise]);
+    workerOutcome = { ok: true, ms: Date.now() - workerStartedAt };
+    // @ts-expect-error -- tesseract.js's Worker type does have terminate()
+    await worker.terminate().catch(() => {});
+  } catch (err) {
+    workerOutcome = { ok: false, ms: Date.now() - workerStartedAt, error: err instanceof Error ? err.message : String(err) };
+  }
+
   return NextResponse.json({
     processCwd: process.cwd(),
     dirname: __dirname,
@@ -58,5 +93,7 @@ export async function GET(request: Request) {
     cdnReachable,
     nodeVersion: process.version,
     platform: process.platform,
+    workerOutcome,
+    workerEvents,
   });
 }

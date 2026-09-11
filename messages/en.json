@@ -2624,6 +2624,12 @@
       "visaPage": "Visa Page",
       "cantonFairCard": "Canton Fair Card",
       "buyerPhoto": "Buyer Photo"
+    },
+    "docReviewStatus": {
+      "pending": "Pending review",
+      "verified": "Verified",
+      "rejected": "Rejected",
+      "rejectedReason": "Rejected: {reason}"
     }
   },
   "adminBuyerProfiles": {
@@ -2633,12 +2639,26 @@
     "loadFailed": "Could not load buyer profiles",
     "saveFailed": "Could not save profile",
     "uploadFailed": "Could not upload file",
+    "reviewFailed": "Could not update review status",
     "fileTooLarge": "File is too large (max 8MB)",
     "accessDenied": "Access denied. Admin login required.",
     "searchPlaceholder": "Search by name, email, or company...",
     "company": "Company",
     "nationality": "Nationality",
     "documentsColumn": "Documents",
+    "verificationColumn": "Verification",
+    "verificationStatus": {
+      "not_started": "Not started",
+      "pending_review": "Pending review",
+      "action_needed": "Action needed",
+      "verified": "Verified"
+    },
+    "docReview": {
+      "pending": "Pending review",
+      "verified": "Verified",
+      "rejected": "Rejected",
+      "notePlaceholder": "Reason for rejection (shown to buyer)"
+    },
     "noResults": "No buyer profiles found",
     "editProfile": "Edit Buyer Profile",
     "documents": "Documents",

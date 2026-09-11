@@ -2624,6 +2624,12 @@
       "visaPage": "签证页",
       "cantonFairCard": "广交会证件",
       "buyerPhoto": "买家照片"
+    },
+    "docReviewStatus": {
+      "pending": "待审核",
+      "verified": "已通过",
+      "rejected": "已驳回",
+      "rejectedReason": "已驳回:{reason}"
     }
   },
   "adminBuyerProfiles": {
@@ -2633,12 +2639,26 @@
     "loadFailed": "加载买家资料失败",
     "saveFailed": "保存资料失败",
     "uploadFailed": "文件上传失败",
+    "reviewFailed": "更新审核状态失败",
     "fileTooLarge": "文件过大(最大 8MB)",
     "accessDenied": "拒绝访问。需要管理员登录。",
     "searchPlaceholder": "按姓名、邮箱或公司搜索...",
     "company": "公司",
     "nationality": "国籍",
     "documentsColumn": "证件资料",
+    "verificationColumn": "审核状态",
+    "verificationStatus": {
+      "not_started": "未开始",
+      "pending_review": "待审核",
+      "action_needed": "需处理",
+      "verified": "已通过"
+    },
+    "docReview": {
+      "pending": "待审核",
+      "verified": "已通过",
+      "rejected": "已驳回",
+      "notePlaceholder": "驳回原因(买家可见)"
+    },
     "noResults": "未找到买家资料",
     "editProfile": "编辑买家资料",
     "documents": "证件资料",

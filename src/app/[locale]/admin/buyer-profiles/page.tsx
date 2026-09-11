@@ -6,6 +6,9 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 
+type VerificationStatus = "not_started" | "pending_review" | "action_needed" | "verified";
+type DocReviewStatus = "pending" | "verified" | "rejected";
+
 interface AdminBuyerProfileRow {
   userId: number;
   name: string;
@@ -14,6 +17,12 @@ interface AdminBuyerProfileRow {
   companyName: string;
   nationality: string;
   documentsUploaded: number;
+  verificationStatus: VerificationStatus;
+}
+
+interface DocReview {
+  status: DocReviewStatus;
+  note: string;
 }
 
 interface BuyerProfileDetail {
@@ -26,7 +35,21 @@ interface BuyerProfileDetail {
   contactPerson: string;
   registrationCode: string;
   hasDocument: Record<string, boolean>;
+  documentReview: Record<string, DocReview>;
 }
+
+const STATUS_BADGE_STYLES: Record<VerificationStatus, string> = {
+  not_started: "bg-gray-100 text-gray-500",
+  pending_review: "bg-amber-50 text-amber-700",
+  action_needed: "bg-red-50 text-red-700",
+  verified: "bg-green-50 text-green-700",
+};
+
+const DOC_STATUS_STYLES: Record<DocReviewStatus, string> = {
+  pending: "border-gray-200",
+  verified: "border-green-400",
+  rejected: "border-red-400",
+};
 
 const TEXT_FIELDS = ["companyName", "nationality", "passportNumber", "annualTurnover", "contactPerson", "registrationCode"] as const;
 const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto"] as const;
@@ -46,6 +69,7 @@ export default function AdminBuyerProfilesPage() {
   const [saving, setSaving] = useState(false);
   const [uploadingField, setUploadingField] = useState<string | null>(null);
   const [docVersion, setDocVersion] = useState(0);
+  const [reviewingField, setReviewingField] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -131,6 +155,27 @@ export default function AdminBuyerProfilesPage() {
     }
   }
 
+  async function handleReviewChange(field: string, status: DocReviewStatus, note: string) {
+    if (openId === null) return;
+    setReviewingField(field);
+    setError("");
+    try {
+      const res = await fetch(`/api/admin/buyer-profiles/${openId}/documents/${field}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status, note }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || t("reviewFailed"));
+      setDetail((p) => (p ? { ...p, documentReview: { ...p.documentReview, [field]: { status, note } } } : p));
+      await loadRows();
+    } catch (err) {
+      setError(errorMessage(err, t("reviewFailed")));
+    } finally {
+      setReviewingField(null);
+    }
+  }
+
   if (authLoading) return null;
   if (!user || user.role !== "admin") {
     return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{t("accessDenied")}</p></div>;
@@ -178,6 +223,7 @@ export default function AdminBuyerProfilesPage() {
                     <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("company")}</th>
                     <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("nationality")}</th>
                     <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("documentsColumn")}</th>
+                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("verificationColumn")}</th>
                     <th className="text-right px-6 py-3 font-semibold text-gray-600">{ta("actions")}</th>
                   </tr>
                 </thead>
@@ -193,13 +239,18 @@ export default function AdminBuyerProfilesPage() {
                       <td className="px-6 py-4">
                         <span className="rounded-lg bg-cream-50 px-2.5 py-1 text-xs font-semibold text-gray-600">{r.documentsUploaded} / 6</span>
                       </td>
+                      <td className="px-6 py-4">
+                        <span className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${STATUS_BADGE_STYLES[r.verificationStatus]}`}>
+                          {t(`verificationStatus.${r.verificationStatus}`)}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 text-right">
                         <Button onClick={() => openDetail(r.userId)} variant="ghost" size="xs">{ta("edit")}</Button>
                       </td>
                     </tr>
                   ))}
                   {filtered.length === 0 && (
-                    <tr><td colSpan={5} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
+                    <tr><td colSpan={6} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
                   )}
                 </tbody>
               </table>
@@ -259,27 +310,59 @@ export default function AdminBuyerProfilesPage() {
                 <div>
                   <p className="text-xs font-semibold text-gray-500 uppercase mb-2">{t("documents")}</p>
                   <div className="grid grid-cols-2 gap-3">
-                    {DOC_FIELDS.map((field) => (
-                      <div key={field} className="rounded-xl border border-gray-200 p-2">
-                        <p className="text-xs font-semibold text-gray-600 mb-1.5">{t(`docFields.${field}`)}</p>
-                        {detail.hasDocument[field] ? (
-                          <img
-                            src={`/api/admin/buyer-profiles/${openId}/documents/${field}?v=${docVersion}`}
-                            alt={t(`docFields.${field}`)}
-                            className="h-20 w-full object-contain rounded-lg bg-cream-50 mb-1.5"
+                    {DOC_FIELDS.map((field) => {
+                      const review = detail.documentReview[field] ?? { status: "pending" as DocReviewStatus, note: "" };
+                      return (
+                        <div key={field} className={`rounded-xl border-2 p-2 ${DOC_STATUS_STYLES[review.status]}`}>
+                          <p className="text-xs font-semibold text-gray-600 mb-1.5">{t(`docFields.${field}`)}</p>
+                          {detail.hasDocument[field] ? (
+                            <img
+                              src={`/api/admin/buyer-profiles/${openId}/documents/${field}?v=${docVersion}`}
+                              alt={t(`docFields.${field}`)}
+                              className="h-20 w-full object-contain rounded-lg bg-cream-50 mb-1.5"
+                            />
+                          ) : (
+                            <div className="h-20 w-full flex items-center justify-center rounded-lg bg-cream-50 text-xs text-gray-400 mb-1.5">{t("noFile")}</div>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*,application/pdf"
+                            disabled={uploadingField === field}
+                            onChange={(e) => handleDocUpload(field, e.target.files?.[0] || null)}
+                            className="w-full text-xs mb-1.5"
                           />
-                        ) : (
-                          <div className="h-20 w-full flex items-center justify-center rounded-lg bg-cream-50 text-xs text-gray-400 mb-1.5">{t("noFile")}</div>
-                        )}
-                        <input
-                          type="file"
-                          accept="image/*,application/pdf"
-                          disabled={uploadingField === field}
-                          onChange={(e) => handleDocUpload(field, e.target.files?.[0] || null)}
-                          className="w-full text-xs"
-                        />
-                      </div>
-                    ))}
+                          {detail.hasDocument[field] && (
+                            <>
+                              <select
+                                value={review.status}
+                                disabled={reviewingField === field}
+                                onChange={(e) => handleReviewChange(field, e.target.value as DocReviewStatus, review.note)}
+                                className="w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs mb-1.5"
+                              >
+                                <option value="pending">{t("docReview.pending")}</option>
+                                <option value="verified">{t("docReview.verified")}</option>
+                                <option value="rejected">{t("docReview.rejected")}</option>
+                              </select>
+                              {review.status === "rejected" && (
+                                <input
+                                  type="text"
+                                  value={review.note}
+                                  placeholder={t("docReview.notePlaceholder")}
+                                  disabled={reviewingField === field}
+                                  onChange={(e) =>
+                                    setDetail((p) =>
+                                      p ? { ...p, documentReview: { ...p.documentReview, [field]: { ...review, note: e.target.value } } } : p
+                                    )
+                                  }
+                                  onBlur={(e) => handleReviewChange(field, "rejected", e.target.value)}
+                                  className="w-full rounded-lg border border-gray-200 px-2 py-1.5 text-xs"
+                                />
+                              )}
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>

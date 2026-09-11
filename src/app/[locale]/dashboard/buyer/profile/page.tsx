@@ -7,6 +7,13 @@ import { errorMessage } from "@/lib/format";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import Button from "@/components/ui/Button";
 
+type DocReviewStatus = "pending" | "verified" | "rejected";
+
+interface DocReview {
+  status: DocReviewStatus;
+  note: string;
+}
+
 interface BuyerProfile {
   companyName: string;
   nationality: string;
@@ -16,11 +23,18 @@ interface BuyerProfile {
   otherPurchaseIntention: string;
   contactPerson: string;
   hasDocument: Record<string, boolean>;
+  documentReview: Record<string, DocReview>;
   updatedAt: number;
 }
 
 const TEXT_FIELDS = ["companyName", "nationality", "passportNumber", "annualTurnover", "contactPerson"] as const;
 const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto"] as const;
+
+const DOC_STATUS_BADGE: Record<DocReviewStatus, string> = {
+  pending: "bg-amber-50 text-amber-700",
+  verified: "bg-green-50 text-green-700",
+  rejected: "bg-red-50 text-red-700",
+};
 
 export default function BuyerProfilePage() {
   const t = useTranslations("buyerProfile");
@@ -157,9 +171,18 @@ export default function BuyerProfilePage() {
             <h2 className="font-bold text-heading">{t("documents")}</h2>
             <p className="text-xs text-gray-400">{t("documentsHint")}</p>
             <div className="grid sm:grid-cols-3 gap-4">
-              {DOC_FIELDS.map((field) => (
+              {DOC_FIELDS.map((field) => {
+                const review = profile.documentReview[field];
+                return (
                 <div key={field} className="rounded-xl border border-gray-200 p-3">
-                  <p className="text-xs font-semibold text-gray-600 mb-2">{t(`docFields.${field}`)}</p>
+                  <div className="flex items-center justify-between mb-2 gap-2">
+                    <p className="text-xs font-semibold text-gray-600">{t(`docFields.${field}`)}</p>
+                    {profile.hasDocument[field] && review && (
+                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${DOC_STATUS_BADGE[review.status]}`}>
+                        {t(`docReviewStatus.${review.status}`)}
+                      </span>
+                    )}
+                  </div>
                   {profile.hasDocument[field] ? (
                     <img
                       src={`/api/buyer-profile/documents/${field}?v=${docVersion}`}
@@ -169,6 +192,9 @@ export default function BuyerProfilePage() {
                   ) : (
                     <div className="h-24 w-full flex items-center justify-center rounded-lg bg-cream-50 text-xs text-gray-400 mb-2">{t("noFile")}</div>
                   )}
+                  {review?.status === "rejected" && review.note && (
+                    <p className="text-xs text-red-600 mb-2">{t("docReviewStatus.rejectedReason", { reason: review.note })}</p>
+                  )}
                   <input
                     type="file"
                     accept="image/*,application/pdf"
@@ -177,7 +203,8 @@ export default function BuyerProfilePage() {
                     className="w-full text-xs"
                   />
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

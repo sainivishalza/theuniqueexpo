@@ -8,7 +8,7 @@ import { listPublishedPosts } from "@/lib/server/blog-repo";
 // same admin-editable company profile as the Organization schema so the
 // two never drift out of sync, plus the actual published blog posts so
 // it stays current without another admin screen to maintain.
-const SITE_URL = "https://www.theuniqueexpo.com";
+const SITE_URL = "https://theuniqueexpo.com";
 const SITE_NAME = "The Unique Expo";
 const SUMMARY =
   "TheUniqueExpo is a B2B exhibition, trade-fair, and sourcing platform connecting buyers with exhibitors across China's major trade fairs -- exhibition registration, booth booking, business and city tours, hotel arrangements, visa setup, and relocation support.";

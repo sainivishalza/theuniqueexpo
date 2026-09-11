@@ -1,6 +1,6 @@
 import { companyProfileSocialLinks, type CompanyProfile } from "@/lib/company-profile";
 
-const SITE_URL = "https://www.theuniqueexpo.com";
+const SITE_URL = "https://theuniqueexpo.com";
 
 // Renders sitewide Organization JSON-LD from the admin-editable company
 // profile (src/app/admin/company-profile) so AI/search entity recognition

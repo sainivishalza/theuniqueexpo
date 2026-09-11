@@ -46,7 +46,7 @@ const FONT_VARIABLES = [
   caveat, dancingScript, pacifico,
 ].map((f) => f.variable).join(" ");
 
-const SITE_URL = "https://www.theuniqueexpo.com";
+const SITE_URL = "https://theuniqueexpo.com";
 const SITE_NAME = "The Unique Expo";
 const DEFAULT_DESCRIPTION =
   "Discover Something Unique Together — The world's leading B2B exhibition, trade-fair & sourcing platform connecting buyers with exhibitors worldwide.";

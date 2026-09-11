@@ -10,7 +10,7 @@ import Card from "@/components/ui/Card";
 // revalidate in the background instead of hitting the DB on every request.
 export const revalidate = 60;
 
-const SITE_URL = "https://www.theuniqueexpo.com";
+const SITE_URL = "https://theuniqueexpo.com";
 
 export async function generateMetadata({
   params,

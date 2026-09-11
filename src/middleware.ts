@@ -4,17 +4,19 @@ import { routing } from "./i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
-// The apex domain and www were both serving the site independently (no
-// redirect either way), which lets search engines index the same content
-// under two hosts and split ranking signals between them. www is the
-// canonical host (see sitemap.ts/robots.ts/layout.tsx) -- apex requests
+// www was never actually wired to the Node.js deployment at the hosting
+// level (confirmed with Hostinger support: TLS terminates for www, but no
+// virtual-host/upstream routing sends it to the app), so redirecting apex
+// visitors there left the entire site unreachable. The apex domain is the
+// one confirmed working end-to-end and is now canonical (see
+// sitemap.ts/robots.ts/layout.tsx/OrganizationSchema.tsx) -- www requests
 // get a permanent redirect there before next-intl's own locale handling
-// runs.
-const APEX_HOST = "theuniqueexpo.com";
-const CANONICAL_HOST = "www.theuniqueexpo.com";
+// runs, for whenever www's hosting-side routing does get fixed.
+const WWW_HOST = "www.theuniqueexpo.com";
+const CANONICAL_HOST = "theuniqueexpo.com";
 
 export default function middleware(request: NextRequest) {
-  if (request.headers.get("host") === APEX_HOST) {
+  if (request.headers.get("host") === WWW_HOST) {
     // Built from scratch (path + query only) rather than mutating
     // request.url's host in place -- request.url reflects the app's
     // internal bind address (e.g. includes :3000 behind Hostinger's

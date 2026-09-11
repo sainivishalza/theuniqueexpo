@@ -24,10 +24,10 @@ import { createWorker, type Worker } from "tesseract.js";
 // again. Search upward from a few different candidate starting points for
 // the actual app root (identified by containing the bundled file) instead
 // of assuming process.cwd() *is* that root.
-const TESSDATA_RELATIVE = path.join("src", "lib", "server", "photo-organizer", "tessdata");
-const TESSDATA_FILE_RELATIVE = path.join(TESSDATA_RELATIVE, "eng.traineddata");
+export const TESSDATA_RELATIVE = path.join("src", "lib", "server", "photo-organizer", "tessdata");
+export const TESSDATA_FILE_RELATIVE = path.join(TESSDATA_RELATIVE, "eng.traineddata");
 
-function findTessdataDir(): string {
+export function findTessdataDir(): string {
   const startingPoints = [process.cwd(), __dirname];
   for (const start of startingPoints) {
     let dir = start;

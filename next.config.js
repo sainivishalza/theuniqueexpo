@@ -6,6 +6,25 @@ const nextConfig = {
   // Framework/version fingerprinting -- off by default upstream would be
   // nicer, but Next.js sends this unless explicitly disabled.
   poweredByHeader: false,
+  // Confirmed live in production (via a temporary diagnostics endpoint):
+  // node_modules/tesseract.js is entirely absent from the deployed app,
+  // even though node_modules itself exists and tesseract.js is a regular
+  // (non-dev) dependency -- Next's build-time file tracing decides which
+  // node_modules files actually ship, and tesseract.js's Node worker
+  // adapter (spawnWorker.js) resolves its worker script's path as a
+  // runtime string (`path.join(__dirname, ...)`) rather than a static
+  // `require()`/`import`, so the tracer can't see that dependency and
+  // prunes the package away entirely. createWorker() itself still works
+  // (it's a static import, so its own code gets bundled), but the
+  // `new Worker(workerPath)` call inside it then points at a file that
+  // was never deployed -- which is why every OCR run hung indefinitely
+  // instead of erroring: the thread spawns but has no script to execute.
+  // Force-including the whole package (not just the one worker script
+  // file) here, since that file's own runtime requires the rest of the
+  // package tree too.
+  outputFileTracingIncludes: {
+    "/api/admin/photo-organizer/**": ["node_modules/tesseract.js/**"],
+  },
   images: {
     // Admins can paste any external image URL for a poster or hero image
     // (not just Unsplash), so a fixed allowlist of hostnames would break

@@ -5,7 +5,13 @@ import { Worker } from "node:worker_threads";
 import { NextResponse } from "next/server";
 import { createWorker } from "tesseract.js";
 import { requireAdmin } from "@/lib/auth-server";
-import { createOcrWorker, findTessdataDir, TESSDATA_FILE_RELATIVE, WORKER_SCRIPT_PATH } from "@/lib/server/photo-organizer/ocr";
+import {
+  createOcrWorker,
+  findTessdataDir,
+  TESSDATA_FILE_RELATIVE,
+  TESSDATA_RELATIVE,
+  WORKER_SCRIPT_PATH,
+} from "@/lib/server/photo-organizer/ocr";
 
 // Zero worker_threads.Worker lifecycle events ever fired in the previous
 // diagnostic run (15s timeout, nothing) -- the thread spawn itself is the
@@ -43,6 +49,42 @@ export async function GET(request: Request) {
 
   const resolvedDir = findTessdataDir();
   const resolvedFile = path.join(resolvedDir, "eng.traineddata");
+
+  // The fixed workerPath resolution (using this same app-root-walking
+  // approach) came back `null` in production -- meaning it couldn't find
+  // node_modules/tesseract.js/src/worker-script/node/index.js anywhere
+  // within 10 levels of process.cwd()/__dirname, even though the sibling
+  // tessdata file resolves fine from the same root. Check every level of
+  // that specific path directly to find exactly which segment goes
+  // missing (whole node_modules dir? tesseract.js package? just its src/
+  // subtree? -- e.g. if only compiled dist/ files got shipped for this
+  // install) instead of guessing further.
+  let appRoot = resolvedDir;
+  for (let i = 0; i < TESSDATA_RELATIVE.split(path.sep).length; i++) appRoot = path.dirname(appRoot);
+  const nodeModulesChecks: Record<string, boolean> = {};
+  const nmSegments = ["node_modules", "node_modules/tesseract.js", "node_modules/tesseract.js/src", "node_modules/tesseract.js/src/worker-script", "node_modules/tesseract.js/src/worker-script/node", "node_modules/tesseract.js/src/worker-script/node/index.js", "node_modules/tesseract.js/src/worker", "node_modules/tesseract.js/src/worker/node", "node_modules/tesseract.js/src/worker/node/defaultOptions.js", "node_modules/tesseract.js/package.json"];
+  for (const seg of nmSegments) {
+    nodeModulesChecks[seg] = fs.existsSync(path.join(appRoot, ...seg.split("/")));
+  }
+  let tesseractPackageJson: { version?: string; main?: string; error?: string } = {};
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(appRoot, "node_modules", "tesseract.js", "package.json"), "utf8"));
+    tesseractPackageJson = { version: pkg.version, main: pkg.main };
+  } catch (err) {
+    tesseractPackageJson = { error: err instanceof Error ? err.message : String(err) };
+  }
+  let tesseractDirListing: string[] | { error: string };
+  try {
+    tesseractDirListing = fs.readdirSync(path.join(appRoot, "node_modules", "tesseract.js"));
+  } catch (err) {
+    tesseractDirListing = { error: err instanceof Error ? err.message : String(err) };
+  }
+  let tesseractSrcListing: string[] | { error: string };
+  try {
+    tesseractSrcListing = fs.readdirSync(path.join(appRoot, "node_modules", "tesseract.js", "src"));
+  } catch (err) {
+    tesseractSrcListing = { error: err instanceof Error ? err.message : String(err) };
+  }
 
   let fileStat: { exists: boolean; size?: number; mode?: string; error?: string } = { exists: false };
   try {
@@ -151,23 +193,17 @@ export async function GET(request: Request) {
     fs.rmSync(fileWorkerScriptPath, { force: true });
   }
 
-  // ROOT CAUSE FOUND: a previous diagnostic run's require.resolve() probe
-  // against a tesseract.js source file returned a bare webpack module
-  // *number* instead of a real path -- proof Next's server build bundles
-  // tesseract.js's Node code into this app's own webpack chunk (its
-  // package.json has a "browser" field, which is what triggers Next's
-  // bundle-instead-of-externalize heuristic). That means `__dirname`
-  // inside tesseract.js's own defaultOptions.js (evaluated as part of that
-  // bundled chunk) no longer points at its real on-disk location under
-  // node_modules/tesseract.js -- so the workerPath it silently computes
-  // for `new Worker(workerPath)` is wrong, and a worker thread given a
-  // bundler-relocated bogus path doesn't error, it just spawns and does
-  // nothing -- exactly the "zero lifecycle events, hangs forever" symptom.
-  // ocr.ts now computes workerPath itself (same proven directory-walking
-  // approach as findTessdataDir) and passes it to createWorker() explicitly,
-  // bypassing tesseract.js's broken default entirely. Test the *real* fixed
-  // function directly, alongside the old unfixed default-resolution call,
-  // for a clear before/after.
+  // UPDATE: the explicit-workerPath fix did NOT resolve the hang -- it
+  // came back identical to the unfixed default (15s timeout either way),
+  // and resolvedWorkerScriptPath came back null, meaning our own
+  // app-root-walking search couldn't find node_modules/tesseract.js's
+  // worker-script file either. The nodeModulesChecks/tesseractDirListing
+  // captured above are what's answering *why* -- whatever segment of that
+  // path is missing is where the real problem is. A plain real file spawn
+  // (fileWorkerOutcome, above) works fine, so this isn't "file-path
+  // spawning is broken," it's specifically about this one dependency's
+  // files. Kept both the fixed and unfixed createWorker() calls below for
+  // continued side-by-side confirmation once the real cause is fixed.
   const resourcesBefore = readProcSelfStatus();
 
   const unfixedWorkerEvents: { t: number; status: string; progress: number }[] = [];
@@ -221,6 +257,11 @@ export async function GET(request: Request) {
     fileWorkerOutcome,
     resolvedWorkerScriptPath: WORKER_SCRIPT_PATH,
     resolvedWorkerScriptPathExists: WORKER_SCRIPT_PATH ? fs.existsSync(WORKER_SCRIPT_PATH) : false,
+    appRoot,
+    nodeModulesChecks,
+    tesseractPackageJson,
+    tesseractDirListing,
+    tesseractSrcListing,
     fixedWorkerOutcome,
     resources: {
       threadsBefore: resourcesBefore["Threads"],

@@ -18,6 +18,7 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
       { label: t("links.exhibitorDirectory"), href: "/directory" },
       { label: t("links.rfqMarketplace"), href: "/marketplace" },
       { label: t("links.partnerProgram"), href: "/partner-program" },
+      { label: t("links.conferenceHosting"), href: "/services/conference-forum-hosting" },
     ],
     [t("columns.company")]: [
       { label: t("links.aboutUs"), href: "/about" },
@@ -25,6 +26,9 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
       { label: t("links.contact"), href: "/contact" },
       { label: t("links.careers"), href: "/careers" },
       { label: t("links.blog"), href: "/blog" },
+      { label: t("links.magazine"), href: "/magazine" },
+      { label: t("links.videos"), href: "/videos" },
+      { label: t("links.cityPartnerships"), href: "/city-partnerships" },
     ],
     [t("columns.resources")]: [
       { label: t("links.helpCenter"), href: "/help" },

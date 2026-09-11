@@ -10,6 +10,7 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
+import RelatedVideos from "@/components/RelatedVideos";
 
 interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -197,6 +198,8 @@ export default function ExhibitionDetailPage({
                   ))}
                 </div>
               </Card>
+
+              <RelatedVideos relatedType="exhibition" relatedId={expo.slug} />
 
               {/* Photo gallery */}
               {expo.galleryImages && expo.galleryImages.length > 0 && (

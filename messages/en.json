@@ -56,11 +56,15 @@
       "exhibitorDirectory": "Exhibitor Directory",
       "rfqMarketplace": "RFQ Marketplace",
       "partnerProgram": "Partner Program",
+      "conferenceHosting": "Conference & Forum Hosting",
       "aboutUs": "About Us",
       "ourTeam": "Our Team",
       "contact": "Contact",
       "careers": "Careers",
       "blog": "Blog",
+      "magazine": "Magazine",
+      "videos": "Videos",
+      "cityPartnerships": "City Partnerships",
       "helpCenter": "Help Center",
       "exhibitionGuide": "Exhibition Guide",
       "boothSetupTips": "Booth Setup Tips",
@@ -468,6 +472,18 @@
         "title": "Partner Program",
         "description": "Manage partner tiers, benefits, and review partnership applications."
       },
+      "magazineManagement": {
+        "title": "Magazine",
+        "description": "Curate published blog posts into magazine issues."
+      },
+      "videoManagement": {
+        "title": "Video Hub",
+        "description": "Manage videos shown on the Video Hub and linked exhibition/tour pages."
+      },
+      "cityPartnershipInquiries": {
+        "title": "City Partnerships",
+        "description": "Review inquiries from cities and tourism boards."
+      },
       "websitePages": {
         "title": "Website Pages",
         "description": "Edit Contact, Careers, Blog, Help Center, and other footer pages."
@@ -550,6 +566,10 @@
       "consultationRequests": {
         "title": "Consultation Requests",
         "description": "Review and schedule consultation bookings."
+      },
+      "conferenceInquiries": {
+        "title": "Conference & Forum Inquiries",
+        "description": "Review inquiries about hosting a conference or forum."
       },
       "subsidyApplications": {
         "title": "Subsidy Applications",
@@ -657,6 +677,109 @@
       "submitted": "submitted",
       "accepted": "accepted",
       "rejected": "rejected"
+    }
+  },
+  "adminMagazine": {
+    "title": "Magazine",
+    "accessDenied": "Access denied",
+    "backToAdmin": "Back to Admin",
+    "loadFailed": "Failed to load magazine issues",
+    "loadingIssues": "Loading issues...",
+    "noIssuesYet": "No issues yet.",
+    "newIssue": "+ New Issue",
+    "editIssue": "Edit Issue",
+    "newIssueHeading": "New Issue",
+    "requiredFieldsError": "Issue number and title are required",
+    "saveFailed": "Save failed",
+    "saveChanges": "Save Changes",
+    "createIssue": "Create Issue",
+    "confirmDelete": "Delete this issue?",
+    "deleteFailed": "Failed to delete issue",
+    "deleting": "Deleting...",
+    "editButton": "Edit",
+    "issueLabel": "Issue #{number}",
+    "articlesCount": "articles",
+    "statusDraft": "Draft",
+    "statusPublished": "Published",
+    "uploadCover": "Upload Cover",
+    "chooseImageFile": "Please choose an image file",
+    "imageTooLarge": "Image is too large (max 8MB)",
+    "couldNotReadFile": "Could not read that file",
+    "articlesHint": "Select which published blog posts appear in this issue.",
+    "noPostsYet": "No blog posts to choose from yet.",
+    "fields": {
+      "issueNumber": "Issue Number",
+      "title": "Title",
+      "status": "Status",
+      "publishDate": "Publish Date",
+      "intro": "Intro",
+      "coverImage": "Cover Image",
+      "articles": "Articles"
+    }
+  },
+  "adminVideos": {
+    "title": "Video Hub",
+    "subtitle": "Manage videos shown on the public Video Hub and on related exhibition/tour pages.",
+    "accessDenied": "Access denied",
+    "backToAdmin": "Back to Admin",
+    "loadFailed": "Failed to load videos",
+    "loadingVideos": "Loading videos...",
+    "noVideosYet": "No videos yet.",
+    "newVideo": "+ New Video",
+    "editVideo": "Edit Video",
+    "newVideoHeading": "New Video",
+    "requiredFieldsError": "Title and embed URL are required",
+    "saveFailed": "Save failed",
+    "saveChanges": "Save Changes",
+    "createVideo": "Create Video",
+    "confirmDelete": "Delete this video?",
+    "deleteFailed": "Failed to delete video",
+    "deleting": "Deleting...",
+    "editButton": "Edit",
+    "embedUrlHint": "A YouTube or Vimeo embed URL, e.g. https://www.youtube.com/embed/VIDEO_ID",
+    "categoryPlaceholder": "Exhibition Highlights, Tour Guide...",
+    "relatedTypeNone": "Not linked to an exhibition/tour",
+    "relatedTypeExhibition": "Exhibition",
+    "relatedTypeTour": "Tour",
+    "relatedIdHint": "Exhibition or tour slug",
+    "linkedTo": "Linked to {type}: {id}",
+    "fields": {
+      "title": "Title",
+      "embedUrl": "Embed URL",
+      "category": "Category",
+      "displayOrder": "Display Order",
+      "description": "Description",
+      "relatedType": "Related To",
+      "relatedId": "Slug"
+    }
+  },
+  "adminConferenceInquiries": {
+    "title": "Conference & Forum Inquiries",
+    "backToServicesAdmin": "Back to Services Admin",
+    "inquiriesReceived": "{count} inquiries received",
+    "updateFailed": "Update failed",
+    "noResultsTitle": "No inquiries yet",
+    "noResultsSubtitle": "Conference and forum hosting inquiries will appear here.",
+    "eventType": "Event Type",
+    "expectedAttendees": "Attendees",
+    "statuses": {
+      "pending": "pending",
+      "in-progress": "in progress",
+      "completed": "completed"
+    }
+  },
+  "adminCityPartnershipInquiries": {
+    "title": "City Partnership Inquiries",
+    "inquiriesReceived": "{count} inquiries received",
+    "updateFailed": "Update failed",
+    "noResultsTitle": "No inquiries yet",
+    "noResultsSubtitle": "City partnership inquiries will appear here.",
+    "organization": "Organization",
+    "location": "Location",
+    "statuses": {
+      "pending": "pending",
+      "in-progress": "in progress",
+      "completed": "completed"
     }
   },
   "adminPartnerTiers": {
@@ -1514,6 +1637,17 @@
         "Buyer attendance support funds"
       ],
       "cta": "Check Eligibility"
+    },
+    "conferenceHosting": {
+      "title": "Conference & Forum Hosting",
+      "description": "Bring your own conference, forum, or summit to life -- we handle the venue, registration, attendee logistics, and on-site staffing.",
+      "features": [
+        "Venue sourcing across our exhibition network",
+        "Custom registration website for your event",
+        "Attendee and speaker management",
+        "Hotel and tour bundling for out-of-town guests"
+      ],
+      "cta": "Request a Quote"
     }
   },
   "businessToursPage": {
@@ -2107,6 +2241,82 @@
     "questionPlaceholder": "Question",
     "answerPlaceholder": "Answer",
     "addQuestion": "+ Add Question"
+  },
+  "magazinePage": {
+    "eyebrow": "The Magazine",
+    "title": "TheUniqueExpo Magazine",
+    "subtitle": "Curated issues collecting our best reporting on exhibitions, relocation, and doing business in China.",
+    "noIssuesYet": "No issues published yet -- check back soon.",
+    "issueLabel": "Issue #{number}",
+    "readIssue": "Read issue",
+    "backToMagazine": "Back to Magazine",
+    "inThisIssue": "In this issue",
+    "noArticlesYet": "This issue doesn't have any articles yet."
+  },
+  "relatedVideos": {
+    "title": "Related Videos"
+  },
+  "videosPage": {
+    "title": "Video Hub",
+    "subtitle": "Exhibition highlights, tour guides, and partner spotlights.",
+    "noVideosYet": "No videos published yet -- check back soon."
+  },
+  "conferenceHostingPage": {
+    "ourServices": "Our Services",
+    "title": "Conference & Forum Hosting",
+    "subtitle": "Bring your own conference, forum, or summit to life -- we handle the venue, registration, attendee logistics, and on-site staffing.",
+    "whatsIncluded": "What's Included",
+    "included": {
+      "venueSourcing": { "title": "Venue Sourcing", "desc": "Access to venues across our exhibition network in major Chinese cities." },
+      "registrationWebsite": { "title": "Registration Website", "desc": "A branded, custom registration site for your attendees." },
+      "attendeeManagement": { "title": "Attendee Management", "desc": "Check-in, badges, and speaker/session scheduling." },
+      "hotelTourBundling": { "title": "Hotel & Tour Bundling", "desc": "Accommodation and city tours for out-of-town guests." },
+      "onSiteStaffing": { "title": "On-Site Staffing", "desc": "Registration desks, translators, and event-day support." },
+      "sponsorshipPackaging": { "title": "Sponsorship Packaging", "desc": "Help structuring and selling sponsorship tiers." }
+    },
+    "requestAQuote": "Request a Quote",
+    "name": "Name",
+    "email": "Email",
+    "company": "Company",
+    "eventType": "Event Type",
+    "eventTypePlaceholder": "Conference, forum, summit...",
+    "expectedAttendees": "Expected Attendees",
+    "preferredDate": "Preferred Date",
+    "details": "Details",
+    "detailsPlaceholder": "Tell us about your event",
+    "sending": "Sending...",
+    "sendInquiry": "Send Inquiry",
+    "inquirySent": "Inquiry Sent!",
+    "inquirySentHint": "We'll be in touch within 1-2 business days to discuss your event.",
+    "sendAnother": "Send Another Inquiry",
+    "requestFailed": "Something went wrong. Please try again."
+  },
+  "cityPartnershipsPage": {
+    "eyebrow": "City Partnerships",
+    "title": "Promote your city to global buyers and exhibitors",
+    "subtitle": "Partner with us to put your city in front of the buyers and exhibitors already using our platform for China's major trade fairs.",
+    "whyPartner": "Why Partner With Us",
+    "benefits": {
+      "reachBuyers": { "title": "Reach an Active Audience", "desc": "Thousands of buyers and exhibitors already planning trips to China." },
+      "exhibitorSpotlight": { "title": "Destination Spotlights", "desc": "Featured placement on relevant exhibition and tour pages." },
+      "coMarketing": { "title": "Co-Marketing", "desc": "Joint content, social posts, and newsletter features." },
+      "delegationSupport": { "title": "Delegation Support", "desc": "Help hosting buyer delegations visiting your city." }
+    },
+    "startAConversation": "Start a Conversation",
+    "name": "Name",
+    "email": "Email",
+    "organization": "Organization",
+    "organizationPlaceholder": "City government, tourism board, etc.",
+    "city": "City",
+    "country": "Country",
+    "message": "Message",
+    "messagePlaceholder": "Tell us about your city and what you're looking for",
+    "sending": "Sending...",
+    "sendInquiry": "Send Inquiry",
+    "inquirySent": "Inquiry Sent!",
+    "inquirySentHint": "We'll be in touch within 1-2 business days.",
+    "sendAnother": "Send Another Inquiry",
+    "requestFailed": "Something went wrong. Please try again."
   },
   "partnerProgramPage": {
     "eyebrow": "Partner Program",

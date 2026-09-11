@@ -9,6 +9,7 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
+import RelatedVideos from "@/components/RelatedVideos";
 
 interface Tour {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -167,6 +168,8 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
                   </div>
                 </Card>
               )}
+
+              <RelatedVideos relatedType="tour" relatedId={tour.slug} />
 
               {tour.galleryImages && tour.galleryImages.length > 0 && (
                 <Card shadow="sm" bordered={false} className="p-8">

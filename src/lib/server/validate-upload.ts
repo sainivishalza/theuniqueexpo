@@ -90,3 +90,24 @@ const ALLOWED_IMAGE_CONTENT_TYPES = new Set([
 export function isAllowedImageContentType(contentType: string): boolean {
   return ALLOWED_IMAGE_CONTENT_TYPES.has(contentType.toLowerCase());
 }
+
+// Videos are embedded via a real <iframe>, so the URL an admin pastes here
+// becomes something every visitor's browser loads -- restrict it to the
+// same hosts the CSP's frame-src allowlist covers (next.config.js), never
+// an arbitrary URL that could otherwise frame an unrelated/malicious page.
+const ALLOWED_EMBED_HOSTS = new Set([
+  "www.youtube.com",
+  "youtube.com",
+  "www.youtube-nocookie.com",
+  "player.vimeo.com",
+]);
+
+export function isValidVideoEmbedUrl(value: unknown): boolean {
+  if (typeof value !== "string" || value === "") return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && ALLOWED_EMBED_HOSTS.has(url.hostname);
+  } catch {
+    return false;
+  }
+}

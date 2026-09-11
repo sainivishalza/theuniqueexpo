@@ -18,7 +18,12 @@ const nextConfig = {
     // rejects local image srcs with a query string unless explicitly
     // allowed here. `search` is intentionally omitted so any ?v= value
     // matches, since it changes on every re-upload.
-    localPatterns: [{ pathname: "/api/exhibitions/**" }, { pathname: "/api/tours/**" }, { pathname: "/api/team-members/**" }],
+    localPatterns: [
+      { pathname: "/api/exhibitions/**" },
+      { pathname: "/api/tours/**" },
+      { pathname: "/api/team-members/**" },
+      { pathname: "/api/magazine/**" },
+    ],
   },
   experimental: {
     // Defaults to os.cpus().length - 1, which on shared hosting reports the
@@ -54,6 +59,11 @@ const nextConfig = {
               "img-src 'self' https: data:",
               "font-src 'self' data:",
               "connect-src 'self' https://www.google-analytics.com https://analytics.google.com",
+              // Video hub/related-video embeds -- admin-pasted URLs are
+              // restricted to these same hosts server-side (see
+              // isValidVideoEmbedUrl in validate-upload.ts) before they're
+              // ever rendered as an <iframe src>.
+              "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
               "frame-ancestors 'self'",
               "base-uri 'self'",
               "form-action 'self'",

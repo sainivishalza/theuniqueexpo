@@ -14,12 +14,13 @@ const SECTION_KEYS = [
   { key: "subsidyApplications", href: "/admin/services/subsidy-applications", icon: "🎫", color: "from-sky-500 to-blue-600" },
   { key: "movingQuotes", href: "/admin/services/moving-quotes", icon: "📦", color: "from-indigo-500 to-violet-600" },
   { key: "consultationRequests", href: "/admin/services/consultations", icon: "💬", color: "from-orange-500 to-red-500" },
+  { key: "conferenceInquiries", href: "/admin/services/conference-inquiries", icon: "🎤", color: "from-slate-600 to-gray-800" },
 ];
 
 export default function AdminServicesPage() {
   const t = useTranslations("adminServicesHome");
   const { user } = useAuth();
-  const [counts, setCounts] = useState({ tourApps: 0, visaApps: 0, consultations: 0, subsidyApps: 0, movingQuotes: 0 });
+  const [counts, setCounts] = useState({ tourApps: 0, visaApps: 0, consultations: 0, subsidyApps: 0, movingQuotes: 0, conferenceInquiries: 0 });
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -29,13 +30,15 @@ export default function AdminServicesPage() {
       fetch("/api/admin/consultations").then((r) => r.json()),
       fetch("/api/admin/subsidy-applications").then((r) => r.json()),
       fetch("/api/admin/moving-quotes").then((r) => r.json()),
-    ]).then(([tourData, visaData, consultData, subsidyData, movingData]) => {
+      fetch("/api/admin/conference-inquiries").then((r) => r.json()),
+    ]).then(([tourData, visaData, consultData, subsidyData, movingData, conferenceData]) => {
       setCounts({
         tourApps: (tourData.applications || []).length,
         visaApps: (visaData.applications || []).length,
         consultations: (consultData.bookings || []).length,
         subsidyApps: (subsidyData.applications || []).length,
         movingQuotes: (movingData.quotes || []).length,
+        conferenceInquiries: (conferenceData.inquiries || []).length,
       });
     });
   }, [user]);
@@ -50,6 +53,7 @@ export default function AdminServicesPage() {
     subsidyApplications: counts.subsidyApps,
     movingQuotes: counts.movingQuotes,
     consultationRequests: counts.consultations,
+    conferenceInquiries: counts.conferenceInquiries,
   };
   const sections = SECTION_KEYS.map((s) => ({
     ...s,

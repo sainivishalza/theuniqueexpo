@@ -56,11 +56,15 @@
       "exhibitorDirectory": "展商目录",
       "rfqMarketplace": "询价采购市场",
       "partnerProgram": "合作伙伴计划",
+      "conferenceHosting": "会议与论坛承办",
       "aboutUs": "关于我们",
       "ourTeam": "我们的团队",
       "contact": "联系我们",
       "careers": "招聘信息",
       "blog": "博客",
+      "magazine": "杂志",
+      "videos": "视频",
+      "cityPartnerships": "城市合作",
       "helpCenter": "帮助中心",
       "exhibitionGuide": "展会指南",
       "boothSetupTips": "展位搭建技巧",
@@ -468,6 +472,18 @@
         "title": "合作伙伴计划",
         "description": "管理合作伙伴等级、权益并审核合作申请。"
       },
+      "magazineManagement": {
+        "title": "杂志",
+        "description": "将已发布的博客文章整理成杂志期刊。"
+      },
+      "videoManagement": {
+        "title": "视频中心",
+        "description": "管理视频中心及相关展会/旅游页面展示的视频。"
+      },
+      "cityPartnershipInquiries": {
+        "title": "城市合作",
+        "description": "查看来自城市和旅游局的合作申请。"
+      },
       "websitePages": {
         "title": "网站页面",
         "description": "编辑联系我们、招聘信息、博客、帮助中心等页面。"
@@ -550,6 +566,10 @@
       "consultationRequests": {
         "title": "咨询请求",
         "description": "查看并安排咨询预约。"
+      },
+      "conferenceInquiries": {
+        "title": "会议与论坛申请",
+        "description": "查看会议或论坛承办申请。"
       },
       "subsidyApplications": {
         "title": "补贴申请",
@@ -657,6 +677,109 @@
       "submitted": "已提交",
       "accepted": "已接受",
       "rejected": "已拒绝"
+    }
+  },
+  "adminMagazine": {
+    "title": "杂志",
+    "accessDenied": "访问被拒绝",
+    "backToAdmin": "返回管理后台",
+    "loadFailed": "加载杂志期刊失败",
+    "loadingIssues": "正在加载期刊...",
+    "noIssuesYet": "暂无期刊。",
+    "newIssue": "+ 新增期刊",
+    "editIssue": "编辑期刊",
+    "newIssueHeading": "新增期刊",
+    "requiredFieldsError": "期号和标题为必填项",
+    "saveFailed": "保存失败",
+    "saveChanges": "保存更改",
+    "createIssue": "创建期刊",
+    "confirmDelete": "确定删除该期刊吗？",
+    "deleteFailed": "删除期刊失败",
+    "deleting": "删除中...",
+    "editButton": "编辑",
+    "issueLabel": "第 {number} 期",
+    "articlesCount": "篇文章",
+    "statusDraft": "草稿",
+    "statusPublished": "已发布",
+    "uploadCover": "上传封面",
+    "chooseImageFile": "请选择一个图片文件",
+    "imageTooLarge": "图片过大（最大 8MB）",
+    "couldNotReadFile": "无法读取该文件",
+    "articlesHint": "选择要收录到本期的已发布博客文章。",
+    "noPostsYet": "暂无可选择的博客文章。",
+    "fields": {
+      "issueNumber": "期号",
+      "title": "标题",
+      "status": "状态",
+      "publishDate": "发布日期",
+      "intro": "简介",
+      "coverImage": "封面图片",
+      "articles": "文章"
+    }
+  },
+  "adminVideos": {
+    "title": "视频中心",
+    "subtitle": "管理视频中心及相关展会/旅游页面展示的视频。",
+    "accessDenied": "访问被拒绝",
+    "backToAdmin": "返回管理后台",
+    "loadFailed": "加载视频失败",
+    "loadingVideos": "正在加载视频...",
+    "noVideosYet": "暂无视频。",
+    "newVideo": "+ 新增视频",
+    "editVideo": "编辑视频",
+    "newVideoHeading": "新增视频",
+    "requiredFieldsError": "标题和嵌入链接为必填项",
+    "saveFailed": "保存失败",
+    "saveChanges": "保存更改",
+    "createVideo": "创建视频",
+    "confirmDelete": "确定删除该视频吗？",
+    "deleteFailed": "删除视频失败",
+    "deleting": "删除中...",
+    "editButton": "编辑",
+    "embedUrlHint": "YouTube 或 Vimeo 嵌入链接，例如 https://www.youtube.com/embed/VIDEO_ID",
+    "categoryPlaceholder": "展会精彩瞬间、旅游指南...",
+    "relatedTypeNone": "未关联展会/旅游",
+    "relatedTypeExhibition": "展会",
+    "relatedTypeTour": "旅游团",
+    "relatedIdHint": "展会或旅游团的 slug",
+    "linkedTo": "已关联 {type}：{id}",
+    "fields": {
+      "title": "标题",
+      "embedUrl": "嵌入链接",
+      "category": "分类",
+      "displayOrder": "显示顺序",
+      "description": "描述",
+      "relatedType": "关联对象",
+      "relatedId": "Slug"
+    }
+  },
+  "adminConferenceInquiries": {
+    "title": "会议与论坛申请",
+    "backToServicesAdmin": "返回服务管理",
+    "inquiriesReceived": "已收到 {count} 份申请",
+    "updateFailed": "更新失败",
+    "noResultsTitle": "暂无申请",
+    "noResultsSubtitle": "会议与论坛承办申请将显示在这里。",
+    "eventType": "活动类型",
+    "expectedAttendees": "预计参会人数",
+    "statuses": {
+      "pending": "待处理",
+      "in-progress": "处理中",
+      "completed": "已完成"
+    }
+  },
+  "adminCityPartnershipInquiries": {
+    "title": "城市合作申请",
+    "inquiriesReceived": "已收到 {count} 份申请",
+    "updateFailed": "更新失败",
+    "noResultsTitle": "暂无申请",
+    "noResultsSubtitle": "城市合作申请将显示在这里。",
+    "organization": "机构",
+    "location": "地点",
+    "statuses": {
+      "pending": "待处理",
+      "in-progress": "处理中",
+      "completed": "已完成"
     }
   },
   "adminPartnerTiers": {
@@ -1514,6 +1637,17 @@
         "买家参会支持基金"
       ],
       "cta": "查看资格"
+    },
+    "conferenceHosting": {
+      "title": "会议与论坛承办",
+      "description": "让您自己的会议、论坛或峰会成真——我们负责场地、注册、参会者物流和现场人员安排。",
+      "features": [
+        "在我们的展会网络中寻找场地",
+        "为您的活动定制注册网站",
+        "参会者与演讲嘉宾管理",
+        "为外地嘉宾安排酒店与游览"
+      ],
+      "cta": "获取报价"
     }
   },
   "businessToursPage": {
@@ -2107,6 +2241,82 @@
     "questionPlaceholder": "问题",
     "answerPlaceholder": "答案",
     "addQuestion": "+ 添加问题"
+  },
+  "magazinePage": {
+    "eyebrow": "杂志",
+    "title": "TheUniqueExpo 杂志",
+    "subtitle": "精选期刊，汇集我们关于展会、移居及在中国经商的优秀报道。",
+    "noIssuesYet": "暂无已发布的期刊——请稍后再来查看。",
+    "issueLabel": "第 {number} 期",
+    "readIssue": "阅读本期",
+    "backToMagazine": "返回杂志",
+    "inThisIssue": "本期内容",
+    "noArticlesYet": "本期暂无文章。"
+  },
+  "relatedVideos": {
+    "title": "相关视频"
+  },
+  "videosPage": {
+    "title": "视频中心",
+    "subtitle": "展会精彩瞬间、旅游指南和合作伙伴专题。",
+    "noVideosYet": "暂无已发布的视频——请稍后再来查看。"
+  },
+  "conferenceHostingPage": {
+    "ourServices": "我们的服务",
+    "title": "会议与论坛承办",
+    "subtitle": "让您自己的会议、论坛或峰会成真——我们负责场地、注册、参会者物流和现场人员安排。",
+    "whatsIncluded": "服务内容",
+    "included": {
+      "venueSourcing": { "title": "场地寻找", "desc": "使用我们在中国主要城市展会网络中的场地资源。" },
+      "registrationWebsite": { "title": "注册网站", "desc": "为您的参会者定制品牌注册网站。" },
+      "attendeeManagement": { "title": "参会者管理", "desc": "签到、胸牌及演讲嘉宾/日程安排。" },
+      "hotelTourBundling": { "title": "酒店与游览搭配", "desc": "为外地嘉宾安排住宿和城市游览。" },
+      "onSiteStaffing": { "title": "现场人员支持", "desc": "注册台、翻译人员及活动当天支持。" },
+      "sponsorshipPackaging": { "title": "赞助套餐策划", "desc": "协助设计和销售赞助等级。" }
+    },
+    "requestAQuote": "获取报价",
+    "name": "姓名",
+    "email": "邮箱",
+    "company": "公司",
+    "eventType": "活动类型",
+    "eventTypePlaceholder": "会议、论坛、峰会……",
+    "expectedAttendees": "预计参会人数",
+    "preferredDate": "期望日期",
+    "details": "详情",
+    "detailsPlaceholder": "介绍一下您的活动",
+    "sending": "发送中...",
+    "sendInquiry": "发送咨询",
+    "inquirySent": "咨询已发送！",
+    "inquirySentHint": "我们将在 1-2 个工作日内与您联系，讨论您的活动详情。",
+    "sendAnother": "再发送一份咨询",
+    "requestFailed": "出现问题，请重试。"
+  },
+  "cityPartnershipsPage": {
+    "eyebrow": "城市合作",
+    "title": "向全球买家和参展商推广您的城市",
+    "subtitle": "与我们合作，将您的城市展示给已经在使用我们平台参加中国主要展会的买家和参展商。",
+    "whyPartner": "为什么与我们合作",
+    "benefits": {
+      "reachBuyers": { "title": "触达活跃受众", "desc": "数千名买家和参展商已在计划前往中国的行程。" },
+      "exhibitorSpotlight": { "title": "目的地专题展示", "desc": "在相关展会和旅游页面上获得重点展示位置。" },
+      "coMarketing": { "title": "联合营销", "desc": "联合内容、社交媒体发布及通讯特写。" },
+      "delegationSupport": { "title": "代表团支持", "desc": "协助接待访问贵市的买家代表团。" }
+    },
+    "startAConversation": "开始沟通",
+    "name": "姓名",
+    "email": "邮箱",
+    "organization": "机构",
+    "organizationPlaceholder": "市政府、旅游局等",
+    "city": "城市",
+    "country": "国家",
+    "message": "留言",
+    "messagePlaceholder": "介绍一下您的城市以及您的诉求",
+    "sending": "发送中...",
+    "sendInquiry": "发送咨询",
+    "inquirySent": "咨询已发送！",
+    "inquirySentHint": "我们将在 1-2 个工作日内与您联系。",
+    "sendAnother": "再发送一份咨询",
+    "requestFailed": "出现问题，请重试。"
   },
   "partnerProgramPage": {
     "eyebrow": "合作伙伴计划",

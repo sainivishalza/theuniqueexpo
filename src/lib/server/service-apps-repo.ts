@@ -186,3 +186,78 @@ export async function createSubsidyApplication(input: {
 export async function updateSubsidyApplicationStatus(id: number, status: string) {
   await pool.query("UPDATE subsidy_applications SET status = ? WHERE id = ?", [status, id]);
 }
+
+function mapConferenceInquiryRow(row: RowDataPacket) {
+  return {
+    id: String(row.id),
+    userId: row.user_id ? String(row.user_id) : "",
+    name: row.name,
+    email: row.email,
+    company: row.company,
+    eventType: row.event_type,
+    expectedAttendees: row.expected_attendees,
+    preferredDate: row.preferred_date,
+    details: row.details,
+    status: row.status,
+    createdAt: row.created_at,
+  };
+}
+
+export async function listConferenceInquiries() {
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM conference_inquiries ORDER BY created_at DESC");
+  return rows.map(mapConferenceInquiryRow);
+}
+
+export async function createConferenceInquiry(input: {
+  userId?: number; name: string; email: string; company: string; eventType: string;
+  expectedAttendees: string; preferredDate: string; details: string;
+}) {
+  const [result] = await pool.query<ResultSetHeader>(
+    `INSERT INTO conference_inquiries (user_id, name, email, company, event_type, expected_attendees, preferred_date, details, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+    [
+      input.userId || null, input.name, input.email, input.company || "", input.eventType || "",
+      input.expectedAttendees || "", input.preferredDate || null, input.details || "",
+    ]
+  );
+  return result.insertId;
+}
+
+export async function updateConferenceInquiryStatus(id: number, status: string) {
+  await pool.query("UPDATE conference_inquiries SET status = ? WHERE id = ?", [status, id]);
+}
+
+function mapCityPartnershipInquiryRow(row: RowDataPacket) {
+  return {
+    id: String(row.id),
+    userId: row.user_id ? String(row.user_id) : "",
+    name: row.name,
+    email: row.email,
+    organization: row.organization,
+    city: row.city,
+    country: row.country,
+    message: row.message,
+    status: row.status,
+    createdAt: row.created_at,
+  };
+}
+
+export async function listCityPartnershipInquiries() {
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM city_partnership_inquiries ORDER BY created_at DESC");
+  return rows.map(mapCityPartnershipInquiryRow);
+}
+
+export async function createCityPartnershipInquiry(input: {
+  userId?: number; name: string; email: string; organization: string; city: string; country: string; message: string;
+}) {
+  const [result] = await pool.query<ResultSetHeader>(
+    `INSERT INTO city_partnership_inquiries (user_id, name, email, organization, city, country, message, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')`,
+    [input.userId || null, input.name, input.email, input.organization || "", input.city || "", input.country || "", input.message || ""]
+  );
+  return result.insertId;
+}
+
+export async function updateCityPartnershipInquiryStatus(id: number, status: string) {
+  await pool.query("UPDATE city_partnership_inquiries SET status = ? WHERE id = ?", [status, id]);
+}

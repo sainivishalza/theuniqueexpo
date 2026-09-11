@@ -131,6 +131,22 @@ export const serviceCategories: ServiceCategory[] = [
     ctaKey: "subsidies.cta",
     color: "from-cyan-500 to-teal-600",
   },
+  {
+    id: "conference-forum-hosting",
+    slug: "conference-forum-hosting",
+    titleKey: "conferenceHosting.title",
+    icon: "🎤",
+    descriptionKey: "conferenceHosting.description",
+    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=500&fit=crop&q=80",
+    featureKeys: [
+      "conferenceHosting.features.0",
+      "conferenceHosting.features.1",
+      "conferenceHosting.features.2",
+      "conferenceHosting.features.3",
+    ],
+    ctaKey: "conferenceHosting.cta",
+    color: "from-slate-600 to-gray-800",
+  },
 ];
 
 export function getServiceBySlug(slug: string): ServiceCategory | undefined {

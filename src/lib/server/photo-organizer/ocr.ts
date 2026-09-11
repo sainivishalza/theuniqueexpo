@@ -105,7 +105,7 @@ function findWorkerScriptPath(): string | undefined {
   return path.join(root, WORKER_SCRIPT_RELATIVE);
 }
 
-const WORKER_SCRIPT_PATH = findWorkerScriptPath();
+export const WORKER_SCRIPT_PATH = findWorkerScriptPath();
 console.log(`[photo-organizer/ocr] resolved tesseract worker script path: ${WORKER_SCRIPT_PATH}`);
 
 // Defense in depth in case the bundled file is ever missing/corrupted and

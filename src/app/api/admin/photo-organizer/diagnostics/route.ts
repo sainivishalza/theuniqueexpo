@@ -5,7 +5,7 @@ import { Worker } from "node:worker_threads";
 import { NextResponse } from "next/server";
 import { createWorker } from "tesseract.js";
 import { requireAdmin } from "@/lib/auth-server";
-import { createOcrWorker, findTessdataDir, TESSDATA_FILE_RELATIVE } from "@/lib/server/photo-organizer/ocr";
+import { createOcrWorker, findTessdataDir, TESSDATA_FILE_RELATIVE, WORKER_SCRIPT_PATH } from "@/lib/server/photo-organizer/ocr";
 
 // Zero worker_threads.Worker lifecycle events ever fired in the previous
 // diagnostic run (15s timeout, nothing) -- the thread spawn itself is the
@@ -110,6 +110,47 @@ export async function GET(request: Request) {
     bareWorkerOutcome = { ok: false, ms: Date.now() - bareWorkerStartedAt, error: err instanceof Error ? err.message : String(err) };
   }
 
+  // The "fixed" workerPath test (below) still hangs identically to the
+  // unfixed one -- same 15s timeout, zero difference -- which rules out
+  // "wrong path inside tesseract.js" as the (sole) explanation, since an
+  // explicitly-correct, directly-verified path produces the exact same
+  // symptom. The one variable never isolated yet: the working bare-worker
+  // test above uses `{ eval: true }` (a string executed in-process, no
+  // file I/O), while every tesseract.js worker -- fixed or not -- is
+  // spawned from a real file path, which requires the new thread to open
+  // and read a file off disk and run it through Node's module resolution.
+  // Write a trivial real .js file to disk and spawn *that* by path (still
+  // nothing to do with tesseract.js) to isolate "spawning from a file path
+  // is itself broken on this host" from "tesseract.js's specific files are
+  // wrong/broken".
+  let fileWorkerOutcome: { ok: boolean; ms: number; error?: string; scriptPath?: string };
+  const fileWorkerScriptPath = path.join(os.tmpdir(), "diag-file-worker-test.js");
+  const fileWorkerStartedAt = Date.now();
+  try {
+    fs.writeFileSync(fileWorkerScriptPath, "require('worker_threads').parentPort.postMessage('pong');\n");
+    const result = await Promise.race([
+      new Promise((resolve, reject) => {
+        const w = new Worker(fileWorkerScriptPath);
+        w.once("message", (msg) => {
+          w.terminate().catch(() => {});
+          resolve(msg);
+        });
+        w.once("error", reject);
+      }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("file-based worker timed out after 10s")), 10_000)),
+    ]);
+    fileWorkerOutcome = { ok: result === "pong", ms: Date.now() - fileWorkerStartedAt, scriptPath: fileWorkerScriptPath };
+  } catch (err) {
+    fileWorkerOutcome = {
+      ok: false,
+      ms: Date.now() - fileWorkerStartedAt,
+      error: err instanceof Error ? err.message : String(err),
+      scriptPath: fileWorkerScriptPath,
+    };
+  } finally {
+    fs.rmSync(fileWorkerScriptPath, { force: true });
+  }
+
   // ROOT CAUSE FOUND: a previous diagnostic run's require.resolve() probe
   // against a tesseract.js source file returned a bare webpack module
   // *number* instead of a real path -- proof Next's server build bundles
@@ -177,6 +218,9 @@ export async function GET(request: Request) {
     unfixedWorkerOutcome,
     unfixedWorkerEvents,
     bareWorkerOutcome,
+    fileWorkerOutcome,
+    resolvedWorkerScriptPath: WORKER_SCRIPT_PATH,
+    resolvedWorkerScriptPathExists: WORKER_SCRIPT_PATH ? fs.existsSync(WORKER_SCRIPT_PATH) : false,
     fixedWorkerOutcome,
     resources: {
       threadsBefore: resourcesBefore["Threads"],

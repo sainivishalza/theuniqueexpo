@@ -20,8 +20,13 @@ yarn-error.log*
 
 # photo-organizer working data (large, ephemeral -- extracted zips, output zips)
 /tmp/photo-organizer/
-# tesseract.js downloads its language model into the cwd on first OCR run
+# tesseract.js downloads its language model into the cwd on first OCR run if
+# it can't find one locally -- src/lib/server/photo-organizer/tessdata/ is
+# the one deliberately bundled copy (committed on purpose, not ignored) so
+# that download -- and any network flakiness reaching its CDN -- never has
+# to happen at runtime.
 *.traineddata
+!src/lib/server/photo-organizer/tessdata/eng.traineddata
 
 # misc
 .DS_Store

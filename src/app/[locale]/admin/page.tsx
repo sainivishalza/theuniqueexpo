@@ -26,6 +26,7 @@ const SECTION_KEYS = [
   { key: "faqManagement", href: "/admin/faq", icon: "❓", color: "from-rose-500 to-pink-600" },
   { key: "siteTheme", href: "/admin/site-theme", icon: "🎨", color: "from-fuchsia-500 to-purple-600" },
   { key: "userManagement", href: "/admin/users", icon: "👥", color: "from-orange-500 to-red-500" },
+  { key: "buyerProfiles", href: "/admin/buyer-profiles", icon: "🪪", color: "from-emerald-600 to-teal-700" },
 ];
 
 export default function AdminPage() {

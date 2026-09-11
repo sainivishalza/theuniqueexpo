@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { requireAdmin, createUserAccount } from "@/lib/auth-server";
+import { upsertBuyerProfileFields } from "@/lib/server/buyer-profile-repo";
 
 // Admin isn't offered here -- bulk-granting admin access from a pasted list
 // is exactly the kind of mistake this endpoint shouldn't make easy.
@@ -12,6 +13,17 @@ interface BulkUserInput {
   email?: string;
   phone?: string;
   country?: string;
+  // Optional buyer-profile fields -- only ever written when role is
+  // "buyer" (see buyer_profiles/buyer-profile-repo.ts). Any row can omit
+  // these entirely; a plain name/email/phone import still works exactly
+  // as before.
+  companyName?: string;
+  nationality?: string;
+  passportNumber?: string;
+  annualTurnover?: string;
+  purchaseIntention?: string;
+  otherPurchaseIntention?: string;
+  contactPerson?: string;
 }
 
 interface BulkUserResult {
@@ -72,8 +84,28 @@ export async function POST(request: Request) {
     }
 
     try {
-      await createUserAccount(name, email, phone, role, country);
+      const { user: created } = await createUserAccount(name, email, phone, role, country);
       seenInBatch.add(email);
+
+      if (role === "buyer") {
+        const input = users[i];
+        const profileFields = {
+          companyName: input.companyName?.trim() || "",
+          nationality: input.nationality?.trim() || "",
+          passportNumber: input.passportNumber?.trim() || "",
+          annualTurnover: input.annualTurnover?.trim() || "",
+          purchaseIntention: input.purchaseIntention?.trim() || "",
+          otherPurchaseIntention: input.otherPurchaseIntention?.trim() || "",
+          contactPerson: input.contactPerson?.trim() || "",
+        };
+        // Only write a profile row when at least one field was actually
+        // provided -- a plain name/email/phone import shouldn't leave
+        // behind an all-empty buyer_profiles row for every account.
+        if (Object.values(profileFields).some(Boolean)) {
+          await upsertBuyerProfileFields(created.id, profileFields);
+        }
+      }
+
       results.push({ row, name, email, password: phone, status: "created" });
     } catch (err) {
       console.error(`Bulk user create failed for row ${row} (${email}):`, err);

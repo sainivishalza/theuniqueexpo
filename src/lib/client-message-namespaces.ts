@@ -13,13 +13,14 @@ export const ADMIN_NAMESPACES = [
   "adminPhotoOrganizer",
   "adminRegFormBuilder", "adminRegistrationsCommon", "adminRfqs", "adminServiceTours", "adminServicesHome",
   "adminCityPartnershipInquiries", "adminCityPartnershipsContent", "adminConferenceHostingContent", "adminConferenceInquiries", "adminMagazine", "adminVideos",
+  "adminBuyerProfiles",
   "adminPartnerApplications", "adminPartnerReferrals", "adminPartnerTiers", "adminUsers", "adminUsersBulk",
   "adminSitePageEditor", "adminSiteTheme", "adminSubsidies", "adminSubsidyApplications", "adminTeam", "adminTourApplications",
   "adminTourRegForm", "adminTourRegistrations", "adminToursCrud", "adminVisaApplications",
 ];
 
 export const DASHBOARD_NAMESPACES = [
-  "buyerDashboard", "exhibitorDashboard", "partnerDashboard",
+  "buyerDashboard", "buyerProfile", "exhibitorDashboard", "partnerDashboard",
 ];
 
 export function pickMessages<T extends Record<string, unknown>>(messages: T, namespaces: string[]): Partial<T> {

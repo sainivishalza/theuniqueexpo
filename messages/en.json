@@ -280,6 +280,10 @@
       "visitPlanner": {
         "title": "Visit Planner",
         "description": "Build your show-day itinerary"
+      },
+      "myProfile": {
+        "title": "My Profile",
+        "description": "Company info, passport, and documents"
       }
     }
   },
@@ -489,6 +493,10 @@
       "siteTheme": {
         "title": "Site Theme",
         "description": "Control the site's colors and fonts for the whole site, without a code deploy."
+      },
+      "buyerProfiles": {
+        "title": "Buyer Profiles",
+        "description": "Company info, documents, and KYC details for buyer accounts"
       }
     }
   },
@@ -2570,6 +2578,77 @@
     "email": "Email",
     "passwordColumn": "Password",
     "statusColumn": "Status",
-    "statusCreated": "Created"
+    "statusCreated": "Created",
+    "invalidJsonFile": "That file isn't valid JSON in the expected format",
+    "orUploadFile": "Or upload a JSON file",
+    "fileHint": "For imports with extra fields (company, nationality, passport, purchase interests, etc.) -- a JSON array of user objects, or {\"role\": \"buyer\", \"users\": [...]}.",
+    "fileLoaded": "Loaded {name}: {count} row(s)",
+    "clearFile": "clear"
+  },
+  "buyerProfile": {
+    "backToDashboard": "Back to Dashboard",
+    "title": "My Profile",
+    "subtitle": "Keep your company info and documents up to date",
+    "loginRequired": "Please log in to view your profile.",
+    "saveFailed": "Could not save your profile",
+    "saveSuccess": "Profile saved",
+    "uploadFailed": "Could not upload file",
+    "fileTooLarge": "File is too large (max 8MB)",
+    "companyInfo": "Company Information",
+    "documents": "Documents",
+    "documentsHint": "Upload a clear photo or scan of each document (image or PDF, max 8MB).",
+    "noFile": "No file uploaded",
+    "fields": {
+      "companyName": "Company Name",
+      "nationality": "Nationality",
+      "passportNumber": "Passport Number",
+      "annualTurnover": "Annual Turnover",
+      "contactPerson": "Contact Person",
+      "purchaseIntention": "Purchase Intention",
+      "otherPurchaseIntention": "Other Purchase Intention"
+    },
+    "docFields": {
+      "businessLicense": "Business License",
+      "businessCard": "Business Card",
+      "passportFront": "Passport Front Page",
+      "visaPage": "Visa Page",
+      "cantonFairCard": "Canton Fair Card",
+      "buyerPhoto": "Buyer Photo"
+    }
+  },
+  "adminBuyerProfiles": {
+    "backToAdmin": "← Back to Admin",
+    "title": "Buyer Profiles",
+    "subtitle": "{count} buyer account(s)",
+    "loadFailed": "Could not load buyer profiles",
+    "saveFailed": "Could not save profile",
+    "uploadFailed": "Could not upload file",
+    "fileTooLarge": "File is too large (max 8MB)",
+    "accessDenied": "Access denied. Admin login required.",
+    "searchPlaceholder": "Search by name, email, or company...",
+    "company": "Company",
+    "nationality": "Nationality",
+    "documentsColumn": "Documents",
+    "noResults": "No buyer profiles found",
+    "editProfile": "Edit Buyer Profile",
+    "documents": "Documents",
+    "noFile": "No file",
+    "fields": {
+      "companyName": "Company Name",
+      "nationality": "Nationality",
+      "passportNumber": "Passport Number",
+      "annualTurnover": "Annual Turnover",
+      "contactPerson": "Contact Person",
+      "purchaseIntention": "Purchase Intention",
+      "otherPurchaseIntention": "Other Purchase Intention"
+    },
+    "docFields": {
+      "businessLicense": "Business License",
+      "businessCard": "Business Card",
+      "passportFront": "Passport Front Page",
+      "visaPage": "Visa Page",
+      "cantonFairCard": "Canton Fair Card",
+      "buyerPhoto": "Buyer Photo"
+    }
   }
 }

@@ -8,6 +8,7 @@ import Card from "@/components/ui/Card";
 // merged into one role/one dashboard, so it now carries both sets of
 // quick actions (the "visitor"-only ones flagged below).
 const ACTION_KEYS = [
+  { key: "myProfile", href: "/dashboard/buyer/profile", icon: "🪪", color: "from-emerald-600 to-teal-700" },
   { key: "browseExhibitions", href: "/exhibitions", icon: "🎯", color: "from-teal-500 to-cyan-600" },
   { key: "exhibitorDirectory", href: "/directory", icon: "🏢", color: "from-purple-500 to-purple-600" },
   { key: "postBuyRequest", href: "/marketplace/new", icon: "📋", color: "from-emerald-500 to-green-600" },

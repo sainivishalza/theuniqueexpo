@@ -280,6 +280,10 @@
       "visitPlanner": {
         "title": "Планировщик визита",
         "description": "Составьте маршрут на день выставки"
+      },
+      "myProfile": {
+        "title": "Мой профиль",
+        "description": "Информация о компании, паспорт и документы"
       }
     }
   },
@@ -489,6 +493,10 @@
       "siteTheme": {
         "title": "Тема сайта",
         "description": "Управляйте цветами и шрифтами всего сайта без развёртывания кода."
+      },
+      "buyerProfiles": {
+        "title": "Профили покупателей",
+        "description": "Информация о компании, документы и данные KYC для аккаунтов покупателей"
       }
     }
   },
@@ -2570,6 +2578,77 @@
     "email": "Email",
     "passwordColumn": "Пароль",
     "statusColumn": "Статус",
-    "statusCreated": "Создан"
+    "statusCreated": "Создан",
+    "invalidJsonFile": "Файл не является корректным JSON в ожидаемом формате",
+    "orUploadFile": "Или загрузите JSON-файл",
+    "fileHint": "Для импорта с дополнительными полями (компания, гражданство, паспорт, интересующие товары и т.д.) -- JSON-массив объектов пользователей, либо {\"role\": \"buyer\", \"users\": [...]}.",
+    "fileLoaded": "Загружено {name}: строк {count}",
+    "clearFile": "очистить"
+  },
+  "buyerProfile": {
+    "backToDashboard": "Назад в личный кабинет",
+    "title": "Мой профиль",
+    "subtitle": "Поддерживайте данные компании и документы в актуальном состоянии",
+    "loginRequired": "Войдите, чтобы посмотреть свой профиль.",
+    "saveFailed": "Не удалось сохранить профиль",
+    "saveSuccess": "Профиль сохранён",
+    "uploadFailed": "Не удалось загрузить файл",
+    "fileTooLarge": "Файл слишком большой (макс. 8 МБ)",
+    "companyInfo": "Информация о компании",
+    "documents": "Документы",
+    "documentsHint": "Загрузите чёткое фото или скан каждого документа (изображение или PDF, макс. 8 МБ).",
+    "noFile": "Файл не загружен",
+    "fields": {
+      "companyName": "Название компании",
+      "nationality": "Гражданство",
+      "passportNumber": "Номер паспорта",
+      "annualTurnover": "Годовой оборот",
+      "contactPerson": "Контактное лицо",
+      "purchaseIntention": "Интересующие товары",
+      "otherPurchaseIntention": "Другие интересующие товары"
+    },
+    "docFields": {
+      "businessLicense": "Лицензия компании",
+      "businessCard": "Визитная карточка",
+      "passportFront": "Разворот паспорта",
+      "visaPage": "Страница визы",
+      "cantonFairCard": "Карта Кантонской ярмарки",
+      "buyerPhoto": "Фото покупателя"
+    }
+  },
+  "adminBuyerProfiles": {
+    "backToAdmin": "← Назад в админ-панель",
+    "title": "Профили покупателей",
+    "subtitle": "Аккаунтов-покупателей: {count}",
+    "loadFailed": "Не удалось загрузить профили покупателей",
+    "saveFailed": "Не удалось сохранить профиль",
+    "uploadFailed": "Не удалось загрузить файл",
+    "fileTooLarge": "Файл слишком большой (макс. 8 МБ)",
+    "accessDenied": "Доступ запрещён. Требуется вход администратора.",
+    "searchPlaceholder": "Поиск по имени, email или компании...",
+    "company": "Компания",
+    "nationality": "Гражданство",
+    "documentsColumn": "Документы",
+    "noResults": "Профили покупателей не найдены",
+    "editProfile": "Редактировать профиль покупателя",
+    "documents": "Документы",
+    "noFile": "Нет файла",
+    "fields": {
+      "companyName": "Название компании",
+      "nationality": "Гражданство",
+      "passportNumber": "Номер паспорта",
+      "annualTurnover": "Годовой оборот",
+      "contactPerson": "Контактное лицо",
+      "purchaseIntention": "Интересующие товары",
+      "otherPurchaseIntention": "Другие интересующие товары"
+    },
+    "docFields": {
+      "businessLicense": "Лицензия компании",
+      "businessCard": "Визитная карточка",
+      "passportFront": "Разворот паспорта",
+      "visaPage": "Страница визы",
+      "cantonFairCard": "Карта Кантонской ярмарки",
+      "buyerPhoto": "Фото покупателя"
+    }
   }
 }

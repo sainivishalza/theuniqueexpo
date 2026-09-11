@@ -280,6 +280,10 @@
       "visitPlanner": {
         "title": "参观规划",
         "description": "规划您的展会行程"
+      },
+      "myProfile": {
+        "title": "我的资料",
+        "description": "公司信息、护照和证件资料"
       }
     }
   },
@@ -489,6 +493,10 @@
       "siteTheme": {
         "title": "网站主题",
         "description": "无需部署代码即可控制整个网站的颜色和字体。"
+      },
+      "buyerProfiles": {
+        "title": "买家资料",
+        "description": "买家账户的公司信息、证件资料"
       }
     }
   },
@@ -2570,6 +2578,77 @@
     "email": "邮箱",
     "passwordColumn": "密码",
     "statusColumn": "状态",
-    "statusCreated": "已创建"
+    "statusCreated": "已创建",
+    "invalidJsonFile": "该文件不是有效的预期格式 JSON",
+    "orUploadFile": "或上传 JSON 文件",
+    "fileHint": "适用于包含额外字段(公司、国籍、护照、采购意向等)的导入 -- 用户对象的 JSON 数组,或 {\"role\": \"buyer\", \"users\": [...]}。",
+    "fileLoaded": "已加载 {name}:{count} 行",
+    "clearFile": "清除"
+  },
+  "buyerProfile": {
+    "backToDashboard": "返回控制台",
+    "title": "我的资料",
+    "subtitle": "保持您的公司信息和证件资料最新",
+    "loginRequired": "请登录以查看您的资料。",
+    "saveFailed": "保存资料失败",
+    "saveSuccess": "资料已保存",
+    "uploadFailed": "文件上传失败",
+    "fileTooLarge": "文件过大(最大 8MB)",
+    "companyInfo": "公司信息",
+    "documents": "证件资料",
+    "documentsHint": "请上传每份证件清晰的照片或扫描件(图片或PDF,最大8MB)。",
+    "noFile": "尚未上传文件",
+    "fields": {
+      "companyName": "公司名称",
+      "nationality": "国籍",
+      "passportNumber": "护照号码",
+      "annualTurnover": "年营业额",
+      "contactPerson": "联系人",
+      "purchaseIntention": "采购意向",
+      "otherPurchaseIntention": "其他采购意向"
+    },
+    "docFields": {
+      "businessLicense": "营业执照",
+      "businessCard": "名片",
+      "passportFront": "护照首页",
+      "visaPage": "签证页",
+      "cantonFairCard": "广交会证件",
+      "buyerPhoto": "买家照片"
+    }
+  },
+  "adminBuyerProfiles": {
+    "backToAdmin": "← 返回管理后台",
+    "title": "买家资料",
+    "subtitle": "共 {count} 个买家账户",
+    "loadFailed": "加载买家资料失败",
+    "saveFailed": "保存资料失败",
+    "uploadFailed": "文件上传失败",
+    "fileTooLarge": "文件过大(最大 8MB)",
+    "accessDenied": "拒绝访问。需要管理员登录。",
+    "searchPlaceholder": "按姓名、邮箱或公司搜索...",
+    "company": "公司",
+    "nationality": "国籍",
+    "documentsColumn": "证件资料",
+    "noResults": "未找到买家资料",
+    "editProfile": "编辑买家资料",
+    "documents": "证件资料",
+    "noFile": "无文件",
+    "fields": {
+      "companyName": "公司名称",
+      "nationality": "国籍",
+      "passportNumber": "护照号码",
+      "annualTurnover": "年营业额",
+      "contactPerson": "联系人",
+      "purchaseIntention": "采购意向",
+      "otherPurchaseIntention": "其他采购意向"
+    },
+    "docFields": {
+      "businessLicense": "营业执照",
+      "businessCard": "名片",
+      "passportFront": "护照首页",
+      "visaPage": "签证页",
+      "cantonFairCard": "广交会证件",
+      "buyerPhoto": "买家照片"
+    }
   }
 }

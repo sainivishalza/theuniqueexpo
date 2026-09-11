@@ -13,18 +13,35 @@ DEPLOY_REF="$2"
 cd "$APP_DIR"
 
 # A non-interactive SSH command doesn't source .bashrc/.profile, so
-# nvm-installed node/npm/pm2 aren't on PATH by default — load nvm explicitly.
-# Needed early: pm2 is used below (hbuilds cleanup, then the app restart).
-export NVM_DIR="$HOME/.nvm"
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-  # shellcheck disable=SC1091
-  . "$NVM_DIR/nvm.sh"
-fi
+# nvm-installed node/npm/pm2 aren't on PATH by default. Sourcing nvm.sh
+# itself forks many subprocesses for its internal version-resolution
+# logic -- on this resource-constrained shared host, with the app stuck
+# in a PM2 crash-restart loop eating the account's process/fork quota,
+# even that sourcing started failing outright ("fork: retry: Resource
+# temporarily unavailable"), blocking several deploy attempts before
+# they could do anything at all. Skip nvm.sh's machinery entirely and
+# just put its bin directory straight on PATH -- one glob expansion and
+# a no-fork [ -x ] test, nothing else forked.
+for _nvm_bin_dir in "$HOME"/.nvm/versions/node/*/bin; do
+  if [ -x "$_nvm_bin_dir/node" ]; then
+    export PATH="$_nvm_bin_dir:$PATH"
+    break
+  fi
+done
 
 if ! command -v npm >/dev/null 2>&1; then
-  echo "npm still not found after loading nvm. Is Node installed another way (not nvm)?" >&2
+  echo "npm still not found after searching \$HOME/.nvm/versions/node/*/bin. Is Node installed another way (not nvm)?" >&2
   exit 1
 fi
+
+# If the app currently running under PM2 crash-looped (e.g. it failed to
+# start after the last deploy), PM2 forks a fresh Node process every time
+# it dies -- on this host that alone can exhaust the account's process
+# quota and starve every *other* command, including this script's own
+# migrations and build, of the forks they need. Stop it before anything
+# else so this deploy actually gets a chance to run.
+echo "--- stopping any existing app process before deploying (in case it's crash-looping) ---"
+pm2 stop theuniqueexpo 2>&1 || true
 
 # Diagnostics up front, before anything else touches the DB or rebuilds --
 # the last few deploys broke in different ways (runtime 500s after a clean

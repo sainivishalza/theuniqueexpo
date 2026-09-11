@@ -183,7 +183,10 @@
     "signIn": "Войти",
     "noAccount": "Нет аккаунта?",
     "createOne": "Создать бесплатно →",
-    "loginFailed": "Не удалось войти"
+    "loginFailed": "Не удалось войти",
+    "forgotPassword": "Забыли пароль?",
+    "forgotPasswordTitle": "Забыли пароль?",
+    "forgotPasswordBody": "Автоматического сброса пока нет -- свяжитесь с нами, и мы установим вам новый пароль."
   },
   "registerPage": {
     "roles": {
@@ -935,7 +938,14 @@
       "partner": "Партнёр",
       "admin": "Администратор"
     },
-    "bulkAddUsers": "Массовое добавление"
+    "bulkAddUsers": "Массовое добавление",
+    "resetPassword": "Сбросить пароль",
+    "confirmResetPassword": "Сгенерировать новый пароль для {name}? Текущий пароль перестанет работать немедленно.",
+    "resetPasswordFailed": "Не удалось сбросить пароль",
+    "newPasswordTitle": "Новый пароль для {name}",
+    "newPasswordHint": "Показывается один раз -- скопируйте его сейчас и отправьте напрямую. Повторно он не отобразится.",
+    "copy": "Копировать",
+    "done": "Готово"
   },
   "adminPartnerReferrals": {
     "title": "Рефералы партнёров",

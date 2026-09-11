@@ -183,7 +183,10 @@
     "signIn": "Sign In",
     "noAccount": "Don't have an account?",
     "createOne": "Create one free →",
-    "loginFailed": "Login failed"
+    "loginFailed": "Login failed",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordTitle": "Forgot your password?",
+    "forgotPasswordBody": "There's no automatic reset yet -- contact us and we'll set a new one for you."
   },
   "registerPage": {
     "roles": {
@@ -935,7 +938,14 @@
       "partner": "Partner",
       "admin": "Admin"
     },
-    "bulkAddUsers": "Bulk Add Users"
+    "bulkAddUsers": "Bulk Add Users",
+    "resetPassword": "Reset Password",
+    "confirmResetPassword": "Generate a new password for {name}? Their current password stops working immediately.",
+    "resetPasswordFailed": "Could not reset password",
+    "newPasswordTitle": "New password for {name}",
+    "newPasswordHint": "Shown once -- copy it now and send it to them directly. It won't be shown again.",
+    "copy": "Copy",
+    "done": "Done"
   },
   "adminPartnerReferrals": {
     "title": "Partner Referrals",

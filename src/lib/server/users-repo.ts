@@ -68,3 +68,7 @@ export async function updateUser(id: number, input: { role?: string; status?: "a
 export async function deleteUser(id: number) {
   await pool.query("DELETE FROM users WHERE id = ?", [id]);
 }
+
+export async function setUserPasswordHash(id: number, passwordHash: string) {
+  await pool.query<ResultSetHeader>("UPDATE users SET password_hash = ? WHERE id = ?", [passwordHash, id]);
+}

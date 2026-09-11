@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -17,6 +17,20 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
+  const [contact, setContact] = useState<{ contactEmail: string; phone: string } | null>(null);
+
+  // There's no automated email/SMS reset flow yet -- an admin resets a
+  // password on request (see /admin/users) -- so "forgot password" here is
+  // just pointing the account owner at a real human to ask, using whatever
+  // contact details are already public on the site (no new API needed).
+  useEffect(() => {
+    if (!showForgot || contact) return;
+    fetch("/api/company-profile")
+      .then((r) => r.json())
+      .then((data) => setContact({ contactEmail: data.profile?.contactEmail || "", phone: data.profile?.phone || "" }))
+      .catch(() => setContact({ contactEmail: "", phone: "" }));
+  }, [showForgot, contact]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,11 +88,28 @@ export default function LoginPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t("password")}</label>
               <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder={t("passwordPlaceholder")} />
+              <button type="button" onClick={() => setShowForgot(true)} className="mt-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700">
+                {t("forgotPassword")}
+              </button>
             </div>
             <Button type="submit" disabled={loading} variant="save" size="blockMd">
               {loading ? t("signingIn") : t("signIn")}
             </Button>
           </form>
+
+          {showForgot && (
+            <div className="mt-4 rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-sm text-emerald-900">
+              <p className="font-semibold mb-1">{t("forgotPasswordTitle")}</p>
+              <p>{t("forgotPasswordBody")}</p>
+              {contact && (contact.contactEmail || contact.phone) && (
+                <p className="mt-2 font-semibold">
+                  {contact.contactEmail && <a href={`mailto:${contact.contactEmail}`} className="underline">{contact.contactEmail}</a>}
+                  {contact.contactEmail && contact.phone && " · "}
+                  {contact.phone}
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500">{t("noAccount")}{" "}

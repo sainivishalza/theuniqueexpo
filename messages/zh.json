@@ -183,7 +183,10 @@
     "signIn": "登录",
     "noAccount": "还没有账户?",
     "createOne": "免费注册 →",
-    "loginFailed": "登录失败"
+    "loginFailed": "登录失败",
+    "forgotPassword": "忘记密码?",
+    "forgotPasswordTitle": "忘记密码了吗?",
+    "forgotPasswordBody": "目前还没有自动重置功能 -- 请联系我们,我们会为您设置新密码。"
   },
   "registerPage": {
     "roles": {
@@ -935,7 +938,14 @@
       "partner": "合作伙伴",
       "admin": "管理员"
     },
-    "bulkAddUsers": "批量添加用户"
+    "bulkAddUsers": "批量添加用户",
+    "resetPassword": "重置密码",
+    "confirmResetPassword": "为 {name} 生成新密码?其当前密码将立即失效。",
+    "resetPasswordFailed": "重置密码失败",
+    "newPasswordTitle": "{name} 的新密码",
+    "newPasswordHint": "仅显示一次 -- 请立即复制并直接发送给对方,之后将不再显示。",
+    "copy": "复制",
+    "done": "完成"
   },
   "adminPartnerReferrals": {
     "title": "合作伙伴推荐记录",

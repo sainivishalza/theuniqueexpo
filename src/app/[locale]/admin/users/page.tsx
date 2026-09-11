@@ -28,6 +28,7 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState("");
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [error, setError] = useState("");
+  const [resetResult, setResetResult] = useState<{ name: string; password: string } | null>(null);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -60,6 +61,22 @@ export default function AdminUsersPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || t("updateFailed"));
       setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, ...patch } : u)));
+    } catch (err) {
+      setError(errorMessage(err, ta("somethingWentWrong")));
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
+  async function handleResetPassword(id: number, name: string) {
+    if (!confirm(t("confirmResetPassword", { name }))) return;
+    setUpdatingId(id);
+    setError("");
+    try {
+      const res = await fetch(`/api/admin/users/${id}/reset-password`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || t("resetPasswordFailed"));
+      setResetResult({ name, password: data.password });
     } catch (err) {
       setError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
@@ -170,7 +187,15 @@ export default function AdminUsersPage() {
                           </button>
                         </td>
                         <td className="px-6 py-4 text-gray-400 text-xs">{new Date(u.createdAt * 1000).toLocaleDateString()}</td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-6 py-4 text-right space-x-2">
+                          <Button
+                            onClick={() => handleResetPassword(u.id, u.name)}
+                            disabled={busy}
+                            variant="ghost"
+                            size="xs"
+                          >
+                            {t("resetPassword")}
+                          </Button>
                           <Button
                             onClick={() => handleDelete(u.id, u.name)}
                             disabled={busy || isSelf}
@@ -192,6 +217,28 @@ export default function AdminUsersPage() {
           )}
         </div>
       </section>
+
+      {resetResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6">
+            <h2 className="text-lg font-bold text-heading mb-2">{t("newPasswordTitle", { name: resetResult.name })}</h2>
+            <p className="text-sm text-gray-500 mb-4">{t("newPasswordHint")}</p>
+            <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-cream-50 px-4 py-3">
+              <code className="flex-1 text-lg font-mono font-bold text-heading tracking-wide">{resetResult.password}</code>
+              <button
+                type="button"
+                onClick={() => navigator.clipboard?.writeText(resetResult.password)}
+                className="text-xs font-semibold text-emerald-600 hover:text-emerald-700"
+              >
+                {t("copy")}
+              </button>
+            </div>
+            <Button onClick={() => setResetResult(null)} variant="save" size="blockSm" className="mt-5">
+              {t("done")}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

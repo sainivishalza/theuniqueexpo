@@ -122,32 +122,73 @@ if [ -f "$APP_DIR/.env.local" ]; then
   # be watching that convention. Use its own CLI restart command instead --
   # the same kind of sanctioned "restart this managed app" operation as the
   # pm2 restart already used above, just for the Passenger-managed side.
-  if command -v passenger-config >/dev/null 2>&1; then
-    # A live diagnostics probe just proved this restart wasn't actually
-    # taking effect: the real serving process's cwd is
-    # hbuilds/versions/<uuid>/nodejs -- a fresh UUID-named directory on
-    # every deploy, not the "current" symlink path this was targeting.
-    # Passenger registers an app by its exact resolved path, so
-    # restart-app against the symlink itself silently didn't match the
-    # instance actually running (no error -- `|| true` was masking that
-    # this never restarted anything), and requests kept being served by
-    # whatever process happened to still be alive from a previous deploy.
-    # Resolve the symlink to the real versioned path first.
+  # A live diagnostics probe just proved every restart attempt here has
+  # been silently no-op-ing: this deploy's own log showed
+  # "passenger-config not found on PATH" -- a non-interactive SSH shell's
+  # default PATH doesn't include wherever this host installed it (a login
+  # shell's profile, which would set it up, is never sourced here), so
+  # every previous "Requested a Passenger app restart" log line was a lie
+  # -- command -v was failing and the touch-restart.txt fallback (which
+  # its own comment already doubted) is all that ever ran, and that
+  # doesn't appear to be honored either. Search common install locations
+  # directly instead of trusting PATH.
+  PASSENGER_CONFIG_BIN=""
+  for _pc_candidate in \
+    passenger-config \
+    /usr/sbin/passenger-config \
+    /usr/bin/passenger-config \
+    /usr/local/bin/passenger-config \
+    /opt/passenger/bin/passenger-config \
+    /opt/cloudlinux/venv/bin/passenger-config \
+    /usr/local/rvm/gems/*/bin/passenger-config \
+    /usr/local/rvm/wrappers/*/passenger-config \
+    "$HOME"/.rvm/gems/*/bin/passenger-config \
+    "$HOME"/.gem/ruby/*/bin/passenger-config \
+    /opt/alt/ruby*/bin/passenger-config \
+    /usr/share/passenger/bin/passenger-config
+  do
+    if command -v "$_pc_candidate" >/dev/null 2>&1; then
+      PASSENGER_CONFIG_BIN=$(command -v "$_pc_candidate")
+      break
+    fi
+  done
+  if [ -z "$PASSENGER_CONFIG_BIN" ]; then
+    # Still not found -- a bounded search (home dir + the usual system
+    # install roots, not a full / scan) so the *next* deploy's log has the
+    # real answer instead of another guessed candidate list.
+    echo "--- passenger-config not found via PATH or known candidates; searching for it (bounded) ---"
+    echo "PATH=$PATH"
+    FOUND_PC=$(timeout 15 find "$HOME" /usr /opt -maxdepth 7 -iname 'passenger-config' -type f 2>/dev/null | head -1 || true)
+    if [ -n "$FOUND_PC" ]; then
+      echo "Found via search: $FOUND_PC"
+      PASSENGER_CONFIG_BIN="$FOUND_PC"
+    else
+      echo "Not found by bounded search either."
+    fi
+  fi
+
+  if [ -n "$PASSENGER_CONFIG_BIN" ]; then
+    echo "Using passenger-config at: $PASSENGER_CONFIG_BIN"
+    # The real serving process's cwd is hbuilds/versions/<uuid>/nodejs -- a
+    # fresh UUID-named directory on every deploy, not the "current" symlink
+    # path. Passenger registers an app by its exact resolved path, so
+    # restart-app against the symlink itself wouldn't match the running
+    # instance either -- resolve it to the real versioned path first.
     echo "--- resolving hbuilds 'current' symlink to the real versioned app path ---"
     ls -la "$HBUILDS" 2>&1 || true
     REAL_HBUILDS_ROOT=$(readlink -f "$HBUILDS/current" 2>/dev/null || true)
     echo "Resolved: $REAL_HBUILDS_ROOT"
     if [ -n "$REAL_HBUILDS_ROOT" ]; then
-      passenger-config restart-app "$REAL_HBUILDS_ROOT/nodejs" 2>&1 || true
-      passenger-config restart-app "$REAL_HBUILDS_ROOT" 2>&1 || true
+      "$PASSENGER_CONFIG_BIN" restart-app "$REAL_HBUILDS_ROOT/nodejs" 2>&1 || true
+      "$PASSENGER_CONFIG_BIN" restart-app "$REAL_HBUILDS_ROOT" 2>&1 || true
     fi
-    passenger-config restart-app "$HBUILDS/current/nodejs" 2>&1 || true
-    passenger-config restart-app "$HBUILDS/current" 2>&1 || true
+    "$PASSENGER_CONFIG_BIN" restart-app "$HBUILDS/current/nodejs" 2>&1 || true
+    "$PASSENGER_CONFIG_BIN" restart-app "$HBUILDS/current" 2>&1 || true
     echo "--- passenger-config listing all known app instances (to confirm the actual registered path) ---"
-    passenger-config list-instances 2>&1 || true
+    "$PASSENGER_CONFIG_BIN" list-instances 2>&1 || true
     echo "Requested a Passenger app restart via passenger-config for both the resolved real path and both candidate app roots."
   else
-    echo "(passenger-config not found on PATH -- falling back to touching tmp/restart.txt, which may not be honored here)"
+    echo "(passenger-config could not be located anywhere -- falling back to touching tmp/restart.txt, which may not be honored here)"
     mkdir -p "$HBUILDS/current/nodejs/tmp" "$HBUILDS/current/tmp" 2>/dev/null || true
     touch "$HBUILDS/current/nodejs/tmp/restart.txt" "$HBUILDS/current/tmp/restart.txt" 2>/dev/null || true
   fi

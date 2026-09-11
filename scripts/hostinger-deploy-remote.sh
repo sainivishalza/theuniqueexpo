@@ -107,53 +107,52 @@ git fetch origin "$DEPLOY_REF"
 git checkout "$DEPLOY_REF"
 git pull origin "$DEPLOY_REF"
 
-# The last two deploys both failed here with "Can't connect to local
-# server through socket '/var/lib/mysql/mysql.sock'" -- immediately after
-# mysqldump above succeeded via the exact same connection parameters, at
-# the exact same point, in two independent SSH sessions. That's not
-# transient noise, it's reproducible: something on this shared host (a
-# resource-limit trip from the dump itself, most likely) briefly restarts
-# the local MySQL socket right in this window. Ride it out with a short
-# retry loop instead of failing the whole deploy over a multi-second blip.
-echo "Confirming the database is reachable before applying migrations ..."
-DB_READY=0
-for i in 1 2 3 4 5 6 7 8 9 10; do
-  if $MYSQL -e "SELECT 1" >/dev/null 2>&1; then
-    DB_READY=1
-    break
-  fi
-  echo "  database not reachable yet (attempt $i/10), waiting 3s..."
-  sleep 3
-done
-if [ "$DB_READY" -ne 1 ]; then
-  echo "Database still unreachable after 30s -- aborting before touching migrations." >&2
-  exit 1
-fi
+# The last three deploys all failed with "Can't connect to local server
+# through socket '/var/lib/mysql/mysql.sock'" at various points right
+# after mysqldump above -- including once immediately after a successful
+# `SELECT 1` reachability check, on the very next mysql invocation. That
+# rules out a single up-front readiness check (a one-time "is the DB up"
+# probe can't catch a failure on a *later*, separate connection attempt)
+# and points to a narrow per-connection race on this shared host rather
+# than a single sustained outage. Retry each migration's own connection
+# attempt individually instead.
+run_mysql() {
+  local file="$1"
+  for i in 1 2 3 4 5; do
+    if $MYSQL < "$file"; then
+      return 0
+    fi
+    echo "  mysql failed applying $file (attempt $i/5), waiting 3s..." >&2
+    sleep 3
+  done
+  echo "Giving up on $file after 5 attempts." >&2
+  return 1
+}
 
 echo "Applying new migrations ..."
-$MYSQL < schema-migrations/002-expo-registrations.sql
-$MYSQL < schema-migrations/004-custom-registration-forms.sql
-$MYSQL < schema-migrations/005-about-content.sql
-$MYSQL < schema-migrations/006-site-pages.sql
-$MYSQL < schema-migrations/007-fix-malformed-slugs.sql
-$MYSQL < schema-migrations/008-exhibition-gallery-images.sql
-$MYSQL < schema-migrations/009-fix-poster-content.sql
-$MYSQL < schema-migrations/010-exhibitions-updated-at.sql
-$MYSQL < schema-migrations/011-messaging-favorites-reviews.sql
-$MYSQL < schema-migrations/012-tours.sql
-$MYSQL < schema-migrations/013-exhibition-tour-i18n-content.sql
-$MYSQL < schema-migrations/014-events-blog-tour-reviews.sql
-$MYSQL < schema-migrations/015-moving-subsidy-applications.sql
-$MYSQL < schema-migrations/016-company-profile.sql
-$MYSQL < schema-migrations/017-blog-author.sql
-$MYSQL < schema-migrations/018-blog-pillar-cluster-content.sql
-$MYSQL < schema-migrations/019-faq-content.sql
-$MYSQL < schema-migrations/020-site-theme.sql
-$MYSQL < schema-migrations/021-rotate-admin-password.sql
-$MYSQL < schema-migrations/022-team-members.sql
-$MYSQL < schema-migrations/023-partner-program.sql
-$MYSQL < schema-migrations/024-magazine-video-conference-city.sql
-$MYSQL < schema-migrations/025-conference-city-content.sql
+run_mysql schema-migrations/002-expo-registrations.sql
+run_mysql schema-migrations/004-custom-registration-forms.sql
+run_mysql schema-migrations/005-about-content.sql
+run_mysql schema-migrations/006-site-pages.sql
+run_mysql schema-migrations/007-fix-malformed-slugs.sql
+run_mysql schema-migrations/008-exhibition-gallery-images.sql
+run_mysql schema-migrations/009-fix-poster-content.sql
+run_mysql schema-migrations/010-exhibitions-updated-at.sql
+run_mysql schema-migrations/011-messaging-favorites-reviews.sql
+run_mysql schema-migrations/012-tours.sql
+run_mysql schema-migrations/013-exhibition-tour-i18n-content.sql
+run_mysql schema-migrations/014-events-blog-tour-reviews.sql
+run_mysql schema-migrations/015-moving-subsidy-applications.sql
+run_mysql schema-migrations/016-company-profile.sql
+run_mysql schema-migrations/017-blog-author.sql
+run_mysql schema-migrations/018-blog-pillar-cluster-content.sql
+run_mysql schema-migrations/019-faq-content.sql
+run_mysql schema-migrations/020-site-theme.sql
+run_mysql schema-migrations/021-rotate-admin-password.sql
+run_mysql schema-migrations/022-team-members.sql
+run_mysql schema-migrations/023-partner-program.sql
+run_mysql schema-migrations/024-magazine-video-conference-city.sql
+run_mysql schema-migrations/025-conference-city-content.sql
 
 echo "Installing dependencies and building ..."
 npm install

@@ -26,6 +26,29 @@ if ! command -v npm >/dev/null 2>&1; then
   exit 1
 fi
 
+# Diagnostics up front, before anything else touches the DB or rebuilds --
+# the last few deploys broke in different ways (runtime 500s after a clean
+# build, then the build itself aborting/core-dumping) even though the app
+# source was unchanged between some of those attempts, pointing at host
+# resource pressure rather than a code bug. Capture the currently-running
+# process's state and the currently-running app's own error log (from
+# whatever the *previous* deploy left running) before this run does
+# anything that could itself add more pressure.
+echo "--- host memory ---"
+free -h 2>&1 || true
+echo "--- disk space ---"
+df -h "$HOME" 2>&1 || true
+echo "--- pm2 process list ---"
+pm2 list 2>&1 || true
+echo "--- currently-running app's pm2 error log tail ---"
+PM2_ERR_LOG=$(pm2 jlist 2>/dev/null | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const a=JSON.parse(d);const p=a.find(x=>x.name==='theuniqueexpo');console.log(p&&p.pm2_env&&p.pm2_env.pm_err_log_path||'');}catch(e){console.log('');}})" 2>/dev/null || true)
+if [ -n "$PM2_ERR_LOG" ] && [ -f "$PM2_ERR_LOG" ]; then
+  tail -n 100 "$PM2_ERR_LOG" 2>&1 || true
+else
+  echo "(could not resolve pm2 error log path; falling back to default location)"
+  tail -n 100 ~/.pm2/logs/theuniqueexpo-error.log 2>&1 || true
+fi
+
 # Hostinger's real production serving mechanism is Passenger/hbuilds, which
 # builds from `main` on its own (webhook-driven) independently of this
 # script's own SSH-driven build+PM2 restart below.

@@ -5,7 +5,7 @@ import { Worker } from "node:worker_threads";
 import { NextResponse } from "next/server";
 import { createWorker } from "tesseract.js";
 import { requireAdmin } from "@/lib/auth-server";
-import { findTessdataDir, TESSDATA_FILE_RELATIVE } from "@/lib/server/photo-organizer/ocr";
+import { createOcrWorker, findTessdataDir, TESSDATA_FILE_RELATIVE } from "@/lib/server/photo-organizer/ocr";
 
 // Zero worker_threads.Worker lifecycle events ever fired in the previous
 // diagnostic run (15s timeout, nothing) -- the thread spawn itself is the
@@ -110,87 +110,56 @@ export async function GET(request: Request) {
     bareWorkerOutcome = { ok: false, ms: Date.now() - bareWorkerStartedAt, error: err instanceof Error ? err.message : String(err) };
   }
 
-  // A bare worker_threads.Worker just proved to spawn and respond in
-  // milliseconds -- worker_threads itself is fine on this host. So the
-  // hang is specific to tesseract.js's own worker script: its Node
-  // adapter resolves workerPath as `__dirname`-relative inside its own
-  // installed package (defaultOptions.js), which depends on that file
-  // still being a real file on disk at request time (not bundled away).
-  // Recompute the exact same resolution it uses and check directly,
-  // rather than assuming local dev and production node_modules match.
-  let tesseractWorkerPath: { path: string; exists: boolean; error?: string } = { path: "", exists: false };
-  try {
-    const defaultOptsDir = path.dirname(require.resolve("tesseract.js/src/worker/node/defaultOptions.js"));
-    const wp = path.join(defaultOptsDir, "..", "..", "worker-script", "node", "index.js");
-    tesseractWorkerPath = { path: wp, exists: fs.existsSync(wp) };
-  } catch (err) {
-    tesseractWorkerPath = { path: "", exists: false, error: err instanceof Error ? err.message : String(err) };
-  }
-
-  // Isolate further: spawn tesseract.js's exact worker script file
-  // directly (bypassing createWorker.js's own orchestration entirely) and
-  // see if it sends *any* message on its own -- tells us whether the hang
-  // is inside that worker script itself (e.g. its own WASM core load) or
-  // specifically in how createWorker.js talks to it.
-  // Its own worker-script/node/index.js only registers a message handler
-  // and waits -- it never sends anything spontaneously -- so "online"
-  // (fires once the thread actually starts executing its script, before
-  // any app-level message) is the right signal here, not "message".
-  let rawTesseractWorkerOutcome: { ok: boolean; ms: number; wentOnline: boolean; error?: string } = {
-    ok: false,
-    ms: 0,
-    wentOnline: false,
-  };
-  if (tesseractWorkerPath.exists) {
-    const rawStartedAt = Date.now();
-    try {
-      await new Promise<void>((resolve, reject) => {
-        const w = new Worker(tesseractWorkerPath.path);
-        const timer = setTimeout(() => {
-          w.terminate().catch(() => {});
-          reject(new Error("raw tesseract worker never went online within 10s"));
-        }, 10_000);
-        w.once("online", () => {
-          clearTimeout(timer);
-          rawTesseractWorkerOutcome.wentOnline = true;
-          w.terminate().catch(() => {});
-          resolve();
-        });
-        w.once("error", (err) => {
-          clearTimeout(timer);
-          reject(err);
-        });
-      });
-      rawTesseractWorkerOutcome.ok = true;
-      rawTesseractWorkerOutcome.ms = Date.now() - rawStartedAt;
-    } catch (err) {
-      rawTesseractWorkerOutcome = {
-        ok: false,
-        ms: Date.now() - rawStartedAt,
-        wentOnline: rawTesseractWorkerOutcome.wentOnline,
-        error: err instanceof Error ? err.message : String(err),
-      };
-    }
-  }
-
+  // ROOT CAUSE FOUND: a previous diagnostic run's require.resolve() probe
+  // against a tesseract.js source file returned a bare webpack module
+  // *number* instead of a real path -- proof Next's server build bundles
+  // tesseract.js's Node code into this app's own webpack chunk (its
+  // package.json has a "browser" field, which is what triggers Next's
+  // bundle-instead-of-externalize heuristic). That means `__dirname`
+  // inside tesseract.js's own defaultOptions.js (evaluated as part of that
+  // bundled chunk) no longer points at its real on-disk location under
+  // node_modules/tesseract.js -- so the workerPath it silently computes
+  // for `new Worker(workerPath)` is wrong, and a worker thread given a
+  // bundler-relocated bogus path doesn't error, it just spawns and does
+  // nothing -- exactly the "zero lifecycle events, hangs forever" symptom.
+  // ocr.ts now computes workerPath itself (same proven directory-walking
+  // approach as findTessdataDir) and passes it to createWorker() explicitly,
+  // bypassing tesseract.js's broken default entirely. Test the *real* fixed
+  // function directly, alongside the old unfixed default-resolution call,
+  // for a clear before/after.
   const resourcesBefore = readProcSelfStatus();
-  const workerEvents: { t: number; status: string; progress: number }[] = [];
-  const workerStartedAt = Date.now();
-  let workerOutcome: { ok: boolean; ms: number; error?: string };
+
+  const unfixedWorkerEvents: { t: number; status: string; progress: number }[] = [];
+  const unfixedStartedAt = Date.now();
+  let unfixedWorkerOutcome: { ok: boolean; ms: number; error?: string };
   try {
     const workerPromise = createWorker("eng", 1, {
       cachePath: resolvedDir,
-      logger: (m) => workerEvents.push({ t: Date.now() - workerStartedAt, status: m.status, progress: m.progress }),
+      logger: (m) => unfixedWorkerEvents.push({ t: Date.now() - unfixedStartedAt, status: m.status, progress: m.progress }),
     });
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("diagnostic worker creation timed out after 15s")), 15_000)
+      setTimeout(() => reject(new Error("unfixed diagnostic worker creation timed out after 15s")), 15_000)
     );
     const worker = await Promise.race([workerPromise, timeoutPromise]);
-    workerOutcome = { ok: true, ms: Date.now() - workerStartedAt };
+    unfixedWorkerOutcome = { ok: true, ms: Date.now() - unfixedStartedAt };
     // @ts-expect-error -- tesseract.js's Worker type does have terminate()
     await worker.terminate().catch(() => {});
   } catch (err) {
-    workerOutcome = { ok: false, ms: Date.now() - workerStartedAt, error: err instanceof Error ? err.message : String(err) };
+    unfixedWorkerOutcome = { ok: false, ms: Date.now() - unfixedStartedAt, error: err instanceof Error ? err.message : String(err) };
+  }
+
+  const fixedStartedAt = Date.now();
+  let fixedWorkerOutcome: { ok: boolean; ms: number; error?: string };
+  try {
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("fixed diagnostic worker creation timed out after 15s")), 15_000)
+    );
+    const worker = await Promise.race([createOcrWorker(), timeoutPromise]);
+    fixedWorkerOutcome = { ok: true, ms: Date.now() - fixedStartedAt };
+    // @ts-expect-error -- tesseract.js's Worker type does have terminate()
+    await worker.terminate().catch(() => {});
+  } catch (err) {
+    fixedWorkerOutcome = { ok: false, ms: Date.now() - fixedStartedAt, error: err instanceof Error ? err.message : String(err) };
   }
 
   const resourcesAfter = readProcSelfStatus();
@@ -205,11 +174,10 @@ export async function GET(request: Request) {
     cdnReachable,
     nodeVersion: process.version,
     platform: process.platform,
-    workerOutcome,
-    workerEvents,
+    unfixedWorkerOutcome,
+    unfixedWorkerEvents,
     bareWorkerOutcome,
-    tesseractWorkerPath,
-    rawTesseractWorkerOutcome,
+    fixedWorkerOutcome,
     resources: {
       threadsBefore: resourcesBefore["Threads"],
       threadsAfter: resourcesAfter["Threads"],

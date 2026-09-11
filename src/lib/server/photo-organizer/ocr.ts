@@ -27,19 +27,28 @@ import { createWorker, type Worker } from "tesseract.js";
 export const TESSDATA_RELATIVE = path.join("src", "lib", "server", "photo-organizer", "tessdata");
 export const TESSDATA_FILE_RELATIVE = path.join(TESSDATA_RELATIVE, "eng.traineddata");
 
-export function findTessdataDir(): string {
+// Walks up from a few candidate starting points looking for a marker file
+// known to live at the real app root, returning that root directory (or
+// null if none of the starting points led anywhere).
+function findAppRoot(markerRelativePath: string): string | null {
   const startingPoints = [process.cwd(), __dirname];
   for (const start of startingPoints) {
     let dir = start;
     for (let i = 0; i < 10; i++) {
-      if (fs.existsSync(path.join(dir, TESSDATA_FILE_RELATIVE))) {
-        return path.join(dir, TESSDATA_RELATIVE);
+      if (fs.existsSync(path.join(dir, markerRelativePath))) {
+        return dir;
       }
       const parent = path.dirname(dir);
       if (parent === dir) break;
       dir = parent;
     }
   }
+  return null;
+}
+
+export function findTessdataDir(): string {
+  const root = findAppRoot(TESSDATA_FILE_RELATIVE);
+  if (root) return path.join(root, TESSDATA_RELATIVE);
   // Nothing found -- fall back to the original assumption so the error
   // message/behavior below is at least deterministic, and log loudly so
   // the next failure comes with real evidence instead of another guess.
@@ -54,6 +63,50 @@ export function findTessdataDir(): string {
 
 const TESSDATA_DIR = findTessdataDir();
 console.log(`[photo-organizer/ocr] resolved tessdata dir: ${TESSDATA_DIR}`);
+
+// tesseract.js's own Node worker adapter (worker/node/defaultOptions.js)
+// computes its default `workerPath` as `__dirname`-relative *inside its own
+// installed package*, evaluated when that module first runs. Next.js's
+// server build bundles tesseract.js's Node code into this app's own
+// webpack chunk (confirmed live: a `require.resolve()` against one of its
+// files returns a bare webpack module *number*, not a real path -- proof
+// this isn't plain unbundled `node_modules` code at runtime), which means
+// `__dirname` inside that bundled copy of defaultOptions.js no longer
+// points at its real on-disk location under node_modules/tesseract.js --
+// so the `workerPath` it hands to `new Worker(workerPath)` silently points
+// at the wrong file. A worker thread told to load a bundler-relocated,
+// bogus path doesn't error -- it just spawns and does nothing productive,
+// which is exactly the "zero lifecycle events, hangs forever" symptom
+// production showed. Compute the real path ourselves, walking up from
+// candidate roots the same proven-reliable way findTessdataDir() does
+// (this file's own __dirname isn't subject to the same problem: Next
+// preserves it as this chunk's real compiled location, not the package's),
+// and pass it to createWorker() explicitly so tesseract.js's own broken
+// default is never consulted.
+const WORKER_SCRIPT_RELATIVE = path.join(
+  "node_modules",
+  "tesseract.js",
+  "src",
+  "worker-script",
+  "node",
+  "index.js",
+);
+
+function findWorkerScriptPath(): string | undefined {
+  const root = findAppRoot(WORKER_SCRIPT_RELATIVE);
+  if (!root) {
+    console.error(
+      `[photo-organizer/ocr] could not locate tesseract.js's worker script by walking up from ` +
+        `process.cwd()=${process.cwd()} or __dirname=${__dirname}; falling back to tesseract.js's own ` +
+        `default resolution, which is known to be broken under this app's webpack bundling.`,
+    );
+    return undefined;
+  }
+  return path.join(root, WORKER_SCRIPT_RELATIVE);
+}
+
+const WORKER_SCRIPT_PATH = findWorkerScriptPath();
+console.log(`[photo-organizer/ocr] resolved tesseract worker script path: ${WORKER_SCRIPT_PATH}`);
 
 // Defense in depth in case the bundled file is ever missing/corrupted and
 // tesseract.js falls back to its network path anyway -- fail loudly
@@ -70,7 +123,11 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 // English-trained worker is enough -- and reusing one worker across an
 // entire batch avoids re-initializing tesseract's model for every image.
 export async function createOcrWorker(): Promise<Worker> {
-  return withTimeout(createWorker("eng", 1, { cachePath: TESSDATA_DIR }), 60_000, "Loading the OCR language model");
+  return withTimeout(
+    createWorker("eng", 1, { cachePath: TESSDATA_DIR, ...(WORKER_SCRIPT_PATH ? { workerPath: WORKER_SCRIPT_PATH } : {}) }),
+    60_000,
+    "Loading the OCR language model",
+  );
 }
 
 export async function ocrImage(worker: Worker, filePath: string): Promise<string> {

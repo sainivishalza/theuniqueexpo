@@ -25,7 +25,7 @@ const SECTION_KEYS = [
   { key: "companyProfile", href: "/admin/company-profile", icon: "🏢", color: "from-teal-500 to-emerald-600" },
   { key: "faqManagement", href: "/admin/faq", icon: "❓", color: "from-rose-500 to-pink-600" },
   { key: "siteTheme", href: "/admin/site-theme", icon: "🎨", color: "from-fuchsia-500 to-purple-600" },
-  { key: "userManagement", icon: "👥", color: "from-orange-500 to-red-500", comingSoon: true },
+  { key: "userManagement", href: "/admin/users", icon: "👥", color: "from-orange-500 to-red-500" },
 ];
 
 export default function AdminPage() {
@@ -117,7 +117,6 @@ export default function AdminPage() {
               <div className="flex-1">
                 <h3 className="font-bold text-heading">{s.title}</h3>
                 <p className="text-sm text-gray-500 mt-1">{s.description}</p>
-                {s.comingSoon && <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">{t("comingSoon")}</span>}
               </div>
             </Card>
           ))}

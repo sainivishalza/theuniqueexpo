@@ -828,6 +828,7 @@
     "title": "合作伙伴计划",
     "subtitle": "管理合作伙伴计划页面展示的等级、权益和价格。",
     "viewApplications": "查看申请",
+    "viewReferrals": "查看推荐记录",
     "accessDenied": "访问被拒绝",
     "loadFailed": "加载合作伙伴等级失败",
     "loadingTiers": "正在加载合作伙伴等级...",
@@ -929,6 +930,47 @@
     "finalizeAndDownload": "完成并下载",
     "finalizing": "正在生成压缩包...",
     "finalizeFailed": "生成压缩包失败"
+  },
+  "adminUsers": {
+    "title": "用户管理",
+    "subtitle": "共有 {count} 位注册用户",
+    "accessDenied": "拒绝访问",
+    "backToAdmin": "返回管理后台",
+    "searchPlaceholder": "按姓名或邮箱搜索...",
+    "role": "角色",
+    "statusColumn": "状态",
+    "joined": "注册时间",
+    "statusActive": "正常",
+    "statusSuspended": "已封禁",
+    "loadFailed": "加载用户失败",
+    "updateFailed": "更新失败",
+    "deleteFailed": "删除用户失败",
+    "confirmDelete": "确定要删除 {name} 的账户吗?此操作无法撤销。",
+    "noResults": "未找到用户。",
+    "roles": {
+      "buyer": "买家",
+      "exhibitor": "参展商",
+      "visitor": "访客",
+      "partner": "合作伙伴",
+      "admin": "管理员"
+    }
+  },
+  "adminPartnerReferrals": {
+    "title": "合作伙伴推荐记录",
+    "backToTiers": "返回合作等级",
+    "accessDenied": "拒绝访问",
+    "referralsFound": "共 {count} 条推荐记录",
+    "partner": "合作伙伴",
+    "referredUser": "被推荐用户",
+    "commission": "佣金",
+    "updateFailed": "更新失败",
+    "noResultsTitle": "暂无推荐记录",
+    "noResultsSubtitle": "当有人通过合作伙伴的推荐链接注册后,记录将显示在这里。",
+    "statuses": {
+      "signed_up": "已注册",
+      "booked_booth": "已预订展位",
+      "posted_rfq": "已发布询价"
+    }
   },
   "adminAbout": {
     "saveFailed": "保存失败",

@@ -11,6 +11,7 @@ import {
 import { validateExpoRegistration, type ExpoRegistrationInput } from "@/lib/expo-registrations";
 import { validateCustomAnswers } from "@/lib/custom-registration-form";
 import { checkLoginRateLimit, resetLoginRateLimit } from "@/lib/server/rate-limit";
+import { upgradeReferralStatus } from "@/lib/server/partner-referrals-repo";
 
 export async function POST(request: Request) {
   try {
@@ -122,5 +123,11 @@ async function handlePost(request: Request): Promise<NextResponse> {
   }
 
   if (newSessionToken) setSessionCookie(response, newSessionToken);
+
+  // Best-effort referral-status upgrade -- never let this fail the
+  // registration. An exhibition sign-up counts as the strongest
+  // conversion signal (booking a spot beats just posting an RFQ).
+  upgradeReferralStatus(user.id, "booked_booth").catch((err) => console.error("Referral status upgrade error:", err));
+
   return response;
 }

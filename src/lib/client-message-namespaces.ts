@@ -13,7 +13,7 @@ export const ADMIN_NAMESPACES = [
   "adminPhotoOrganizer",
   "adminRegFormBuilder", "adminRegistrationsCommon", "adminRfqs", "adminServiceTours", "adminServicesHome",
   "adminCityPartnershipInquiries", "adminCityPartnershipsContent", "adminConferenceHostingContent", "adminConferenceInquiries", "adminMagazine", "adminVideos",
-  "adminPartnerApplications", "adminPartnerTiers",
+  "adminPartnerApplications", "adminPartnerReferrals", "adminPartnerTiers", "adminUsers",
   "adminSitePageEditor", "adminSiteTheme", "adminSubsidies", "adminSubsidyApplications", "adminTeam", "adminTourApplications",
   "adminTourRegForm", "adminTourRegistrations", "adminToursCrud", "adminVisaApplications",
 ];

@@ -1,17 +1,38 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
-import { getReferralsForPartner, getPartnerStats, generateReferralLink } from "@/lib/partners";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+
+interface Referral {
+  id: number;
+  referredUserName: string;
+  referredUserEmail: string;
+  conversionStatus: "signed_up" | "booked_booth" | "posted_rfq";
+  commission: number;
+  createdAt: number;
+}
 
 export default function PartnerDashboard() {
   const t = useTranslations("partnerDashboard");
   const { user } = useAuth();
-  const referrals = user ? getReferralsForPartner(String(user.id)) : [];
-  const stats = user ? getPartnerStats(String(user.id)) : { totalReferrals: 0, totalCommission: 0, conversionRate: 0 };
-  const referralLink = user ? generateReferralLink(String(user.id)) : "";
+  const [referrals, setReferrals] = useState<Referral[]>([]);
+  const [stats, setStats] = useState({ totalReferrals: 0, totalCommission: 0, conversionRate: 0 });
+
+  useEffect(() => {
+    if (!user) return;
+    fetch("/api/partner-referrals/me")
+      .then((res) => res.json())
+      .then((data) => {
+        setReferrals(data.referrals || []);
+        setStats(data.stats || { totalReferrals: 0, totalCommission: 0, conversionRate: 0 });
+      })
+      .catch(() => {});
+  }, [user]);
+
+  const referralLink = user && typeof window !== "undefined" ? `${window.location.origin}/register?ref=${user.id}` : "";
 
   const statusLabels: Record<string, { label: string; color: string }> = {
     signed_up: { label: t("statuses.signedUp"), color: "bg-yellow-100 text-yellow-700 border border-yellow-200" },
@@ -96,7 +117,7 @@ export default function PartnerDashboard() {
                       <tr key={ref.id} className="hover:bg-cream-50 transition-colors">
                         <td className="px-6 py-4 font-semibold text-gray-900">{ref.referredUserName}</td>
                         <td className="px-6 py-4 text-gray-500">{ref.referredUserEmail}</td>
-                        <td className="px-6 py-4 text-gray-500">{ref.signupDate}</td>
+                        <td className="px-6 py-4 text-gray-500">{new Date(ref.createdAt * 1000).toLocaleDateString()}</td>
                         <td className="px-6 py-4">
                           <span className={`rounded-lg px-2.5 py-1 text-xs font-bold ${status.color}`}>{status.label}</span>
                         </td>

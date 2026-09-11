@@ -66,7 +66,7 @@ const DUMMY_HASH_FOR_TIMING = "$2a$12$C6UzMDM.H6dfI/f/IKcEeOa8jTiJfyGX0mF/HzL8Xe
 
 export async function verifyUserPassword(email: string, password: string): Promise<SessionUser | null> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT id, name, email, role, country, password_hash FROM users WHERE email = ?",
+    "SELECT id, name, email, role, country, status, password_hash FROM users WHERE email = ?",
     [email]
   );
   const row = rows[0];
@@ -76,6 +76,9 @@ export async function verifyUserPassword(email: string, password: string): Promi
   }
   const valid = await bcrypt.compare(password, row.password_hash);
   if (!valid) return null;
+  // A suspended admin can't log back in through this path -- confirmed
+  // password doesn't matter once an admin has suspended the account.
+  if (row.status === "suspended") return null;
   return { id: row.id, name: row.name, email: row.email, role: row.role, country: row.country };
 }
 
@@ -87,10 +90,15 @@ export async function getSessionUser(request: Request): Promise<SessionUser | nu
 
     const decoded = jwt.verify(tokenMatch[1], JWT_SECRET) as SessionTokenPayload;
     const [rows] = await pool.query<RowDataPacket[]>(
-      "SELECT id, name, email, role, country FROM users WHERE id = ?",
+      "SELECT id, name, email, role, country, status FROM users WHERE id = ?",
       [decoded.id]
     );
-    return (rows[0] as SessionUser | undefined) || null;
+    const row = rows[0];
+    if (!row) return null;
+    // Suspending a user invalidates their existing session immediately on
+    // their next request, not just future login attempts.
+    if (row.status === "suspended") return null;
+    return { id: row.id, name: row.name, email: row.email, role: row.role, country: row.country };
   } catch {
     return null;
   }

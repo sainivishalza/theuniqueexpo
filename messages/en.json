@@ -828,6 +828,7 @@
     "title": "Partner Program",
     "subtitle": "Manage the tiers, benefits, and pricing shown on the public Partner Program page.",
     "viewApplications": "View applications",
+    "viewReferrals": "View referrals",
     "accessDenied": "Access denied",
     "loadFailed": "Failed to load partner tiers",
     "loadingTiers": "Loading partner tiers...",
@@ -929,6 +930,47 @@
     "finalizeAndDownload": "Finalize & Download",
     "finalizing": "Building zip...",
     "finalizeFailed": "Failed to build the output zip"
+  },
+  "adminUsers": {
+    "title": "User Management",
+    "subtitle": "{count} registered users",
+    "accessDenied": "Access denied",
+    "backToAdmin": "Back to Admin",
+    "searchPlaceholder": "Search by name or email...",
+    "role": "Role",
+    "statusColumn": "Status",
+    "joined": "Joined",
+    "statusActive": "Active",
+    "statusSuspended": "Suspended",
+    "loadFailed": "Failed to load users",
+    "updateFailed": "Update failed",
+    "deleteFailed": "Failed to delete user",
+    "confirmDelete": "Delete {name}'s account? This cannot be undone.",
+    "noResults": "No users found.",
+    "roles": {
+      "buyer": "Buyer",
+      "exhibitor": "Exhibitor",
+      "visitor": "Visitor",
+      "partner": "Partner",
+      "admin": "Admin"
+    }
+  },
+  "adminPartnerReferrals": {
+    "title": "Partner Referrals",
+    "backToTiers": "Back to Partner Tiers",
+    "accessDenied": "Access denied",
+    "referralsFound": "{count} referrals",
+    "partner": "Partner",
+    "referredUser": "Referred User",
+    "commission": "Commission",
+    "updateFailed": "Update failed",
+    "noResultsTitle": "No referrals yet",
+    "noResultsSubtitle": "Referrals will appear here once someone signs up through a partner's referral link.",
+    "statuses": {
+      "signed_up": "Signed Up",
+      "booked_booth": "Booked Booth",
+      "posted_rfq": "Posted RFQ"
+    }
   },
   "adminAbout": {
     "saveFailed": "Save failed",

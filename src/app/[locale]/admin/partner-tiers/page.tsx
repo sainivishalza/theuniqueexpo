@@ -160,6 +160,7 @@ export default function AdminPartnerTiersPage() {
           </div>
           <p className="mt-1 text-gray-400 text-sm">
             {t("subtitle")} <Link href="/admin/partner-applications" className="text-emerald-300 hover:underline">{t("viewApplications")}</Link>
+            {" · "}<Link href="/admin/partner-referrals" className="text-emerald-300 hover:underline">{t("viewReferrals")}</Link>
           </p>
         </div>
       </section>

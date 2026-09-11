@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/navigation";
@@ -25,6 +26,8 @@ export default function RegisterPage() {
   }));
   const { register } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const ref = searchParams.get("ref") || undefined;
   const [form, setForm] = useState({ name: "", email: "", password: "", role: "buyer" as UserRole, country: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,7 +37,7 @@ export default function RegisterPage() {
     setError("");
     setLoading(true);
     try {
-      await register(form.name, form.email, form.password, form.role, form.country);
+      await register(form.name, form.email, form.password, form.role, form.country, ref);
       router.push("/dashboard/" + form.role);
     } catch (err) {
       setError(errorMessage(err, t("registrationFailed")));

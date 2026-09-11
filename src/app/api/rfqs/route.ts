@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth-server";
 import { listRfqs, createRfq } from "@/lib/server/rfqs-repo";
+import { upgradeReferralStatus } from "@/lib/server/partner-referrals-repo";
 
 export async function GET() {
   const rfqs = await listRfqs();
@@ -17,5 +18,9 @@ export async function POST(request: Request) {
   }
 
   const id = await createRfq({ ...body, buyerId: user.id, buyerName: user.name });
+
+  // Best-effort referral-status upgrade -- never let this fail the RFQ.
+  upgradeReferralStatus(user.id, "posted_rfq").catch((err) => console.error("Referral status upgrade error:", err));
+
   return NextResponse.json({ id }, { status: 201 });
 }

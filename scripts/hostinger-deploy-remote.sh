@@ -123,9 +123,29 @@ if [ -f "$APP_DIR/.env.local" ]; then
   # the same kind of sanctioned "restart this managed app" operation as the
   # pm2 restart already used above, just for the Passenger-managed side.
   if command -v passenger-config >/dev/null 2>&1; then
+    # A live diagnostics probe just proved this restart wasn't actually
+    # taking effect: the real serving process's cwd is
+    # hbuilds/versions/<uuid>/nodejs -- a fresh UUID-named directory on
+    # every deploy, not the "current" symlink path this was targeting.
+    # Passenger registers an app by its exact resolved path, so
+    # restart-app against the symlink itself silently didn't match the
+    # instance actually running (no error -- `|| true` was masking that
+    # this never restarted anything), and requests kept being served by
+    # whatever process happened to still be alive from a previous deploy.
+    # Resolve the symlink to the real versioned path first.
+    echo "--- resolving hbuilds 'current' symlink to the real versioned app path ---"
+    ls -la "$HBUILDS" 2>&1 || true
+    REAL_HBUILDS_ROOT=$(readlink -f "$HBUILDS/current" 2>/dev/null || true)
+    echo "Resolved: $REAL_HBUILDS_ROOT"
+    if [ -n "$REAL_HBUILDS_ROOT" ]; then
+      passenger-config restart-app "$REAL_HBUILDS_ROOT/nodejs" 2>&1 || true
+      passenger-config restart-app "$REAL_HBUILDS_ROOT" 2>&1 || true
+    fi
     passenger-config restart-app "$HBUILDS/current/nodejs" 2>&1 || true
     passenger-config restart-app "$HBUILDS/current" 2>&1 || true
-    echo "Requested a Passenger app restart via passenger-config for both candidate app roots."
+    echo "--- passenger-config listing all known app instances (to confirm the actual registered path) ---"
+    passenger-config list-instances 2>&1 || true
+    echo "Requested a Passenger app restart via passenger-config for both the resolved real path and both candidate app roots."
   else
     echo "(passenger-config not found on PATH -- falling back to touching tmp/restart.txt, which may not be honored here)"
     mkdir -p "$HBUILDS/current/nodejs/tmp" "$HBUILDS/current/tmp" 2>/dev/null || true

@@ -171,37 +171,28 @@ if [ -f "$APP_DIR/.env.local" ]; then
     echo "Using passenger-config at: $PASSENGER_CONFIG_BIN"
     echo "--- passenger-config shebang ---"
     head -3 "$PASSENGER_CONFIG_BIN" 2>&1 || true
-    echo "--- ruby on PATH before any fix attempt ---"
-    command -v ruby 2>&1 || echo "(no ruby on PATH)"
-    ruby -v 2>&1 || true
-
-    # The restart call below is expected to fail right now with a Ruby
-    # LoadError ("cannot load such file -- rubygems.rb") confirmed by the
-    # previous deploy's log -- passenger-config is a Ruby script, and
-    # whatever `ruby` a non-interactive shell resolves here apparently
-    # can't find its own RubyGems (a mismatched/shim ruby, missing the
-    # env vars a login shell's profile would normally set up -- the same
-    # class of problem nvm.sh sourcing had for Node). Try prepending a
-    # handful of common alternate-Ruby install roots to PATH and see if
-    # any of them make `ruby -rrubygems` actually work before giving up
-    # and running passenger-config with whatever's already on PATH.
-    for _ruby_bin_dir in \
-      /opt/alt/ruby*/bin \
-      /opt/cpanel/ea-ruby*/root/bin \
-      /usr/local/rvm/rubies/*/bin \
-      "$HOME"/.rbenv/versions/*/bin \
-      /opt/passenger/bin
-    do
-      [ -d "$_ruby_bin_dir" ] || continue
-      if PATH="$_ruby_bin_dir:$PATH" ruby -rrubygems -e '' >/dev/null 2>&1; then
-        echo "Found a working Ruby+RubyGems at: $_ruby_bin_dir"
-        export PATH="$_ruby_bin_dir:$PATH"
-        break
-      fi
-    done
-    echo "--- ruby on PATH after fix attempt ---"
-    command -v ruby 2>&1 || echo "(no ruby on PATH)"
-    ruby -rrubygems -e 'puts "rubygems ok, ruby #{RUBY_VERSION}"' 2>&1 || true
+    # The previous deploy proved PATH tricks are irrelevant here:
+    # passenger-config's shebang is the hardcoded absolute path
+    # "#!/usr/bin/ruby", not "/usr/bin/env ruby" -- prepending a different
+    # ruby to PATH can never change which interpreter actually runs it.
+    # And /usr/bin/ruby itself is the one failing to load its own bundled
+    # rubygems.rb, which almost always means some inherited env var
+    # (RUBYLIB/RUBYOPT/GEM_HOME/GEM_PATH) is overriding its default load
+    # path with something that doesn't apply to this ruby -- print them
+    # directly, then retry with them stripped rather than guessing at a
+    # different interpreter.
+    echo "--- ruby-related environment variables inherited by this shell ---"
+    env | grep -iE '^(ruby|gem)' || echo "(none set)"
+    echo "--- /usr/bin/ruby -v, with and without a clean env ---"
+    /usr/bin/ruby -v 2>&1 || true
+    env -u RUBYLIB -u RUBYOPT -u GEM_HOME -u GEM_PATH -u GEM_ROOT /usr/bin/ruby -rrubygems -e 'puts "rubygems ok, ruby #{RUBY_VERSION}"' 2>&1 || true
+    RUBY_ENV_CLEAN=0
+    if env -u RUBYLIB -u RUBYOPT -u GEM_HOME -u GEM_PATH -u GEM_ROOT /usr/bin/ruby -rrubygems -e '' >/dev/null 2>&1; then
+      RUBY_ENV_CLEAN=1
+      echo "Clearing RUBYLIB/RUBYOPT/GEM_HOME/GEM_PATH/GEM_ROOT makes /usr/bin/ruby load rubygems successfully -- using that for passenger-config calls below."
+    else
+      echo "Still broken even with those env vars cleared -- something deeper than env is wrong with /usr/bin/ruby itself."
+    fi
     # The real serving process's cwd is hbuilds/versions/<uuid>/nodejs -- a
     # fresh UUID-named directory on every deploy, not the "current" symlink
     # path. Passenger registers an app by its exact resolved path, so
@@ -211,14 +202,23 @@ if [ -f "$APP_DIR/.env.local" ]; then
     ls -la "$HBUILDS" 2>&1 || true
     REAL_HBUILDS_ROOT=$(readlink -f "$HBUILDS/current" 2>/dev/null || true)
     echo "Resolved: $REAL_HBUILDS_ROOT"
+
+    run_passenger_config() {
+      if [ "$RUBY_ENV_CLEAN" = "1" ]; then
+        env -u RUBYLIB -u RUBYOPT -u GEM_HOME -u GEM_PATH -u GEM_ROOT "$PASSENGER_CONFIG_BIN" "$@" 2>&1 || true
+      else
+        "$PASSENGER_CONFIG_BIN" "$@" 2>&1 || true
+      fi
+    }
+
     if [ -n "$REAL_HBUILDS_ROOT" ]; then
-      "$PASSENGER_CONFIG_BIN" restart-app "$REAL_HBUILDS_ROOT/nodejs" 2>&1 || true
-      "$PASSENGER_CONFIG_BIN" restart-app "$REAL_HBUILDS_ROOT" 2>&1 || true
+      run_passenger_config restart-app "$REAL_HBUILDS_ROOT/nodejs"
+      run_passenger_config restart-app "$REAL_HBUILDS_ROOT"
     fi
-    "$PASSENGER_CONFIG_BIN" restart-app "$HBUILDS/current/nodejs" 2>&1 || true
-    "$PASSENGER_CONFIG_BIN" restart-app "$HBUILDS/current" 2>&1 || true
+    run_passenger_config restart-app "$HBUILDS/current/nodejs"
+    run_passenger_config restart-app "$HBUILDS/current"
     echo "--- passenger-config listing all known app instances (to confirm the actual registered path) ---"
-    "$PASSENGER_CONFIG_BIN" list-instances 2>&1 || true
+    run_passenger_config list-instances
     echo "Requested a Passenger app restart via passenger-config for both the resolved real path and both candidate app roots."
   else
     echo "(passenger-config could not be located anywhere -- falling back to touching tmp/restart.txt, which may not be honored here)"

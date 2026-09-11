@@ -12,6 +12,7 @@ import {
   TESSDATA_RELATIVE,
   WORKER_SCRIPT_PATH,
 } from "@/lib/server/photo-organizer/ocr";
+import { extractedDir } from "@/lib/server/photo-organizer/paths";
 
 // Zero worker_threads.Worker lifecycle events ever fired in the previous
 // diagnostic run (15s timeout, nothing) -- the thread spawn itself is the
@@ -227,12 +228,74 @@ export async function GET(request: Request) {
 
   const fixedStartedAt = Date.now();
   let fixedWorkerOutcome: { ok: boolean; ms: number; error?: string };
+  // Deployed the fix that got worker creation itself working (confirmed:
+  // this succeeds in ~300ms every time now), then a real batch upload
+  // (id 5) still sat at status="processing" for 5+ minutes with zero
+  // termination -- past both the 60s worker-creation and 45s per-image
+  // recognize() timeouts combined, yet the live server was still fully
+  // responsive the whole time (this same diagnostics endpoint kept
+  // answering in under a second). That rules out a crashed/OOM-killed
+  // process and narrows it specifically to worker.recognize() -- the one
+  // step never exercised by this diagnostic before now, since it only
+  // ever tested worker *creation*. Reuse batch 5's already-extracted real
+  // passport image (if present) and call recognize() directly with its
+  // own generous, explicitly-logged timeout, to see exactly what (if
+  // anything) happens once real OCR work starts.
+  const testImageDir = extractedDir(5);
+  let testImagePath: string | null = null;
+  try {
+    const files = fs.readdirSync(testImageDir);
+    const passport = files.find((f) => /passport/i.test(f)) ?? files[0];
+    if (passport) testImagePath = path.join(testImageDir, passport);
+  } catch {
+    testImagePath = null;
+  }
+
+  const recognizeEvents: { t: number; status: string; progress: number }[] = [];
+  let recognizeOutcome: { ok: boolean; ms: number; error?: string; textPreview?: string; imagePath?: string | null } = {
+    ok: false,
+    ms: 0,
+    imagePath: testImagePath,
+  };
   try {
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error("fixed diagnostic worker creation timed out after 15s")), 15_000)
     );
-    const worker = await Promise.race([createOcrWorker(), timeoutPromise]);
+    const worker = await Promise.race([
+      createWorker("eng", 1, {
+        cachePath: resolvedDir,
+        ...(WORKER_SCRIPT_PATH ? { workerPath: WORKER_SCRIPT_PATH } : {}),
+        logger: (m) => recognizeEvents.push({ t: Date.now() - fixedStartedAt, status: m.status, progress: m.progress }),
+      }),
+      timeoutPromise,
+    ]);
     fixedWorkerOutcome = { ok: true, ms: Date.now() - fixedStartedAt };
+
+    if (testImagePath) {
+      const recognizeStartedAt = Date.now();
+      try {
+        const result = await Promise.race([
+          // @ts-expect-error -- tesseract.js's Worker type does have recognize()
+          worker.recognize(testImagePath),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("recognize() timed out after 60s")), 60_000)),
+        ]);
+        const text: string = result?.data?.text ?? "";
+        recognizeOutcome = {
+          ok: true,
+          ms: Date.now() - recognizeStartedAt,
+          textPreview: text.slice(0, 200),
+          imagePath: testImagePath,
+        };
+      } catch (err) {
+        recognizeOutcome = {
+          ok: false,
+          ms: Date.now() - recognizeStartedAt,
+          error: err instanceof Error ? err.message : String(err),
+          imagePath: testImagePath,
+        };
+      }
+    }
+
     // @ts-expect-error -- tesseract.js's Worker type does have terminate()
     await worker.terminate().catch(() => {});
   } catch (err) {
@@ -263,6 +326,8 @@ export async function GET(request: Request) {
     tesseractDirListing,
     tesseractSrcListing,
     fixedWorkerOutcome,
+    recognizeOutcome,
+    recognizeEvents,
     resources: {
       threadsBefore: resourcesBefore["Threads"],
       threadsAfter: resourcesAfter["Threads"],

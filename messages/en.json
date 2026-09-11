@@ -2650,7 +2650,8 @@
       "annualTurnover": "Annual Turnover",
       "contactPerson": "Contact Person",
       "purchaseIntention": "Purchase Intention",
-      "otherPurchaseIntention": "Other Purchase Intention"
+      "otherPurchaseIntention": "Other Purchase Intention",
+      "registrationCode": "Registration Code (uncategorized)"
     },
     "docFields": {
       "businessLicense": "Business License",

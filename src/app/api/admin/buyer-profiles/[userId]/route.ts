@@ -38,6 +38,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
     "purchaseIntention",
     "otherPurchaseIntention",
     "contactPerson",
+    "registrationCode",
   ] as const;
   const update: Record<string, string> = {};
   for (const field of fields) {

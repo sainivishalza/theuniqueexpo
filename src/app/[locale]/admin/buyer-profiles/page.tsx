@@ -24,10 +24,11 @@ interface BuyerProfileDetail {
   purchaseIntention: string;
   otherPurchaseIntention: string;
   contactPerson: string;
+  registrationCode: string;
   hasDocument: Record<string, boolean>;
 }
 
-const TEXT_FIELDS = ["companyName", "nationality", "passportNumber", "annualTurnover", "contactPerson"] as const;
+const TEXT_FIELDS = ["companyName", "nationality", "passportNumber", "annualTurnover", "contactPerson", "registrationCode"] as const;
 const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto"] as const;
 
 export default function AdminBuyerProfilesPage() {

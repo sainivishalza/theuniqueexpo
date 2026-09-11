@@ -2650,7 +2650,8 @@
       "annualTurnover": "Годовой оборот",
       "contactPerson": "Контактное лицо",
       "purchaseIntention": "Интересующие товары",
-      "otherPurchaseIntention": "Другие интересующие товары"
+      "otherPurchaseIntention": "Другие интересующие товары",
+      "registrationCode": "Код регистрации (без категории)"
     },
     "docFields": {
       "businessLicense": "Лицензия компании",

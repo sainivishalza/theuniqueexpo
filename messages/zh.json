@@ -2650,7 +2650,8 @@
       "annualTurnover": "年营业额",
       "contactPerson": "联系人",
       "purchaseIntention": "采购意向",
-      "otherPurchaseIntention": "其他采购意向"
+      "otherPurchaseIntention": "其他采购意向",
+      "registrationCode": "登记代码(未分类)"
     },
     "docFields": {
       "businessLicense": "营业执照",

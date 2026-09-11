@@ -214,6 +214,8 @@ run_mysql schema-migrations/028-partner-referrals.sql
 run_mysql schema-migrations/029-merge-visitor-into-buyer-role.sql
 run_mysql schema-migrations/030-buyer-profiles.sql
 run_mysql schema-migrations/031-import-canton-fair-buyers.sql
+run_mysql schema-migrations/032-buyer-profile-registration-code.sql
+run_mysql schema-migrations/033-backfill-buyer-registration-codes.sql
 
 echo "Installing dependencies and building ..."
 npm install

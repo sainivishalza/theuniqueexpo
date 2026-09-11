@@ -29,6 +29,11 @@ export interface BuyerProfileFields {
   purchaseIntention: string;
   otherPurchaseIntention: string;
   contactPerson: string;
+  // Raw value from an unlabeled column in the original Canton Fair
+  // spreadsheet (a bare letter for most rows) -- meaning not confirmed,
+  // kept as free text rather than assumed. Admin-only, not shown to the
+  // buyer themselves since they wouldn't know what it means either.
+  registrationCode: string;
 }
 
 export interface BuyerProfile extends BuyerProfileFields {
@@ -45,6 +50,7 @@ const EMPTY_FIELDS: BuyerProfileFields = {
   purchaseIntention: "",
   otherPurchaseIntention: "",
   contactPerson: "",
+  registrationCode: "",
 };
 
 function mapRow(row: RowDataPacket): BuyerProfile {
@@ -57,6 +63,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
     purchaseIntention: row.purchase_intention || "",
     otherPurchaseIntention: row.other_purchase_intention || "",
     contactPerson: row.contact_person || "",
+    registrationCode: row.registration_code || "",
     hasDocument: {
       businessLicense: !!row.doc_business_license,
       businessCard: !!row.doc_business_card,
@@ -70,7 +77,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
 }
 
 const SELECT_SUMMARY_COLUMNS =
-  "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, " +
+  "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, registration_code, " +
   "doc_business_license, doc_business_card, doc_passport_front, doc_visa_page, doc_canton_fair_card, doc_buyer_photo, updated_at";
 
 export async function getBuyerProfile(userId: number): Promise<BuyerProfile | null> {
@@ -141,33 +148,38 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
   }));
 }
 
+const FIELD_COLUMNS: Record<keyof BuyerProfileFields, string> = {
+  companyName: "company_name",
+  nationality: "nationality",
+  passportNumber: "passport_number",
+  annualTurnover: "annual_turnover",
+  purchaseIntention: "purchase_intention",
+  otherPurchaseIntention: "other_purchase_intention",
+  contactPerson: "contact_person",
+  registrationCode: "registration_code",
+};
+
 // Buyer editing their own profile and admin editing on a buyer's behalf
 // share this same upsert -- INSERT..ON DUPLICATE KEY so the first edit
-// (buyer has no row yet) and every edit after it both just work.
+// (buyer has no row yet) and every edit after it both just work. Only the
+// keys actually present in `fields` are touched: the buyer's own PATCH
+// never sends registrationCode (admin-only), and building the query around
+// a fully-defaulted object here would silently blank out whatever an admin
+// had set there the next time that buyer saved their own profile.
 export async function upsertBuyerProfileFields(userId: number, fields: Partial<BuyerProfileFields>): Promise<void> {
-  const merged = { ...EMPTY_FIELDS, ...fields };
+  const keys = Object.keys(fields) as (keyof BuyerProfileFields)[];
+  if (keys.length === 0) return;
+
+  const columns = keys.map((k) => FIELD_COLUMNS[k]);
+  const values = keys.map((k) => fields[k]);
+  const placeholders = columns.map(() => "?").join(", ");
+  const updateClause = columns.map((c) => `${c} = VALUES(${c})`).join(", ");
+
   await pool.query<ResultSetHeader>(
-    `INSERT INTO buyer_profiles
-       (user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE
-       company_name = VALUES(company_name),
-       nationality = VALUES(nationality),
-       passport_number = VALUES(passport_number),
-       annual_turnover = VALUES(annual_turnover),
-       purchase_intention = VALUES(purchase_intention),
-       other_purchase_intention = VALUES(other_purchase_intention),
-       contact_person = VALUES(contact_person)`,
-    [
-      userId,
-      merged.companyName,
-      merged.nationality,
-      merged.passportNumber,
-      merged.annualTurnover,
-      merged.purchaseIntention,
-      merged.otherPurchaseIntention,
-      merged.contactPerson,
-    ]
+    `INSERT INTO buyer_profiles (user_id, ${columns.join(", ")})
+     VALUES (?, ${placeholders})
+     ON DUPLICATE KEY UPDATE ${updateClause}`,
+    [userId, ...values]
   );
 }
 

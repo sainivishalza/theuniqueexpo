@@ -24,6 +24,7 @@ interface BulkUserInput {
   purchaseIntention?: string;
   otherPurchaseIntention?: string;
   contactPerson?: string;
+  registrationCode?: string;
 }
 
 interface BulkUserResult {
@@ -97,6 +98,7 @@ export async function POST(request: Request) {
           purchaseIntention: input.purchaseIntention?.trim() || "",
           otherPurchaseIntention: input.otherPurchaseIntention?.trim() || "",
           contactPerson: input.contactPerson?.trim() || "",
+          registrationCode: input.registrationCode?.trim() || "",
         };
         // Only write a profile row when at least one field was actually
         // provided -- a plain name/email/phone import shouldn't leave

@@ -484,6 +484,10 @@
         "title": "City Partnerships",
         "description": "Review inquiries from cities and tourism boards."
       },
+      "photoOrganizer": {
+        "title": "Photo Organizer",
+        "description": "Bulk-sort a zip of customer photos into folders named by passport name."
+      },
       "websitePages": {
         "title": "Website Pages",
         "description": "Edit Contact, Careers, Blog, Help Center, and other footer pages."
@@ -897,6 +901,34 @@
     "choosePhotoFile": "Please choose an image file",
     "photoTooLarge": "Image is too large (max 8MB)",
     "couldNotReadFile": "Could not read that file"
+  },
+  "adminPhotoOrganizer": {
+    "title": "Photo Organizer",
+    "subtitle": "Upload a zip of customer photos and sort them into folders named by passport name.",
+    "accessDenied": "Access denied",
+    "backToAdmin": "Back to Admin",
+    "uploadPrompt": "Upload a zip file containing customer photos (passport, visa, business card, etc).",
+    "chooseZip": "Choose Zip File",
+    "sizeLimitNote": "Maximum file size: 2GB",
+    "mustBeZip": "File must be a .zip archive",
+    "tooLarge": "File is too large (max 2GB)",
+    "uploading": "Uploading... {percent}%",
+    "uploadFailed": "Upload failed",
+    "processing": "Extracting and reading photos...",
+    "processingNote": "This can take a few minutes for a large zip. You can leave this page open.",
+    "processingFailed": "Processing failed",
+    "statusCheckFailed": "Failed to check status",
+    "startOver": "Start Over",
+    "groupsFound": "{count} customers found across {files} files",
+    "fileCount": "{count} files",
+    "passportThumbnailAlt": "Passport photo",
+    "noPassportFound": "No passport photo found",
+    "detectionDetected": "Read from passport",
+    "detectionLowConfidence": "Low confidence",
+    "detectionNotFound": "Not detected",
+    "finalizeAndDownload": "Finalize & Download",
+    "finalizing": "Building zip...",
+    "finalizeFailed": "Failed to build the output zip"
   },
   "adminAbout": {
     "saveFailed": "Save failed",

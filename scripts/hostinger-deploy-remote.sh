@@ -208,6 +208,7 @@ run_mysql schema-migrations/022-team-members.sql
 run_mysql schema-migrations/023-partner-program.sql
 run_mysql schema-migrations/024-magazine-video-conference-city.sql
 run_mysql schema-migrations/025-conference-city-content.sql
+run_mysql schema-migrations/026-photo-organizer.sql
 
 echo "Installing dependencies and building ..."
 npm install

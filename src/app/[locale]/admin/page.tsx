@@ -20,6 +20,7 @@ const SECTION_KEYS = [
   { key: "magazineManagement", href: "/admin/magazine", icon: "📰", color: "from-rose-500 to-pink-600" },
   { key: "videoManagement", href: "/admin/videos", icon: "🎬", color: "from-red-500 to-rose-600" },
   { key: "cityPartnershipInquiries", href: "/admin/city-partnership-inquiries", icon: "🏙️", color: "from-sky-500 to-cyan-600" },
+  { key: "photoOrganizer", href: "/admin/photo-organizer", icon: "🗂️", color: "from-slate-500 to-gray-600" },
   { key: "websitePages", href: "/admin/pages", icon: "📄", color: "from-sky-500 to-indigo-600" },
   { key: "companyProfile", href: "/admin/company-profile", icon: "🏢", color: "from-teal-500 to-emerald-600" },
   { key: "faqManagement", href: "/admin/faq", icon: "❓", color: "from-rose-500 to-pink-600" },

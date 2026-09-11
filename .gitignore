@@ -18,6 +18,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# photo-organizer working data (large, ephemeral -- extracted zips, output zips)
+/tmp/photo-organizer/
+
 # misc
 .DS_Store
 *.tsbuildinfo

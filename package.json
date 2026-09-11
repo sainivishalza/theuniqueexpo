@@ -18,7 +18,10 @@
     "next-intl": "^4.14.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "sharp": "^0.35.4"
+    "sharp": "^0.35.4",
+    "tesseract.js": "^7.0.0",
+    "yauzl": "^3.4.0",
+    "yazl": "^3.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
@@ -28,6 +31,8 @@
     "@types/node": "^22.20.1",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
+    "@types/yauzl": "^3.4.0",
+    "@types/yazl": "^3.3.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.8.3"
   },

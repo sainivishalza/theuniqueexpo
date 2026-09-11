@@ -484,6 +484,10 @@
         "title": "城市合作",
         "description": "查看来自城市和旅游局的合作申请。"
       },
+      "photoOrganizer": {
+        "title": "照片整理工具",
+        "description": "批量整理客户照片压缩包,按护照姓名分类到各自文件夹。"
+      },
       "websitePages": {
         "title": "网站页面",
         "description": "编辑联系我们、招聘信息、博客、帮助中心等页面。"
@@ -897,6 +901,34 @@
     "choosePhotoFile": "请选择一个图片文件",
     "photoTooLarge": "图片过大（最大 8MB）",
     "couldNotReadFile": "无法读取该文件"
+  },
+  "adminPhotoOrganizer": {
+    "title": "照片整理工具",
+    "subtitle": "上传客户照片压缩包,按护照姓名分类到各自文件夹。",
+    "accessDenied": "拒绝访问",
+    "backToAdmin": "返回管理后台",
+    "uploadPrompt": "上传包含客户照片的压缩包(护照、签证、名片等)。",
+    "chooseZip": "选择压缩包",
+    "sizeLimitNote": "最大文件大小:2GB",
+    "mustBeZip": "文件必须是 .zip 压缩包",
+    "tooLarge": "文件过大(最大 2GB)",
+    "uploading": "上传中... {percent}%",
+    "uploadFailed": "上传失败",
+    "processing": "正在解压并识别照片...",
+    "processingNote": "较大的压缩包可能需要几分钟,可以不关闭此页面。",
+    "processingFailed": "处理失败",
+    "statusCheckFailed": "无法检查状态",
+    "startOver": "重新开始",
+    "groupsFound": "共发现 {count} 位客户,{files} 个文件",
+    "fileCount": "{count} 个文件",
+    "passportThumbnailAlt": "护照照片",
+    "noPassportFound": "未找到护照照片",
+    "detectionDetected": "已从护照读取",
+    "detectionLowConfidence": "置信度较低",
+    "detectionNotFound": "未识别",
+    "finalizeAndDownload": "完成并下载",
+    "finalizing": "正在生成压缩包...",
+    "finalizeFailed": "生成压缩包失败"
   },
   "adminAbout": {
     "saveFailed": "保存失败",

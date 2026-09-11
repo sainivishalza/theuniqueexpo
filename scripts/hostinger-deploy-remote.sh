@@ -200,6 +200,30 @@ if [ -f "$APP_DIR/.env.local" ]; then
     REAL_HBUILDS_ROOT=$(readlink -f "$HBUILDS/current" 2>/dev/null || true)
     echo "Resolved: $REAL_HBUILDS_ROOT"
 
+    # passenger-config now actually runs (no more Ruby LoadError) but its
+    # own restart-app calls fail with a different, legitimate Passenger
+    # error: it can't find the running instance's registry directory --
+    # this bare SSH shell has none of the environment a real Apache/Nginx-
+    # spawned Passenger watchdog process would normally provide. Find that
+    # watchdog process directly and read its actual registry dir off its
+    # own command line instead of guessing.
+    echo "--- locating the running Passenger watchdog process to find its real instance registry dir ---"
+    ps -eo pid,args 2>/dev/null | grep -i '[P]assengerWatchdog' || echo "(no PassengerWatchdog process found in ps output)"
+    PASSENGER_REGISTRY_DIR=$(ps -eo args 2>/dev/null | grep -i '[P]assengerWatchdog' | grep -oE -- '--instance-registry-dir[= ][^ ]+' | sed -E 's/--instance-registry-dir[= ]//' | head -1 || true)
+    if [ -z "$PASSENGER_REGISTRY_DIR" ]; then
+      # Not passed as an explicit flag -- Passenger defaults to a
+      # per-instance directory under the system temp dir named after the
+      # watchdog's own PID, which isn't guessable, but a bounded search
+      # for its passenger.* marker directories often finds it.
+      PASSENGER_REGISTRY_DIR=$(timeout 10 find /tmp /var/run /run -maxdepth 2 -iname 'passenger.*' -type d 2>/dev/null | head -1 || true)
+    fi
+    if [ -n "$PASSENGER_REGISTRY_DIR" ]; then
+      echo "Found Passenger instance registry dir: $PASSENGER_REGISTRY_DIR"
+      export PASSENGER_INSTANCE_REGISTRY_DIR="$PASSENGER_REGISTRY_DIR"
+    else
+      echo "Could not determine the Passenger instance registry dir."
+    fi
+
     run_passenger_config() {
       if [ -n "$WORKING_RUBY" ]; then
         "$WORKING_RUBY" "$PASSENGER_CONFIG_BIN" "$@" 2>&1 || true
@@ -218,10 +242,21 @@ if [ -f "$APP_DIR/.env.local" ]; then
     run_passenger_config list-instances
     echo "Requested a Passenger app restart via passenger-config for both the resolved real path and both candidate app roots."
   else
-    echo "(passenger-config could not be located anywhere -- falling back to touching tmp/restart.txt, which may not be honored here)"
-    mkdir -p "$HBUILDS/current/nodejs/tmp" "$HBUILDS/current/tmp" 2>/dev/null || true
-    touch "$HBUILDS/current/nodejs/tmp/restart.txt" "$HBUILDS/current/tmp/restart.txt" 2>/dev/null || true
+    echo "(passenger-config could not be located anywhere)"
   fi
+
+  # Also always touch restart.txt regardless of whether passenger-config
+  # itself succeeded above -- it's Passenger's own standard, dependency-
+  # free "reload this app on next request" convention (supported the same
+  # way across every Passenger integration mode), cheap to do unconditionally,
+  # and a real independent chance at working even if the registry-dir
+  # lookup above still didn't find the right value.
+  echo "--- also touching restart.txt at every candidate app root (Passenger's own zero-dependency restart convention) ---"
+  for _restart_root in "$REAL_HBUILDS_ROOT/nodejs" "$REAL_HBUILDS_ROOT" "$HBUILDS/current/nodejs" "$HBUILDS/current"; do
+    [ -n "$_restart_root" ] || continue
+    mkdir -p "$_restart_root/tmp" 2>/dev/null || true
+    touch "$_restart_root/tmp/restart.txt" 2>/dev/null || true
+  done
 fi
 
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own

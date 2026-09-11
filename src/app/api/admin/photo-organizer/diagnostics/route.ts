@@ -1,9 +1,31 @@
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
+import { Worker } from "node:worker_threads";
 import { NextResponse } from "next/server";
 import { createWorker } from "tesseract.js";
 import { requireAdmin } from "@/lib/auth-server";
 import { findTessdataDir, TESSDATA_FILE_RELATIVE } from "@/lib/server/photo-organizer/ocr";
+
+// Zero worker_threads.Worker lifecycle events ever fired in the previous
+// diagnostic run (15s timeout, nothing) -- the thread spawn itself is the
+// actual hang, unrelated to file paths or CDN reachability (both already
+// confirmed fine). Read what the OS thinks this process's resource
+// standing is at the exact moment of that attempt, since this host has a
+// documented history this session of process/fork/thread quota exhaustion.
+function readProcSelfStatus(): Record<string, string> {
+  try {
+    const text = fs.readFileSync("/proc/self/status", "utf8");
+    const out: Record<string, string> = {};
+    for (const line of text.split("\n")) {
+      const [key, ...rest] = line.split(":");
+      if (key && rest.length) out[key.trim()] = rest.join(":").trim();
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
 
 // TEMPORARY: direct ground truth from the actual live serving process for
 // the OCR-hang investigation -- the "resolved tessdata dir" log added
@@ -64,6 +86,31 @@ export async function GET(request: Request) {
   // itself never came up; a "loading language traineddata" event with no
   // completion means the earlier path-resolution work is where it's still
   // stuck despite the checks above.
+  // Isolates whether it's specifically tesseract.js's (larger, WASM-loading)
+  // worker script that hangs, or whether *any* worker_threads.Worker spawn
+  // hangs on this host regardless of what it runs -- a trivial inline
+  // worker that does nothing but immediately message back rules the whole
+  // worker_threads mechanism in or out independent of tesseract.js entirely.
+  const bareWorkerStartedAt = Date.now();
+  let bareWorkerOutcome: { ok: boolean; ms: number; error?: string };
+  try {
+    const result = await Promise.race([
+      new Promise((resolve, reject) => {
+        const w = new Worker("require('worker_threads').parentPort.postMessage('pong')", { eval: true });
+        w.once("message", (msg) => {
+          w.terminate().catch(() => {});
+          resolve(msg);
+        });
+        w.once("error", reject);
+      }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("bare worker timed out after 10s")), 10_000)),
+    ]);
+    bareWorkerOutcome = { ok: result === "pong", ms: Date.now() - bareWorkerStartedAt };
+  } catch (err) {
+    bareWorkerOutcome = { ok: false, ms: Date.now() - bareWorkerStartedAt, error: err instanceof Error ? err.message : String(err) };
+  }
+
+  const resourcesBefore = readProcSelfStatus();
   const workerEvents: { t: number; status: string; progress: number }[] = [];
   const workerStartedAt = Date.now();
   let workerOutcome: { ok: boolean; ms: number; error?: string };
@@ -83,6 +130,8 @@ export async function GET(request: Request) {
     workerOutcome = { ok: false, ms: Date.now() - workerStartedAt, error: err instanceof Error ? err.message : String(err) };
   }
 
+  const resourcesAfter = readProcSelfStatus();
+
   return NextResponse.json({
     processCwd: process.cwd(),
     dirname: __dirname,
@@ -95,5 +144,17 @@ export async function GET(request: Request) {
     platform: process.platform,
     workerOutcome,
     workerEvents,
+    bareWorkerOutcome,
+    resources: {
+      threadsBefore: resourcesBefore["Threads"],
+      threadsAfter: resourcesAfter["Threads"],
+      vmRSS: resourcesAfter["VmRSS"],
+      voluntaryCtxtSwitches: resourcesAfter["voluntary_ctxt_switches"],
+      nonvoluntaryCtxtSwitches: resourcesAfter["nonvoluntary_ctxt_switches"],
+      osFreeMemMB: Math.round(os.freemem() / 1024 / 1024),
+      osTotalMemMB: Math.round(os.totalmem() / 1024 / 1024),
+      osLoadavg: os.loadavg(),
+      osCpuCount: os.cpus().length,
+    },
   });
 }

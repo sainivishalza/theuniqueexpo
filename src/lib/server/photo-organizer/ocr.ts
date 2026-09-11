@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 import { createWorker, type Worker } from "tesseract.js";
 
@@ -12,7 +13,47 @@ import { createWorker, type Worker } from "tesseract.js";
 // `${cachePath}/${lang}.traineddata` on disk before ever attempting a
 // network fetch), so no network call happens at all, on this host or any
 // other.
-const TESSDATA_DIR = path.join(process.cwd(), "src", "lib", "server", "photo-organizer", "tessdata");
+//
+// Bundling alone didn't fix production, though: this host's real serving
+// process is Passenger/hbuilds, and the deploy script itself already
+// documented (see hostinger-deploy-remote.sh) that Passenger's serving
+// process's cwd is a "nodejs" *subdirectory* of the actual checked-out app
+// root, not the root itself -- so `process.cwd()` there does not point at
+// the same tree that `src/...` lives under, the cache read silently misses,
+// and tesseract.js falls through to the network fetch that hangs/times out
+// again. Search upward from a few different candidate starting points for
+// the actual app root (identified by containing the bundled file) instead
+// of assuming process.cwd() *is* that root.
+const TESSDATA_RELATIVE = path.join("src", "lib", "server", "photo-organizer", "tessdata");
+const TESSDATA_FILE_RELATIVE = path.join(TESSDATA_RELATIVE, "eng.traineddata");
+
+function findTessdataDir(): string {
+  const startingPoints = [process.cwd(), __dirname];
+  for (const start of startingPoints) {
+    let dir = start;
+    for (let i = 0; i < 10; i++) {
+      if (fs.existsSync(path.join(dir, TESSDATA_FILE_RELATIVE))) {
+        return path.join(dir, TESSDATA_RELATIVE);
+      }
+      const parent = path.dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+  }
+  // Nothing found -- fall back to the original assumption so the error
+  // message/behavior below is at least deterministic, and log loudly so
+  // the next failure comes with real evidence instead of another guess.
+  const fallback = path.join(process.cwd(), TESSDATA_RELATIVE);
+  console.error(
+    `[photo-organizer/ocr] could not locate bundled tessdata by walking up from ` +
+      `process.cwd()=${process.cwd()} or __dirname=${__dirname}; falling back to ${fallback}, ` +
+      `which likely doesn't exist -- OCR will probably fall through to the network fetch and time out.`,
+  );
+  return fallback;
+}
+
+const TESSDATA_DIR = findTessdataDir();
+console.log(`[photo-organizer/ocr] resolved tessdata dir: ${TESSDATA_DIR}`);
 
 // Defense in depth in case the bundled file is ever missing/corrupted and
 // tesseract.js falls back to its network path anyway -- fail loudly

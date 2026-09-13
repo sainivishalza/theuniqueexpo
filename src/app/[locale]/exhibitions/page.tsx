@@ -28,7 +28,7 @@ export default function ExhibitionsPage() {
   const initialView = searchParams.get("view");
   const [industry, setIndustry] = useState("All");
   const [city, setCity] = useState("All");
-  const [dateFilter, setDateFilter] = useState(initialView === "past" || initialView === "upcoming" ? initialView : "all");
+  const [dateFilter, setDateFilter] = useState(initialView === "past" || initialView === "all" ? initialView : "upcoming");
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
   const [loading, setLoading] = useState(true);
 

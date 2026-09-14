@@ -32,6 +32,8 @@ export default function AdminSlideshowPage() {
   const [formError, setFormError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [photoError, setPhotoError] = useState("");
+  const [bulkProgress, setBulkProgress] = useState<{ done: number; total: number } | null>(null);
+  const [bulkError, setBulkError] = useState("");
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -137,6 +139,49 @@ export default function AdminSlideshowPage() {
     }
   }
 
+  // Uploads any number of files in one go, one at a time (each is its own
+  // full row/POST -- keeping them sequential rather than parallel avoids
+  // firing a burst of large base64 payloads at the server at once), each
+  // landing after the current last photo in display order.
+  async function handleBulkUpload(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    setBulkError("");
+    const fileList = Array.from(files);
+    setBulkProgress({ done: 0, total: fileList.length });
+    let nextOrder = photos.length;
+    const failures: string[] = [];
+
+    for (const file of fileList) {
+      if (!file.type.startsWith("image/")) {
+        failures.push(`${file.name}: ${t("choosePhotoFile")}`);
+      } else if (file.size > 8 * 1024 * 1024) {
+        failures.push(`${file.name}: ${t("photoTooLarge")}`);
+      } else {
+        try {
+          const dataUrl = await readDocumentAsDataUrl(file);
+          const res = await fetch("/api/admin/slideshow-photos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ image: dataUrl, caption: "", displayOrder: nextOrder }),
+          });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            failures.push(`${file.name}: ${data.error || t("saveFailed")}`);
+          } else {
+            nextOrder += 1;
+          }
+        } catch {
+          failures.push(`${file.name}: ${t("couldNotReadFile")}`);
+        }
+      }
+      setBulkProgress((prev) => (prev ? { ...prev, done: prev.done + 1 } : prev));
+    }
+
+    if (failures.length > 0) setBulkError(failures.join("; "));
+    setBulkProgress(null);
+    await loadPhotos();
+  }
+
   async function handleDelete(id: string) {
     if (!confirm(t("confirmDelete"))) return;
     setDeletingId(id);
@@ -174,13 +219,33 @@ export default function AdminSlideshowPage() {
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             {t("backToAdmin")}
           </Link>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-3">
             <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
-            <Button onClick={openNew} variant="gradientCta" size="compact">
-              {t("newPhoto")}
-            </Button>
+            <div className="flex items-center gap-2">
+              <label className="cursor-pointer rounded-full px-5 py-2.5 text-sm border-2 border-white/30 text-white backdrop-blur-sm hover:bg-white/10 transition-colors">
+                {t("bulkUpload")}
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  disabled={bulkProgress !== null}
+                  onChange={(e) => {
+                    void handleBulkUpload(e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+              <Button onClick={openNew} variant="gradientCta" size="compact">
+                {t("newPhoto")}
+              </Button>
+            </div>
           </div>
           <p className="mt-1 text-gray-400 text-sm">{t("subtitle")}</p>
+          {bulkProgress && (
+            <p className="mt-2 text-sm text-emerald-300">{t("bulkUploadProgress", { done: bulkProgress.done, total: bulkProgress.total })}</p>
+          )}
+          {bulkError && <p className="mt-2 text-sm text-red-400">{bulkError}</p>}
         </div>
       </section>
 

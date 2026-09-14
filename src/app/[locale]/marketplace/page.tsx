@@ -146,7 +146,7 @@ export default function MarketplacePage() {
                         <span>{item.icon}</span> {item.text}
                       </span>
                     ))}
-                    <span className="ml-auto text-sm font-semibold text-emerald-600 group-hover:translate-x-1 transition-transform">
+                    <span className="ml-auto inline-flex items-center gap-1 rounded-[var(--radius-button)] bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-800 group-hover:bg-emerald-100 transition-colors">
                       {t("viewDetails")}
                     </span>
                   </div>

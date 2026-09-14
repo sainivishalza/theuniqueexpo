@@ -185,7 +185,7 @@ export default async function Home() {
                   {/* CTA */}
                   <div className="pt-3 border-t border-gray-200 flex items-center justify-between">
                     <span className="text-xs text-gray-500">{formatNumber(evt.exhibitors)}{t("exhibitorsSuffix")}</span>
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-900 group-hover:text-gold-600 transition-colors">
+                    <span className="inline-flex items-center gap-1 rounded-[var(--radius-button)] bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 group-hover:bg-emerald-100 transition-colors">
                       {t("viewDetails")}
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                     </span>

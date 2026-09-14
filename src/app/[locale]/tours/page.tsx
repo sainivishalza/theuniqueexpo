@@ -162,7 +162,7 @@ export default function ToursPage() {
                 <Link
                   key={r.id}
                   href={`/tours/${r.tourSlug}#reviews`}
-                  className="block rounded-2xl bg-cream-50 border border-gray-100 p-5 hover:border-emerald-300 transition-colors"
+                  className="block rounded-[var(--radius-card)] bg-cream-50 border border-gray-100 p-5 hover:border-emerald-300 transition-colors"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-semibold text-gray-900 text-sm">{r.userName}</span>

@@ -6,13 +6,18 @@ import { errorMessage } from "@/lib/format";
 import { DEFAULT_CITY_PARTNERSHIPS_CONTENT, type CityPartnershipsContent } from "@/lib/city-partnerships-content";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function CityPartnershipsPage() {
   const t = useTranslations("cityPartnershipsPage");
+  const tv = useTranslations("formValidation");
   const [content, setContent] = useState<CityPartnershipsContent>(DEFAULT_CITY_PARTNERSHIPS_CONTENT);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", email: "", organization: "", city: "", country: "", message: "" });
 
   useEffect(() => {
@@ -22,8 +27,19 @@ export default function CityPartnershipsPage() {
       .catch(() => {});
   }, []);
 
+  const validate = () => {
+    const errors: Record<string, string> = {};
+    if (!form.name.trim()) errors.name = tv("required");
+    if (!form.email.trim()) errors.email = tv("required");
+    else if (!EMAIL_RE.test(form.email)) errors.email = tv("invalidEmail");
+    if (!form.organization.trim()) errors.organization = tv("required");
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setSubmitting(true);
     setError("");
     try {
@@ -70,7 +86,7 @@ export default function CityPartnershipsPage() {
             <h2 className="text-2xl font-bold text-heading mb-6">{t("whyPartner")}</h2>
             <div className="space-y-4">
               {content.benefits.map((item) => (
-                <div key={item.title} className="flex items-start gap-4 p-4 rounded-xl bg-white shadow-sm">
+                <div key={item.title} className="flex items-start gap-4 p-4 rounded-[var(--radius-card)] bg-white border border-gray-100">
                   <span className="text-2xl">{item.icon}</span>
                   <div><h3 className="font-bold text-heading">{item.title}</h3><p className="text-sm text-gray-500">{item.desc}</p></div>
                 </div>
@@ -80,18 +96,30 @@ export default function CityPartnershipsPage() {
           <div>
             <Card shadow="sm" bordered={false} className="p-8 sticky top-24">
               <h2 className="text-2xl font-bold text-heading mb-6">{t("startAConversation")}</h2>
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("name")}</label><input required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("email")}</label><input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                  <FormField label={t("name")} htmlFor="name" error={fieldErrors.name}>
+                    <input id="name" type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
+                  </FormField>
+                  <FormField label={t("email")} htmlFor="email" error={fieldErrors.email}>
+                    <input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                  </FormField>
                 </div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("organization")}</label><input required type="text" placeholder={t("organizationPlaceholder")} value={form.organization} onChange={(e) => setForm({ ...form, organization: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                <FormField label={t("organization")} htmlFor="organization" error={fieldErrors.organization}>
+                  <input id="organization" type="text" placeholder={t("organizationPlaceholder")} value={form.organization} onChange={(e) => setForm({ ...form, organization: e.target.value })} aria-invalid={!!fieldErrors.organization} className={fieldClasses(!!fieldErrors.organization)} />
+                </FormField>
                 <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("city")}</label><input type="text" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("country")}</label><input type="text" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                  <FormField label={t("city")} htmlFor="city">
+                    <input id="city" type="text" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className={fieldClasses()} />
+                  </FormField>
+                  <FormField label={t("country")} htmlFor="country">
+                    <input id="country" type="text" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className={fieldClasses()} />
+                  </FormField>
                 </div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("message")}</label><textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} rows={4} placeholder={t("messagePlaceholder")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
-                {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+                <FormField label={t("message")} htmlFor="message">
+                  <textarea id="message" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} rows={4} placeholder={t("messagePlaceholder")} className={fieldClasses(false, "resize-none")} />
+                </FormField>
+                {error && <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
                 <Button type="submit" disabled={submitting} variant="save" size="block">{submitting ? t("sending") : t("sendInquiry")}</Button>
               </form>
             </Card>

@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 const CATEGORIES = [
   "Consumer Goods", "Electronics", "Industrial", "Automotive",
@@ -90,49 +91,40 @@ export default function NewRFQPage() {
 
       <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-3xl px-6">
-          <form onSubmit={handleSubmit} className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100 space-y-5">
-            <Field label={t("title")} placeholder={t("titlePlaceholder")} required>
-              <input required type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
-            </Field>
-            <Field label={t("productOrService")} placeholder={t("productPlaceholder")} required>
-              <input required type="text" value={product} onChange={(e) => setProduct(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
-            </Field>
-            <Field label={t("category")} required>
-              <select required value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none">
+          <form onSubmit={handleSubmit} className="rounded-[var(--radius-card)] bg-white p-8 shadow-sm border border-gray-100 space-y-5">
+            <FormField label={`${t("title")} *`} htmlFor="title">
+              <input id="title" required type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("titlePlaceholder")} className={fieldClasses()} />
+            </FormField>
+            <FormField label={`${t("productOrService")} *`} htmlFor="product">
+              <input id="product" required type="text" value={product} onChange={(e) => setProduct(e.target.value)} placeholder={t("productPlaceholder")} className={fieldClasses()} />
+            </FormField>
+            <FormField label={`${t("category")} *`} htmlFor="category">
+              <select id="category" required value={category} onChange={(e) => setCategory(e.target.value)} className={fieldClasses()}>
                 <option value="">{t("selectCategory")}</option>
                 {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
-            </Field>
-            <Field label={t("description")} placeholder={t("descriptionPlaceholder")} required>
-              <textarea required rows={4} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none resize-none" />
-            </Field>
+            </FormField>
+            <FormField label={`${t("description")} *`} htmlFor="description">
+              <textarea id="description" required rows={4} value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t("descriptionPlaceholder")} className={fieldClasses(false, "resize-none")} />
+            </FormField>
             <div className="grid grid-cols-2 gap-4">
-              <Field label={t("quantity")} placeholder={t("quantityPlaceholder")} required>
-                <input required type="text" value={quantity} onChange={(e) => setQuantity(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
-              </Field>
-              <Field label={t("targetPriceOptional")} placeholder={t("targetPricePlaceholder")}>
-                <input type="text" value={targetPrice} onChange={(e) => setTargetPrice(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
-              </Field>
+              <FormField label={`${t("quantity")} *`} htmlFor="quantity">
+                <input id="quantity" required type="text" value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder={t("quantityPlaceholder")} className={fieldClasses()} />
+              </FormField>
+              <FormField label={t("targetPriceOptional")} htmlFor="targetPrice">
+                <input id="targetPrice" type="text" value={targetPrice} onChange={(e) => setTargetPrice(e.target.value)} placeholder={t("targetPricePlaceholder")} className={fieldClasses()} />
+              </FormField>
             </div>
-            <Field label={t("deadlineOptional")}>
-              <input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none" />
-            </Field>
-            {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+            <FormField label={t("deadlineOptional")} htmlFor="deadline">
+              <input id="deadline" type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} className={fieldClasses()} />
+            </FormField>
+            {error && <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
             <Button type="submit" disabled={!canSubmit || submitting} variant="gradientCta" size="blockMd">
               {submitting ? t("posting") : t("postBuyRequest")}
             </Button>
           </form>
         </div>
       </section>
-    </div>
-  );
-}
-
-function Field({ label, placeholder, required, children }: { label: string; placeholder?: string; required?: boolean; children: React.ReactNode }) {
-  return (
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{label} {required && "*"}</label>
-      {placeholder ? <>{children}</> : children}
     </div>
   );
 }

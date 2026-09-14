@@ -38,7 +38,7 @@ export default async function MagazineIssuePage({ params }: { params: Promise<{ 
       {issue.coverImage && (
         <section className="relative bg-gray-950 py-8 overflow-hidden">
           <div className="relative mx-auto max-w-4xl px-6 flex justify-center">
-            <Image src={issue.coverImage} alt={issue.title} width={1200} height={800} sizes="(max-width: 768px) 100vw, 800px" className="max-w-full max-h-[50vh] w-auto h-auto rounded-xl shadow-2xl" priority />
+            <Image src={issue.coverImage} alt={issue.title} width={1200} height={800} sizes="(max-width: 768px) 100vw, 800px" className="max-w-full max-h-[50vh] w-auto h-auto rounded-[var(--radius-card)] shadow-[var(--shadow-card-lg)]" priority />
           </div>
         </section>
       )}
@@ -53,7 +53,7 @@ export default async function MagazineIssuePage({ params }: { params: Promise<{ 
               {articles.map((article) => (
                 <Card key={article.id} href={`/blog/${article.slug}`} shadow="sm" bordered={false} hoverable className="p-6 flex gap-4 items-start">
                   {article.coverImage && (
-                    <div className="relative w-28 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 hidden sm:block">
+                    <div className="relative w-28 h-20 rounded-[var(--radius-card)] overflow-hidden flex-shrink-0 bg-gray-100 hidden sm:block">
                       <Image src={article.coverImage} alt={article.title} fill sizes="112px" className="object-cover" />
                     </div>
                   )}

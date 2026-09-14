@@ -39,7 +39,7 @@ export default async function AboutPage() {
               width={1200}
               height={800}
               sizes="(max-width: 768px) 100vw, 800px"
-              className="max-w-full max-h-[60vh] w-auto h-auto rounded-xl shadow-2xl"
+              className="max-w-full max-h-[60vh] w-auto h-auto rounded-[var(--radius-card)] shadow-[var(--shadow-card-lg)]"
               priority
             />
           </div>

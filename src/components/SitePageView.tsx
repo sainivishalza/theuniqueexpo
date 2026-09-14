@@ -20,7 +20,7 @@ export default function SitePageView({ content }: { content: SitePageContent }) 
       <section className="py-14 bg-cream-50">
         <div className="mx-auto max-w-4xl px-6 space-y-8">
           {(bodyParagraphs.length > 0 || hasContactBlock) && (
-            <div className="rounded-2xl bg-white p-8 shadow-sm">
+            <div className="rounded-[var(--radius-card)] bg-white p-8 shadow-sm">
               {bodyParagraphs.length > 0 && (
                 <div className="space-y-4 text-gray-600 leading-relaxed">
                   {bodyParagraphs.map((p, i) => (
@@ -32,7 +32,7 @@ export default function SitePageView({ content }: { content: SitePageContent }) 
                 <div className={`grid gap-4 sm:grid-cols-2 ${bodyParagraphs.length > 0 ? "mt-6 pt-6 border-t border-gray-100" : ""}`}>
                   {content.contactEmail && (
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center text-white text-sm flex-shrink-0">✉</div>
+                      <div className="w-10 h-10 rounded-[var(--radius-icon-sm)] gradient-brand flex items-center justify-center text-white text-sm flex-shrink-0">✉</div>
                       <div>
                         <div className="text-xs text-gray-400">{t("email")}</div>
                         <a href={`mailto:${content.contactEmail}`} className="text-sm font-semibold text-gray-900 hover:text-emerald-600">{content.contactEmail}</a>
@@ -41,7 +41,7 @@ export default function SitePageView({ content }: { content: SitePageContent }) 
                   )}
                   {content.contactPhone && (
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center text-white text-sm flex-shrink-0">☎</div>
+                      <div className="w-10 h-10 rounded-[var(--radius-icon-sm)] gradient-brand flex items-center justify-center text-white text-sm flex-shrink-0">☎</div>
                       <div>
                         <div className="text-xs text-gray-400">{t("phone")}</div>
                         <span className="text-sm font-semibold text-gray-900">{content.contactPhone}</span>
@@ -58,7 +58,7 @@ export default function SitePageView({ content }: { content: SitePageContent }) 
               <h2 className="text-xl font-bold text-heading mb-4">{content.itemsLabel}</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 {content.items.map((item, i) => (
-                  <div key={i} className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+                  <div key={i} className="rounded-[var(--radius-card)] bg-white p-6 shadow-sm border border-gray-100">
                     <h3 className="font-bold text-heading mb-1.5">{item.title}</h3>
                     <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
                   </div>

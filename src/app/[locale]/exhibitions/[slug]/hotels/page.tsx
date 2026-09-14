@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
+import Button from "@/components/ui/Button";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 interface Exhibition {
   id: string; slug: string; title: string; city: string;
@@ -132,8 +134,8 @@ export default function HotelsPage() {
               {hotels.map((hotel, idx) => (
                 <div
                   key={hotel.id}
-                  className={`rounded-2xl bg-white shadow-sm border-2 overflow-hidden card-hover transition-all ${
-                    selectedHotel?.id === hotel.id ? "border-emerald-500 shadow-md shadow-emerald-500/10" : "border-gray-100"
+                  className={`rounded-[var(--radius-card)] bg-white shadow-sm border-2 overflow-hidden card-hover transition-all ${
+                    selectedHotel?.id === hotel.id ? "border-emerald-900 shadow-[var(--shadow-card-md)]" : "border-gray-100"
                   }`}
                 >
                   <div className="relative h-40 overflow-hidden">
@@ -144,7 +146,7 @@ export default function HotelsPage() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover"
                     />
-                    <div className="absolute top-3 right-3 rounded-lg bg-white/90 backdrop-blur-sm px-3 py-1 shadow-sm">
+                    <div className="absolute top-3 right-3 rounded-[var(--radius-badge)] bg-white/90 backdrop-blur-sm px-3 py-1 shadow-sm">
                       <span className="text-lg font-extrabold text-gray-900">${hotel.pricePerNight}</span>
                       <span className="text-xs text-gray-500">{t("perNight")}</span>
                     </div>
@@ -158,15 +160,15 @@ export default function HotelsPage() {
                     <p className="text-xs text-gray-400 mt-1">📍 {hotel.distanceToVenue}</p>
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {hotel.amenities.slice(0, 4).map((a) => (
-                        <span key={a} className="rounded-lg bg-gray-100 px-2 py-0.5 text-xs text-gray-600">{a}</span>
+                        <span key={a} className="rounded-[var(--radius-badge)] bg-gray-100 px-2 py-0.5 text-xs text-gray-600">{a}</span>
                       ))}
                     </div>
                     <button
                       onClick={() => setSelectedHotel(selectedHotel?.id === hotel.id ? null : hotel)}
-                      className={`mt-4 w-full rounded-xl py-2.5 text-sm font-semibold transition-all ${
+                      className={`mt-4 w-full rounded-[var(--radius-button)] py-2.5 text-sm font-semibold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${
                         selectedHotel?.id === hotel.id
-                          ? "gradient-brand text-white shadow-md shadow-emerald-500/25"
-                          : "border border-gray-200 text-gray-700 hover:bg-cream-50"
+                          ? "gradient-brand text-white"
+                          : "border border-gray-700 text-gray-700 hover:bg-cream-50"
                       }`}
                     >
                       {selectedHotel?.id === hotel.id ? t("selectedCheck") : t("selectHotel")}
@@ -179,38 +181,35 @@ export default function HotelsPage() {
 
           {/* Booking form */}
           {selectedHotel && (
-            <div className="mt-10 rounded-2xl bg-white p-8 shadow-sm border border-gray-100 max-w-2xl mx-auto">
+            <div className="mt-10 rounded-[var(--radius-card)] bg-white p-8 shadow-sm border border-gray-100 max-w-2xl mx-auto">
               <h2 className="text-xl font-bold text-heading mb-5">{t("bookHotel", { name: selectedHotel.name })}</h2>
               {submitted ? (
-                <div className="rounded-xl bg-green-50 border border-green-200 p-6 text-center">
+                <div className="rounded-[var(--radius-card)] bg-green-50 border border-green-200 p-6 text-center">
                   <div className="text-4xl mb-3">✅</div>
                   <h3 className="font-bold text-green-800">{t("bookingSubmitted")}</h3>
                   <p className="text-sm text-green-600 mt-1">{t("bookingSubmittedHint")}</p>
                 </div>
               ) : user ? (
                 <form onSubmit={handleBook} className="space-y-4">
-                  {error && <div className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</div>}
+                  {error && <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</div>}
                   <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t("checkIn")}</label>
-                      <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" required />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t("checkOut")}</label>
-                      <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" required />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t("rooms")}</label>
-                      <select value={rooms} onChange={(e) => setRooms(Number(e.target.value))} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none">
+                    <FormField label={t("checkIn")} htmlFor="checkIn">
+                      <input id="checkIn" type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} className={fieldClasses()} required />
+                    </FormField>
+                    <FormField label={t("checkOut")} htmlFor="checkOut">
+                      <input id="checkOut" type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} className={fieldClasses()} required />
+                    </FormField>
+                    <FormField label={t("rooms")} htmlFor="rooms">
+                      <select id="rooms" value={rooms} onChange={(e) => setRooms(Number(e.target.value))} className={fieldClasses()}>
                         {[1, 2, 3, 4, 5].map((n) => (
                           <option key={n} value={n}>{t("roomCount", { count: n })}</option>
                         ))}
                       </select>
-                    </div>
+                    </FormField>
                   </div>
-                  <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 disabled:opacity-50">
+                  <Button type="submit" disabled={submitting} variant="primary" size="block">
                     {submitting ? t("submitting") : t("submitBookingRequest")}
-                  </button>
+                  </Button>
                 </form>
               ) : (
                 <Link href="/login" className="text-sm font-semibold text-emerald-600 hover:underline">{t("logInToBook")}</Link>

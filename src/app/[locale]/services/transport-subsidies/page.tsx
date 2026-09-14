@@ -7,18 +7,33 @@ import { errorMessage } from "@/lib/format";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function SubsidiesPage() {
   const t = useTranslations("transportSubsidiesPage");
+  const tv = useTranslations("formValidation");
   const openSubsidies = getOpenSubsidies();
   const [openFormId, setOpenFormId] = useState<string | null>(null);
   const [submittedIds, setSubmittedIds] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", email: "", company: "", message: "" });
+
+  const validate = () => {
+    const errors: Record<string, string> = {};
+    if (!form.name.trim()) errors.name = tv("required");
+    if (!form.email.trim()) errors.email = tv("required");
+    else if (!EMAIL_RE.test(form.email)) errors.email = tv("invalidEmail");
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent, subsidyId: string) => {
     e.preventDefault();
+    if (!validate()) return;
     setSubmitting(true);
     setError("");
     try {
@@ -31,6 +46,7 @@ export default function SubsidiesPage() {
       setSubmittedIds((prev) => [...prev, subsidyId]);
       setOpenFormId(null);
       setForm({ name: "", email: "", company: "", message: "" });
+      setFieldErrors({});
     } catch (err) {
       setError(errorMessage(err, t("requestFailed")));
     } finally {
@@ -48,7 +64,7 @@ export default function SubsidiesPage() {
           <p className="text-emerald-300 font-semibold mb-2">{t("ourServices")}</p>
           <h1 className="text-4xl md:text-5xl font-extrabold">{t("title")}</h1>
           <p className="mt-3 text-lg text-gray-300 max-w-2xl">{t("subtitle")}</p>
-          <div className="mt-6 inline-flex items-center gap-2 rounded-xl bg-green-500/20 backdrop-blur-sm px-4 py-2 text-sm text-green-300">
+          <div className="mt-6 inline-flex items-center gap-2 rounded-[var(--radius-badge)] bg-green-500/20 backdrop-blur-sm px-4 py-2 text-sm text-green-300">
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" /> {t("subsidiesCurrentlyOpen", { count: openSubsidies.length })}
           </div>
         </div>
@@ -102,24 +118,32 @@ export default function SubsidiesPage() {
                   {isOpen && (
                     <div className="mt-6 pt-6 border-t border-gray-100">
                       {isSubmitted ? (
-                        <div className="rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700 font-medium">{t("assistanceRequested")}</div>
+                        <div className="rounded-[var(--radius-button)] border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 font-medium">{t("assistanceRequested")}</div>
                       ) : isFormOpen ? (
-                        <form onSubmit={(e) => handleSubmit(e, sub.id)} className="space-y-4 max-w-lg">
+                        <form onSubmit={(e) => handleSubmit(e, sub.id)} noValidate className="space-y-4 max-w-lg">
                           <p className="text-sm text-gray-500">{t("assistanceFormHint")}</p>
                           <div className="grid grid-cols-2 gap-4">
-                            <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("name")}</label><input required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                            <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("email")}</label><input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                            <FormField label={t("name")} htmlFor={`name-${sub.id}`} error={fieldErrors.name}>
+                              <input id={`name-${sub.id}`} type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
+                            </FormField>
+                            <FormField label={t("email")} htmlFor={`email-${sub.id}`} error={fieldErrors.email}>
+                              <input id={`email-${sub.id}`} type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                            </FormField>
                           </div>
-                          <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("company")}</label><input type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                          <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("message")}</label><textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} rows={3} placeholder={t("messagePlaceholder")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
-                          {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+                          <FormField label={t("company")} htmlFor={`company-${sub.id}`}>
+                            <input id={`company-${sub.id}`} type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={fieldClasses()} />
+                          </FormField>
+                          <FormField label={t("message")} htmlFor={`message-${sub.id}`}>
+                            <textarea id={`message-${sub.id}`} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} rows={3} placeholder={t("messagePlaceholder")} className={fieldClasses(false, "resize-none")} />
+                          </FormField>
+                          {error && <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
                           <div className="flex gap-3">
                             <Button type="submit" disabled={submitting} variant="save" size="wide">{submitting ? t("submitting") : t("submitAssistanceRequest")}</Button>
-                            <button type="button" onClick={() => { setOpenFormId(null); setError(""); }} className="rounded-xl px-6 py-3 text-sm font-semibold text-gray-500 hover:bg-cream-50">{t("cancel")}</button>
+                            <Button type="button" onClick={() => { setOpenFormId(null); setError(""); setFieldErrors({}); }} variant="ghost" size="wide">{t("cancel")}</Button>
                           </div>
                         </form>
                       ) : (
-                        <Button onClick={() => { setOpenFormId(sub.id); setError(""); }} variant="save" size="wide">{t("requestAssistance")}</Button>
+                        <Button onClick={() => { setOpenFormId(sub.id); setError(""); setFieldErrors({}); }} variant="save" size="wide">{t("requestAssistance")}</Button>
                       )}
                     </div>
                   )}

@@ -6,13 +6,18 @@ import { errorMessage } from "@/lib/format";
 import { DEFAULT_CONFERENCE_HOSTING_CONTENT, type ConferenceHostingContent } from "@/lib/conference-hosting-content";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function ConferenceForumHostingPage() {
   const t = useTranslations("conferenceHostingPage");
+  const tv = useTranslations("formValidation");
   const [content, setContent] = useState<ConferenceHostingContent>(DEFAULT_CONFERENCE_HOSTING_CONTENT);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", email: "", company: "", eventType: "", expectedAttendees: "", preferredDate: "", details: "" });
 
   useEffect(() => {
@@ -22,8 +27,19 @@ export default function ConferenceForumHostingPage() {
       .catch(() => {});
   }, []);
 
+  const validate = () => {
+    const errors: Record<string, string> = {};
+    if (!form.name.trim()) errors.name = tv("required");
+    if (!form.email.trim()) errors.email = tv("required");
+    else if (!EMAIL_RE.test(form.email)) errors.email = tv("invalidEmail");
+    if (!form.eventType.trim()) errors.eventType = tv("required");
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setSubmitting(true);
     setError("");
     try {
@@ -70,7 +86,7 @@ export default function ConferenceForumHostingPage() {
             <h2 className="text-2xl font-bold text-heading mb-6">{t("whatsIncluded")}</h2>
             <div className="space-y-4">
               {content.included.map((item) => (
-                <div key={item.title} className="flex items-start gap-4 p-4 rounded-xl bg-white shadow-sm">
+                <div key={item.title} className="flex items-start gap-4 p-4 rounded-[var(--radius-card)] bg-white border border-gray-100">
                   <span className="text-2xl">{item.icon}</span>
                   <div><h3 className="font-bold text-heading">{item.title}</h3><p className="text-sm text-gray-500">{item.desc}</p></div>
                 </div>
@@ -80,19 +96,33 @@ export default function ConferenceForumHostingPage() {
           <div>
             <Card shadow="sm" bordered={false} className="p-8 sticky top-24">
               <h2 className="text-2xl font-bold text-heading mb-6">{t("requestAQuote")}</h2>
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("name")}</label><input required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("email")}</label><input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                  <FormField label={t("name")} htmlFor="name" error={fieldErrors.name}>
+                    <input id="name" type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
+                  </FormField>
+                  <FormField label={t("email")} htmlFor="email" error={fieldErrors.email}>
+                    <input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                  </FormField>
                 </div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("company")}</label><input type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("eventType")}</label><input required type="text" placeholder={t("eventTypePlaceholder")} value={form.eventType} onChange={(e) => setForm({ ...form, eventType: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                <FormField label={t("company")} htmlFor="company">
+                  <input id="company" type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={fieldClasses()} />
+                </FormField>
+                <FormField label={t("eventType")} htmlFor="eventType" error={fieldErrors.eventType}>
+                  <input id="eventType" type="text" placeholder={t("eventTypePlaceholder")} value={form.eventType} onChange={(e) => setForm({ ...form, eventType: e.target.value })} aria-invalid={!!fieldErrors.eventType} className={fieldClasses(!!fieldErrors.eventType)} />
+                </FormField>
                 <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("expectedAttendees")}</label><input type="text" placeholder="e.g. 200" value={form.expectedAttendees} onChange={(e) => setForm({ ...form, expectedAttendees: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("preferredDate")}</label><input type="date" value={form.preferredDate} onChange={(e) => setForm({ ...form, preferredDate: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                  <FormField label={t("expectedAttendees")} htmlFor="expectedAttendees">
+                    <input id="expectedAttendees" type="text" placeholder="e.g. 200" value={form.expectedAttendees} onChange={(e) => setForm({ ...form, expectedAttendees: e.target.value })} className={fieldClasses()} />
+                  </FormField>
+                  <FormField label={t("preferredDate")} htmlFor="preferredDate">
+                    <input id="preferredDate" type="date" value={form.preferredDate} onChange={(e) => setForm({ ...form, preferredDate: e.target.value })} className={fieldClasses()} />
+                  </FormField>
                 </div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("details")}</label><textarea value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} rows={4} placeholder={t("detailsPlaceholder")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
-                {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+                <FormField label={t("details")} htmlFor="details">
+                  <textarea id="details" value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} rows={4} placeholder={t("detailsPlaceholder")} className={fieldClasses(false, "resize-none")} />
+                </FormField>
+                {error && <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
                 <Button type="submit" disabled={submitting} variant="save" size="block">{submitting ? t("sending") : t("sendInquiry")}</Button>
               </form>
             </Card>

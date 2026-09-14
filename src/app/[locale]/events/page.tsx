@@ -52,13 +52,13 @@ export default function EventsPage() {
           <div className="flex gap-2 mb-8">
             <Link
               href="/events?view=upcoming"
-              className={`rounded-xl px-5 py-2.5 text-sm font-semibold transition-colors ${view === "upcoming" ? "gradient-brand text-white shadow-md shadow-emerald-500/25" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"}`}
+              className={`rounded-[var(--radius-button)] px-5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${view === "upcoming" ? "gradient-brand text-white shadow-[var(--shadow-card-sm)]" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"}`}
             >
               {t("upcoming")}
             </Link>
             <Link
               href="/events?view=past"
-              className={`rounded-xl px-5 py-2.5 text-sm font-semibold transition-colors ${view === "past" ? "gradient-brand text-white shadow-md shadow-emerald-500/25" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"}`}
+              className={`rounded-[var(--radius-button)] px-5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${view === "past" ? "gradient-brand text-white shadow-[var(--shadow-card-sm)]" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"}`}
             >
               {t("past")}
             </Link>

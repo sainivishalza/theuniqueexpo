@@ -112,10 +112,10 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
                 width={1200}
                 height={900}
                 sizes="(max-width: 768px) 100vw, 800px"
-                className="max-w-full max-h-[75vh] w-auto h-auto rounded-xl shadow-2xl"
+                className="max-w-full max-h-[75vh] w-auto h-auto rounded-[var(--radius-card)] shadow-[var(--shadow-card-lg)]"
                 priority
               />
-              <div className="absolute inset-0 rounded-xl bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+              <div className="absolute inset-0 rounded-[var(--radius-card)] bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity w-12 h-12 rounded-full bg-white/90 flex items-center justify-center text-2xl">
                   🔍
                 </div>
@@ -160,7 +160,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
                   <h2 className="text-2xl font-bold text-heading mb-5">{t("tourHighlights")}</h2>
                   <div className="grid gap-4 md:grid-cols-2">
                     {tour.highlights.map((h, i) => (
-                      <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-cream-50 border border-gray-100">
+                      <div key={i} className="flex items-start gap-3 p-4 rounded-[var(--radius-card)] bg-cream-50 border border-gray-100">
                         <IconBadge size="xs" icon={i + 1} bgClassName="gradient-brand text-white" className="flex-shrink-0" />
                         <span className="text-sm text-gray-700 pt-1">{h}</span>
                       </div>
@@ -180,7 +180,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
                         key={i}
                         type="button"
                         onClick={() => setLightboxIndex(allImages.indexOf(img))}
-                        className="relative aspect-video rounded-xl overflow-hidden bg-gray-100 group"
+                        className="relative aspect-video rounded-[var(--radius-card)] overflow-hidden bg-gray-100 group"
                       >
                         <Image
                           src={img}
@@ -214,7 +214,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
                     {t("registerForThisTour")}
                   </Button>
                 ) : (
-                  <div className="block w-full text-center rounded-xl bg-gray-200 py-3 text-sm font-semibold text-gray-500">
+                  <div className="block w-full text-center rounded-[var(--radius-badge)] bg-gray-200 py-3 text-sm font-semibold text-gray-500">
                     {t("registrationClosed")}
                   </div>
                 )}
@@ -262,7 +262,7 @@ export default function TourDetailPage({ params }: { params: Promise<{ slug: str
             width={1200}
             height={900}
             sizes="100vw"
-            className="max-w-full max-h-[85vh] w-auto h-auto rounded-xl shadow-2xl"
+            className="max-w-full max-h-[85vh] w-auto h-auto rounded-[var(--radius-card)] shadow-[var(--shadow-card-lg)]"
             onClick={(e) => e.stopPropagation()}
           />
           {allImages.length > 1 && (

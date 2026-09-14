@@ -4,18 +4,35 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { errorMessage } from "@/lib/format";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 const TOPIC_KEYS = ["housing", "schools", "visas", "adaptation", "other"];
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function RelocationPage() {
   const t = useTranslations("relocationPage");
+  const tv = useTranslations("formValidation");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", email: "", topic: "housing", date: "", questions: "" });
+
+  const validate = () => {
+    const errors: Record<string, string> = {};
+    if (!form.name.trim()) errors.name = tv("required");
+    if (!form.email.trim()) errors.email = tv("required");
+    else if (!EMAIL_RE.test(form.email)) errors.email = tv("invalidEmail");
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setSubmitting(true);
     setError("");
     try {
@@ -38,12 +55,12 @@ export default function RelocationPage() {
 
   if (submitted) return (
     <div className="min-h-[60vh] flex items-center justify-center">
-      <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-sm">
+      <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
         <div className="text-6xl mb-4">🏡</div>
         <h1 className="text-2xl font-bold text-heading mb-2">{t("requestReceived")}</h1>
         <p className="text-gray-500 mb-6">{t("requestReceivedHint")}</p>
-        <button onClick={() => setSubmitted(false)} className="rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("submitAnother")}</button>
-      </div>
+        <Button onClick={() => setSubmitted(false)} variant="gradientPlain" size="wide">{t("submitAnother")}</Button>
+      </Card>
     </div>
   );
 
@@ -70,7 +87,7 @@ export default function RelocationPage() {
                 { key: "visas", icon: "🛂" },
                 { key: "adaptation", icon: "🧭" },
               ].map((s) => (
-                <div key={s.key} className="flex items-start gap-4 p-4 rounded-xl bg-white shadow-sm">
+                <div key={s.key} className="flex items-start gap-4 p-4 rounded-[var(--radius-card)] bg-white border border-gray-100">
                   <span className="text-2xl">{s.icon}</span>
                   <div>
                     <h3 className="font-bold text-heading">{t(`topics.${s.key}.title`)}</h3>
@@ -79,54 +96,49 @@ export default function RelocationPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-8 p-6 bg-white rounded-2xl shadow-sm">
+            <Card shadow="sm" className="mt-8 p-6">
               <p className="text-sm text-gray-500">
                 {t.rich("moreDetail", {
                   visaLink: (chunks) => <Link href="/services/visa-setup" className="text-emerald-600 hover:underline font-semibold">{chunks}</Link>,
                   movingLink: (chunks) => <Link href="/services/moving-assistance" className="text-emerald-600 hover:underline font-semibold">{chunks}</Link>,
                 })}
               </p>
-            </div>
-            <Link href="/services/relocation-cost-estimator" className="mt-4 flex items-center gap-4 p-4 rounded-xl bg-emerald-50 border border-emerald-100 hover:border-emerald-300 transition-colors">
+            </Card>
+            <Link href="/services/relocation-cost-estimator" className="mt-4 flex items-center gap-4 p-4 rounded-[var(--radius-card)] bg-emerald-50 border border-emerald-100 hover:border-emerald-300 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">
               <span className="text-2xl">🧮</span>
               <div><h3 className="font-bold text-heading">{t("costEstimatorTeaser.title")}</h3><p className="text-sm text-gray-500">{t("costEstimatorTeaser.desc")}</p></div>
             </Link>
           </div>
 
           <div>
-            <div className="bg-white rounded-2xl p-8 shadow-sm sticky top-24">
+            <Card shadow="sm" bordered={false} className="p-8 sticky top-24">
               <h2 className="text-2xl font-bold text-heading mb-6">{t("requestConsultation")}</h2>
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{t("name")}</label>
-                    <input required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{t("email")}</label>
-                    <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" />
-                  </div>
+                  <FormField label={t("name")} htmlFor="name" error={fieldErrors.name}>
+                    <input id="name" type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
+                  </FormField>
+                  <FormField label={t("email")} htmlFor="email" error={fieldErrors.email}>
+                    <input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                  </FormField>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("topic")}</label>
-                  <select value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none">
+                <FormField label={t("topic")} htmlFor="topic">
+                  <select id="topic" value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} className={fieldClasses()}>
                     {TOPIC_KEYS.map((key) => <option key={key} value={key}>{t(`topicOptions.${key}`)}</option>)}
                   </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("preferredDate")}</label>
-                  <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("tellUsMore")}</label>
-                  <textarea value={form.questions} onChange={(e) => setForm({ ...form, questions: e.target.value })} rows={4} placeholder={t("tellUsMorePlaceholder")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" />
-                </div>
-                {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-                <button type="submit" disabled={submitting} className="w-full rounded-xl gradient-brand py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50">
+                </FormField>
+                <FormField label={t("preferredDate")} htmlFor="date">
+                  <input id="date" type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className={fieldClasses()} />
+                </FormField>
+                <FormField label={t("tellUsMore")} htmlFor="questions">
+                  <textarea id="questions" value={form.questions} onChange={(e) => setForm({ ...form, questions: e.target.value })} rows={4} placeholder={t("tellUsMorePlaceholder")} className={fieldClasses(false, "resize-none")} />
+                </FormField>
+                {error && <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+                <Button type="submit" disabled={submitting} variant="primary" size="block">
                   {submitting ? t("submitting") : t("submitRequest")}
-                </button>
+                </Button>
               </form>
-            </div>
+            </Card>
           </div>
         </div>
       </section>

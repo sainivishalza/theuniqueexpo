@@ -79,7 +79,7 @@ export default function ExhibitionsPage() {
           <select
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 outline-none"
+            className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none"
           >
             <option value="All">{t("allIndustries")}</option>
             {industries.map((i) => (
@@ -89,19 +89,19 @@ export default function ExhibitionsPage() {
           <select
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 outline-none"
+            className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none"
           >
             <option value="All">{t("allCities")}</option>
             {cities.map((c) => (
               <option key={c}>{c}</option>
             ))}
           </select>
-          <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+          <div className="flex rounded-[var(--radius-button)] border border-gray-700 overflow-hidden">
             {["all", "upcoming", "past"].map((f) => (
               <button
                 key={f}
                 onClick={() => setDateFilter(f)}
-                className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${
+                className={`px-4 py-2 text-sm font-medium capitalize transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${
                   dateFilter === f
                     ? "bg-gray-900 text-white"
                     : "bg-white text-gray-600 hover:bg-cream-50"

@@ -80,7 +80,7 @@ export default function FavoriteButton({
       onClick={toggle}
       aria-label={saved ? t("removeFromSaved") : t("saveExhibition")}
       aria-pressed={saved}
-      className={`flex items-center justify-center gap-1.5 transition-colors ${showLabel ? "rounded-xl px-4 py-2 text-sm font-semibold" : "rounded-full"} ${saved ? "bg-red-500 text-white" : "bg-white/90 text-gray-700 hover:bg-white"} ${className}`}
+      className={`flex items-center justify-center gap-1.5 transition-colors ${showLabel ? "rounded-[var(--radius-button)] px-4 py-2 text-sm font-semibold" : "rounded-full"} ${saved ? "bg-red-500 text-white" : "bg-white/90 text-gray-700 hover:bg-white"} ${className}`}
     >
       {saved ? "❤️" : "🤍"}
       {showLabel && <span>{saved ? t("saved") : t("save")}</span>}

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 type MovingType = "office" | "residential" | "freight" | "pet";
 type Scope = "small" | "medium" | "large";
@@ -31,24 +32,40 @@ const RANGES: Record<Route, Record<MovingType, Record<Scope, [number, number]>>>
 
 const MOVING_TYPES: MovingType[] = ["office", "residential", "freight", "pet"];
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function formatUsd(value: number): string {
   return `$${value.toLocaleString("en-US")}`;
 }
 
 export default function RelocationCostEstimatorPage() {
   const t = useTranslations("relocationEstimatorPage");
+  const tv = useTranslations("formValidation");
   const [movingType, setMovingType] = useState<MovingType>("residential");
   const [scope, setScope] = useState<Scope>("medium");
   const [route, setRoute] = useState<Route>("international");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", origin: "", destination: "", date: "", details: "" });
 
   const range = useMemo(() => RANGES[route][movingType][scope], [route, movingType, scope]);
 
+  const validate = () => {
+    const errors: Record<string, string> = {};
+    if (!form.name.trim()) errors.name = tv("required");
+    if (!form.email.trim()) errors.email = tv("required");
+    else if (!EMAIL_RE.test(form.email)) errors.email = tv("invalidEmail");
+    if (!form.origin.trim()) errors.origin = tv("required");
+    if (!form.destination.trim()) errors.destination = tv("required");
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setSubmitting(true);
     setError("");
     try {
@@ -102,30 +119,27 @@ export default function RelocationCostEstimatorPage() {
             <p className="text-sm text-gray-500 mb-6">{t("calculatorSubtitle")}</p>
 
             <div className="grid gap-4 sm:grid-cols-3 mb-8">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("movingType")}</label>
-                <select value={movingType} onChange={(e) => setMovingType(e.target.value as MovingType)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none">
+              <FormField label={t("movingType")} htmlFor="movingType">
+                <select id="movingType" value={movingType} onChange={(e) => setMovingType(e.target.value as MovingType)} className={fieldClasses()}>
                   {MOVING_TYPES.map((mt) => <option key={mt} value={mt}>{t(`movingTypes.${mt}`)}</option>)}
                 </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("scope")}</label>
-                <select value={scope} onChange={(e) => setScope(e.target.value as Scope)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none">
+              </FormField>
+              <FormField label={t("scope")} htmlFor="scope">
+                <select id="scope" value={scope} onChange={(e) => setScope(e.target.value as Scope)} className={fieldClasses()}>
                   <option value="small">{t("scopes.small")}</option>
                   <option value="medium">{t("scopes.medium")}</option>
                   <option value="large">{t("scopes.large")}</option>
                 </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("route")}</label>
-                <select value={route} onChange={(e) => setRoute(e.target.value as Route)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none">
+              </FormField>
+              <FormField label={t("route")} htmlFor="route">
+                <select id="route" value={route} onChange={(e) => setRoute(e.target.value as Route)} className={fieldClasses()}>
                   <option value="domestic">{t("routes.domestic")}</option>
                   <option value="international">{t("routes.international")}</option>
                 </select>
-              </div>
+              </FormField>
             </div>
 
-            <div className="rounded-2xl gradient-brand p-6 text-center text-white mb-2">
+            <div className="rounded-[var(--radius-card)] gradient-brand p-6 text-center text-white mb-2">
               <p className="text-sm font-semibold opacity-90 mb-1">{t("estimatedRange")}</p>
               <p className="text-3xl font-extrabold">{formatUsd(range[0])} &ndash; {formatUsd(range[1])}</p>
             </div>
@@ -133,22 +147,38 @@ export default function RelocationCostEstimatorPage() {
 
             <div className="border-t border-gray-100 pt-8">
               <h2 className="text-xl font-bold text-heading mb-6">{t("requestExactQuote")}</h2>
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("name")}</label><input required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("email")}</label><input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                  <FormField label={t("name")} htmlFor="name" error={fieldErrors.name}>
+                    <input id="name" type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
+                  </FormField>
+                  <FormField label={t("email")} htmlFor="email" error={fieldErrors.email}>
+                    <input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                  </FormField>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("phone")}</label><input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("company")}</label><input type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                  <FormField label={t("phone")} htmlFor="phone">
+                    <input id="phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={fieldClasses()} />
+                  </FormField>
+                  <FormField label={t("company")} htmlFor="company">
+                    <input id="company" type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={fieldClasses()} />
+                  </FormField>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("originCity")}</label><input required type="text" value={form.origin} onChange={(e) => setForm({ ...form, origin: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("destinationCity")}</label><input required type="text" value={form.destination} onChange={(e) => setForm({ ...form, destination: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                  <FormField label={t("originCity")} htmlFor="origin" error={fieldErrors.origin}>
+                    <input id="origin" type="text" value={form.origin} onChange={(e) => setForm({ ...form, origin: e.target.value })} aria-invalid={!!fieldErrors.origin} className={fieldClasses(!!fieldErrors.origin)} />
+                  </FormField>
+                  <FormField label={t("destinationCity")} htmlFor="destination" error={fieldErrors.destination}>
+                    <input id="destination" type="text" value={form.destination} onChange={(e) => setForm({ ...form, destination: e.target.value })} aria-invalid={!!fieldErrors.destination} className={fieldClasses(!!fieldErrors.destination)} />
+                  </FormField>
                 </div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("preferredMoveDate")}</label><input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("additionalDetails")}</label><textarea value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} rows={3} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
-                {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+                <FormField label={t("preferredMoveDate")} htmlFor="date">
+                  <input id="date" type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className={fieldClasses()} />
+                </FormField>
+                <FormField label={t("additionalDetails")} htmlFor="details">
+                  <textarea id="details" value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} rows={3} className={fieldClasses(false, "resize-none")} />
+                </FormField>
+                {error && <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
                 <Button type="submit" disabled={submitting} variant="save" size="block">
                   {submitting ? t("submitting") : t("submitQuoteRequest")}
                 </Button>

@@ -91,7 +91,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
             <Image
               src={event.image} alt={event.title} width={1200} height={700}
               sizes="(max-width: 768px) 100vw, 800px"
-              className="max-w-full max-h-[60vh] w-auto h-auto rounded-xl shadow-2xl"
+              className="max-w-full max-h-[60vh] w-auto h-auto rounded-[var(--radius-card)] shadow-[var(--shadow-card-lg)]"
               priority
             />
           </div>
@@ -146,7 +146,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
                 <div className="text-center py-2 text-sm font-semibold text-gray-500">{t("registrationClosed")}</div>
               ) : user ? (
                 <>
-                  {error && <div className="mb-3 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</div>}
+                  {error && <div className="mb-3 rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</div>}
                   <Button onClick={handleRegister} disabled={submitting} variant="gradientCta" size="block">
                     {submitting ? t("submitting") : t("registerForThisEvent")}
                   </Button>

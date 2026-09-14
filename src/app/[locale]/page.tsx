@@ -224,7 +224,7 @@ export default async function Home() {
                 href={`/exhibitions?industry=${encodeURIComponent(ind.name)}`}
                 className="group rounded-[var(--radius-card)] p-6 text-center border border-gray-200 hover:border-emerald-800 transition-colors"
               >
-                <div className="text-4xl mb-3 grayscale group-hover:grayscale-0 transition-[filter] duration-300">{ind.icon}</div>
+                <div className="text-4xl mb-3">{ind.icon}</div>
                 <div className="text-sm font-bold text-gray-900">{ind.name}</div>
                 <div className="text-xs text-gray-500 mt-1">{ind.count}+ events</div>
               </Link>
@@ -278,7 +278,7 @@ export default async function Home() {
                         alt={member.name}
                         width={224}
                         height={224}
-                        className="w-full h-full object-cover grayscale"
+                        className="w-full h-full object-cover"
                       />
                     )}
                   </div>

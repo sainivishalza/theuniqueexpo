@@ -28,14 +28,16 @@ export interface SiteTheme {
   cardShadowStyle: CardShadowStyleKey; // elevation of every Card
 }
 
-// Editorial/corporate identity (2026 redesign): deep navy as the dominant
-// brand tone (buttons, links, icon accents -- everything the emerald-*
-// scale drives) with sharp amber reserved for the gold-* scale's existing
-// "sparingly used, premium highlight" role -- CTAs and active states only,
-// never the broad UI tint navy already covers.
+// The site's brand green (buttons, links, icon accents -- everything the
+// emerald-* scale drives) with a warm gold reserved for the gold-* scale's
+// "sparingly used, premium highlight" role -- CTAs and active states.
+// Corners/shadows stay soft/rounded rather than the sharp/flat editorial
+// treatment -- reverted after live feedback that the sharp-cornered navy
+// look read as too stark; the serif heading font and off-white background
+// from that pass are kept since neither was flagged as a problem.
 export const DEFAULT_SITE_THEME: SiteTheme = {
-  primaryColor: "#0A192F",
-  goldColor: "#D97706",
+  primaryColor: "#075b4f",
+  goldColor: "#c9a24a",
   backgroundColor: "#F8F9FA",
   footerColor: "#1A1A1A",
   heroColor: "#0A192F",
@@ -43,8 +45,8 @@ export const DEFAULT_SITE_THEME: SiteTheme = {
   headingFont: "playfairDisplay",
   bodyFont: "ibmPlexSans",
   scriptFont: "caveat",
-  cornerStyle: "sharp",
-  cardShadowStyle: "flat",
+  cornerStyle: "soft",
+  cardShadowStyle: "soft",
 };
 
 export const CORNER_STYLE_OPTIONS: { key: CornerStyleKey; label: string }[] = [

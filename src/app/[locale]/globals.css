@@ -75,11 +75,12 @@
   }
   /* One heading font applied globally via the tag selector, rather than a
      className on every h1-h6 across ~40+ pages, so the whole site's
-     headings stay consistent from a single place. Color here only covers
-     the minority of headings with no explicit text-color className at all
-     (this is @layer base, so any text-white/text-emerald-* class -- e.g.
-     a hero heading over a dark photo -- still wins, on purpose: those are
-     deliberately not the admin's "heading color" role). */
+     headings stay consistent from a single place. Color here targets the
+     h1-h6 element directly, so it always wins over an inherited color from
+     a wrapping section div (a text-white/text-emerald-* class one layer up
+     doesn't reach the heading through inheritance -- see the
+     .text-white/.text-cream-50 heading overrides below, which are what
+     actually make dark hero/CTA sections legible). */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading), "Oswald", system-ui, -apple-system, sans-serif;
     color: var(--color-heading);
@@ -99,6 +100,19 @@
      colors on dark sections, which keep their own contrast-critical class. */
   .text-heading {
     color: var(--color-heading);
+  }
+  /* The @layer base heading rule above targets h1-h6 directly, so a
+     text-white/text-cream-* class on a wrapping section div (the pattern
+     used by every dark hero/CTA section sitewide) never reaches the
+     heading via inheritance -- inheritance only applies when nothing
+     matches the element itself, and the base-layer rule always does.
+     These ancestor-scoped overrides fix that for the two light-on-dark
+     colors dark sections actually use, without touching every page. */
+  .text-white h1, .text-white h2, .text-white h3, .text-white h4, .text-white h5, .text-white h6 {
+    color: white;
+  }
+  .text-cream-50 h1, .text-cream-50 h2, .text-cream-50 h3, .text-cream-50 h4, .text-cream-50 h5, .text-cream-50 h6 {
+    color: var(--color-cream-50);
   }
   /* These four were still hardcoded to the exact hex the emerald/gold
      scales happened to have at rebrand time -- meaning the admin's

@@ -64,7 +64,7 @@ export default function MessagesInboxPage() {
             <Link
               key={t.id}
               href={`/messages/${t.quoteId}`}
-              className="block rounded-xl border border-gray-200 p-4 hover:border-emerald-300 hover:shadow-sm transition-all"
+              className="block rounded-[var(--radius-card)] border border-gray-200 p-4 hover:border-emerald-900 hover:shadow-sm transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">

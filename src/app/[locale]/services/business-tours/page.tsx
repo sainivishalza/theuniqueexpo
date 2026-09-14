@@ -45,7 +45,7 @@ export default function BusinessToursPage() {
                   <div className="absolute inset-0 gradient-overlay" />
                   <div className="absolute top-4 left-4 flex gap-2">
                     <Badge tone="white" size="tag">{tour.city}</Badge>
-                    <span className="rounded-lg bg-emerald-500/90 backdrop-blur-sm px-3 py-1 text-xs font-bold text-white">{tour.duration}</span>
+                    <span className="rounded-[var(--radius-badge)] bg-emerald-500/90 backdrop-blur-sm px-3 py-1 text-xs font-bold text-white">{tour.duration}</span>
                   </div>
                   <div className="absolute bottom-4 left-4 right-4">
                     <h3 className="text-lg font-bold text-white line-clamp-2 drop-shadow-lg">{tour.title}</h3>

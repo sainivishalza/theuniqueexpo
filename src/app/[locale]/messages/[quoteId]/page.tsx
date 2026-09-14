@@ -130,7 +130,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
             const mine = m.senderId === String(user.id);
             return (
               <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm ${mine ? "bg-emerald-600 text-white" : "bg-gray-100 text-gray-800"}`}>
+                <div className={`max-w-[75%] rounded-[var(--radius-card)] px-4 py-2.5 text-sm ${mine ? "bg-emerald-600 text-white" : "bg-gray-100 text-gray-800"}`}>
                   {!mine && <p className="text-xs font-semibold mb-0.5 opacity-70">{m.senderName}</p>}
                   <p className="whitespace-pre-line">{m.body}</p>
                   <p className={`text-[10px] mt-1 ${mine ? "text-emerald-100" : "text-gray-400"}`}>
@@ -149,12 +149,13 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder={t("typeMessage")}
-            className="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none"
+            aria-label={t("typeMessage")}
+            className="flex-1 rounded-[var(--radius-button)] border border-gray-700 px-4 py-2.5 text-sm focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none transition-colors"
           />
           <button
             type="submit"
             disabled={sending || !text.trim()}
-            className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+            className="rounded-[var(--radius-button)] gradient-brand px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
           >
             {sending ? "..." : t("send")}
           </button>

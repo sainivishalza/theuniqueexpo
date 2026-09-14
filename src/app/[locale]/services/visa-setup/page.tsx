@@ -51,7 +51,7 @@ export default function VisaSetupPage() {
                 <h3 className="text-sm font-bold text-heading mb-3">{t("process")}</h3>
                 <div className="flex flex-wrap gap-3">
                   {svc.process.map((step) => (
-                    <div key={step.step} className="flex items-center gap-2 bg-cream-50 rounded-xl px-4 py-2">
+                    <div key={step.step} className="flex items-center gap-2 bg-cream-50 rounded-[var(--radius-badge)] px-4 py-2">
                       <div className="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs font-bold">{step.step}</div>
                       <div className="text-sm"><span className="font-medium text-gray-900">{step.title}</span> <span className="text-gray-400">({step.duration})</span></div>
                     </div>

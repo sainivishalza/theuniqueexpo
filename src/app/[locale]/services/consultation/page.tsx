@@ -91,7 +91,7 @@ export default function ConsultationPage() {
             </div>
             <div className="mt-8">
               <h3 className="font-[family-name:var(--font-heading)] font-bold text-heading mb-3">{t("pricing")}</h3>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
                   { label: t("singleSession"), price: "$150" },
                   { label: t("packageOf4"), price: "$500" },

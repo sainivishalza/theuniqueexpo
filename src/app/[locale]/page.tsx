@@ -120,7 +120,7 @@ export default async function Home() {
           <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat) => (
               <div key={stat.label} className="border-t border-white/20 pt-4">
-                <div className="text-4xl md:text-5xl font-extrabold font-[family-name:var(--font-heading)] text-cream-50">{stat.value}</div>
+                <div className="text-3xl md:text-5xl font-extrabold font-[family-name:var(--font-heading)] text-cream-50">{stat.value}</div>
                 <span className="mt-3 block h-0.5 w-8 bg-gold-500" />
                 <div className="mt-2 text-xs uppercase tracking-[0.1em] text-gray-400">{stat.label}</div>
               </div>

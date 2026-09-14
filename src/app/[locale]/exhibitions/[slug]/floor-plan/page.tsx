@@ -10,9 +10,12 @@ import { formatNumber, formatCurrency } from "@/lib/format";
 
 interface Exhibition { id: string; slug: string; title: string; }
 
+// Brand gold/navy scales only -- differentiated by shade rather than hue
+// so the three booth tiers stay within the Editorial/Corporate palette
+// while remaining visually distinct on the map.
 const SIZE_COLORS: Record<string, string> = {
-  platinum: "bg-amber-400 hover:bg-amber-300 border-amber-500/30",
-  gold: "bg-teal-400 hover:bg-teal-300 border-teal-500/30",
+  platinum: "bg-gold-600 hover:bg-gold-500 border-gold-700/30",
+  gold: "bg-gold-400 hover:bg-gold-300 border-gold-500/30",
   standard: "bg-emerald-400 hover:bg-emerald-300 border-emerald-500/30",
 };
 
@@ -104,7 +107,7 @@ export default function FloorPlanPage() {
 
           <div className="grid gap-8 lg:grid-cols-4">
             {/* Floor plan */}
-            <div className="lg:col-span-3 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
+            <div className="lg:col-span-3 rounded-[var(--radius-card)] bg-white p-8 shadow-[var(--shadow-card-sm)] border border-gray-100">
               <h2 className="text-lg font-bold text-heading mb-6">{t("hallMap")}</h2>
               <div className="overflow-x-auto">
                 <div className="inline-block min-w-[500px]">
@@ -137,12 +140,12 @@ export default function FloorPlanPage() {
                             }}
                             disabled={isBooked}
                             title={isBooked ? t("bookedBy", { name: booth.exhibitorName || "" }) : `${booth.size} — ${formatCurrency(booth.price)}`}
-                            className={`mr-2 flex h-16 w-[72px] flex-col items-center justify-center rounded-xl border-2 text-[10px] font-bold transition-all duration-200 ${
+                            className={`mr-2 flex h-16 w-[72px] flex-col items-center justify-center rounded-[var(--radius-button)] border-2 text-[10px] font-bold transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${
                               isSelected
-                                ? "border-gray-600 bg-gray-600 text-white ring-2 ring-gray-300 shadow-lg"
+                                ? "border-emerald-900 bg-emerald-900 text-white ring-2 ring-gold-500"
                                 : isBooked
                                   ? "cursor-not-allowed border-red-300 bg-red-100 text-red-600"
-                                  : `${SIZE_COLORS[booth.size]} text-gray-800 shadow-sm hover:shadow-md`
+                                  : `${SIZE_COLORS[booth.size]} text-gray-800`
                             }`}
                           >
                             <span className="text-xs font-bold">{row}{i + 1}</span>
@@ -161,7 +164,7 @@ export default function FloorPlanPage() {
 
                   {/* Stage */}
                   <div className="mt-6 flex justify-center">
-                    <div className="flex h-14 w-96 items-center justify-center rounded-xl bg-gradient-to-r from-gray-800 to-gray-900 text-sm font-bold text-gray-300 shadow-lg">
+                    <div className="flex h-14 w-96 items-center justify-center rounded-[var(--radius-button)] bg-gradient-to-r from-gray-800 to-gray-900 text-sm font-bold text-gray-300">
                       {t("mainStage")}
                     </div>
                   </div>
@@ -172,8 +175,8 @@ export default function FloorPlanPage() {
             {/* Selection panel */}
             <div className="space-y-6">
               {selected ? (
-                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-                  <div className="w-10 h-10 rounded-xl gradient-brand flex items-center justify-center text-white text-sm font-bold mb-4">✓</div>
+                <div className="rounded-[var(--radius-card)] bg-white p-6 shadow-[var(--shadow-card-sm)] border border-gray-100">
+                  <div className="w-10 h-10 rounded-[var(--radius-icon-sm)] gradient-brand flex items-center justify-center text-white text-sm font-bold mb-4">✓</div>
                   <h3 className="text-lg font-bold text-heading">{t("boothLabel", { id: `${selected.row}${selected.col}` })}</h3>
                   <div className="mt-4 space-y-3">
                     <div className="flex justify-between text-sm">
@@ -192,21 +195,21 @@ export default function FloorPlanPage() {
                   {user?.role === "exhibitor" ? (
                     <Link
                       href={`/exhibitions/${slug}/book/${selected.id}`}
-                      className="mt-6 block w-full text-center rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                      className="mt-6 block w-full text-center rounded-[var(--radius-button)] bg-gold-500 py-3 text-sm font-semibold text-emerald-950 hover:bg-gold-600 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
                     >
                       {t("bookFor", { price: formatCurrency(selected.price) })}
                     </Link>
                   ) : (
                     <Link
                       href="/register"
-                      className="mt-6 block w-full text-center rounded-xl bg-gray-900 py-3 text-sm font-semibold text-white hover:bg-gray-800 transition-colors"
+                      className="mt-6 block w-full text-center rounded-[var(--radius-button)] bg-gray-900 py-3 text-sm font-semibold text-white hover:bg-gray-800 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500 focus-visible:outline-offset-2"
                     >
                       {t("registerAsExhibitor")}
                     </Link>
                   )}
                 </div>
               ) : (
-                <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100 text-center">
+                <div className="rounded-[var(--radius-card)] bg-white p-6 shadow-[var(--shadow-card-sm)] border border-gray-100 text-center">
                   <div className="text-4xl mb-3">🗺️</div>
                   <h3 className="text-lg font-bold text-heading">{t("selectABooth")}</h3>
                   <p className="mt-2 text-sm text-gray-500">{t("selectABoothHint")}</p>
@@ -214,7 +217,7 @@ export default function FloorPlanPage() {
               )}
 
               {/* Quick stats */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+              <div className="rounded-[var(--radius-card)] bg-white p-6 shadow-[var(--shadow-card-sm)] border border-gray-100">
                 <h3 className="text-sm font-bold text-heading mb-4">{t("boothStats")}</h3>
                 <div className="space-y-3">
                   {[

@@ -1,11 +1,10 @@
 import type { ComponentPropsWithoutRef } from "react";
 
-export type BadgeTone = "emerald" | "purple" | "gold" | "gray" | "white" | "live" | "outline-light" | "warning" | "success" | "danger";
+export type BadgeTone = "emerald" | "gold" | "gray" | "white" | "live" | "outline-light" | "warning" | "success" | "danger";
 export type BadgeSize = "eyebrow" | "tag" | "pill" | "status";
 
 const TONE_CLASSES: Record<BadgeTone, string> = {
   emerald: "bg-emerald-100 text-emerald-700",
-  purple: "bg-purple-100 text-purple-700",
   gold: "bg-gold-100 text-gold-800",
   gray: "bg-gray-100 text-gray-600",
   // Frosted tag over an image, e.g. an industry label on a poster card.
@@ -36,6 +35,16 @@ const SIZE_CLASSES: Record<BadgeSize, string> = {
 interface BadgeProps extends ComponentPropsWithoutRef<"span"> {
   tone?: BadgeTone;
   size?: BadgeSize;
+}
+
+const VALID_TONES = new Set<string>(Object.keys(TONE_CLASSES));
+
+// For a tone value that came from admin-entered/stored data (e.g. a
+// partner tier's badgeTone column) rather than a literal in code --
+// falls back to "gray" for anything not in the current tone set,
+// including a tier saved back when "purple" was still an option.
+export function normalizeBadgeTone(tone: string | undefined | null): BadgeTone {
+  return tone && VALID_TONES.has(tone) ? (tone as BadgeTone) : "gray";
 }
 
 // Shared pill/tag primitive so section eyebrows and card labels across the

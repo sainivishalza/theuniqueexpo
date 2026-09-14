@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Logo from "@/components/Logo";
 import Button from "@/components/ui/Button";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 export default function LoginPage() {
   const t = useTranslations("loginPage");
@@ -49,7 +50,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left: Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-emerald-600 via-teal-600 to-purple-700 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-[var(--color-hero-bg)] relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <Image
             src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&h=800&fit=crop&q=80"
@@ -78,27 +79,25 @@ export default function LoginPage() {
           <h2 className="text-3xl font-extrabold text-heading mb-2">{t("welcomeBack")}</h2>
           <p className="text-gray-500 mb-8">{t("signInSubtitle")}</p>
 
-          {error && <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700">{error}</div>}
+          {error && <div className="mb-4 p-3 rounded-[var(--radius-button)] bg-red-50 border border-red-200 text-sm text-red-700">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("email")}</label>
-              <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder="you@company.com" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("password")}</label>
-              <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder={t("passwordPlaceholder")} />
-              <button type="button" onClick={() => setShowForgot(true)} className="mt-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700">
+            <FormField label={t("email")} htmlFor="email">
+              <input id="email" required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={fieldClasses()} placeholder="you@company.com" />
+            </FormField>
+            <FormField label={t("password")} htmlFor="password">
+              <input id="password" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={fieldClasses()} placeholder={t("passwordPlaceholder")} />
+              <button type="button" onClick={() => setShowForgot(true)} className="mt-1.5 text-xs font-semibold text-emerald-800 hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
                 {t("forgotPassword")}
               </button>
-            </div>
-            <Button type="submit" disabled={loading} variant="save" size="blockMd">
+            </FormField>
+            <Button type="submit" disabled={loading} variant="primary" size="blockMd">
               {loading ? t("signingIn") : t("signIn")}
             </Button>
           </form>
 
           {showForgot && (
-            <div className="mt-4 rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-sm text-emerald-900">
+            <div className="mt-4 rounded-[var(--radius-card)] bg-emerald-50 border border-emerald-100 p-4 text-sm text-emerald-900">
               <p className="font-semibold mb-1">{t("forgotPasswordTitle")}</p>
               <p>{t("forgotPasswordBody")}</p>
               {contact && (contact.contactEmail || contact.phone) && (

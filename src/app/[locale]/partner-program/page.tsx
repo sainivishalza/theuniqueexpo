@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { errorMessage } from "@/lib/format";
-import Badge from "@/components/ui/Badge";
+import Badge, { normalizeBadgeTone } from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 interface PartnerTier {
   id: string;
@@ -18,12 +19,14 @@ interface PartnerTier {
 
 export default function PartnerProgramPage() {
   const t = useTranslations("partnerProgramPage");
+  const tv = useTranslations("formValidation");
   const [tiers, setTiers] = useState<PartnerTier[]>([]);
   const [loading, setLoading] = useState(true);
   const [openFormId, setOpenFormId] = useState<string | null>(null);
   const [submittedIds, setSubmittedIds] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", message: "" });
 
   useEffect(() => {
@@ -33,8 +36,20 @@ export default function PartnerProgramPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function validate() {
+    const errors: Record<string, string> = {};
+    if (!form.name.trim()) errors.name = tv("required");
+    if (!form.email.trim()) errors.email = tv("required");
+    else if (!EMAIL_RE.test(form.email)) errors.email = tv("invalidEmail");
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
   async function handleSubmit(e: React.FormEvent, tierId: string) {
     e.preventDefault();
+    if (!validate()) return;
     setSubmitting(true);
     setError("");
     try {
@@ -74,8 +89,8 @@ export default function PartnerProgramPage() {
                 const isSubmitted = submittedIds.includes(tier.id);
                 const isFormOpen = openFormId === tier.id;
                 return (
-                  <Card key={tier.id} shadow="md" bordered={false} className="p-8 flex flex-col h-full">
-                    <Badge tone={tier.badgeTone as "gray" | "gold" | "emerald" | "purple"} size="tag" className="self-start mb-4">{tier.name}</Badge>
+                  <Card key={tier.id} shadow="md" className="p-8 flex flex-col h-full">
+                    <Badge tone={normalizeBadgeTone(tier.badgeTone)} size="tag" className="self-start mb-4">{tier.name}</Badge>
                     <p className="text-sm text-gray-500 mb-4">{tier.tagline}</p>
                     <div className="text-2xl font-extrabold text-heading mb-1">{tier.priceLabel}</div>
                     <div className="text-sm text-emerald-600 font-semibold mb-6">{tier.commissionRate}</div>
@@ -88,22 +103,32 @@ export default function PartnerProgramPage() {
                     </ul>
 
                     {isSubmitted ? (
-                      <div className="rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700 font-medium">{t("applicationReceived")}</div>
+                      <div className="rounded-[var(--radius-button)] bg-green-50 px-4 py-3 text-sm text-green-700 font-medium">{t("applicationReceived")}</div>
                     ) : isFormOpen ? (
-                      <form onSubmit={(e) => handleSubmit(e, tier.id)} className="space-y-3">
-                        <input required type="text" placeholder={t("name")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none" />
-                        <input required type="email" placeholder={t("email")} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none" />
-                        <input type="text" placeholder={t("company")} value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none" />
-                        <input type="tel" placeholder={t("phone")} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none" />
-                        <textarea placeholder={t("messagePlaceholder")} rows={2} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none resize-none" />
-                        {error && <div className="rounded-xl bg-red-50 px-3 py-2 text-xs text-red-700">{error}</div>}
+                      <form onSubmit={(e) => handleSubmit(e, tier.id)} noValidate className="space-y-3">
+                        <FormField label={t("name")} htmlFor={`name-${tier.id}`} error={fieldErrors.name}>
+                          <input id={`name-${tier.id}`} type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
+                        </FormField>
+                        <FormField label={t("email")} htmlFor={`email-${tier.id}`} error={fieldErrors.email}>
+                          <input id={`email-${tier.id}`} type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                        </FormField>
+                        <FormField label={t("company")} htmlFor={`company-${tier.id}`}>
+                          <input id={`company-${tier.id}`} type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={fieldClasses()} />
+                        </FormField>
+                        <FormField label={t("phone")} htmlFor={`phone-${tier.id}`}>
+                          <input id={`phone-${tier.id}`} type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={fieldClasses()} />
+                        </FormField>
+                        <FormField label={t("messagePlaceholder")} htmlFor={`message-${tier.id}`}>
+                          <textarea id={`message-${tier.id}`} rows={2} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className={fieldClasses(false, "resize-none")} />
+                        </FormField>
+                        {error && <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">{error}</div>}
                         <div className="flex gap-2">
-                          <Button type="submit" disabled={submitting} variant="save" size="blockSm">{submitting ? t("submitting") : t("submitApplication")}</Button>
-                          <button type="button" onClick={() => { setOpenFormId(null); setError(""); }} className="rounded-xl px-4 text-sm font-semibold text-gray-500 hover:bg-cream-50">{t("cancel")}</button>
+                          <Button type="submit" disabled={submitting} variant="primary" size="blockSm" className="flex-1">{submitting ? t("submitting") : t("submitApplication")}</Button>
+                          <Button type="button" onClick={() => { setOpenFormId(null); setError(""); setFieldErrors({}); }} variant="ghost" size="compact">{t("cancel")}</Button>
                         </div>
                       </form>
                     ) : (
-                      <Button onClick={() => { setOpenFormId(tier.id); setError(""); }} variant="save" size="blockSm">
+                      <Button onClick={() => { setOpenFormId(tier.id); setError(""); }} variant="primary" size="blockSm">
                         {t("apply")}
                       </Button>
                     )}

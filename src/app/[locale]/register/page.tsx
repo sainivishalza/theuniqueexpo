@@ -9,6 +9,7 @@ import { useAuth, type UserRole } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Logo from "@/components/Logo";
 import Button from "@/components/ui/Button";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 const ROLE_KEYS: { value: UserRole; icon: string }[] = [
   { value: "buyer", icon: "🛒" },
@@ -48,7 +49,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left: Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-emerald-600 via-teal-600 to-purple-700 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-[var(--color-hero-bg)] relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <Image
             src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1200&h=800&fit=crop&q=80"
@@ -77,7 +78,7 @@ export default function RegisterPage() {
           <h2 className="text-3xl font-extrabold text-heading mb-2">{t("createAccount")}</h2>
           <p className="text-gray-500 mb-8">{t("createAccountSubtitle")}</p>
 
-          {error && <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700">{error}</div>}
+          {error && <div className="mb-4 p-3 rounded-[var(--radius-button)] bg-red-50 border border-red-200 text-sm text-red-700">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Role Picker */}
@@ -86,7 +87,7 @@ export default function RegisterPage() {
               <div className="grid grid-cols-2 gap-3">
                 {roles.map((r) => (
                   <button key={r.value} type="button" onClick={() => setForm({ ...form, role: r.value })}
-                    className={`p-3 rounded-xl border-2 text-left transition-all ${form.role === r.value ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-gray-300"}`}>
+                    className={`p-3 rounded-[var(--radius-card)] border-2 text-left transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${form.role === r.value ? "border-emerald-900 bg-emerald-50" : "border-gray-200 hover:border-gray-300"}`}>
                     <span className="text-xl">{r.icon}</span>
                     <div className="font-semibold text-sm mt-1">{r.label}</div>
                     <div className="text-xs text-gray-400">{r.desc}</div>
@@ -95,24 +96,20 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fullName")}</label>
-              <input required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("email")}</label>
-              <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder="you@company.com" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("password")}</label>
-              <input required type="password" minLength={6} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder={t("passwordPlaceholder")} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("country")}</label>
-              <input type="text" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none bg-white" placeholder={t("countryPlaceholder")} />
-            </div>
+            <FormField label={t("fullName")} htmlFor="name">
+              <input id="name" required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={fieldClasses()} />
+            </FormField>
+            <FormField label={t("email")} htmlFor="email">
+              <input id="email" required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={fieldClasses()} placeholder="you@company.com" />
+            </FormField>
+            <FormField label={t("password")} htmlFor="password">
+              <input id="password" required type="password" minLength={6} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={fieldClasses()} placeholder={t("passwordPlaceholder")} />
+            </FormField>
+            <FormField label={t("country")} htmlFor="country">
+              <input id="country" type="text" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className={fieldClasses()} placeholder={t("countryPlaceholder")} />
+            </FormField>
 
-            <Button type="submit" disabled={loading} variant="save" size="blockMd">
+            <Button type="submit" disabled={loading} variant="primary" size="blockMd">
               {loading ? t("creatingAccount") : t("createAccountButton")}
             </Button>
           </form>

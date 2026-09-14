@@ -12,13 +12,15 @@ interface ReviewSummary {
   count: number;
 }
 
+// Rotates through the brand's own navy/amber scales rather than an
+// off-palette rainbow, so avatar variety still reads as one identity.
 const avatarColors = [
-  "from-emerald-500 to-emerald-600",
-  "from-green-500 to-emerald-600",
-  "from-purple-500 to-violet-600",
-  "from-orange-500 to-red-500",
-  "from-pink-500 to-rose-500",
-  "from-teal-500 to-cyan-500",
+  "from-emerald-600 to-emerald-800",
+  "from-emerald-500 to-emerald-700",
+  "from-gold-500 to-gold-700",
+  "from-emerald-700 to-emerald-900",
+  "from-gold-600 to-emerald-800",
+  "from-emerald-800 to-gold-600",
 ];
 
 export default function DirectoryPage() {
@@ -89,13 +91,13 @@ export default function DirectoryPage() {
               placeholder={t("searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-cream-50 pl-10 pr-4 py-3 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-colors"
+              className="w-full rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 pl-10 pr-4 py-3 text-sm focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none transition-colors"
             />
           </div>
           <select
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
-            className="rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm text-gray-700 focus:border-emerald-500 outline-none"
+            className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-4 py-3 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none"
           >
             <option value="">{t("allIndustries")}</option>
             {industries.map((i) => (
@@ -122,7 +124,7 @@ export default function DirectoryPage() {
               filtered.map((ex, idx) => (
                 <Card key={ex.id} href={`/exhibitor/${ex.id}`} shadow="sm" className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${avatarColors[idx % avatarColors.length]} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
+                    <div className={`w-12 h-12 rounded-[var(--radius-icon-md)] bg-gradient-to-br ${avatarColors[idx % avatarColors.length]} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
                       {ex.name[0]}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -151,13 +153,13 @@ export default function DirectoryPage() {
                     {ex.products.slice(0, 4).map((p) => (
                       <span
                         key={p}
-                        className="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600"
+                        className="rounded-[var(--radius-badge)] bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600"
                       >
                         {p}
                       </span>
                     ))}
                     {ex.products.length > 4 && (
-                      <span className="rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-600">
+                      <span className="rounded-[var(--radius-badge)] bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-600">
                         {t("moreProducts", { count: ex.products.length - 4 })}
                       </span>
                     )}

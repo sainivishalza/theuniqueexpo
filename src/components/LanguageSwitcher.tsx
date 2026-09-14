@@ -61,7 +61,7 @@ export default function LanguageSwitcher({ mobile = false }: { mobile?: boolean 
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 mt-1 w-36 rounded-xl bg-white shadow-lg border border-gray-100 py-1 z-50">
+          <div className="absolute right-0 mt-2 w-36 rounded-[var(--radius-card)] bg-white shadow-[var(--shadow-card-lg)] border border-gray-200 py-1 z-50">
             {routing.locales.map((code) => (
               <button
                 key={code}

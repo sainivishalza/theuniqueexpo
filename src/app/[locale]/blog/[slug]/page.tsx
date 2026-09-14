@@ -96,7 +96,7 @@ export default async function BlogPostPage({
           </Link>
           <h1 className="mt-3 text-3xl md:text-4xl font-extrabold leading-tight">{post.title}</h1>
           {post.publishedAt && (
-            <p className="mt-3 text-sm text-gray-400">{new Date(post.publishedAt).toLocaleDateString()}</p>
+            <p className="mt-3 text-sm uppercase tracking-wide text-gray-400">{new Date(post.publishedAt).toLocaleDateString()}</p>
           )}
         </div>
       </section>
@@ -107,7 +107,7 @@ export default async function BlogPostPage({
             <Image
               src={post.coverImage} alt={post.title} width={1200} height={630}
               sizes="(max-width: 768px) 100vw, 800px"
-              className="w-full h-auto rounded-xl shadow-2xl"
+              className="w-full h-auto rounded-[var(--radius-card)] shadow-[var(--shadow-card-lg)]"
               priority
             />
           </div>

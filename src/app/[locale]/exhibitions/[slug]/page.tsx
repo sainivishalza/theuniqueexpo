@@ -20,12 +20,12 @@ interface Exhibition {
 }
 
 const exhibitorLogos = [
-  { name: "Pacific Foods", abbr: "PF", color: "bg-orange-500" },
+  { name: "Pacific Foods", abbr: "PF", color: "bg-emerald-700" },
   { name: "TechFlow", abbr: "TF", color: "bg-emerald-500" },
-  { name: "GlobalParts", abbr: "GP", color: "bg-green-500" },
-  { name: "Industrial Co", abbr: "IC", color: "bg-purple-500" },
-  { name: "TradeLink", abbr: "TL", color: "bg-red-500" },
-  { name: "SupplyPro", abbr: "SP", color: "bg-teal-500" },
+  { name: "GlobalParts", abbr: "GP", color: "bg-gold-600" },
+  { name: "Industrial Co", abbr: "IC", color: "bg-emerald-900" },
+  { name: "TradeLink", abbr: "TL", color: "bg-gold-500" },
+  { name: "SupplyPro", abbr: "SP", color: "bg-emerald-800" },
 ];
 
 export default function ExhibitionDetailPage({
@@ -97,9 +97,7 @@ export default function ExhibitionDetailPage({
             <Badge tone="outline-light" size="pill">{expo.industry}</Badge>
             <Badge tone="outline-light" size="pill">{expo.city}, {expo.country}</Badge>
             {isUpcoming && (
-              <span className="rounded-lg bg-green-500/90 px-3 py-1 text-sm font-bold text-white">
-                {t("upcoming")}
-              </span>
+              <Badge tone="live" size="pill">{t("upcoming")}</Badge>
             )}
           </div>
           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -141,10 +139,10 @@ export default function ExhibitionDetailPage({
                 width={1200}
                 height={900}
                 sizes="(max-width: 768px) 100vw, 800px"
-                className="max-w-full max-h-[75vh] w-auto h-auto rounded-xl shadow-2xl"
+                className="max-w-full max-h-[75vh] w-auto h-auto rounded-[var(--radius-card)] shadow-[var(--shadow-card-lg)]"
                 priority
               />
-              <div className="absolute inset-0 rounded-xl bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+              <div className="absolute inset-0 rounded-[var(--radius-card)] bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity w-12 h-12 rounded-full bg-white/90 flex items-center justify-center text-2xl">
                   🔍
                 </div>
@@ -191,7 +189,7 @@ export default function ExhibitionDetailPage({
                 <h2 className="text-2xl font-bold text-heading mb-5">{t("eventHighlights")}</h2>
                 <div className="grid gap-4 md:grid-cols-2">
                   {expo.highlights.map((h, i) => (
-                    <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-cream-50 border border-gray-100">
+                    <div key={i} className="flex items-start gap-3 p-4 rounded-[var(--radius-card)] bg-cream-50 border border-gray-100">
                       <IconBadge size="xs" icon={i + 1} bgClassName="gradient-brand text-white" className="flex-shrink-0" />
                       <span className="text-sm text-gray-700 pt-1">{h}</span>
                     </div>
@@ -211,7 +209,7 @@ export default function ExhibitionDetailPage({
                         key={i}
                         type="button"
                         onClick={() => setLightboxIndex(allImages.indexOf(img))}
-                        className="relative aspect-video rounded-xl overflow-hidden bg-gray-100 group"
+                        className="relative aspect-video rounded-[var(--radius-card)] overflow-hidden bg-gray-100 group focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
                       >
                         <Image
                           src={img}
@@ -232,7 +230,7 @@ export default function ExhibitionDetailPage({
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
                   {exhibitorLogos.map((e) => (
                     <div key={e.name} className="flex flex-col items-center gap-2 group cursor-pointer">
-                      <div className={`w-14 h-14 rounded-xl ${e.color} flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform shadow-sm`}>
+                      <div className={`w-14 h-14 rounded-[var(--radius-icon-md)] ${e.color} flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform`}>
                         {e.abbr}
                       </div>
                       <span className="text-xs text-gray-500 text-center group-hover:text-gray-900 transition-colors">{e.name}</span>
@@ -270,7 +268,7 @@ export default function ExhibitionDetailPage({
                     {t("viewFloorPlanAndBook")}
                   </Button>
                 ) : (
-                  <div className="block w-full text-center rounded-xl bg-gray-200 py-3 text-sm font-semibold text-gray-500">
+                  <div className="block w-full text-center rounded-[var(--radius-button)] bg-gray-200 py-3 text-sm font-semibold text-gray-500">
                     {t("exhibitionEnded")}
                   </div>
                 )}
@@ -279,7 +277,7 @@ export default function ExhibitionDetailPage({
               {/* Hotels */}
               <Card shadow="sm" className="p-6">
                 <h3 className="text-lg font-bold text-heading mb-3">{t("hotelsNearby")}</h3>
-                <div className="relative h-32 rounded-xl overflow-hidden mb-4">
+                <div className="relative h-32 rounded-[var(--radius-card)] overflow-hidden mb-4">
                   <Image
                     src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=200&fit=crop&q=80"
                     alt={t("hotelsNearby")}
@@ -294,7 +292,7 @@ export default function ExhibitionDetailPage({
                 </div>
                 <Link
                   href={`/exhibitions/${expo.slug}/hotels`}
-                  className="block w-full text-center rounded-xl border border-gray-200 py-2.5 text-sm font-semibold text-gray-700 hover:bg-cream-50 transition-colors"
+                  className="block w-full text-center rounded-[var(--radius-button)] border border-gray-700 py-2.5 text-sm font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
                 >
                   {t("browseHotels")}
                 </Link>
@@ -307,7 +305,7 @@ export default function ExhibitionDetailPage({
                   {["𝕏", "in", "f", "✉"].map((icon, i) => (
                     <button
                       key={i}
-                      className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
+                      className="w-10 h-10 rounded-[var(--radius-icon-sm)] bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
                     >
                       {icon}
                     </button>
@@ -323,7 +321,7 @@ export default function ExhibitionDetailPage({
                   href={expo.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 block text-center rounded-xl border border-gray-200 py-2 text-xs font-semibold text-gray-600 hover:bg-cream-50 transition-colors"
+                  className="mt-3 block text-center rounded-[var(--radius-button)] border border-gray-700 py-2 text-xs font-semibold text-gray-600 hover:bg-cream-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
                 >
                   {t("officialWebsite")}
                 </a>
@@ -370,7 +368,7 @@ export default function ExhibitionDetailPage({
             width={1200}
             height={900}
             sizes="100vw"
-            className="max-w-full max-h-[85vh] w-auto h-auto rounded-xl shadow-2xl"
+            className="max-w-full max-h-[85vh] w-auto h-auto rounded-[var(--radius-card)] shadow-[var(--shadow-card-lg)]"
             onClick={(e) => e.stopPropagation()}
           />
           {allImages.length > 1 && (

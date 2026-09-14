@@ -40,7 +40,7 @@ export default async function BlogPage({
           <div className="flex flex-wrap gap-2 mb-8">
             <Link
               href="/blog"
-              className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${!category ? "gradient-brand text-white shadow-md shadow-emerald-500/25" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"}`}
+              className={`rounded-[var(--radius-button)] px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${!category ? "bg-emerald-900 text-white" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"}`}
             >
               {t("allPosts")}
             </Link>
@@ -48,7 +48,7 @@ export default async function BlogPage({
               <Link
                 key={c}
                 href={`/blog?category=${c}`}
-                className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${category === c ? "gradient-brand text-white shadow-md shadow-emerald-500/25" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"}`}
+                className={`rounded-[var(--radius-button)] px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${category === c ? "bg-emerald-900 text-white" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"}`}
               >
                 {t(`categories.${c}`)}
               </Link>
@@ -71,12 +71,12 @@ export default async function BlogPage({
                     <span className="text-5xl">📝</span>
                   )}
                 </div>
-                <div className="p-5">
-                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-wide">{t(`categories.${post.category}`)}</span>
+                <div className="p-6">
+                  <span className="text-xs font-bold text-emerald-800 uppercase tracking-[0.08em]">{t(`categories.${post.category}`)}</span>
                   <h3 className="text-lg font-bold text-heading mt-1 mb-2 line-clamp-2">{post.title}</h3>
                   <p className="text-sm text-gray-500 line-clamp-3">{post.excerpt}</p>
                   {post.publishedAt && (
-                    <p className="text-xs text-gray-400 mt-3">{new Date(post.publishedAt).toLocaleDateString()}</p>
+                    <p className="text-xs uppercase tracking-[0.08em] text-gray-400 mt-3">{new Date(post.publishedAt).toLocaleDateString()}</p>
                   )}
                 </div>
               </Card>

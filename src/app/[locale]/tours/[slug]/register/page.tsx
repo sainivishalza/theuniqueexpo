@@ -8,6 +8,7 @@ import { validateCustomAnswers, type CustomFormField, type CustomFormSchema } fr
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 interface Tour {
   id: string; slug: string; title: string; dates: string;
@@ -129,7 +130,7 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
           <div className="text-5xl mb-4">🚫</div>
           <h1 className="text-2xl font-bold text-heading mb-2">{t("registrationClosed")}</h1>
           <p className="text-gray-500 mb-6">{t.rich("registrationClosedHint", { name: tour.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
-          <Link href={`/tours/${tour.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("backTo", { name: tour.title })}</Link>
+          <Link href={`/tours/${tour.slug}`} className="inline-block rounded-[var(--radius-button)] gradient-brand px-6 py-3 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">{t("backTo", { name: tour.title })}</Link>
         </Card>
       </div>
     );
@@ -141,7 +142,7 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
           <div className="text-6xl mb-4">✅</div>
           <h1 className="text-2xl font-bold text-heading mb-2">{t("registrationSubmitted")}</h1>
           <p className="text-gray-500 mb-6">{t.rich("registrationSubmittedHint", { name: tour.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
-          <Link href={`/tours/${tour.slug}`} className="inline-block rounded-xl gradient-brand px-6 py-3 text-sm font-semibold text-white">{t("backTo", { name: tour.title })}</Link>
+          <Link href={`/tours/${tour.slug}`} className="inline-block rounded-[var(--radius-button)] gradient-brand px-6 py-3 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">{t("backTo", { name: tour.title })}</Link>
         </Card>
       </div>
     );
@@ -184,7 +185,7 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
           </Card>
 
           {error && (
-            <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}{" "}
               {accountExists && <Link href="/login" className="underline font-semibold">{t("signIn")}</Link>}
             </div>
@@ -200,10 +201,9 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
 
 function TextField({ label, value, onChange, required, type = "text", placeholder }: { label: string; value: string; onChange: (v: string) => void; required?: boolean; type?: string; placeholder?: string }) {
   return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label} {required && "*"}</label>
-      <input required={required} type={type} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" />
-    </div>
+    <FormField label={`${label}${required ? " *" : ""}`} htmlFor={`field-${label}`}>
+      <input id={`field-${label}`} required={required} type={type} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className={fieldClasses()} />
+    </FormField>
   );
 }
 
@@ -213,7 +213,7 @@ function OptionGroup({ label, value, onChange, options, required }: { label: str
       <label className="block text-sm font-medium text-gray-700 mb-2">{label} {required && "*"}</label>
       <div className="grid gap-2 md:grid-cols-2">
         {options.map((o) => (
-          <label key={o} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors text-sm ${value === o ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
+          <label key={o} className={`flex items-center gap-3 p-3 rounded-[var(--radius-card)] border cursor-pointer transition-colors text-sm ${value === o ? "border-emerald-900 bg-emerald-50 text-emerald-900" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
             <input type="radio" className="hidden" checked={value === o} onChange={() => onChange(o)} />
             {o}
           </label>
@@ -240,17 +240,17 @@ function CustomField({
 
   if (field.type === "textarea") {
     return (
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">{field.label} {field.required && "*"}</label>
+      <FormField label={`${field.label}${field.required ? " *" : ""}`} htmlFor={`field-${field.label}`}>
         {field.helpText && <p className="text-xs text-gray-400 mb-1">{field.helpText}</p>}
         <textarea
+          id={`field-${field.label}`}
           required={field.required}
           value={(value as string) || ""}
           onChange={(e) => onChange(e.target.value)}
           rows={3}
-          className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none"
+          className={fieldClasses(false, "resize-none")}
         />
-      </div>
+      </FormField>
     );
   }
 
@@ -265,7 +265,7 @@ function CustomField({
         <label className="block text-sm font-medium text-gray-700 mb-2">{field.label} {field.required && "*"}</label>
         <div className="grid gap-2 md:grid-cols-2">
           {(field.options || []).map((o) => (
-            <label key={o} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors text-sm ${selected.includes(o) ? "border-emerald-500 bg-emerald-50" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
+            <label key={o} className={`flex items-center gap-3 p-3 rounded-[var(--radius-card)] border cursor-pointer transition-colors text-sm ${selected.includes(o) ? "border-emerald-900 bg-emerald-50" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
               <input type="checkbox" checked={selected.includes(o)} onChange={() => onToggleCheckbox(o)} className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
               {o}
             </label>
@@ -279,14 +279,14 @@ function CustomField({
   const fileValue = (value as string) || "";
   const isImage = fileValue.startsWith("data:image");
   return (
-    <div className="rounded-xl border border-gray-200 p-4">
+    <div className="rounded-[var(--radius-card)] border border-gray-200 p-4">
       <label className="block text-sm font-medium text-gray-700 mb-2">{field.label} {field.required && "*"}</label>
       {fileValue && (isImage ? (
-        <img src={fileValue} alt="" className="h-20 w-full object-contain mb-2 rounded-lg bg-cream-50" />
+        <img src={fileValue} alt={`${field.label} preview`} className="h-20 w-full object-contain mb-2 rounded-[var(--radius-button)] bg-cream-50" />
       ) : (
-        <div className="h-20 w-full flex items-center justify-center mb-2 rounded-lg bg-cream-50 text-sm text-gray-500">{t("fileAttached")}</div>
+        <div className="h-20 w-full flex items-center justify-center mb-2 rounded-[var(--radius-button)] bg-cream-50 text-sm text-gray-500">{t("fileAttached")}</div>
       ))}
-      <label className="cursor-pointer inline-block rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50">
+      <label className="cursor-pointer inline-block rounded-[var(--radius-button)] border border-gray-700 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
         {fileValue ? t("replaceFile") : t("chooseFile")}
         <input type="file" accept="image/*,application/pdf" className="hidden" onChange={(e) => onFile(e.target.files?.[0] || null)} />
       </label>

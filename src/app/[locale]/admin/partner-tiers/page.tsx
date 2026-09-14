@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
-import Badge from "@/components/ui/Badge";
+import Badge, { normalizeBadgeTone } from "@/components/ui/Badge";
 
 interface PartnerTier {
   id: string;
@@ -20,7 +20,7 @@ interface PartnerTier {
   displayOrder: number;
 }
 
-const BADGE_TONES = ["gray", "gold", "emerald", "purple"];
+const BADGE_TONES = ["gray", "gold", "emerald"];
 
 const EMPTY_FORM = { name: "", tagline: "", priceLabel: "", commissionRate: "", benefits: "", badgeTone: "gray", displayOrder: 0 };
 
@@ -191,7 +191,7 @@ export default function AdminPartnerTiersPage() {
                     onClick={() => setForm({ ...form, badgeTone: tone })}
                     className={`rounded-full px-3 py-1 ${form.badgeTone === tone ? "ring-2 ring-emerald-500" : ""}`}
                   >
-                    <Badge tone={tone as "gray" | "gold" | "emerald" | "purple"} size="tag">{tone}</Badge>
+                    <Badge tone={normalizeBadgeTone(tone)} size="tag">{tone}</Badge>
                   </button>
                 ))}
               </div>
@@ -227,7 +227,7 @@ export default function AdminPartnerTiersPage() {
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <Badge tone={tier.badgeTone as "gray" | "gold" | "emerald" | "purple"} size="tag">{tier.name}</Badge>
+                    <Badge tone={normalizeBadgeTone(tier.badgeTone)} size="tag">{tier.name}</Badge>
                     <span className="text-sm font-semibold text-heading">{tier.priceLabel}</span>
                   </div>
                   <p className="text-sm text-gray-500">{tier.tagline}</p>

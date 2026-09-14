@@ -10,13 +10,15 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
 
+// Rotates through the brand's own navy/amber scales rather than an
+// off-palette rainbow, so avatar variety still reads as one identity.
 const avatarColors = [
-  "from-emerald-500 to-emerald-600",
-  "from-green-500 to-emerald-600",
-  "from-purple-500 to-violet-600",
-  "from-orange-500 to-red-500",
-  "from-pink-500 to-rose-500",
-  "from-teal-500 to-cyan-500",
+  "from-emerald-600 to-emerald-800",
+  "from-emerald-500 to-emerald-700",
+  "from-gold-500 to-gold-700",
+  "from-emerald-700 to-emerald-900",
+  "from-gold-600 to-emerald-800",
+  "from-emerald-800 to-gold-600",
 ];
 
 export default function ExhibitorProfilePage() {
@@ -58,13 +60,13 @@ export default function ExhibitorProfilePage() {
       <section className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-5xl px-6 -mt-12 relative z-10">
           <div className="flex items-end gap-6">
-            <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${avatarColors[colorIndex]} flex items-center justify-center text-white text-3xl font-bold shadow-xl border-4 border-white`}>
+            <div className={`w-24 h-24 rounded-[var(--radius-icon-lg)] bg-gradient-to-br ${avatarColors[colorIndex]} flex items-center justify-center text-white text-3xl font-bold border-4 border-white`}>
               {profile.name[0]}
             </div>
             <div className="pb-2">
               <div className="flex items-center gap-3">
                 <h1 className="text-3xl font-extrabold text-heading">{profile.name}</h1>
-                <span className="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-700 border border-green-200">
+                <span className="rounded-[var(--radius-badge)] bg-green-100 px-3 py-1 text-xs font-bold text-green-700 border border-green-200">
                   {t("verifiedSupplier")}
                 </span>
               </div>
@@ -91,7 +93,7 @@ export default function ExhibitorProfilePage() {
                 <h2 className="text-xl font-bold text-heading mb-5">{t("productsAndServices")}</h2>
                 <div className="grid grid-cols-2 gap-3">
                   {profile.products.map((p) => (
-                    <div key={p} className="flex items-center gap-3 p-3 rounded-xl bg-cream-50 border border-gray-100">
+                    <div key={p} className="flex items-center gap-3 p-3 rounded-[var(--radius-card)] bg-cream-50 border border-gray-100">
                       <IconBadge size="xs" icon="✦" bgClassName="gradient-brand text-white" className="flex-shrink-0" />
                       <span className="text-sm font-medium text-gray-700">{p}</span>
                     </div>
@@ -104,7 +106,7 @@ export default function ExhibitorProfilePage() {
                 <h2 className="text-xl font-bold text-heading mb-5">{t("certifications")}</h2>
                 <div className="flex flex-wrap gap-2">
                   {profile.certifications.map((c) => (
-                    <span key={c} className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700">
+                    <span key={c} className="rounded-[var(--radius-badge)] bg-emerald-50 border border-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700">
                       🏆 {c}
                     </span>
                   ))}
@@ -155,7 +157,7 @@ export default function ExhibitorProfilePage() {
                 <h3 className="text-sm font-bold text-heading mb-3">{t("shareProfile")}</h3>
                 <div className="flex gap-2">
                   {["𝕏", "in", "f", "✉"].map((icon, i) => (
-                    <button key={i} className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors text-sm">
+                    <button key={i} className="w-9 h-9 rounded-[var(--radius-icon-sm)] bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">
                       {icon}
                     </button>
                   ))}

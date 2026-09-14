@@ -22,14 +22,21 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   // Amber-on-navy pill -- the site's one primary CTA color, used sparingly
   // (hero + final CTA only). translate-y-0.5 is exactly 2px in Tailwind's
   // default spacing scale, matching the brief's "-2px on hover" literally.
+  // Focus ring is navy outline + white ring rather than an amber outline:
+  // amber-on-amber (the button's own fill) has poor contrast, and since
+  // this variant appears on both light (nav CTA, form submit) and dark
+  // (hero) surfaces, no single ring color stays visible on both -- the
+  // navy outline reads on light backgrounds, the white ring reads against
+  // the amber fill itself on dark ones.
   primary:
-    "bg-gold-500 text-emerald-950 hover:bg-gold-600 hover:-translate-y-0.5 active:translate-y-0 active:bg-gold-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500 focus-visible:outline-offset-2 disabled:opacity-40 disabled:pointer-events-none disabled:hover:translate-y-0 disabled:hover:bg-gold-500",
+    "bg-gold-500 text-emerald-950 hover:bg-gold-600 hover:-translate-y-0.5 active:translate-y-0 active:bg-gold-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 focus-visible:ring-2 focus-visible:ring-white disabled:opacity-40 disabled:pointer-events-none disabled:hover:translate-y-0 disabled:hover:bg-gold-500",
   // Solid dark pill -- secondary CTA on light backgrounds.
   dark: "bg-gray-900 text-white hover:bg-gray-800",
   // Thin outline on dark/colored backgrounds (hero, final CTA) -- fills
-  // solid on hover/focus, text flips to match (never white-on-white).
+  // solid on hover/focus, text flips to the true navy (not near-black
+  // emerald-950) for a smoother transition against the white fill.
   outline:
-    "border border-white text-white hover:bg-white hover:text-emerald-950 active:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 disabled:opacity-40 disabled:pointer-events-none disabled:hover:bg-transparent disabled:hover:text-white",
+    "border border-white text-white hover:bg-white hover:text-emerald-600 active:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 disabled:opacity-40 disabled:pointer-events-none disabled:hover:bg-transparent disabled:hover:text-white",
   // Same outline shape as `outline`, but tuned for a *light* background --
   // navy border/text instead of white, since white-on-white would vanish.
   // The public-facing "secondary" tier; `ghost` stays reserved for

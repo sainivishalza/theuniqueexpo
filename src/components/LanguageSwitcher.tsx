@@ -56,7 +56,7 @@ export default function LanguageSwitcher({ mobile = false }: { mobile?: boolean 
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18" />
         </svg>
-        {LANGUAGE_LABELS[locale]?.short ?? locale.toUpperCase()}
+        {LANGUAGE_LABELS[locale]?.native ?? locale.toUpperCase()}
       </button>
       {open && (
         <>

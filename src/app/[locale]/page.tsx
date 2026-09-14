@@ -80,7 +80,7 @@ export default async function Home() {
         <div className="absolute inset-0 opacity-30">
           <Image
             src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&h=900&fit=crop&q=80"
-            alt=""
+            alt="Global trade exhibition crowd and venue"
             fill
             priority
             fetchPriority="high"
@@ -101,7 +101,7 @@ export default async function Home() {
               <br />
               {t("heroTitleLine2")}
             </h1>
-            <p className="mt-6 text-lg md:text-xl text-gray-300 max-w-xl leading-relaxed">
+            <p className="mt-6 text-lg md:text-xl text-cream-200 max-w-xl leading-relaxed">
               {t("heroSubtitle")}
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
@@ -120,7 +120,8 @@ export default async function Home() {
           <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat) => (
               <div key={stat.label} className="border-t border-white/20 pt-4">
-                <div className="text-4xl md:text-5xl font-extrabold font-[family-name:var(--font-heading)]">{stat.value}</div>
+                <div className="text-4xl md:text-5xl font-extrabold font-[family-name:var(--font-heading)] text-cream-50">{stat.value}</div>
+                <span className="mt-3 block h-0.5 w-8 bg-gold-500" />
                 <div className="mt-2 text-xs uppercase tracking-[0.1em] text-gray-400">{stat.label}</div>
               </div>
             ))}
@@ -152,7 +153,7 @@ export default async function Home() {
                 {evt.image && (
                   <div className="relative h-44 overflow-hidden border-b border-gray-100">
                     <FavoriteButton exhibitionId={evt.id} className="absolute top-3 right-3 z-10 w-9 h-9 text-lg shadow-sm" />
-                    <span className="absolute top-3 left-3 z-10 bg-gold-500 text-emerald-950 text-xs font-bold uppercase tracking-[0.08em] px-2.5 py-1">
+                    <span className="absolute top-3 left-3 z-10 bg-gold-500 text-white text-xs font-bold uppercase tracking-[0.08em] px-2.5 py-1">
                       {evt.dates.split(",")[0]}
                     </span>
                     <Image
@@ -160,12 +161,12 @@ export default async function Home() {
                       alt={evt.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500 [filter:saturate(0.85)]"
                     />
                   </div>
                 )}
 
-                <div className="p-5">
+                <div className="p-6">
                   <h3 className="text-xl font-extrabold leading-tight text-heading">{evt.title}</h3>
                   <div className="mt-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.08em] text-gray-500">
                     <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>

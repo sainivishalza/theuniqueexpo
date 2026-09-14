@@ -109,7 +109,7 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
 
       {/* Bottom bar */}
       <div className="border-t border-[var(--color-footer-border)]">
-        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-400">
           <span>{t("copyright", { year: new Date().getFullYear() })}</span>
           <div className="flex gap-4">
             <Link href="/privacy" className="hover:text-white transition-colors">{t("privacyPolicy")}</Link>

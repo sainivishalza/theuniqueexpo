@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import Button from "@/components/ui/Button";
 
 interface Review {
   id: string;
@@ -24,7 +25,7 @@ function Stars({ value, onSelect }: { value: number; onSelect?: (n: number) => v
           disabled={!onSelect}
           onClick={() => onSelect?.(n)}
           aria-label={`${n} star${n === 1 ? "" : "s"}`}
-          className={`text-lg leading-none ${onSelect ? "cursor-pointer" : "cursor-default"} ${n <= value ? "text-amber-400" : "text-gray-200"}`}
+          className={`text-lg leading-none ${onSelect ? "cursor-pointer" : "cursor-default"} ${n <= value ? "text-gold-500" : "text-gray-200"}`}
         >
           ★
         </button>
@@ -92,9 +93,9 @@ export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: str
   }
 
   return (
-    <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
+    <div className="rounded-[var(--radius-card)] bg-white p-8 shadow-[var(--shadow-card-md)] border border-gray-100">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-xl font-bold text-heading">{t("reviews")}</h2>
+        <h2 className="font-[family-name:var(--font-heading)] text-xl font-bold text-heading">{t("reviews")}</h2>
         {summary.count > 0 && (
           <div className="flex items-center gap-2">
             <Stars value={Math.round(summary.average)} />
@@ -104,7 +105,7 @@ export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: str
       </div>
 
       {user ? (
-        <form onSubmit={handleSubmit} className="mb-6 rounded-xl border border-gray-200 p-5 bg-cream-50 space-y-3">
+        <form onSubmit={handleSubmit} className="mb-6 rounded-[var(--radius-card)] border border-gray-200 p-5 bg-cream-50 space-y-3">
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">
               {myReview ? t("updateYourRating") : t(`rateThis.${kind}`)}
@@ -116,34 +117,30 @@ export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: str
             onChange={(e) => setComment(e.target.value)}
             rows={2}
             placeholder={t(`shareYourExperience.${kind}`)}
-            className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none resize-none"
+            className="w-full rounded-[var(--radius-button)] border border-gray-300 bg-white px-3 py-2.5 text-sm focus:border-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-900/10 resize-none"
           />
-          <button
-            type="submit"
-            disabled={!rating || submitting}
-            className="rounded-xl gradient-brand px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
-          >
+          <Button type="submit" disabled={!rating || submitting} variant="primary" size="compact">
             {submitting ? t("saving") : myReview ? t("updateReview") : t("submitReview")}
-          </button>
+          </Button>
         </form>
       ) : (
-        <div className="mb-6 rounded-xl bg-cream-50 border border-gray-200 p-4 text-sm text-gray-500">
-          <Link href="/login" className="text-emerald-600 hover:underline font-semibold">{t("logIn")}</Link>{t("toLeaveAReview")}
+        <div className="mb-6 rounded-[var(--radius-card)] bg-cream-50 border border-gray-200 p-4 text-sm text-gray-500">
+          <Link href="/login" className="text-emerald-800 hover:underline font-semibold">{t("logIn")}</Link>{t("toLeaveAReview")}
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
         {!loading && reviews.length === 0 && (
-          <p className="text-sm text-gray-400 text-center py-6">{t("noReviewsYet")}</p>
+          <p className="sm:col-span-2 text-sm text-gray-400 text-center py-6">{t("noReviewsYet")}</p>
         )}
         {reviews.map((r) => (
-          <div key={r.id} className="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+          <div key={r.id} className="rounded-[var(--radius-card)] border border-gray-200 p-4">
             <div className="flex items-center justify-between">
               <span className="font-semibold text-gray-900 text-sm">{r.userName}</span>
               <Stars value={r.rating} />
             </div>
             {r.comment && <p className="text-sm text-gray-600 mt-1.5">{r.comment}</p>}
-            <p className="text-xs text-gray-400 mt-1">{new Date(r.createdAt).toLocaleDateString()}</p>
+            <p className="text-xs text-gray-400 mt-2">{new Date(r.createdAt).toLocaleDateString()}</p>
           </div>
         ))}
       </div>

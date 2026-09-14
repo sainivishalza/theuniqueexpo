@@ -146,12 +146,17 @@
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
+  /* Editorial elevation: a border-color shift plus a small shadow step
+     (var(--shadow-card-lg), itself flat/line-like by default -- see
+     site-theme.ts) rather than the SaaS-kit move of a heavy blurred drop
+     shadow and a big lift. */
   .card-hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
   .card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+    border-color: var(--color-emerald-800);
+    box-shadow: var(--shadow-card-lg);
   }
   .img-cover {
     object-fit: cover;

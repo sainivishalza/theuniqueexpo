@@ -2,12 +2,19 @@
 
 import Logo from "@/components/Logo";
 import NavDropdown from "@/components/NavDropdown";
+import Button from "@/components/ui/Button";
 
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+
+// Thin gold underline on hover/focus instead of a filled hover pill --
+// matches the dropdown triggers in NavDropdown.tsx so every top-level nav
+// item (plain link or dropdown) reads as one consistent masthead style.
+const NAV_LINK_CLASS =
+  "py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-emerald-900 hover:border-gold-500 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2";
 
 export default function NavBar() {
   const { user, logout } = useAuth();
@@ -43,71 +50,50 @@ export default function NavBar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-gray-200/60">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-gray-200">
       <div className="mx-auto max-w-7xl px-6 flex items-center justify-between h-16">
         {/* Logo */}
-        <Link href="/" className="group">
+        <Link href="/" className="group focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-4 rounded-sm">
           <Logo />
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden lg:flex items-center gap-0.5">
+        <div className="hidden lg:flex items-center gap-5">
           <NavDropdown label={t("exhibitions")} href="/exhibitions" items={exhibitionsItems} />
           <NavDropdown label={t("tours")} href="/tours" items={toursItems} />
           <NavDropdown label={t("events")} href="/events" items={eventsItems} />
-          <Link
-            href="/relocation"
-            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors"
-          >
+          <Link href="/relocation" className={NAV_LINK_CLASS}>
             {t("relocation")}
           </Link>
           <NavDropdown label={t("blog")} href="/blog" items={blogItems} />
-          <Link
-            href="/directory"
-            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors"
-          >
+          <Link href="/directory" className={NAV_LINK_CLASS}>
             {t("directory")}
           </Link>
-          <Link
-            href="/marketplace"
-            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors"
-          >
+          <Link href="/marketplace" className={NAV_LINK_CLASS}>
             {t("marketplace")}
           </Link>
-          <Link
-            href="/about"
-            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors"
-          >
+          <Link href="/about" className={NAV_LINK_CLASS}>
             {t("about")}
           </Link>
-          <Link
-            href="/contact"
-            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors"
-          >
+          <Link href="/contact" className={NAV_LINK_CLASS}>
             {t("contact")}
           </Link>
           {user ? (
             <>
-              <div className="w-px h-5 bg-gray-200 mx-1" />
-              <Link
-                href="/messages"
-                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors"
-              >
+              <div className="w-px h-5 bg-gray-200" />
+              <Link href="/messages" className={NAV_LINK_CLASS}>
                 {t("messages")}
               </Link>
-              <Link
-                href="/dashboard"
-                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors"
-              >
+              <Link href="/dashboard" className={NAV_LINK_CLASS}>
                 {t("dashboard")}
               </Link>
-              <div className="flex items-center gap-2 ml-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+              <div className="flex items-center gap-2 ml-1">
+                <div className="w-8 h-8 rounded-full bg-emerald-900 flex items-center justify-center text-white text-xs font-bold">
                   {user.email?.[0]?.toUpperCase() || "U"}
                 </div>
                 <button
                   onClick={logout}
-                  className="text-sm text-gray-500 hover:text-red-600 transition-colors"
+                  className="text-sm text-gray-500 hover:text-red-600 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-500 focus-visible:outline-offset-2 rounded-sm"
                 >
                   {t("logout")}
                 </button>
@@ -115,28 +101,22 @@ export default function NavBar() {
             </>
           ) : (
             <>
-              <div className="w-px h-5 bg-gray-200 mx-1" />
-              <Link
-                href="/login"
-                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg transition-colors"
-              >
+              <div className="w-px h-5 bg-gray-200" />
+              <Link href="/login" className={NAV_LINK_CLASS}>
                 {t("login")}
               </Link>
-              <Link
-                href="/register"
-                className="ml-1 px-5 py-2.5 text-sm font-semibold text-white gradient-brand rounded-xl shadow-sm shadow-emerald-500/25 hover:shadow-md hover:shadow-emerald-500/30 hover:scale-105 transition-all duration-200"
-              >
+              <Button href="/register" variant="primary" size="compact">
                 {t("register")}
-              </Link>
+              </Button>
             </>
           )}
-          <div className="w-px h-5 bg-gray-200 mx-1" />
+          <div className="w-px h-5 bg-gray-200" />
           <LanguageSwitcher />
         </div>
 
         {/* Mobile hamburger */}
         <button
-          className="lg:hidden p-2 text-gray-600 hover:text-gray-900"
+          className="lg:hidden p-2 text-gray-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
           aria-expanded={mobileOpen}
@@ -156,13 +136,13 @@ export default function NavBar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div id="mobile-nav-menu" className="lg:hidden border-t border-gray-200/60 bg-white/95 backdrop-blur-xl px-6 py-4 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <div id="mobile-nav-menu" className="lg:hidden border-t border-gray-200 bg-white px-6 py-4 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
           {navGroups.map((group) => (
             <div key={group.key} className="border-b border-gray-100 last:border-0">
               <div className="flex items-center justify-between">
                 <Link
                   href={group.href}
-                  className="flex-1 py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600"
+                  className="flex-1 py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900"
                   onClick={() => setMobileOpen(false)}
                 >
                   {group.label}
@@ -170,7 +150,7 @@ export default function NavBar() {
                 <button
                   aria-label={group.label}
                   onClick={() => setMobileGroupOpen((k) => (k === group.key ? null : group.key))}
-                  className="p-2.5 text-gray-400"
+                  className="p-2.5 text-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
                 >
                   <svg
                     className={`w-4 h-4 transition-transform ${mobileGroupOpen === group.key ? "rotate-180" : ""}`}
@@ -186,7 +166,7 @@ export default function NavBar() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="block py-2 text-sm text-gray-500 hover:text-emerald-600"
+                      className="block py-2 text-sm text-gray-500 hover:text-emerald-900"
                       onClick={() => setMobileOpen(false)}
                     >
                       {item.label}
@@ -196,21 +176,23 @@ export default function NavBar() {
               )}
             </div>
           ))}
-          <Link href="/relocation" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>{t("relocation")}</Link>
-          <Link href="/directory" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>{t("directory")}</Link>
-          <Link href="/marketplace" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>{t("marketplace")}</Link>
-          <Link href="/about" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>{t("about")}</Link>
-          <Link href="/contact" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>{t("contact")}</Link>
+          <Link href="/relocation" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("relocation")}</Link>
+          <Link href="/directory" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("directory")}</Link>
+          <Link href="/marketplace" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("marketplace")}</Link>
+          <Link href="/about" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("about")}</Link>
+          <Link href="/contact" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("contact")}</Link>
           {user ? (
             <>
-              <Link href="/messages" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>{t("messages")}</Link>
-              <Link href="/dashboard" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>{t("dashboard")}</Link>
+              <Link href="/messages" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("messages")}</Link>
+              <Link href="/dashboard" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("dashboard")}</Link>
               <button onClick={() => { logout(); setMobileOpen(false); }} className="block py-2.5 text-sm font-medium text-red-500 hover:text-red-700">{t("logout")}</button>
             </>
           ) : (
             <>
-              <Link href="/login" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-600" onClick={() => setMobileOpen(false)}>{t("login")}</Link>
-              <Link href="/register" className="block py-2.5 text-sm font-semibold text-emerald-600" onClick={() => setMobileOpen(false)}>{t("register")} →</Link>
+              <Link href="/login" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("login")}</Link>
+              <div className="pt-2">
+                <Button href="/register" variant="primary" size="blockSm" onClick={() => setMobileOpen(false)}>{t("register")}</Button>
+              </div>
             </>
           )}
           <div className="pt-2 border-t border-gray-100">

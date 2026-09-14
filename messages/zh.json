@@ -2727,5 +2727,9 @@
     "noCaption": "(无说明)",
     "editButton": "编辑",
     "deleting": "删除中..."
+  },
+  "formValidation": {
+    "required": "此字段为必填项。",
+    "invalidEmail": "请输入有效的电子邮件地址。"
   }
 }

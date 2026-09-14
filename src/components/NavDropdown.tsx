@@ -27,7 +27,7 @@ export default function NavDropdown({ label, href, items }: { label: string; hre
     <div className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
       <Link
         href={href}
-        className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg transition-colors"
+        className="flex items-center gap-1 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-emerald-900 hover:border-gold-500 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
         onClick={() => setOpen(false)}
       >
         {label}
@@ -36,13 +36,13 @@ export default function NavDropdown({ label, href, items }: { label: string; hre
         </svg>
       </Link>
       {open && (
-        <div className="absolute left-0 top-full pt-1 w-56 z-50">
-          <div className="rounded-xl bg-white shadow-lg border border-gray-100 py-2">
+        <div className="absolute left-0 top-full pt-2 w-56 z-50">
+          <div className="rounded-[var(--radius-card)] bg-white shadow-[var(--shadow-card-lg)] border border-gray-200 py-2">
             {items.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-cream-50 hover:text-emerald-600 transition-colors"
+                className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-cream-50 hover:text-emerald-900 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:-outline-offset-2"
                 onClick={() => setOpen(false)}
               >
                 {item.label}

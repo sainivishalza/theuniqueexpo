@@ -5,19 +5,35 @@ import { useTranslations } from "next-intl";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 const TOPIC_KEYS = ["marketEntry", "supplierSourcing", "qualityInspection", "legalCompliance", "culturalEtiquette", "tradeCompliance", "ipProtection", "generalConsultation"];
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function ConsultationPage() {
   const t = useTranslations("consultationPage");
+  const tv = useTranslations("formValidation");
   const TOPICS = TOPIC_KEYS.map((key) => t(`topicOptions.${key}`));
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", email: "", company: "", topic: "", date: "", questions: "" });
+
+  const validate = () => {
+    const errors: Record<string, string> = {};
+    if (!form.name.trim()) errors.name = tv("required");
+    if (!form.email.trim()) errors.email = tv("required");
+    else if (!EMAIL_RE.test(form.email)) errors.email = tv("invalidEmail");
+    if (!form.topic) errors.topic = tv("required");
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setSubmitting(true);
     setError("");
     try {
@@ -73,34 +89,54 @@ export default function ConsultationPage() {
                 </div>
               ))}
             </div>
-            <Card shadow="sm" bordered={false} className="mt-8 p-6">
-              <h3 className="font-bold text-heading mb-3">{t("pricing")}</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm"><span className="text-gray-600">{t("singleSession")}</span><span className="font-bold text-gray-900">$150 USD</span></div>
-                <div className="flex justify-between text-sm"><span className="text-gray-600">{t("packageOf4")}</span><span className="font-bold text-gray-900">$500 USD</span></div>
-                <div className="flex justify-between text-sm"><span className="text-gray-600">{t("monthlyRetainer")}</span><span className="font-bold text-gray-900">$1,200 USD</span></div>
-                <div className="flex justify-between text-sm"><span className="text-gray-600">{t("freeDiscoveryCall")}</span><span className="font-bold text-green-600">{t("free")}</span></div>
+            <div className="mt-8">
+              <h3 className="font-[family-name:var(--font-heading)] font-bold text-heading mb-3">{t("pricing")}</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: t("singleSession"), price: "$150" },
+                  { label: t("packageOf4"), price: "$500" },
+                  { label: t("monthlyRetainer"), price: "$1,200" },
+                  { label: t("freeDiscoveryCall"), price: t("free"), highlight: true },
+                ].map((tier) => (
+                  <Card key={tier.label} shadow="sm" className="p-4">
+                    <div className="text-xs uppercase tracking-[0.08em] text-gray-500">{tier.label}</div>
+                    <div className={`mt-1 font-[family-name:var(--font-heading)] text-xl font-bold ${tier.highlight ? "text-emerald-700" : "text-heading"}`}>
+                      {tier.price}
+                      {!tier.highlight && <span className="ml-1 text-xs font-normal text-gray-400">USD</span>}
+                    </div>
+                  </Card>
+                ))}
               </div>
-            </Card>
+            </div>
           </div>
           <div>
             <Card shadow="sm" bordered={false} className="p-8 sticky top-24">
-              <h2 className="text-2xl font-bold text-heading mb-6">{t("bookAConsultation")}</h2>
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <h2 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-heading mb-6">{t("bookAConsultation")}</h2>
+              <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("name")}</label><input required type="text" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                  <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("email")}</label><input required type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
+                  <FormField label={t("name")} htmlFor="name" error={fieldErrors.name}>
+                    <input id="name" type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
+                  </FormField>
+                  <FormField label={t("email")} htmlFor="email" error={fieldErrors.email}>
+                    <input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                  </FormField>
                 </div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("company")}</label><input type="text" value={form.company} onChange={(e) => setForm({...form, company: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("topic")}</label>
-                  <select required value={form.topic} onChange={(e) => setForm({...form, topic: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none">
+                <FormField label={t("company")} htmlFor="company">
+                  <input id="company" type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={fieldClasses()} />
+                </FormField>
+                <FormField label={t("topic")} htmlFor="topic" error={fieldErrors.topic}>
+                  <select id="topic" value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} aria-invalid={!!fieldErrors.topic} className={fieldClasses(!!fieldErrors.topic)}>
                     <option value="">{t("selectATopic")}</option>{TOPICS.map((topicLabel) => <option key={topicLabel} value={topicLabel}>{topicLabel}</option>)}
                   </select>
-                </div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("preferredDate")}</label><input type="date" value={form.date} onChange={(e) => setForm({...form, date: e.target.value})} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none" /></div>
-                <div><label className="block text-sm font-medium text-gray-700 mb-1">{t("questionsToCover")}</label><textarea value={form.questions} onChange={(e) => setForm({...form, questions: e.target.value})} rows={4} placeholder={t("questionsPlaceholder")} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:border-emerald-500 outline-none resize-none" /></div>
-                {error && <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
-                <Button type="submit" disabled={submitting} variant="save" size="block">{submitting ? t("booking") : t("bookConsultation")}</Button>
+                </FormField>
+                <FormField label={t("preferredDate")} htmlFor="date">
+                  <input id="date" type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className={fieldClasses()} />
+                </FormField>
+                <FormField label={t("questionsToCover")} htmlFor="questions">
+                  <textarea id="questions" value={form.questions} onChange={(e) => setForm({ ...form, questions: e.target.value })} rows={4} placeholder={t("questionsPlaceholder")} className={fieldClasses(false, "resize-none")} />
+                </FormField>
+                {error && <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+                <Button type="submit" disabled={submitting} variant="primary" size="block">{submitting ? t("booking") : t("bookConsultation")}</Button>
               </form>
             </Card>
           </div>

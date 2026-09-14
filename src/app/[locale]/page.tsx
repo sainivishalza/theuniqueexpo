@@ -120,8 +120,8 @@ export default async function Home() {
           <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat) => (
               <div key={stat.label} className="border-t border-white/20 pt-4">
-                <div className="text-3xl md:text-4xl font-extrabold font-[family-name:var(--font-heading)]">{stat.value}</div>
-                <div className="mt-1 text-xs uppercase tracking-[0.1em] text-gray-400">{stat.label}</div>
+                <div className="text-4xl md:text-5xl font-extrabold font-[family-name:var(--font-heading)]">{stat.value}</div>
+                <div className="mt-2 text-xs uppercase tracking-[0.1em] text-gray-400">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -287,7 +287,7 @@ export default async function Home() {
               ))}
             </div>
             <div className="text-center mt-10">
-              <Button href="/about#team" variant="ghost" size="wide">
+              <Button href="/about#team" variant="secondaryOutline" size="wide">
                 {t("meetTheTeam")}
               </Button>
             </div>

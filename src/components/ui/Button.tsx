@@ -5,6 +5,7 @@ export type ButtonVariant =
   | "primary"
   | "dark"
   | "outline"
+  | "secondaryOutline"
   | "tertiary"
   | "gradient"
   | "gold"
@@ -22,15 +23,23 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   // (hero + final CTA only). translate-y-0.5 is exactly 2px in Tailwind's
   // default spacing scale, matching the brief's "-2px on hover" literally.
   primary:
-    "bg-gold-500 text-emerald-950 hover:bg-gold-600 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500 focus-visible:outline-offset-2 active:translate-y-0",
+    "bg-gold-500 text-emerald-950 hover:bg-gold-600 hover:-translate-y-0.5 active:translate-y-0 active:bg-gold-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500 focus-visible:outline-offset-2 disabled:opacity-40 disabled:pointer-events-none disabled:hover:translate-y-0 disabled:hover:bg-gold-500",
   // Solid dark pill -- secondary CTA on light backgrounds.
   dark: "bg-gray-900 text-white hover:bg-gray-800",
-  // Thin outline on dark/colored backgrounds -- fills solid on hover/focus,
-  // text flips to match (never white-on-white).
+  // Thin outline on dark/colored backgrounds (hero, final CTA) -- fills
+  // solid on hover/focus, text flips to match (never white-on-white).
   outline:
-    "border border-white text-white hover:bg-white hover:text-emerald-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2",
-  // Plain text link, underlined only on hover/focus -- lowest-emphasis action.
-  tertiary: "text-emerald-700 underline-offset-4 hover:underline focus-visible:underline",
+    "border border-white text-white hover:bg-white hover:text-emerald-950 active:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2 disabled:opacity-40 disabled:pointer-events-none disabled:hover:bg-transparent disabled:hover:text-white",
+  // Same outline shape as `outline`, but tuned for a *light* background --
+  // navy border/text instead of white, since white-on-white would vanish.
+  // The public-facing "secondary" tier; `ghost` stays reserved for
+  // low-emphasis admin chrome (cancel/view/edit rows) and keeps its own
+  // muted gray treatment untouched.
+  secondaryOutline:
+    "border border-emerald-900 text-emerald-900 hover:bg-emerald-900 hover:text-white active:bg-emerald-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 disabled:opacity-40 disabled:pointer-events-none disabled:hover:bg-transparent disabled:hover:text-emerald-900",
+  // Plain text link, underlined only on hover/focus -- lowest-emphasis
+  // action (the brief's "ghost" tier).
+  tertiary: "text-emerald-700 underline-offset-4 hover:underline hover:text-emerald-800 active:text-emerald-900 focus-visible:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-700 focus-visible:outline-offset-4 disabled:opacity-40 disabled:pointer-events-none disabled:hover:no-underline",
   // Brand gradient fill.
   gradient: "gradient-brand text-white hover:scale-105",
   // Gold accent fill -- for highlight actions, used sparingly.

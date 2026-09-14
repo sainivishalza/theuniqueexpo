@@ -7,6 +7,9 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Card from "@/components/ui/Card";
+import Badge, { type BadgeTone } from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 interface RFQ {
   id: string; title: string; product: string; description: string; quantity: string;
@@ -19,11 +22,13 @@ interface Quote {
   price: string; leadTime: string; notes: string; status: string; createdAt: string;
 }
 
-const STATUS_STYLES: Record<string, string> = {
-  open: "bg-green-100 text-green-700 border border-green-200",
-  quotes_received: "bg-emerald-100 text-emerald-700 border border-emerald-200",
-  awarded: "bg-purple-100 text-purple-700 border border-purple-200",
-  closed: "bg-gray-100 text-gray-500 border border-gray-200",
+// "awarded" used to be a decorative purple; replaced with the brand's gold
+// accent so no off-brand hue leaks into RFQ status pills.
+const STATUS_TONES: Record<string, BadgeTone> = {
+  open: "success",
+  quotes_received: "emerald",
+  awarded: "gold",
+  closed: "gray",
 };
 
 export default function RFQDetailPage() {
@@ -125,9 +130,9 @@ export default function RFQDetailPage() {
               <h1 className="text-3xl font-extrabold text-white">{rfq.title}</h1>
               <p className="mt-2 text-gray-400">{t("postedBy", { name: rfq.buyerName, category: rfq.category })}</p>
             </div>
-            <span className={`rounded-xl px-3 py-1.5 text-xs font-bold ${STATUS_STYLES[rfq.status]}`}>
+            <Badge tone={STATUS_TONES[rfq.status] || "gray"} size="pill" className="font-bold whitespace-nowrap">
               {STATUS_LABELS[rfq.status] || rfq.status.replace("_", " ")}
-            </span>
+            </Badge>
           </div>
         </div>
       </section>
@@ -147,7 +152,7 @@ export default function RFQDetailPage() {
                     { label: t("targetPrice"), value: rfq.targetPrice || t("flexible"), icon: "💰" },
                     { label: t("deadline"), value: rfq.deadline || t("flexible"), icon: "📅" },
                   ].map((s) => (
-                    <div key={s.label} className="p-4 rounded-xl bg-cream-50 border border-gray-100 text-center">
+                    <div key={s.label} className="p-4 rounded-[var(--radius-card)] bg-cream-50 border border-gray-100 text-center">
                       <div className="text-xl mb-1">{s.icon}</div>
                       <div className="text-xs text-gray-400">{s.label}</div>
                       <div className="text-sm font-bold text-gray-900 mt-0.5">{s.value}</div>
@@ -161,55 +166,49 @@ export default function RFQDetailPage() {
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-bold text-heading">{t("quotesCount", { count: quotes.length })}</h2>
                   {user?.role === "exhibitor" && !alreadyQuoted && (
-                    <button
-                      onClick={() => setShowQuoteForm(!showQuoteForm)}
-                      className="rounded-xl gradient-brand px-5 py-2 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all"
-                    >
+                    <Button onClick={() => setShowQuoteForm(!showQuoteForm)} variant="gradientCta" size="compact">
                       {t("submitQuote")}
-                    </button>
+                    </Button>
                   )}
                 </div>
 
                 {!user && (
-                  <div className="mb-6 rounded-xl bg-emerald-50 border border-emerald-100 p-4 text-sm text-gray-700 flex items-center justify-between gap-3 flex-wrap">
+                  <div className="mb-6 rounded-[var(--radius-card)] bg-emerald-50 border border-emerald-100 p-4 text-sm text-gray-700 flex items-center justify-between gap-3 flex-wrap">
                     <span>{t("areYouASupplier")}</span>
-                    <Link href="/login" className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700 transition-colors whitespace-nowrap">
+                    <Link href="/login" className="rounded-[var(--radius-button)] bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700 transition-colors whitespace-nowrap focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">
                       {t("logInToQuote")}
                     </Link>
                   </div>
                 )}
 
                 {user && user.role !== "exhibitor" && (
-                  <div className="mb-6 rounded-xl bg-cream-50 border border-gray-200 p-4 text-sm text-gray-500">
+                  <div className="mb-6 rounded-[var(--radius-card)] bg-cream-50 border border-gray-200 p-4 text-sm text-gray-500">
                     {t("onlySupplierAccounts")}
                   </div>
                 )}
 
                 {showQuoteForm && (
-                  <form onSubmit={handleSubmitQuote} className="mb-6 rounded-xl border border-gray-200 p-5 space-y-3 bg-cream-50">
+                  <form onSubmit={handleSubmitQuote} className="mb-6 rounded-[var(--radius-card)] border border-gray-200 p-5 space-y-3 bg-cream-50">
                     <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">{t("price")}</label>
-                        <input type="text" placeholder={t("pricePlaceholder")} value={quotePrice} onChange={(e) => setQuotePrice(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none" required />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">{t("leadTime")}</label>
-                        <input type="text" placeholder={t("leadTimePlaceholder")} value={quoteLeadTime} onChange={(e) => setQuoteLeadTime(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none" required />
-                      </div>
+                      <FormField label={t("price")} htmlFor="quotePrice">
+                        <input id="quotePrice" type="text" placeholder={t("pricePlaceholder")} value={quotePrice} onChange={(e) => setQuotePrice(e.target.value)} className={fieldClasses()} required />
+                      </FormField>
+                      <FormField label={t("leadTime")} htmlFor="quoteLeadTime">
+                        <input id="quoteLeadTime" type="text" placeholder={t("leadTimePlaceholder")} value={quoteLeadTime} onChange={(e) => setQuoteLeadTime(e.target.value)} className={fieldClasses()} required />
+                      </FormField>
                     </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 mb-1">{t("notes")}</label>
-                      <textarea rows={3} placeholder={t("notesPlaceholder")} value={quoteNotes} onChange={(e) => setQuoteNotes(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-emerald-500 outline-none resize-none" />
-                    </div>
-                    {quoteError && <div className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{quoteError}</div>}
-                    <button type="submit" disabled={submitting} className="rounded-xl gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/25 hover:shadow-lg transition-all disabled:opacity-50">
+                    <FormField label={t("notes")} htmlFor="quoteNotes">
+                      <textarea id="quoteNotes" rows={3} placeholder={t("notesPlaceholder")} value={quoteNotes} onChange={(e) => setQuoteNotes(e.target.value)} className={fieldClasses(false, "resize-none")} />
+                    </FormField>
+                    {quoteError && <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700">{quoteError}</div>}
+                    <Button type="submit" disabled={submitting} variant="primary" size="compact">
                       {submitting ? t("submitting") : t("submitQuote")}
-                    </button>
+                    </Button>
                   </form>
                 )}
 
                 {quoteSubmitted && (
-                  <div className="mb-6 rounded-xl bg-green-50 border border-green-200 p-4 text-sm text-green-700 font-medium">
+                  <div className="mb-6 rounded-[var(--radius-card)] bg-green-50 border border-green-200 p-4 text-sm text-green-700 font-medium">
                     {t("quoteSubmittedSuccess")}
                   </div>
                 )}
@@ -222,13 +221,13 @@ export default function RFQDetailPage() {
                     </div>
                   ) : (
                     quotes.map((q) => (
-                      <div key={q.id} className="rounded-xl border border-gray-200 p-5 hover:shadow-sm transition-shadow">
+                      <div key={q.id} className="rounded-[var(--radius-card)] border border-gray-200 p-5 hover:shadow-sm transition-shadow">
                         <div className="flex items-start justify-between mb-3">
                           <div>
                             <h3 className="font-bold text-heading">{q.exhibitorName}</h3>
                             <p className="text-xs text-gray-400">{t("submittedOn", { date: q.createdAt })}</p>
                           </div>
-                          <span className="rounded-lg bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-200">{STATUS_LABELS[q.status] || q.status}</span>
+                          <Badge tone="emerald" size="tag">{STATUS_LABELS[q.status] || q.status}</Badge>
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm mb-2">
                           <div><span className="text-gray-400">{t("price")}</span><p className="font-bold text-gray-900">{q.price}</p></div>

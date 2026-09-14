@@ -500,6 +500,10 @@
       "buyerProfiles": {
         "title": "Buyer Profiles",
         "description": "Company info, documents, and KYC details for buyer accounts"
+      },
+      "homepageSlideshow": {
+        "title": "Homepage Slideshow",
+        "description": "Manage the photo slideshow shown at the top of the homepage"
       }
     }
   },
@@ -2681,5 +2685,44 @@
       "cantonFairCard": "Canton Fair Card",
       "buyerPhoto": "Buyer Photo"
     }
+  },
+  "homepageSlideshow": {
+    "previous": "Previous photo",
+    "next": "Next photo",
+    "goToSlide": "Go to photo {number}",
+    "zoomHint": "Click to zoom",
+    "close": "Close"
+  },
+  "adminSlideshow": {
+    "backToAdmin": "← Back to Admin",
+    "title": "Homepage Slideshow",
+    "subtitle": "Photos shown in the slideshow at the top of the homepage",
+    "loadFailed": "Could not load slideshow photos",
+    "saveFailed": "Could not save photo",
+    "deleteFailed": "Could not delete photo",
+    "accessDenied": "Access denied. Admin login required.",
+    "newPhoto": "New Photo",
+    "newPhotoHeading": "New Slideshow Photo",
+    "editPhoto": "Edit Slideshow Photo",
+    "photo": "Photo",
+    "uploadPhoto": "Upload Photo",
+    "removePhoto": "Remove Photo",
+    "choosePhotoFile": "Please choose an image file",
+    "photoTooLarge": "Photo is too large (max 8MB)",
+    "couldNotReadFile": "Could not read that file",
+    "photoRequiredError": "Please upload a photo",
+    "fields": {
+      "caption": "Caption (optional)",
+      "displayOrder": "Display Order"
+    },
+    "saveChanges": "Save Changes",
+    "createPhoto": "Add Photo",
+    "orderHint": "Photos appear in the slideshow in order of Display Order (lowest first).",
+    "orderLabel": "Order: {order}",
+    "loadingPhotos": "Loading photos...",
+    "noPhotosYet": "No slideshow photos yet",
+    "noCaption": "(no caption)",
+    "editButton": "Edit",
+    "deleting": "Deleting..."
   }
 }

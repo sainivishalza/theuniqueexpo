@@ -343,6 +343,7 @@ run_mysql schema-migrations/031-import-canton-fair-buyers.sql
 run_mysql schema-migrations/032-buyer-profile-registration-code.sql
 run_mysql schema-migrations/033-backfill-buyer-registration-codes.sql
 run_mysql schema-migrations/034-buyer-document-verification.sql
+run_mysql schema-migrations/035-homepage-slideshow.sql
 
 echo "Installing dependencies and building ..."
 npm install

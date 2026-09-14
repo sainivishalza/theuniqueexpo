@@ -10,7 +10,9 @@ import IconBadge from "@/components/ui/IconBadge";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 import { getFaqItems } from "@/lib/server/faq-content-repo";
 import { listTeamMembers } from "@/lib/server/team-members-repo";
+import { listSlideshowPhotos } from "@/lib/server/homepage-slideshow-repo";
 import { ensureDarkEnoughForWhiteText } from "@/lib/color";
+import HomepageSlideshow from "@/components/HomepageSlideshow";
 
 // How many of the soonest upcoming exhibitions to feature on the homepage.
 const FEATURED_COUNT = 6;
@@ -38,11 +40,12 @@ export default async function Home() {
   // getFaqItems() doesn't depend on locale/translations, so it doesn't need
   // to wait behind them -- exhibitions still has to wait for locale to
   // resolve first since it's an input to the query.
-  const [t, locale, faqItems, teamMembers] = await Promise.all([
+  const [t, locale, faqItems, teamMembers, slideshowPhotos] = await Promise.all([
     getTranslations("home"),
     getLocale(),
     getFaqItems(),
     listTeamMembers(),
+    listSlideshowPhotos(),
   ]);
   const exhibitions = await listExhibitions(locale);
   const featured = exhibitions.slice(0, FEATURED_COUNT);
@@ -72,6 +75,8 @@ export default async function Home() {
 
   return (
     <main>
+      <HomepageSlideshow photos={slideshowPhotos} />
+
       {/* ── Hero Section ── */}
       <section className="relative overflow-hidden bg-[var(--color-hero-bg)] min-h-[85vh] flex items-center">
         <div className="absolute inset-0 opacity-20">

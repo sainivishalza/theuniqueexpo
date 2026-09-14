@@ -500,6 +500,10 @@
       "buyerProfiles": {
         "title": "买家资料",
         "description": "买家账户的公司信息、证件资料"
+      },
+      "homepageSlideshow": {
+        "title": "首页幻灯片",
+        "description": "管理首页顶部展示的照片幻灯片"
       }
     }
   },
@@ -2681,5 +2685,44 @@
       "cantonFairCard": "广交会证件",
       "buyerPhoto": "买家照片"
     }
+  },
+  "homepageSlideshow": {
+    "previous": "上一张照片",
+    "next": "下一张照片",
+    "goToSlide": "跳转到第 {number} 张照片",
+    "zoomHint": "点击放大",
+    "close": "关闭"
+  },
+  "adminSlideshow": {
+    "backToAdmin": "← 返回管理后台",
+    "title": "首页幻灯片",
+    "subtitle": "首页顶部幻灯片展示的照片",
+    "loadFailed": "加载幻灯片照片失败",
+    "saveFailed": "保存照片失败",
+    "deleteFailed": "删除照片失败",
+    "accessDenied": "拒绝访问。需要管理员登录。",
+    "newPhoto": "新增照片",
+    "newPhotoHeading": "新增幻灯片照片",
+    "editPhoto": "编辑幻灯片照片",
+    "photo": "照片",
+    "uploadPhoto": "上传照片",
+    "removePhoto": "移除照片",
+    "choosePhotoFile": "请选择图片文件",
+    "photoTooLarge": "文件过大(最大 8MB)",
+    "couldNotReadFile": "无法读取该文件",
+    "photoRequiredError": "请上传照片",
+    "fields": {
+      "caption": "说明文字(可选)",
+      "displayOrder": "显示顺序"
+    },
+    "saveChanges": "保存更改",
+    "createPhoto": "添加照片",
+    "orderHint": "照片将按显示顺序(数值小的在前)在幻灯片中展示。",
+    "orderLabel": "顺序:{order}",
+    "loadingPhotos": "正在加载照片...",
+    "noPhotosYet": "暂无幻灯片照片",
+    "noCaption": "(无说明)",
+    "editButton": "编辑",
+    "deleting": "删除中..."
   }
 }

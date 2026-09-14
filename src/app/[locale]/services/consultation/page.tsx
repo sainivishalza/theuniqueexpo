@@ -83,7 +83,7 @@ export default function ConsultationPage() {
             <h2 className="text-2xl font-bold text-heading mb-6">{t("ourConsultationTopics")}</h2>
             <div className="space-y-4">
               {[{key:"marketEntry",icon:"🎯"},{key:"supplierSourcing",icon:"🔍"},{key:"qualityInspection",icon:"✅"},{key:"legalCompliance",icon:"⚖️"},{key:"culturalEtiquette",icon:"🤝"},{key:"tradeCompliance",icon:"📦"},{key:"ipProtectionDetail",icon:"🛡️"}].map((topic) => (
-                <div key={topic.key} className="flex items-start gap-4 p-4 rounded-xl bg-white shadow-sm">
+                <div key={topic.key} className="flex items-start gap-4 p-4 rounded-[var(--radius-card)] bg-white shadow-[var(--shadow-card-sm)]">
                   <span className="text-2xl">{topic.icon}</span>
                   <div><h3 className="font-bold text-heading">{t(`topics.${topic.key}.title`)}</h3><p className="text-sm text-gray-500">{t(`topics.${topic.key}.desc`)}</p></div>
                 </div>

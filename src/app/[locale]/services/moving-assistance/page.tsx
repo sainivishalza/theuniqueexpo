@@ -94,13 +94,13 @@ export default function MovingAssistancePage() {
             <h2 className="text-2xl font-bold text-heading mb-6">{t("whatWeHandle")}</h2>
             <div className="space-y-4">
               {HANDLE_KEYS.map((s) => (
-                <div key={s.key} className="flex items-start gap-4 p-4 rounded-xl bg-white shadow-sm">
+                <div key={s.key} className="flex items-start gap-4 p-4 rounded-[var(--radius-card)] bg-white shadow-[var(--shadow-card-sm)]">
                   <span className="text-2xl">{s.icon}</span>
                   <div><h3 className="font-bold text-heading">{t(`handle.${s.key}.title`)}</h3><p className="text-sm text-gray-500">{t(`handle.${s.key}.desc`)}</p></div>
                 </div>
               ))}
             </div>
-            <Link href="/services/relocation-cost-estimator" className="mt-6 flex items-center gap-4 p-4 rounded-xl bg-emerald-50 border border-emerald-100 hover:border-emerald-300 transition-colors">
+            <Link href="/services/relocation-cost-estimator" className="mt-6 flex items-center gap-4 p-4 rounded-[var(--radius-card)] bg-emerald-50 border border-emerald-100 hover:border-emerald-300 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">
               <span className="text-2xl">🧮</span>
               <div><h3 className="font-bold text-heading">{t("costEstimatorTeaser.title")}</h3><p className="text-sm text-gray-500">{t("costEstimatorTeaser.desc")}</p></div>
             </Link>

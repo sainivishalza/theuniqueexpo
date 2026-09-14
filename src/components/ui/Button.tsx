@@ -50,9 +50,9 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   // Brand gradient fill.
   gradient: "gradient-brand text-white hover:scale-105",
   // Gold accent fill -- for highlight actions, used sparingly.
-  gold: "bg-gold-500 text-white shadow-lg shadow-gold-500/25 hover:bg-gold-600 hover:scale-105",
+  gold: "bg-gold-500 text-emerald-950 hover:bg-gold-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2",
   // Full-width gradient CTA on a detail-page sidebar panel (register/book buttons).
-  gradientCta: "gradient-brand text-white shadow-md shadow-emerald-500/25 hover:shadow-lg hover:scale-[1.02] disabled:opacity-50 disabled:hover:scale-100",
+  gradientCta: "gradient-brand text-white shadow-[var(--shadow-card-sm)] hover:shadow-[var(--shadow-card-md)] disabled:opacity-50",
   // Flat gradient fill with no hover/disabled treatment at all -- a "try again"/
   // "log in" link after a success or gated state.
   gradientPlain: "gradient-brand text-white",

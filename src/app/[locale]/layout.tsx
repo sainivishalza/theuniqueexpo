@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import {
-  Inter, Manrope, Montserrat, Open_Sans,
-  Oswald, Bebas_Neue, Anton, Roboto_Condensed, Archivo_Narrow,
+  Inter, Manrope, Montserrat, Open_Sans, IBM_Plex_Sans,
+  Oswald, Bebas_Neue, Anton, Roboto_Condensed, Archivo_Narrow, Playfair_Display,
   Caveat, Dancing_Script, Pacifico,
 } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
@@ -29,20 +29,22 @@ const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "
 const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], display: "swap", variable: "--font-manrope" });
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], display: "swap", variable: "--font-montserrat" });
 const openSans = Open_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], display: "swap", variable: "--font-open-sans" });
+const ibmPlexSans = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], display: "swap", variable: "--font-ibm-plex-sans" });
 
 const oswald = Oswald({ subsets: ["latin"], weight: ["500", "600", "700"], display: "swap", variable: "--font-oswald" });
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"], display: "swap", variable: "--font-bebas-neue" });
 const anton = Anton({ subsets: ["latin"], weight: ["400"], display: "swap", variable: "--font-anton" });
 const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["500", "600", "700"], display: "swap", variable: "--font-roboto-condensed" });
 const archivoNarrow = Archivo_Narrow({ subsets: ["latin"], weight: ["500", "600", "700"], display: "swap", variable: "--font-archivo-narrow" });
+const playfairDisplay = Playfair_Display({ subsets: ["latin"], weight: ["600", "700", "800", "900"], display: "swap", variable: "--font-playfair-display" });
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["500", "600"], display: "swap", variable: "--font-caveat" });
 const dancingScript = Dancing_Script({ subsets: ["latin"], weight: ["500", "600"], display: "swap", variable: "--font-dancing-script" });
 const pacifico = Pacifico({ subsets: ["latin"], weight: ["400"], display: "swap", variable: "--font-pacifico" });
 
 const FONT_VARIABLES = [
-  inter, manrope, montserrat, openSans,
-  oswald, bebasNeue, anton, robotoCondensed, archivoNarrow,
+  inter, manrope, montserrat, openSans, ibmPlexSans,
+  oswald, bebasNeue, anton, robotoCondensed, archivoNarrow, playfairDisplay,
   caveat, dancingScript, pacifico,
 ].map((f) => f.variable).join(" ");
 

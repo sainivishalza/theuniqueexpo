@@ -5,6 +5,7 @@ export type ButtonVariant =
   | "primary"
   | "dark"
   | "outline"
+  | "tertiary"
   | "gradient"
   | "gold"
   | "gradientCta"
@@ -17,13 +18,19 @@ export type ButtonVariant =
   | "ghostDanger";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  // White pill on a dark/colored background -- main hero/CTA buttons.
+  // Amber-on-navy pill -- the site's one primary CTA color, used sparingly
+  // (hero + final CTA only). translate-y-0.5 is exactly 2px in Tailwind's
+  // default spacing scale, matching the brief's "-2px on hover" literally.
   primary:
-    "bg-white text-emerald-700 shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:scale-105",
+    "bg-gold-500 text-emerald-950 hover:bg-gold-600 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500 focus-visible:outline-offset-2 active:translate-y-0",
   // Solid dark pill -- secondary CTA on light backgrounds.
   dark: "bg-gray-900 text-white hover:bg-gray-800",
-  // Transparent outline on dark/colored backgrounds.
-  outline: "border-2 border-white/30 text-white backdrop-blur-sm hover:bg-white/10",
+  // Thin outline on dark/colored backgrounds -- fills solid on hover/focus,
+  // text flips to match (never white-on-white).
+  outline:
+    "border border-white text-white hover:bg-white hover:text-emerald-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2",
+  // Plain text link, underlined only on hover/focus -- lowest-emphasis action.
+  tertiary: "text-emerald-700 underline-offset-4 hover:underline focus-visible:underline",
   // Brand gradient fill.
   gradient: "gradient-brand text-white hover:scale-105",
   // Gold accent fill -- for highlight actions, used sparingly.

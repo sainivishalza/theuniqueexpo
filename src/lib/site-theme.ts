@@ -8,8 +8,8 @@
 // fonts to be statically known at build time -- an admin can only choose
 // among fonts this app has actually bundled.
 
-export type HeadingFontKey = "oswald" | "bebasNeue" | "anton" | "robotoCondensed" | "archivoNarrow";
-export type BodyFontKey = "inter" | "manrope" | "montserrat" | "openSans";
+export type HeadingFontKey = "oswald" | "bebasNeue" | "anton" | "robotoCondensed" | "archivoNarrow" | "playfairDisplay";
+export type BodyFontKey = "inter" | "manrope" | "montserrat" | "openSans" | "ibmPlexSans";
 export type ScriptFontKey = "caveat" | "dancingScript" | "pacifico";
 export type CornerStyleKey = "sharp" | "soft" | "rounded";
 export type CardShadowStyleKey = "flat" | "soft" | "bold";
@@ -28,24 +28,23 @@ export interface SiteTheme {
   cardShadowStyle: CardShadowStyleKey; // elevation of every Card
 }
 
-// Matches what's already live -- picking these as defaults means a site
-// with no saved row (or a row missing a field) renders identically to
-// today, and the admin panel just shows the current look pre-filled.
-// headingColor's default (#111827) is Tailwind's own gray-900, which is
-// what every heading already renders in today via plain text-gray-900
-// classNames -- so a missing/default value changes nothing.
+// Editorial/corporate identity (2026 redesign): deep navy as the dominant
+// brand tone (buttons, links, icon accents -- everything the emerald-*
+// scale drives) with sharp amber reserved for the gold-* scale's existing
+// "sparingly used, premium highlight" role -- CTAs and active states only,
+// never the broad UI tint navy already covers.
 export const DEFAULT_SITE_THEME: SiteTheme = {
-  primaryColor: "#075b4f",
-  goldColor: "#c9a24a",
-  backgroundColor: "#fefdfb",
-  footerColor: "#011714",
-  heroColor: "#111827",
-  headingColor: "#111827",
-  headingFont: "oswald",
-  bodyFont: "inter",
+  primaryColor: "#0A192F",
+  goldColor: "#D97706",
+  backgroundColor: "#F8F9FA",
+  footerColor: "#1A1A1A",
+  heroColor: "#0A192F",
+  headingColor: "#1A1A1A",
+  headingFont: "playfairDisplay",
+  bodyFont: "ibmPlexSans",
   scriptFont: "caveat",
-  cornerStyle: "soft",
-  cardShadowStyle: "soft",
+  cornerStyle: "sharp",
+  cardShadowStyle: "flat",
 };
 
 export const CORNER_STYLE_OPTIONS: { key: CornerStyleKey; label: string }[] = [
@@ -61,7 +60,7 @@ export const CORNER_STYLE_OPTIONS: { key: CornerStyleKey; label: string }[] = [
 // component itself regardless of corner style -- a "sharp" pill isn't a
 // smaller pill, it's a different shape, so it's not part of this control.
 const CORNER_RADIUS_PX: Record<CornerStyleKey, { button: number; card: number; badge: number; iconXs: number; iconSm: number; iconMd: number; iconLg: number }> = {
-  sharp: { button: 6, card: 8, badge: 4, iconXs: 6, iconSm: 6, iconMd: 8, iconLg: 8 },
+  sharp: { button: 2, card: 2, badge: 2, iconXs: 2, iconSm: 2, iconMd: 2, iconLg: 2 },
   soft: { button: 12, card: 16, badge: 8, iconXs: 8, iconSm: 12, iconMd: 16, iconLg: 16 },
   rounded: { button: 16, card: 24, badge: 12, iconXs: 12, iconSm: 16, iconMd: 20, iconLg: 24 },
 };
@@ -121,6 +120,7 @@ export const HEADING_FONT_OPTIONS: { key: HeadingFontKey; label: string; variabl
   { key: "anton", label: "Anton", variable: "--font-anton", fallback: '"Anton", sans-serif' },
   { key: "robotoCondensed", label: "Roboto Condensed", variable: "--font-roboto-condensed", fallback: '"Roboto Condensed", sans-serif' },
   { key: "archivoNarrow", label: "Archivo Narrow", variable: "--font-archivo-narrow", fallback: '"Archivo Narrow", sans-serif' },
+  { key: "playfairDisplay", label: "Playfair Display", variable: "--font-playfair-display", fallback: '"Playfair Display", Georgia, serif' },
 ];
 
 export const BODY_FONT_OPTIONS: { key: BodyFontKey; label: string; variable: string; fallback: string }[] = [
@@ -128,6 +128,7 @@ export const BODY_FONT_OPTIONS: { key: BodyFontKey; label: string; variable: str
   { key: "manrope", label: "Manrope", variable: "--font-manrope", fallback: '"Manrope", sans-serif' },
   { key: "montserrat", label: "Montserrat", variable: "--font-montserrat", fallback: '"Montserrat", sans-serif' },
   { key: "openSans", label: "Open Sans", variable: "--font-open-sans", fallback: '"Open Sans", sans-serif' },
+  { key: "ibmPlexSans", label: "IBM Plex Sans", variable: "--font-ibm-plex-sans", fallback: '"IBM Plex Sans", sans-serif' },
 ];
 
 export const SCRIPT_FONT_OPTIONS: { key: ScriptFontKey; label: string; variable: string; fallback: string }[] = [

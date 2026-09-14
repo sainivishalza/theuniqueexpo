@@ -4,15 +4,13 @@ import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
 import Button from "@/components/ui/Button";
-import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
-import IconBadge from "@/components/ui/IconBadge";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 import { getFaqItems } from "@/lib/server/faq-content-repo";
 import { listTeamMembers } from "@/lib/server/team-members-repo";
 import { listSlideshowPhotos } from "@/lib/server/homepage-slideshow-repo";
-import { ensureDarkEnoughForWhiteText } from "@/lib/color";
 import HomepageSlideshow from "@/components/HomepageSlideshow";
+import FaqAccordion from "@/components/FaqAccordion";
 
 // How many of the soonest upcoming exhibitions to feature on the homepage.
 const FEATURED_COUNT = 6;
@@ -22,18 +20,18 @@ const FEATURED_COUNT = 6;
 export const revalidate = 60;
 
 const INDUSTRY_KEYS = [
-  { key: "electronics", icon: "🔌", count: 200, color: "from-slate-500 to-gray-700" },
-  { key: "digitalTrade", icon: "💻", count: 120, color: "from-fuchsia-500 to-pink-600" },
-  { key: "lighting", icon: "💡", count: 75, color: "from-yellow-400 to-amber-500" },
-  { key: "furniture", icon: "🪑", count: 90, color: "from-amber-600 to-orange-600" },
-  { key: "manufacturing", icon: "🏭", count: 110, color: "from-amber-500 to-orange-500" },
-  { key: "energy", icon: "⚡", count: 80, color: "from-green-500 to-emerald-600" },
-  { key: "tradeInvestment", icon: "🤝", count: 150, color: "from-emerald-500 to-green-600" },
-  { key: "healthBeauty", icon: "💄", count: 65, color: "from-pink-400 to-rose-500" },
-  { key: "logistics", icon: "📦", count: 60, color: "from-teal-500 to-cyan-600" },
-  { key: "hospitality", icon: "🏨", count: 70, color: "from-orange-600 to-red-700" },
-  { key: "toysGifts", icon: "🧸", count: 65, color: "from-pink-400 to-rose-500" },
-  { key: "agriculture", icon: "🚜", count: 55, color: "from-green-500 to-lime-600" },
+  { key: "electronics", icon: "🔌", count: 200 },
+  { key: "digitalTrade", icon: "💻", count: 120 },
+  { key: "lighting", icon: "💡", count: 75 },
+  { key: "furniture", icon: "🪑", count: 90 },
+  { key: "manufacturing", icon: "🏭", count: 110 },
+  { key: "energy", icon: "⚡", count: 80 },
+  { key: "tradeInvestment", icon: "🤝", count: 150 },
+  { key: "healthBeauty", icon: "💄", count: 65 },
+  { key: "logistics", icon: "📦", count: 60 },
+  { key: "hospitality", icon: "🏨", count: 70 },
+  { key: "toysGifts", icon: "🧸", count: 65 },
+  { key: "agriculture", icon: "🚜", count: 55 },
 ];
 
 export default async function Home() {
@@ -62,10 +60,10 @@ export default async function Home() {
   const faqSchemaJson = JSON.stringify(faqSchema).replace(/</g, "\\u003c");
 
   const stats = [
-    { value: "20+", label: t("stats.exhibitions"), icon: "🎯" },
-    { value: "15,000+", label: t("stats.exhibitors"), icon: "🏢" },
-    { value: "500K+", label: t("stats.visitors"), icon: "🌍" },
-    { value: "15+", label: t("stats.markets"), icon: "🤝" },
+    { value: "20+", label: t("stats.exhibitions") },
+    { value: "15,000+", label: t("stats.exhibitors") },
+    { value: "500K+", label: t("stats.visitors") },
+    { value: "15+", label: t("stats.markets") },
   ];
 
   const industries = INDUSTRY_KEYS.map((ind) => ({
@@ -79,7 +77,7 @@ export default async function Home() {
 
       {/* ── Hero Section ── */}
       <section className="relative overflow-hidden bg-[var(--color-hero-bg)] min-h-[85vh] flex items-center">
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-30">
           <Image
             src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&h=900&fit=crop&q=80"
             alt=""
@@ -90,23 +88,20 @@ export default async function Home() {
             className="object-cover"
           />
         </div>
-        <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-400/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-hero-bg)] via-[var(--color-hero-bg)]/85 to-[var(--color-hero-bg)]/40" />
 
         <div className="relative z-10 mx-auto max-w-7xl px-6 py-24 text-white w-full">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-sm mb-6">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            <div className="flex items-center gap-3 mb-8 text-xs font-semibold uppercase tracking-[0.15em] text-gold-400">
+              <span className="h-px w-8 bg-gold-400" />
               {t("badge", { count: exhibitions.length })}
             </div>
-            <h1 className="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight">
+            <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.05] tracking-tight">
               {t("heroTitleLine1")}
               <br />
-              <span className="bg-gradient-to-r from-emerald-300 to-purple-300 bg-clip-text text-transparent">
-                {t("heroTitleLine2")}
-              </span>
+              {t("heroTitleLine2")}
             </h1>
-            <p className="mt-6 text-lg md:text-xl text-emerald-100/80 max-w-xl leading-relaxed">
+            <p className="mt-6 text-lg md:text-xl text-gray-300 max-w-xl leading-relaxed">
               {t("heroSubtitle")}
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
@@ -120,13 +115,13 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* Stats bar */}
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Stats bar -- financial-report style: a thin top rule, a large
+              serif figure, a small tracked-out label. No cards, no icons. */}
+          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat) => (
-              <div key={stat.label} className="rounded-2xl bg-white/10 backdrop-blur-sm px-6 py-5 border border-white/10">
-                <div className="text-2xl mb-1">{stat.icon}</div>
-                <div className="text-3xl font-bold">{stat.value}</div>
-                <div className="text-sm text-emerald-200/70 mt-1">{stat.label}</div>
+              <div key={stat.label} className="border-t border-white/20 pt-4">
+                <div className="text-3xl md:text-4xl font-extrabold font-[family-name:var(--font-heading)]">{stat.value}</div>
+                <div className="mt-1 text-xs uppercase tracking-[0.1em] text-gray-400">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -137,8 +132,8 @@ export default async function Home() {
       <section className="py-20 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
-            <Badge tone="emerald" className="mb-4">{t("featuredBadge")}</Badge>
-            <h2 className="text-4xl font-extrabold text-heading">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500 mb-4">{t("featuredBadge")}</p>
+            <h2 className="font-[family-name:var(--font-heading)] text-4xl font-bold text-heading">
               {t("featuredTitle")}
             </h2>
             <p className="mt-3 text-lg text-gray-500 max-w-2xl mx-auto">
@@ -152,23 +147,14 @@ export default async function Home() {
               at once instead of drifting out of sync. */}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {featured.map((evt) => (
-              <Card key={evt.id} href={`/exhibitions/${evt.slug}`} shadow="lg">
-                {/* Header */}
-                <div className="relative p-6 text-white" style={{ backgroundColor: ensureDarkEnoughForWhiteText(evt.color) }}>
-                  <div className="absolute top-4 right-4 bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1 text-xs font-bold">
-                    {evt.dates.split(",")[0]}
-                  </div>
-                  <h3 className="text-xl font-extrabold leading-tight pr-20">{evt.title}</h3>
-                  <div className="mt-3 flex items-center gap-2 text-xs text-white">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    {evt.venue}, {evt.city}
-                  </div>
-                </div>
-
-                {/* Image */}
+              <Card key={evt.id} href={`/exhibitions/${evt.slug}`} shadow="sm">
+                {/* Image, with the date as a small amber tag over it */}
                 {evt.image && (
-                  <div className="relative h-44 overflow-hidden">
-                    <FavoriteButton exhibitionId={evt.id} className="absolute top-3 right-3 z-10 w-9 h-9 text-lg shadow-md" />
+                  <div className="relative h-44 overflow-hidden border-b border-gray-100">
+                    <FavoriteButton exhibitionId={evt.id} className="absolute top-3 right-3 z-10 w-9 h-9 text-lg shadow-sm" />
+                    <span className="absolute top-3 left-3 z-10 bg-gold-500 text-emerald-950 text-xs font-bold uppercase tracking-[0.08em] px-2.5 py-1">
+                      {evt.dates.split(",")[0]}
+                    </span>
                     <Image
                       src={evt.image}
                       alt={evt.title}
@@ -176,30 +162,31 @@ export default async function Home() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                   </div>
                 )}
 
-                {/* Highlights */}
                 <div className="p-5">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-xs font-bold text-gray-900">★</span>
-                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t("highlights")}</span>
+                  <h3 className="text-xl font-extrabold leading-tight text-heading">{evt.title}</h3>
+                  <div className="mt-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.08em] text-gray-500">
+                    <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    {evt.venue}, {evt.city}
                   </div>
-                  <ul className="space-y-1.5 mb-4">
+
+                  <ul className="mt-4 space-y-1.5 mb-4">
                     {evt.highlights.slice(0, 3).map((h) => (
-                      <li key={h} className="text-xs text-gray-600 flex items-start gap-2">
-                        <span className="text-emerald-500 mt-0.5 shrink-0">✦</span>
+                      <li key={h} className="text-sm text-gray-600 flex items-start gap-2">
+                        <span className="text-gold-600 mt-1 shrink-0 text-[10px]">●</span>
                         {h}
                       </li>
                     ))}
                   </ul>
 
                   {/* CTA */}
-                  <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-                    <span className="text-xs text-gray-600">{formatNumber(evt.exhibitors)}{t("exhibitorsSuffix")}</span>
-                    <span className="inline-flex items-center gap-1 rounded-lg bg-gray-900 px-4 py-2 text-xs font-semibold text-white group-hover:bg-emerald-600 transition-colors">
+                  <div className="pt-3 border-t border-gray-200 flex items-center justify-between">
+                    <span className="text-xs text-gray-500">{formatNumber(evt.exhibitors)}{t("exhibitorsSuffix")}</span>
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-900 group-hover:text-gold-600 transition-colors">
                       {t("viewDetails")}
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                     </span>
                   </div>
                 </div>
@@ -220,8 +207,8 @@ export default async function Home() {
       <section className="py-20 bg-white">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
-            <Badge tone="purple" className="mb-4">{t("industryBadge")}</Badge>
-            <h2 className="text-4xl font-extrabold text-heading">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500 mb-4">{t("industryBadge")}</p>
+            <h2 className="font-[family-name:var(--font-heading)] text-4xl font-bold text-heading">
               {t("industryTitle")}
             </h2>
             <p className="mt-3 text-lg text-gray-500">
@@ -234,12 +221,11 @@ export default async function Home() {
               <Link
                 key={ind.name}
                 href={`/exhibitions?industry=${encodeURIComponent(ind.name)}`}
-                className="group relative rounded-2xl p-6 text-center card-hover overflow-hidden border border-gray-100"
+                className="group rounded-[var(--radius-card)] p-6 text-center border border-gray-200 hover:border-emerald-800 transition-colors"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${ind.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-                <div className="relative text-4xl mb-3">{ind.icon}</div>
-                <div className="relative text-sm font-bold text-gray-900">{ind.name}</div>
-                <div className="relative text-xs text-gray-600 mt-1">{ind.count}+ events</div>
+                <div className="text-4xl mb-3 grayscale group-hover:grayscale-0 transition-[filter] duration-300">{ind.icon}</div>
+                <div className="text-sm font-bold text-gray-900">{ind.name}</div>
+                <div className="text-xs text-gray-500 mt-1">{ind.count}+ events</div>
               </Link>
             ))}
           </div>
@@ -247,24 +233,23 @@ export default async function Home() {
       </section>
 
       {/* ── How It Works ── */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-20 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
-            <Badge tone="emerald" className="mb-4">{t("processBadge")}</Badge>
-            <h2 className="text-4xl font-extrabold text-heading">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500 mb-4">{t("processBadge")}</p>
+            <h2 className="font-[family-name:var(--font-heading)] text-4xl font-bold text-heading">
               {t("processTitle")}
             </h2>
           </div>
 
           <div className="grid gap-8 md:grid-cols-3">
             {[
-              { step: "01", key: "discover" as const, icon: "🔍", color: "from-emerald-500 to-emerald-600" },
-              { step: "02", key: "registerBuyer" as const, icon: "📋", color: "from-purple-500 to-purple-600" },
-              { step: "03", key: "connect" as const, icon: "🤝", color: "from-amber-500 to-orange-600" },
+              { step: "01", key: "discover" as const },
+              { step: "02", key: "registerBuyer" as const },
+              { step: "03", key: "connect" as const },
             ].map((item) => (
-              <div key={item.step} className="relative rounded-2xl bg-white p-8 border border-gray-100 shadow-sm card-hover">
-                <IconBadge icon={item.icon} gradient={item.color} className="mb-5" />
-                <div className="text-xs font-bold text-gray-600 mb-2">{t("step", { number: item.step })}</div>
+              <div key={item.step} className="relative rounded-[var(--radius-card)] bg-white p-8 border border-gray-200">
+                <div className="font-[family-name:var(--font-heading)] text-6xl font-bold text-gray-200 leading-none mb-4">{item.step}</div>
                 <h3 className="text-xl font-bold text-heading mb-3">{t(`steps.${item.key}.title`)}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{t(`steps.${item.key}.desc`)}</p>
               </div>
@@ -278,26 +263,26 @@ export default async function Home() {
         <section className="py-20 bg-white">
           <div className="mx-auto max-w-6xl px-6">
             <div className="text-center mb-14">
-              <Badge tone="emerald" className="mb-4">{t("teamBadge")}</Badge>
-              <h2 className="text-4xl font-extrabold text-heading">{t("teamTitle")}</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500 mb-4">{t("teamBadge")}</p>
+              <h2 className="font-[family-name:var(--font-heading)] text-4xl font-bold text-heading">{t("teamTitle")}</h2>
               <p className="mt-3 text-gray-500 max-w-xl mx-auto">{t("teamSubtitle")}</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {teamMembers.map((member) => (
                 <div key={member.id} className="text-center">
-                  <div className="mx-auto w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden bg-gray-100 shadow-md">
+                  <div className="mx-auto aspect-square w-full max-w-[180px] overflow-hidden bg-gray-100 rounded-[var(--radius-card)] border border-gray-200">
                     {member.photo && (
                       <Image
                         src={member.photo}
                         alt={member.name}
                         width={224}
                         height={224}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover grayscale"
                       />
                     )}
                   </div>
-                  <h3 className="mt-4 font-bold text-heading">{member.name}</h3>
-                  <p className="text-sm text-emerald-600">{member.role}</p>
+                  <h3 className="mt-4 font-[family-name:var(--font-heading)] font-bold text-heading">{member.name}</h3>
+                  <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-gray-500">{member.role}</p>
                 </div>
               ))}
             </div>
@@ -316,28 +301,21 @@ export default async function Home() {
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqSchemaJson }} />
           <div className="mx-auto max-w-3xl px-6">
             <div className="text-center mb-12">
-              <Badge tone="emerald" className="mb-4">{t("faqBadge")}</Badge>
-              <h2 className="text-4xl font-extrabold text-heading">{t("faqTitle")}</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500 mb-4">{t("faqBadge")}</p>
+              <h2 className="font-[family-name:var(--font-heading)] text-4xl font-bold text-heading">{t("faqTitle")}</h2>
             </div>
-            <div className="space-y-4">
-              {faqItems.map((item) => (
-                <div key={item.question} className="rounded-2xl bg-cream-50 p-6 border border-gray-100">
-                  <h3 className="font-bold text-heading mb-2">{item.question}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">{item.answer}</p>
-                </div>
-              ))}
-            </div>
+            <FaqAccordion items={faqItems} />
           </div>
         </section>
       )}
 
       {/* ── CTA Section ── */}
-      <section className="py-20 bg-gradient-to-r from-emerald-600 via-teal-600 to-purple-700">
+      <section className="py-20 bg-[var(--color-hero-bg)]">
         <div className="mx-auto max-w-4xl px-6 text-center text-white">
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
+          <h2 className="font-[family-name:var(--font-heading)] text-4xl md:text-5xl font-bold mb-6">
             {t("ctaTitle")}
           </h2>
-          <p className="text-lg text-emerald-100/80 max-w-2xl mx-auto mb-10">
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10">
             {t("ctaSubtitle")}
           </p>
           <div className="flex flex-wrap justify-center gap-4">

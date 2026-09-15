@@ -46,7 +46,12 @@ export default async function Home() {
     listSlideshowPhotos(),
   ]);
   const exhibitions = await listExhibitions(locale);
-  const featured = exhibitions.slice(0, FEATURED_COUNT);
+  // listExhibitions returns every exhibition (past and future) sorted
+  // oldest-first, so the homepage needs its own "upcoming" filter --
+  // otherwise the featured section shows whichever exhibitions happen to
+  // have the earliest dates in the table, past ones included.
+  const now = new Date();
+  const featured = exhibitions.filter((e) => new Date(e.endDate) >= now).slice(0, FEATURED_COUNT);
 
   const faqSchema = {
     "@context": "https://schema.org",

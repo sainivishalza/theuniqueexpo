@@ -317,14 +317,16 @@ export default function ExhibitionDetailPage({
               <Card shadow="sm" className="p-6">
                 <h3 className="text-sm font-bold text-heading mb-2">{t("organizedBy")}</h3>
                 <p className="text-sm text-gray-500">{expo.organizer}</p>
-                <a
-                  href={expo.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 block text-center rounded-[var(--radius-button)] border border-gray-700 py-2 text-xs font-semibold text-gray-600 hover:bg-cream-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
-                >
-                  {t("officialWebsite")}
-                </a>
+                {expo.website && (
+                  <a
+                    href={expo.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 block text-center rounded-[var(--radius-button)] border border-gray-700 py-2 text-xs font-semibold text-gray-600 hover:bg-cream-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
+                  >
+                    {t("officialWebsite")}
+                  </a>
+                )}
               </Card>
             </div>
           </div>

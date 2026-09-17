@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -144,6 +144,135 @@ const FIELDS: FieldDef[] = [
 ];
 const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto", "invoiceOrderList"] as const;
 
+const ZOOM_MIN = 1;
+const ZOOM_MAX = 5;
+
+// A minimal pan/zoom image viewer -- wheel or pinch to zoom, drag or
+// single-finger swipe to pan once zoomed in, double-click/double-tap to
+// toggle between fit and 2.5x. No new dependency for something this small.
+function DocumentLightbox({
+  src,
+  title,
+  statusLabel,
+  statusClass,
+  onClose,
+}: {
+  src: string;
+  title: string;
+  statusLabel: string;
+  statusClass: string;
+  onClose: () => void;
+}) {
+  const [scale, setScale] = useState(1);
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const dragging = useRef(false);
+  const dragStart = useRef({ x: 0, y: 0, posX: 0, posY: 0 });
+  const pinchStart = useRef<{ dist: number; scale: number } | null>(null);
+  const lastTap = useRef(0);
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
+  function zoomTo(next: number) {
+    const clamped = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, next));
+    setScale(clamped);
+    if (clamped === ZOOM_MIN) setPos({ x: 0, y: 0 });
+  }
+
+  function toggleZoom() {
+    zoomTo(scale > ZOOM_MIN ? ZOOM_MIN : 2.5);
+  }
+
+  function handleWheel(e: React.WheelEvent) {
+    e.preventDefault();
+    zoomTo(scale - e.deltaY * 0.0015);
+  }
+
+  function handleMouseDown(e: React.MouseEvent) {
+    if (scale <= ZOOM_MIN) return;
+    dragging.current = true;
+    dragStart.current = { x: e.clientX, y: e.clientY, posX: pos.x, posY: pos.y };
+  }
+  function handleMouseMove(e: React.MouseEvent) {
+    if (!dragging.current) return;
+    setPos({ x: dragStart.current.posX + (e.clientX - dragStart.current.x), y: dragStart.current.posY + (e.clientY - dragStart.current.y) });
+  }
+  function stopDrag() {
+    dragging.current = false;
+  }
+
+  function touchDist(touches: React.TouchList) {
+    return Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY);
+  }
+  function handleTouchStart(e: React.TouchEvent) {
+    if (e.touches.length === 2) {
+      pinchStart.current = { dist: touchDist(e.touches), scale };
+    } else if (e.touches.length === 1) {
+      const now = Date.now();
+      if (now - lastTap.current < 300) toggleZoom();
+      lastTap.current = now;
+      if (scale > ZOOM_MIN) {
+        dragging.current = true;
+        dragStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, posX: pos.x, posY: pos.y };
+      }
+    }
+  }
+  function handleTouchMove(e: React.TouchEvent) {
+    if (e.touches.length === 2 && pinchStart.current) {
+      zoomTo(pinchStart.current.scale * (touchDist(e.touches) / pinchStart.current.dist));
+    } else if (e.touches.length === 1 && dragging.current) {
+      setPos({ x: dragStart.current.posX + (e.touches[0].clientX - dragStart.current.x), y: dragStart.current.posY + (e.touches[0].clientY - dragStart.current.y) });
+    }
+  }
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (e.touches.length < 2) pinchStart.current = null;
+    if (e.touches.length === 0) dragging.current = false;
+  }
+
+  return (
+    <div className="fixed inset-0 z-[60] flex flex-col bg-black/90" onClick={onClose}>
+      <div className="flex items-center justify-between px-4 py-3 text-white" onClick={(e) => e.stopPropagation()}>
+        <div>
+          <p className="font-semibold">{title}</p>
+          <span className={`inline-block mt-1 rounded-lg px-2 py-0.5 text-xs font-semibold ${statusClass}`}>{statusLabel}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={() => zoomTo(scale - 0.5)} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-lg leading-none">−</button>
+          <button type="button" onClick={() => zoomTo(scale + 0.5)} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-lg leading-none">+</button>
+          <button type="button" onClick={() => zoomTo(1)} className="px-3 h-8 rounded-full bg-white/10 hover:bg-white/20 text-xs font-semibold">Reset</button>
+          <button type="button" onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-lg leading-none">✕</button>
+        </div>
+      </div>
+      <div
+        className="flex-1 overflow-hidden flex items-center justify-center touch-none select-none"
+        onClick={(e) => e.stopPropagation()}
+        onWheel={handleWheel}
+        onDoubleClick={toggleZoom}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={stopDrag}
+        onMouseLeave={stopDrag}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <img
+          src={src}
+          alt={title}
+          draggable={false}
+          style={{ transform: `translate(${pos.x}px, ${pos.y}px) scale(${scale})`, cursor: scale > 1 ? "grab" : "default" }}
+          className="max-h-full max-w-full object-contain transition-transform duration-75"
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function AdminBuyerProfilesPage() {
   const t = useTranslations("adminBuyerProfiles");
   const ta = useTranslations("adminCommon");
@@ -160,6 +289,7 @@ export default function AdminBuyerProfilesPage() {
   const [uploadingField, setUploadingField] = useState<string | null>(null);
   const [docVersion, setDocVersion] = useState(0);
   const [reviewingField, setReviewingField] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<{ userId: number; field: string; buyerName: string } | null>(null);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -352,9 +482,21 @@ export default function AdminBuyerProfilesPage() {
                         return (
                           <td key={field} className="px-6 py-4 whitespace-nowrap">
                             {doc?.uploaded ? (
-                              <span className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${DOC_BADGE_STYLES[doc.status]}`}>
-                                {t(`docReview.${doc.status}`)}
-                              </span>
+                              <button
+                                type="button"
+                                onClick={() => setLightbox({ userId: r.userId, field, buyerName: r.name })}
+                                className="block"
+                              >
+                                <img
+                                  src={`/api/admin/buyer-profiles/${r.userId}/documents/${field}`}
+                                  alt={t(`docFields.${field}`)}
+                                  loading="lazy"
+                                  className="h-12 w-16 object-cover rounded-lg border border-gray-200 hover:border-emerald-400 transition-colors mb-1"
+                                />
+                                <span className={`rounded-lg px-2 py-0.5 text-[11px] font-semibold ${DOC_BADGE_STYLES[doc.status]}`}>
+                                  {t(`docReview.${doc.status}`)}
+                                </span>
+                              </button>
                             ) : (
                               <span className="text-gray-300">—</span>
                             )}
@@ -462,7 +604,8 @@ export default function AdminBuyerProfilesPage() {
                             <img
                               src={`/api/admin/buyer-profiles/${openId}/documents/${field}?v=${docVersion}`}
                               alt={t(`docFields.${field}`)}
-                              className="h-20 w-full object-contain rounded-lg bg-cream-50 mb-1.5"
+                              onClick={() => setLightbox({ userId: openId, field, buyerName: t(`docFields.${field}`) })}
+                              className="h-20 w-full object-contain rounded-lg bg-cream-50 mb-1.5 cursor-pointer hover:opacity-80 transition-opacity"
                             />
                           ) : (
                             <div className="h-20 w-full flex items-center justify-center rounded-lg bg-cream-50 text-xs text-gray-400 mb-1.5">{t("noFile")}</div>
@@ -513,6 +656,19 @@ export default function AdminBuyerProfilesPage() {
           </div>
         </div>
       )}
+
+      {lightbox && (() => {
+        const docStatus = rows.find((r) => r.userId === lightbox.userId)?.documents[lightbox.field]?.status ?? "pending";
+        return (
+          <DocumentLightbox
+            src={`/api/admin/buyer-profiles/${lightbox.userId}/documents/${lightbox.field}`}
+            title={`${lightbox.buyerName} — ${t(`docFields.${lightbox.field}`)}`}
+            statusLabel={t(`docReview.${docStatus}`)}
+            statusClass={DOC_BADGE_STYLES[docStatus]}
+            onClose={() => setLightbox(null)}
+          />
+        );
+      })()}
     </div>
   );
 }

@@ -345,6 +345,8 @@ run_mysql schema-migrations/033-backfill-buyer-registration-codes.sql
 run_mysql schema-migrations/034-buyer-document-verification.sql
 run_mysql schema-migrations/035-homepage-slideshow.sql
 run_mysql schema-migrations/036-buyer-profile-more-fields.sql
+run_mysql schema-migrations/037-buyer-pending-documents.sql
+run_mysql schema-migrations/038-import-cphi-shenzhen-buyers.sql
 
 echo "Installing dependencies and building ..."
 npm install

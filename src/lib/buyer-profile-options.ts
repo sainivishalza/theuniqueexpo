@@ -47,3 +47,20 @@ export const DEPARTURE_CITIES = [
   "London", "Paris", "Frankfurt", "Amsterdam", "Madrid", "Rome", "Moscow",
   "New York", "Los Angeles", "Toronto", "Sao Paulo", "Mexico City", "Sydney",
 ] as const;
+
+// Chinese visa categories, since these buyers are traveling to a China
+// trade fair -- the letter code is what actually appears on the visa/stamp.
+export const VISA_TYPES = [
+  "L - Tourist",
+  "M - Business/Trade",
+  "F - Visit/Exchange",
+  "Z - Work",
+  "X1 - Long-term Study",
+  "X2 - Short-term Study",
+  "Q1 - Family Reunion (Long)",
+  "Q2 - Family Visit (Short)",
+  "S1 - Private Visit (Long)",
+  "S2 - Private Visit (Short)",
+  "C - Crew",
+  "G - Transit",
+] as const;

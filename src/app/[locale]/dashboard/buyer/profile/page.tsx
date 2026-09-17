@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { NATIONALITIES } from "@/lib/expo-registrations";
-import { DEPARTURE_CITIES, JOB_TITLES } from "@/lib/buyer-profile-options";
+import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
 
 type DocReviewStatus = "pending" | "verified" | "rejected";
@@ -34,6 +34,9 @@ interface BuyerProfile {
   companyField: string;
   jobTitle: string;
   contactEmail: string;
+  dateOfBirth: string;
+  visaType: string;
+  visaExpireDate: string;
   hasDocument: Record<string, boolean>;
   documentReview: Record<string, DocReview>;
   updatedAt: number;
@@ -43,7 +46,7 @@ type ProfileFieldKey = Exclude<keyof BuyerProfile, "hasDocument" | "documentRevi
 
 interface FieldDef {
   key: ProfileFieldKey;
-  kind: "text" | "email" | "combo" | "select";
+  kind: "text" | "email" | "date" | "combo" | "select";
   options?: readonly string[];
 }
 
@@ -64,6 +67,9 @@ const FIELDS: FieldDef[] = [
   { key: "companyField", kind: "text" },
   { key: "jobTitle", kind: "combo", options: JOB_TITLES },
   { key: "contactEmail", kind: "email" },
+  { key: "dateOfBirth", kind: "date" },
+  { key: "visaType", kind: "combo", options: VISA_TYPES },
+  { key: "visaExpireDate", kind: "date" },
   { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];
@@ -188,7 +194,7 @@ export default function BuyerProfilePage() {
                   ) : (
                     <>
                       <input
-                        type={field.kind === "email" ? "email" : "text"}
+                        type={field.kind === "email" || field.kind === "date" ? field.kind : "text"}
                         list={field.kind === "combo" ? `${field.key}-options` : undefined}
                         value={profile[field.key]}
                         onChange={(e) => setProfile({ ...profile, [field.key]: e.target.value })}

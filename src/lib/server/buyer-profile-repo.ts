@@ -67,6 +67,9 @@ export interface BuyerProfileFields {
   // email (users.email) -- named contactEmail in the DB/API to avoid ever
   // confusing the two.
   contactEmail: string;
+  dateOfBirth: string;
+  visaType: string;
+  visaExpireDate: string;
 }
 
 export interface DocumentReview {
@@ -107,6 +110,9 @@ const EMPTY_FIELDS: BuyerProfileFields = {
   companyField: "",
   jobTitle: "",
   contactEmail: "",
+  dateOfBirth: "",
+  visaType: "",
+  visaExpireDate: "",
 };
 
 function mapRow(row: RowDataPacket): BuyerProfile {
@@ -130,6 +136,9 @@ function mapRow(row: RowDataPacket): BuyerProfile {
     companyField: row.company_field || "",
     jobTitle: row.job_title || "",
     contactEmail: row.contact_email || "",
+    dateOfBirth: row.date_of_birth || "",
+    visaType: row.visa_type || "",
+    visaExpireDate: row.visa_expire_date || "",
     hasDocument: {
       businessLicense: !!row.doc_business_license,
       businessCard: !!row.doc_business_card,
@@ -153,6 +162,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
 const SELECT_SUMMARY_COLUMNS =
   "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, registration_code, " +
   "departure_city, attendance_day, meeting_or_visiting, passport_name, gender, wechat_id, overseas_company_address, company_field, job_title, contact_email, " +
+  "date_of_birth, visa_type, visa_expire_date, " +
   "doc_business_license, doc_business_card, doc_passport_front, doc_visa_page, doc_canton_fair_card, doc_buyer_photo, " +
   "doc_business_license_status, doc_business_license_note, doc_business_card_status, doc_business_card_note, " +
   "doc_passport_front_status, doc_passport_front_note, doc_visa_page_status, doc_visa_page_note, " +
@@ -191,6 +201,10 @@ export async function getBuyerProfileOrEmpty(userId: number): Promise<BuyerProfi
 
 export type OverallVerificationStatus = "not_started" | "pending_review" | "action_needed" | "verified";
 
+// Every field an admin can search a buyer by (see listBuyerProfilesForAdmin
+// below and the admin buyer-profiles page's search box) -- account fields
+// plus every buyer_profiles column that isn't a document or its review
+// status/note.
 export interface AdminBuyerProfileRow {
   userId: number;
   name: string;
@@ -198,6 +212,23 @@ export interface AdminBuyerProfileRow {
   status: "active" | "suspended";
   companyName: string;
   nationality: string;
+  passportNumber: string;
+  passportName: string;
+  gender: string;
+  wechatId: string;
+  departureCity: string;
+  attendanceDay: string;
+  meetingOrVisiting: string;
+  jobTitle: string;
+  companyField: string;
+  overseasCompanyAddress: string;
+  contactEmail: string;
+  registrationCode: string;
+  annualTurnover: string;
+  contactPerson: string;
+  dateOfBirth: string;
+  visaType: string;
+  visaExpireDate: string;
   documentsUploaded: number;
   verificationStatus: OverallVerificationStatus;
 }
@@ -218,7 +249,10 @@ function overallVerificationStatus(docs: { uploaded: boolean; status: DocumentRe
 export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[]> {
   const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT u.id AS user_id, u.name, u.email, u.status,
-            p.company_name, p.nationality,
+            p.company_name, p.nationality, p.passport_number, p.passport_name, p.gender, p.wechat_id,
+            p.departure_city, p.attendance_day, p.meeting_or_visiting, p.job_title, p.company_field,
+            p.overseas_company_address, p.contact_email, p.registration_code, p.annual_turnover, p.contact_person,
+            p.date_of_birth, p.visa_type, p.visa_expire_date,
             p.doc_business_license, p.doc_business_card, p.doc_passport_front,
             p.doc_visa_page, p.doc_canton_fair_card, p.doc_buyer_photo,
             p.doc_business_license_status, p.doc_business_card_status, p.doc_passport_front_status,
@@ -244,6 +278,23 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
       status: row.status,
       companyName: row.company_name || "",
       nationality: row.nationality || "",
+      passportNumber: row.passport_number || "",
+      passportName: row.passport_name || "",
+      gender: row.gender || "",
+      wechatId: row.wechat_id || "",
+      departureCity: row.departure_city || "",
+      attendanceDay: row.attendance_day || "",
+      meetingOrVisiting: row.meeting_or_visiting || "",
+      jobTitle: row.job_title || "",
+      companyField: row.company_field || "",
+      overseasCompanyAddress: row.overseas_company_address || "",
+      contactEmail: row.contact_email || "",
+      registrationCode: row.registration_code || "",
+      annualTurnover: row.annual_turnover || "",
+      contactPerson: row.contact_person || "",
+      dateOfBirth: row.date_of_birth || "",
+      visaType: row.visa_type || "",
+      visaExpireDate: row.visa_expire_date || "",
       documentsUploaded: docs.filter((d) => d.uploaded).length,
       verificationStatus: overallVerificationStatus(docs),
     };
@@ -269,6 +320,9 @@ const FIELD_COLUMNS: Record<keyof BuyerProfileFields, string> = {
   companyField: "company_field",
   jobTitle: "job_title",
   contactEmail: "contact_email",
+  dateOfBirth: "date_of_birth",
+  visaType: "visa_type",
+  visaExpireDate: "visa_expire_date",
 };
 
 // Buyer editing their own profile and admin editing on a buyer's behalf

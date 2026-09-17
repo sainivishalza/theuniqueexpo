@@ -113,6 +113,9 @@ export default function BulkCreateUsersPage() {
         companyField: r.companyField !== undefined ? String(r.companyField) : undefined,
         jobTitle: r.jobTitle !== undefined ? String(r.jobTitle) : undefined,
         contactEmail: r.contactEmail !== undefined ? String(r.contactEmail) : undefined,
+        dateOfBirth: r.dateOfBirth !== undefined ? String(r.dateOfBirth) : undefined,
+        visaType: r.visaType !== undefined ? String(r.visaType) : undefined,
+        visaExpireDate: r.visaExpireDate !== undefined ? String(r.visaExpireDate) : undefined,
       }));
       setFileRows(rows);
       setFileName(file.name);

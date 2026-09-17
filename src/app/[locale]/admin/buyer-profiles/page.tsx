@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import { NATIONALITIES } from "@/lib/expo-registrations";
-import { DEPARTURE_CITIES, JOB_TITLES } from "@/lib/buyer-profile-options";
+import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
 
 type VerificationStatus = "not_started" | "pending_review" | "action_needed" | "verified";
@@ -18,9 +18,37 @@ interface AdminBuyerProfileRow {
   status: "active" | "suspended";
   companyName: string;
   nationality: string;
+  passportNumber: string;
+  passportName: string;
+  gender: string;
+  wechatId: string;
+  departureCity: string;
+  attendanceDay: string;
+  meetingOrVisiting: string;
+  jobTitle: string;
+  companyField: string;
+  overseasCompanyAddress: string;
+  contactEmail: string;
+  registrationCode: string;
+  annualTurnover: string;
+  contactPerson: string;
+  dateOfBirth: string;
+  visaType: string;
+  visaExpireDate: string;
   documentsUploaded: number;
   verificationStatus: VerificationStatus;
 }
+
+// Every string field above is searchable from the one search box -- see
+// `filtered` below.
+type StringRowKey = { [K in keyof AdminBuyerProfileRow]: AdminBuyerProfileRow[K] extends string ? K : never }[keyof AdminBuyerProfileRow];
+const SEARCHABLE_ROW_FIELDS: StringRowKey[] = [
+  "name", "email", "companyName", "nationality", "passportNumber", "passportName",
+  "gender", "wechatId", "departureCity", "attendanceDay", "meetingOrVisiting",
+  "jobTitle", "companyField", "overseasCompanyAddress", "contactEmail",
+  "registrationCode", "annualTurnover", "contactPerson", "dateOfBirth", "visaType",
+  "visaExpireDate",
+];
 
 interface DocReview {
   status: DocReviewStatus;
@@ -46,6 +74,9 @@ interface BuyerProfileDetail {
   companyField: string;
   jobTitle: string;
   contactEmail: string;
+  dateOfBirth: string;
+  visaType: string;
+  visaExpireDate: string;
   hasDocument: Record<string, boolean>;
   documentReview: Record<string, DocReview>;
 }
@@ -67,7 +98,7 @@ type DetailFieldKey = Exclude<keyof BuyerProfileDetail, "hasDocument" | "documen
 
 interface FieldDef {
   key: DetailFieldKey;
-  kind: "text" | "email" | "combo" | "select";
+  kind: "text" | "email" | "date" | "combo" | "select";
   options?: readonly string[];
 }
 
@@ -89,6 +120,9 @@ const FIELDS: FieldDef[] = [
   { key: "companyField", kind: "text" },
   { key: "jobTitle", kind: "combo", options: JOB_TITLES },
   { key: "contactEmail", kind: "email" },
+  { key: "dateOfBirth", kind: "date" },
+  { key: "visaType", kind: "combo", options: VISA_TYPES },
+  { key: "visaExpireDate", kind: "date" },
   { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];
@@ -224,7 +258,7 @@ export default function AdminBuyerProfilesPage() {
   const filtered = rows.filter((r) => {
     const q = search.trim().toLowerCase();
     if (!q) return true;
-    return r.name.toLowerCase().includes(q) || r.email.toLowerCase().includes(q) || r.companyName.toLowerCase().includes(q);
+    return SEARCHABLE_ROW_FIELDS.some((field) => r[field].toLowerCase().includes(q));
   });
 
   return (
@@ -330,7 +364,7 @@ export default function AdminBuyerProfilesPage() {
                       ) : (
                         <>
                           <input
-                            type={field.kind === "email" ? "email" : "text"}
+                            type={field.kind === "email" || field.kind === "date" ? field.kind : "text"}
                             list={field.kind === "combo" ? `${field.key}-options` : undefined}
                             value={detail[field.key]}
                             onChange={(e) => setDetail({ ...detail, [field.key]: e.target.value })}

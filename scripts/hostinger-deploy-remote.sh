@@ -347,6 +347,7 @@ run_mysql schema-migrations/035-homepage-slideshow.sql
 run_mysql schema-migrations/036-buyer-profile-more-fields.sql
 run_mysql schema-migrations/037-buyer-pending-documents.sql
 run_mysql schema-migrations/038-import-cphi-shenzhen-buyers.sql
+run_mysql schema-migrations/039-buyer-profile-visa-fields.sql
 
 echo "Installing dependencies and building ..."
 npm install

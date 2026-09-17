@@ -8,6 +8,7 @@ export const DOCUMENT_FIELDS = [
   "visaPage",
   "cantonFairCard",
   "buyerPhoto",
+  "invoiceOrderList",
 ] as const;
 
 export type DocumentField = (typeof DOCUMENT_FIELDS)[number];
@@ -19,6 +20,7 @@ const DOCUMENT_COLUMNS: Record<DocumentField, string> = {
   visaPage: "doc_visa_page",
   cantonFairCard: "doc_canton_fair_card",
   buyerPhoto: "doc_buyer_photo",
+  invoiceOrderList: "doc_invoice_order_list",
 };
 
 export type DocumentReviewStatus = "pending" | "verified" | "rejected";
@@ -30,6 +32,7 @@ const DOCUMENT_STATUS_COLUMNS: Record<DocumentField, string> = {
   visaPage: "doc_visa_page_status",
   cantonFairCard: "doc_canton_fair_card_status",
   buyerPhoto: "doc_buyer_photo_status",
+  invoiceOrderList: "doc_invoice_order_list_status",
 };
 
 const DOCUMENT_NOTE_COLUMNS: Record<DocumentField, string> = {
@@ -39,6 +42,7 @@ const DOCUMENT_NOTE_COLUMNS: Record<DocumentField, string> = {
   visaPage: "doc_visa_page_note",
   cantonFairCard: "doc_canton_fair_card_note",
   buyerPhoto: "doc_buyer_photo_note",
+  invoiceOrderList: "doc_invoice_order_list_note",
 };
 
 export interface BuyerProfileFields {
@@ -154,6 +158,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
       visaPage: !!row.doc_visa_page,
       cantonFairCard: !!row.doc_canton_fair_card,
       buyerPhoto: !!row.doc_buyer_photo,
+      invoiceOrderList: !!row.doc_invoice_order_list,
     },
     documentReview: {
       businessLicense: { status: row.doc_business_license_status || "pending", note: row.doc_business_license_note || "" },
@@ -162,6 +167,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
       visaPage: { status: row.doc_visa_page_status || "pending", note: row.doc_visa_page_note || "" },
       cantonFairCard: { status: row.doc_canton_fair_card_status || "pending", note: row.doc_canton_fair_card_note || "" },
       buyerPhoto: { status: row.doc_buyer_photo_status || "pending", note: row.doc_buyer_photo_note || "" },
+      invoiceOrderList: { status: row.doc_invoice_order_list_status || "pending", note: row.doc_invoice_order_list_note || "" },
     },
     updatedAt: Math.floor(new Date(row.updated_at).getTime() / 1000),
   };
@@ -171,10 +177,11 @@ const SELECT_SUMMARY_COLUMNS =
   "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, registration_code, source_exhibitions, " +
   "departure_city, attendance_day, meeting_or_visiting, passport_name, gender, wechat_id, overseas_company_address, company_field, job_title, contact_email, " +
   "date_of_birth, visa_type, visa_expire_date, " +
-  "doc_business_license, doc_business_card, doc_passport_front, doc_visa_page, doc_canton_fair_card, doc_buyer_photo, " +
+  "doc_business_license, doc_business_card, doc_passport_front, doc_visa_page, doc_canton_fair_card, doc_buyer_photo, doc_invoice_order_list, " +
   "doc_business_license_status, doc_business_license_note, doc_business_card_status, doc_business_card_note, " +
   "doc_passport_front_status, doc_passport_front_note, doc_visa_page_status, doc_visa_page_note, " +
   "doc_canton_fair_card_status, doc_canton_fair_card_note, doc_buyer_photo_status, doc_buyer_photo_note, " +
+  "doc_invoice_order_list_status, doc_invoice_order_list_note, " +
   "updated_at";
 
 export async function getBuyerProfile(userId: number): Promise<BuyerProfile | null> {
@@ -201,6 +208,7 @@ export async function getBuyerProfileOrEmpty(userId: number): Promise<BuyerProfi
       visaPage: false,
       cantonFairCard: false,
       buyerPhoto: false,
+      invoiceOrderList: false,
     },
     documentReview: emptyDocumentReview(),
     updatedAt: 0,
@@ -263,9 +271,9 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
             p.overseas_company_address, p.contact_email, p.registration_code, p.source_exhibitions, p.annual_turnover, p.contact_person,
             p.date_of_birth, p.visa_type, p.visa_expire_date,
             p.doc_business_license, p.doc_business_card, p.doc_passport_front,
-            p.doc_visa_page, p.doc_canton_fair_card, p.doc_buyer_photo,
+            p.doc_visa_page, p.doc_canton_fair_card, p.doc_buyer_photo, p.doc_invoice_order_list,
             p.doc_business_license_status, p.doc_business_card_status, p.doc_passport_front_status,
-            p.doc_visa_page_status, p.doc_canton_fair_card_status, p.doc_buyer_photo_status
+            p.doc_visa_page_status, p.doc_canton_fair_card_status, p.doc_buyer_photo_status, p.doc_invoice_order_list_status
      FROM users u
      LEFT JOIN buyer_profiles p ON p.user_id = u.id
      WHERE u.role = 'buyer'
@@ -279,6 +287,7 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
       { uploaded: !!row.doc_visa_page, status: (row.doc_visa_page_status || "pending") as DocumentReviewStatus },
       { uploaded: !!row.doc_canton_fair_card, status: (row.doc_canton_fair_card_status || "pending") as DocumentReviewStatus },
       { uploaded: !!row.doc_buyer_photo, status: (row.doc_buyer_photo_status || "pending") as DocumentReviewStatus },
+      { uploaded: !!row.doc_invoice_order_list, status: (row.doc_invoice_order_list_status || "pending") as DocumentReviewStatus },
     ];
     return {
       userId: row.user_id,

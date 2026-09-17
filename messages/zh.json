@@ -2652,7 +2652,8 @@
       "passportFront": "护照首页",
       "visaPage": "签证页",
       "cantonFairCard": "广交会证件",
-      "buyerPhoto": "买家照片"
+      "buyerPhoto": "买家照片",
+      "invoiceOrderList": "发票 / 订单清单"
     },
     "docReviewStatus": {
       "pending": "待审核",
@@ -2735,7 +2736,8 @@
       "passportFront": "护照首页",
       "visaPage": "签证页",
       "cantonFairCard": "广交会证件",
-      "buyerPhoto": "买家照片"
+      "buyerPhoto": "买家照片",
+      "invoiceOrderList": "发票 / 订单清单"
     }
   },
   "homepageSlideshow": {

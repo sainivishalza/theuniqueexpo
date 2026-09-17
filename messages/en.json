@@ -2652,7 +2652,8 @@
       "passportFront": "Passport Front Page",
       "visaPage": "Visa Page",
       "cantonFairCard": "Canton Fair Card",
-      "buyerPhoto": "Buyer Photo"
+      "buyerPhoto": "Buyer Photo",
+      "invoiceOrderList": "Invoice / Order List"
     },
     "docReviewStatus": {
       "pending": "Pending review",
@@ -2735,7 +2736,8 @@
       "passportFront": "Passport Front Page",
       "visaPage": "Visa Page",
       "cantonFairCard": "Canton Fair Card",
-      "buyerPhoto": "Buyer Photo"
+      "buyerPhoto": "Buyer Photo",
+      "invoiceOrderList": "Invoice / Order List"
     }
   },
   "homepageSlideshow": {

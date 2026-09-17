@@ -133,7 +133,7 @@ const FIELDS: FieldDef[] = [
   { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];
-const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto"] as const;
+const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto", "invoiceOrderList"] as const;
 
 export default function AdminBuyerProfilesPage() {
   const t = useTranslations("adminBuyerProfiles");
@@ -320,7 +320,7 @@ export default function AdminBuyerProfilesPage() {
                       <td className="px-6 py-4 text-gray-700">{r.nationality || "—"}</td>
                       <td className="px-6 py-4 text-gray-700">{r.sourceExhibitions || "—"}</td>
                       <td className="px-6 py-4">
-                        <span className="rounded-lg bg-cream-50 px-2.5 py-1 text-xs font-semibold text-gray-600">{r.documentsUploaded} / 6</span>
+                        <span className="rounded-lg bg-cream-50 px-2.5 py-1 text-xs font-semibold text-gray-600">{r.documentsUploaded} / 7</span>
                       </td>
                       <td className="px-6 py-4">
                         <span className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${STATUS_BADGE_STYLES[r.verificationStatus]}`}>

@@ -2652,7 +2652,8 @@
       "passportFront": "Разворот паспорта",
       "visaPage": "Страница визы",
       "cantonFairCard": "Карта Кантонской ярмарки",
-      "buyerPhoto": "Фото покупателя"
+      "buyerPhoto": "Фото покупателя",
+      "invoiceOrderList": "Счёт / список заказа"
     },
     "docReviewStatus": {
       "pending": "Ожидает проверки",
@@ -2735,7 +2736,8 @@
       "passportFront": "Разворот паспорта",
       "visaPage": "Страница визы",
       "cantonFairCard": "Карта Кантонской ярмарки",
-      "buyerPhoto": "Фото покупателя"
+      "buyerPhoto": "Фото покупателя",
+      "invoiceOrderList": "Счёт / список заказа"
     }
   },
   "homepageSlideshow": {

@@ -77,7 +77,7 @@ const FIELDS: FieldDef[] = [
   { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];
-const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto"] as const;
+const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto", "invoiceOrderList"] as const;
 
 const DOC_STATUS_BADGE: Record<DocReviewStatus, string> = {
   pending: "bg-amber-50 text-amber-700",

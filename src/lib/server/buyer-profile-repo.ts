@@ -369,18 +369,20 @@ export async function upsertBuyerProfileFields(userId: number, fields: Partial<B
   );
 }
 
-// Any new upload -- by the buyer themselves or by an admin uploading on
-// their behalf -- is content an admin hasn't looked at yet, so it always
-// resets that document's review back to "pending" and clears any previous
-// rejection note. Otherwise a buyer fixing exactly what a rejection note
-// asked for would stay stuck showing "rejected" with stale wording.
+// Any new upload -- by the buyer themselves, by an admin uploading on their
+// behalf, or via a bulk import -- is auto-verified by default so an admin
+// doesn't have to click through every single document one at a time; the
+// review dropdown (setDocumentReview) is still there to flip any specific
+// one back to pending or rejected whenever that's actually needed. Always
+// clears any previous rejection note, since a fresh upload replacing a
+// rejected one shouldn't keep showing stale rejection wording.
 export async function setBuyerDocument(userId: number, field: DocumentField, dataUrl: string): Promise<void> {
   const column = DOCUMENT_COLUMNS[field];
   const statusColumn = DOCUMENT_STATUS_COLUMNS[field];
   const noteColumn = DOCUMENT_NOTE_COLUMNS[field];
   await pool.query<ResultSetHeader>(
-    `INSERT INTO buyer_profiles (user_id, ${column}, ${statusColumn}, ${noteColumn}) VALUES (?, ?, 'pending', '')
-     ON DUPLICATE KEY UPDATE ${column} = VALUES(${column}), ${statusColumn} = 'pending', ${noteColumn} = ''`,
+    `INSERT INTO buyer_profiles (user_id, ${column}, ${statusColumn}, ${noteColumn}) VALUES (?, ?, 'verified', '')
+     ON DUPLICATE KEY UPDATE ${column} = VALUES(${column}), ${statusColumn} = 'verified', ${noteColumn} = ''`,
     [userId, dataUrl]
   );
 }

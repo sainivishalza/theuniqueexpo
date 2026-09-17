@@ -351,6 +351,7 @@ run_mysql schema-migrations/039-buyer-profile-visa-fields.sql
 run_mysql schema-migrations/040-buyer-source-exhibitions.sql
 run_mysql schema-migrations/041-backfill-cphi-source-exhibition.sql
 run_mysql schema-migrations/042-buyer-invoice-order-list-document.sql
+run_mysql schema-migrations/043-auto-verify-existing-documents.sql
 
 echo "Installing dependencies and building ..."
 npm install

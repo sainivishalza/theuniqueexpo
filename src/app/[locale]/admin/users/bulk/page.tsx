@@ -102,6 +102,17 @@ export default function BulkCreateUsersPage() {
         purchaseIntention: r.purchaseIntention !== undefined ? String(r.purchaseIntention) : undefined,
         otherPurchaseIntention: r.otherPurchaseIntention !== undefined ? String(r.otherPurchaseIntention) : undefined,
         contactPerson: r.contactPerson !== undefined ? String(r.contactPerson) : undefined,
+        registrationCode: r.registrationCode !== undefined ? String(r.registrationCode) : undefined,
+        departureCity: r.departureCity !== undefined ? String(r.departureCity) : undefined,
+        attendanceDay: r.attendanceDay !== undefined ? String(r.attendanceDay) : undefined,
+        meetingOrVisiting: r.meetingOrVisiting !== undefined ? String(r.meetingOrVisiting) : undefined,
+        passportName: r.passportName !== undefined ? String(r.passportName) : undefined,
+        gender: r.gender !== undefined ? String(r.gender) : undefined,
+        wechatId: r.wechatId !== undefined ? String(r.wechatId) : undefined,
+        overseasCompanyAddress: r.overseasCompanyAddress !== undefined ? String(r.overseasCompanyAddress) : undefined,
+        companyField: r.companyField !== undefined ? String(r.companyField) : undefined,
+        jobTitle: r.jobTitle !== undefined ? String(r.jobTitle) : undefined,
+        contactEmail: r.contactEmail !== undefined ? String(r.contactEmail) : undefined,
       }));
       setFileRows(rows);
       setFileName(file.name);

@@ -25,6 +25,16 @@ interface BulkUserInput {
   otherPurchaseIntention?: string;
   contactPerson?: string;
   registrationCode?: string;
+  departureCity?: string;
+  attendanceDay?: string;
+  meetingOrVisiting?: string;
+  passportName?: string;
+  gender?: string;
+  wechatId?: string;
+  overseasCompanyAddress?: string;
+  companyField?: string;
+  jobTitle?: string;
+  contactEmail?: string;
 }
 
 interface BulkUserResult {
@@ -99,6 +109,16 @@ export async function POST(request: Request) {
           otherPurchaseIntention: input.otherPurchaseIntention?.trim() || "",
           contactPerson: input.contactPerson?.trim() || "",
           registrationCode: input.registrationCode?.trim() || "",
+          departureCity: input.departureCity?.trim() || "",
+          attendanceDay: input.attendanceDay?.trim() || "",
+          meetingOrVisiting: input.meetingOrVisiting?.trim() || "",
+          passportName: input.passportName?.trim() || "",
+          gender: input.gender?.trim() || "",
+          wechatId: input.wechatId?.trim() || "",
+          overseasCompanyAddress: input.overseasCompanyAddress?.trim() || "",
+          companyField: input.companyField?.trim() || "",
+          jobTitle: input.jobTitle?.trim() || "",
+          contactEmail: input.contactEmail?.trim() || "",
         };
         // Only write a profile row when at least one field was actually
         // provided -- a plain name/email/phone import shouldn't leave

@@ -36,8 +36,11 @@ interface AdminBuyerProfileRow {
   dateOfBirth: string;
   visaType: string;
   visaExpireDate: string;
+  purchaseIntention: string;
+  otherPurchaseIntention: string;
   documentsUploaded: number;
   verificationStatus: VerificationStatus;
+  documents: Record<string, { uploaded: boolean; status: DocReviewStatus }>;
 }
 
 // Every string field above is searchable from the one search box -- see
@@ -48,7 +51,7 @@ const SEARCHABLE_ROW_FIELDS: StringRowKey[] = [
   "gender", "wechatId", "departureCity", "attendanceDay", "meetingOrVisiting",
   "jobTitle", "companyField", "overseasCompanyAddress", "contactEmail",
   "registrationCode", "sourceExhibitions", "annualTurnover", "contactPerson", "dateOfBirth", "visaType",
-  "visaExpireDate",
+  "visaExpireDate", "purchaseIntention", "otherPurchaseIntention",
 ];
 
 interface DocReview {
@@ -94,6 +97,12 @@ const DOC_STATUS_STYLES: Record<DocReviewStatus, string> = {
   pending: "border-gray-200",
   verified: "border-green-400",
   rejected: "border-red-400",
+};
+
+const DOC_BADGE_STYLES: Record<DocReviewStatus, string> = {
+  pending: "bg-amber-50 text-amber-700",
+  verified: "bg-green-50 text-green-700",
+  rejected: "bg-red-50 text-red-700",
 };
 
 type DetailFieldKey = Exclude<keyof BuyerProfileDetail, "hasDocument" | "documentReview">;
@@ -268,6 +277,19 @@ export default function AdminBuyerProfilesPage() {
     return SEARCHABLE_ROW_FIELDS.some((field) => r[field].toLowerCase().includes(q));
   });
 
+  // Renders a FIELDS-driven column's value the same way the Edit panel
+  // would show it (translated option label for a "select" field that needs
+  // translation, raw text otherwise) so the list table and the edit form
+  // never disagree about what a value means.
+  function fieldDisplayValue(r: AdminBuyerProfileRow, field: FieldDef): string {
+    const value = r[field.key as keyof AdminBuyerProfileRow];
+    if (typeof value !== "string" || !value) return "—";
+    if (field.kind === "select" && field.translateOptions !== false) {
+      return t(`fieldOptions.${field.key}.${value}`);
+    }
+    return value;
+  }
+
   return (
     <div>
       <section className="bg-[var(--color-hero-bg)] py-8">
@@ -300,40 +322,57 @@ export default function AdminBuyerProfilesPage() {
               <table className="w-full text-sm">
                 <thead className="bg-cream-50 border-b border-gray-100">
                   <tr>
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("company")}</th>
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("nationality")}</th>
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("sourceExhibitionColumn")}</th>
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("documentsColumn")}</th>
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("verificationColumn")}</th>
-                    <th className="text-right px-6 py-3 font-semibold text-gray-600">{ta("actions")}</th>
+                    <th className="sticky left-0 z-10 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{ta("name")}</th>
+                    {FIELDS.map((field) => (
+                      <th key={field.key} className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t(`fields.${field.key}`)}</th>
+                    ))}
+                    <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("fields.purchaseIntention")}</th>
+                    <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("fields.otherPurchaseIntention")}</th>
+                    {DOC_FIELDS.map((field) => (
+                      <th key={field} className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t(`docFields.${field}`)}</th>
+                    ))}
+                    <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("verificationColumn")}</th>
+                    <th className="text-right px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{ta("actions")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {filtered.map((r) => (
                     <tr key={r.userId} className="hover:bg-cream-50">
-                      <td className="px-6 py-4">
+                      <td className="sticky left-0 z-10 bg-white px-6 py-4 whitespace-nowrap">
                         <div className="font-semibold text-gray-900">{r.name}</div>
                         <div className="text-xs text-gray-400">{r.email}</div>
                       </td>
-                      <td className="px-6 py-4 text-gray-700">{r.companyName || "—"}</td>
-                      <td className="px-6 py-4 text-gray-700">{r.nationality || "—"}</td>
-                      <td className="px-6 py-4 text-gray-700">{r.sourceExhibitions || "—"}</td>
-                      <td className="px-6 py-4">
-                        <span className="rounded-lg bg-cream-50 px-2.5 py-1 text-xs font-semibold text-gray-600">{r.documentsUploaded} / 7</span>
-                      </td>
-                      <td className="px-6 py-4">
+                      {FIELDS.map((field) => (
+                        <td key={field.key} className="px-6 py-4 text-gray-700 whitespace-nowrap">{fieldDisplayValue(r, field)}</td>
+                      ))}
+                      <td className="px-6 py-4 text-gray-700 max-w-[220px] truncate" title={r.purchaseIntention}>{r.purchaseIntention || "—"}</td>
+                      <td className="px-6 py-4 text-gray-700 max-w-[220px] truncate" title={r.otherPurchaseIntention}>{r.otherPurchaseIntention || "—"}</td>
+                      {DOC_FIELDS.map((field) => {
+                        const doc = r.documents[field];
+                        return (
+                          <td key={field} className="px-6 py-4 whitespace-nowrap">
+                            {doc?.uploaded ? (
+                              <span className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${DOC_BADGE_STYLES[doc.status]}`}>
+                                {t(`docReview.${doc.status}`)}
+                              </span>
+                            ) : (
+                              <span className="text-gray-300">—</span>
+                            )}
+                          </td>
+                        );
+                      })}
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${STATUS_BADGE_STYLES[r.verificationStatus]}`}>
                           {t(`verificationStatus.${r.verificationStatus}`)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-6 py-4 text-right whitespace-nowrap">
                         <Button onClick={() => openDetail(r.userId)} variant="ghost" size="xs">{ta("edit")}</Button>
                       </td>
                     </tr>
                   ))}
                   {filtered.length === 0 && (
-                    <tr><td colSpan={7} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
+                    <tr><td colSpan={FIELDS.length + DOC_FIELDS.length + 5} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
                   )}
                 </tbody>
               </table>

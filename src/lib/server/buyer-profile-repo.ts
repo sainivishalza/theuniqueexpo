@@ -246,8 +246,13 @@ export interface AdminBuyerProfileRow {
   dateOfBirth: string;
   visaType: string;
   visaExpireDate: string;
+  purchaseIntention: string;
+  otherPurchaseIntention: string;
   documentsUploaded: number;
   verificationStatus: OverallVerificationStatus;
+  // Per-document upload + review state, so the admin list table can show a
+  // status column for each of the 7 documents without a second request.
+  documents: Record<DocumentField, { uploaded: boolean; status: DocumentReviewStatus }>;
 }
 
 // A buyer's overall status is a simple rollup of their 6 documents' own
@@ -269,7 +274,7 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
             p.company_name, p.nationality, p.passport_number, p.passport_name, p.gender, p.wechat_id,
             p.departure_city, p.attendance_day, p.meeting_or_visiting, p.job_title, p.company_field,
             p.overseas_company_address, p.contact_email, p.registration_code, p.source_exhibitions, p.annual_turnover, p.contact_person,
-            p.date_of_birth, p.visa_type, p.visa_expire_date,
+            p.date_of_birth, p.visa_type, p.visa_expire_date, p.purchase_intention, p.other_purchase_intention,
             p.doc_business_license, p.doc_business_card, p.doc_passport_front,
             p.doc_visa_page, p.doc_canton_fair_card, p.doc_buyer_photo, p.doc_invoice_order_list,
             p.doc_business_license_status, p.doc_business_card_status, p.doc_passport_front_status,
@@ -280,15 +285,16 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
      ORDER BY u.created_at DESC`
   );
   return rows.map((row) => {
-    const docs = [
-      { uploaded: !!row.doc_business_license, status: (row.doc_business_license_status || "pending") as DocumentReviewStatus },
-      { uploaded: !!row.doc_business_card, status: (row.doc_business_card_status || "pending") as DocumentReviewStatus },
-      { uploaded: !!row.doc_passport_front, status: (row.doc_passport_front_status || "pending") as DocumentReviewStatus },
-      { uploaded: !!row.doc_visa_page, status: (row.doc_visa_page_status || "pending") as DocumentReviewStatus },
-      { uploaded: !!row.doc_canton_fair_card, status: (row.doc_canton_fair_card_status || "pending") as DocumentReviewStatus },
-      { uploaded: !!row.doc_buyer_photo, status: (row.doc_buyer_photo_status || "pending") as DocumentReviewStatus },
-      { uploaded: !!row.doc_invoice_order_list, status: (row.doc_invoice_order_list_status || "pending") as DocumentReviewStatus },
-    ];
+    const documents: Record<DocumentField, { uploaded: boolean; status: DocumentReviewStatus }> = {
+      businessLicense: { uploaded: !!row.doc_business_license, status: (row.doc_business_license_status || "pending") as DocumentReviewStatus },
+      businessCard: { uploaded: !!row.doc_business_card, status: (row.doc_business_card_status || "pending") as DocumentReviewStatus },
+      passportFront: { uploaded: !!row.doc_passport_front, status: (row.doc_passport_front_status || "pending") as DocumentReviewStatus },
+      visaPage: { uploaded: !!row.doc_visa_page, status: (row.doc_visa_page_status || "pending") as DocumentReviewStatus },
+      cantonFairCard: { uploaded: !!row.doc_canton_fair_card, status: (row.doc_canton_fair_card_status || "pending") as DocumentReviewStatus },
+      buyerPhoto: { uploaded: !!row.doc_buyer_photo, status: (row.doc_buyer_photo_status || "pending") as DocumentReviewStatus },
+      invoiceOrderList: { uploaded: !!row.doc_invoice_order_list, status: (row.doc_invoice_order_list_status || "pending") as DocumentReviewStatus },
+    };
+    const docs = Object.values(documents);
     return {
       userId: row.user_id,
       name: row.name,
@@ -314,8 +320,11 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
       dateOfBirth: row.date_of_birth || "",
       visaType: row.visa_type || "",
       visaExpireDate: row.visa_expire_date || "",
+      purchaseIntention: row.purchase_intention || "",
+      otherPurchaseIntention: row.other_purchase_intention || "",
       documentsUploaded: docs.filter((d) => d.uploaded).length,
       verificationStatus: overallVerificationStatus(docs),
+      documents,
     };
   });
 }

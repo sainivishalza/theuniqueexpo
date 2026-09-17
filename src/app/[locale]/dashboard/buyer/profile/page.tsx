@@ -5,6 +5,8 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
+import { NATIONALITIES } from "@/lib/expo-registrations";
+import { DEPARTURE_CITIES, JOB_TITLES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
 
 type DocReviewStatus = "pending" | "verified" | "rejected";
@@ -37,26 +39,34 @@ interface BuyerProfile {
   updatedAt: number;
 }
 
-const TEXT_FIELDS = [
-  "companyName",
-  "nationality",
-  "passportNumber",
-  "annualTurnover",
-  "contactPerson",
-  "departureCity",
-  "attendanceDay",
-  "passportName",
-  "wechatId",
-  "overseasCompanyAddress",
-  "companyField",
-  "jobTitle",
-  "contactEmail",
-] as const;
-const SELECT_FIELDS = ["meetingOrVisiting", "gender"] as const;
-const SELECT_OPTIONS: Record<(typeof SELECT_FIELDS)[number], readonly string[]> = {
-  meetingOrVisiting: ["meeting", "visiting"],
-  gender: ["male", "female", "other"],
-};
+type ProfileFieldKey = Exclude<keyof BuyerProfile, "hasDocument" | "documentReview" | "updatedAt">;
+
+interface FieldDef {
+  key: ProfileFieldKey;
+  kind: "text" | "email" | "combo" | "select";
+  options?: readonly string[];
+}
+
+// "combo" fields render as a text input with a <datalist> of suggestions --
+// pick from the list, or type a value that isn't in it. "select" fields are
+// a closed set of internal values with translated labels.
+const FIELDS: FieldDef[] = [
+  { key: "companyName", kind: "text" },
+  { key: "nationality", kind: "combo", options: NATIONALITIES },
+  { key: "passportNumber", kind: "text" },
+  { key: "annualTurnover", kind: "text" },
+  { key: "contactPerson", kind: "text" },
+  { key: "departureCity", kind: "combo", options: DEPARTURE_CITIES },
+  { key: "attendanceDay", kind: "text" },
+  { key: "passportName", kind: "text" },
+  { key: "wechatId", kind: "text" },
+  { key: "overseasCompanyAddress", kind: "text" },
+  { key: "companyField", kind: "text" },
+  { key: "jobTitle", kind: "combo", options: JOB_TITLES },
+  { key: "contactEmail", kind: "email" },
+  { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
+  { key: "gender", kind: "select", options: ["male", "female", "other"] },
+];
 const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto"] as const;
 
 const DOC_STATUS_BADGE: Record<DocReviewStatus, string> = {
@@ -161,30 +171,36 @@ export default function BuyerProfilePage() {
           <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
             <h2 className="font-bold text-heading">{t("companyInfo")}</h2>
             <div className="grid sm:grid-cols-2 gap-4">
-              {TEXT_FIELDS.map((field) => (
-                <div key={field}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t(`fields.${field}`)}</label>
-                  <input
-                    type={field === "contactEmail" ? "email" : "text"}
-                    value={profile[field]}
-                    onChange={(e) => setProfile({ ...profile, [field]: e.target.value })}
-                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none bg-white"
-                  />
-                </div>
-              ))}
-              {SELECT_FIELDS.map((field) => (
-                <div key={field}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t(`fields.${field}`)}</label>
-                  <select
-                    value={profile[field]}
-                    onChange={(e) => setProfile({ ...profile, [field]: e.target.value })}
-                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none bg-white"
-                  >
-                    <option value="">{t("selectPlaceholder")}</option>
-                    {SELECT_OPTIONS[field].map((opt) => (
-                      <option key={opt} value={opt}>{t(`fieldOptions.${field}.${opt}`)}</option>
-                    ))}
-                  </select>
+              {FIELDS.map((field) => (
+                <div key={field.key}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t(`fields.${field.key}`)}</label>
+                  {field.kind === "select" ? (
+                    <select
+                      value={profile[field.key]}
+                      onChange={(e) => setProfile({ ...profile, [field.key]: e.target.value })}
+                      className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none bg-white"
+                    >
+                      <option value="">{t("selectPlaceholder")}</option>
+                      {field.options!.map((opt) => (
+                        <option key={opt} value={opt}>{t(`fieldOptions.${field.key}.${opt}`)}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <>
+                      <input
+                        type={field.kind === "email" ? "email" : "text"}
+                        list={field.kind === "combo" ? `${field.key}-options` : undefined}
+                        value={profile[field.key]}
+                        onChange={(e) => setProfile({ ...profile, [field.key]: e.target.value })}
+                        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none bg-white"
+                      />
+                      {field.kind === "combo" && (
+                        <datalist id={`${field.key}-options`}>
+                          {field.options!.map((opt) => <option key={opt} value={opt} />)}
+                        </datalist>
+                      )}
+                    </>
+                  )}
                 </div>
               ))}
             </div>

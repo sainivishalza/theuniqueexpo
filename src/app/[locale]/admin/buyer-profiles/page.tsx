@@ -4,6 +4,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
+import { NATIONALITIES } from "@/lib/expo-registrations";
+import { DEPARTURE_CITIES, JOB_TITLES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
 
 type VerificationStatus = "not_started" | "pending_review" | "action_needed" | "verified";
@@ -61,27 +63,35 @@ const DOC_STATUS_STYLES: Record<DocReviewStatus, string> = {
   rejected: "border-red-400",
 };
 
-const TEXT_FIELDS = [
-  "companyName",
-  "nationality",
-  "passportNumber",
-  "annualTurnover",
-  "contactPerson",
-  "registrationCode",
-  "departureCity",
-  "attendanceDay",
-  "passportName",
-  "wechatId",
-  "overseasCompanyAddress",
-  "companyField",
-  "jobTitle",
-  "contactEmail",
-] as const;
-const SELECT_FIELDS = ["meetingOrVisiting", "gender"] as const;
-const SELECT_OPTIONS: Record<(typeof SELECT_FIELDS)[number], readonly string[]> = {
-  meetingOrVisiting: ["meeting", "visiting"],
-  gender: ["male", "female", "other"],
-};
+type DetailFieldKey = Exclude<keyof BuyerProfileDetail, "hasDocument" | "documentReview">;
+
+interface FieldDef {
+  key: DetailFieldKey;
+  kind: "text" | "email" | "combo" | "select";
+  options?: readonly string[];
+}
+
+// "combo" fields render as a text input with a <datalist> of suggestions --
+// pick from the list, or type a value that isn't in it. "select" fields are
+// a closed set of internal values with translated labels.
+const FIELDS: FieldDef[] = [
+  { key: "companyName", kind: "text" },
+  { key: "nationality", kind: "combo", options: NATIONALITIES },
+  { key: "passportNumber", kind: "text" },
+  { key: "annualTurnover", kind: "text" },
+  { key: "contactPerson", kind: "text" },
+  { key: "registrationCode", kind: "text" },
+  { key: "departureCity", kind: "combo", options: DEPARTURE_CITIES },
+  { key: "attendanceDay", kind: "text" },
+  { key: "passportName", kind: "text" },
+  { key: "wechatId", kind: "text" },
+  { key: "overseasCompanyAddress", kind: "text" },
+  { key: "companyField", kind: "text" },
+  { key: "jobTitle", kind: "combo", options: JOB_TITLES },
+  { key: "contactEmail", kind: "email" },
+  { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
+  { key: "gender", kind: "select", options: ["male", "female", "other"] },
+];
 const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto"] as const;
 
 export default function AdminBuyerProfilesPage() {
@@ -303,30 +313,36 @@ export default function AdminBuyerProfilesPage() {
             ) : (
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
-                  {TEXT_FIELDS.map((field) => (
-                    <div key={field}>
-                      <label className="block text-xs font-semibold text-gray-500 mb-1">{t(`fields.${field}`)}</label>
-                      <input
-                        type={field === "contactEmail" ? "email" : "text"}
-                        value={detail[field]}
-                        onChange={(e) => setDetail({ ...detail, [field]: e.target.value })}
-                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none"
-                      />
-                    </div>
-                  ))}
-                  {SELECT_FIELDS.map((field) => (
-                    <div key={field}>
-                      <label className="block text-xs font-semibold text-gray-500 mb-1">{t(`fields.${field}`)}</label>
-                      <select
-                        value={detail[field]}
-                        onChange={(e) => setDetail({ ...detail, [field]: e.target.value })}
-                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none"
-                      >
-                        <option value="">{t("selectPlaceholder")}</option>
-                        {SELECT_OPTIONS[field].map((opt) => (
-                          <option key={opt} value={opt}>{t(`fieldOptions.${field}.${opt}`)}</option>
-                        ))}
-                      </select>
+                  {FIELDS.map((field) => (
+                    <div key={field.key}>
+                      <label className="block text-xs font-semibold text-gray-500 mb-1">{t(`fields.${field.key}`)}</label>
+                      {field.kind === "select" ? (
+                        <select
+                          value={detail[field.key]}
+                          onChange={(e) => setDetail({ ...detail, [field.key]: e.target.value })}
+                          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none"
+                        >
+                          <option value="">{t("selectPlaceholder")}</option>
+                          {field.options!.map((opt) => (
+                            <option key={opt} value={opt}>{t(`fieldOptions.${field.key}.${opt}`)}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <>
+                          <input
+                            type={field.kind === "email" ? "email" : "text"}
+                            list={field.kind === "combo" ? `${field.key}-options` : undefined}
+                            value={detail[field.key]}
+                            onChange={(e) => setDetail({ ...detail, [field.key]: e.target.value })}
+                            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none"
+                          />
+                          {field.kind === "combo" && (
+                            <datalist id={`${field.key}-options`}>
+                              {field.options!.map((opt) => <option key={opt} value={opt} />)}
+                            </datalist>
+                          )}
+                        </>
+                      )}
                     </div>
                   ))}
                 </div>

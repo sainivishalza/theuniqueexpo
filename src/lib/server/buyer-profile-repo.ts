@@ -54,6 +54,19 @@ export interface BuyerProfileFields {
   // kept as free text rather than assumed. Admin-only, not shown to the
   // buyer themselves since they wouldn't know what it means either.
   registrationCode: string;
+  departureCity: string;
+  attendanceDay: string;
+  meetingOrVisiting: string;
+  passportName: string;
+  gender: string;
+  wechatId: string;
+  overseasCompanyAddress: string;
+  companyField: string;
+  jobTitle: string;
+  // A separate business-contact email, distinct from the account login
+  // email (users.email) -- named contactEmail in the DB/API to avoid ever
+  // confusing the two.
+  contactEmail: string;
 }
 
 export interface DocumentReview {
@@ -84,6 +97,16 @@ const EMPTY_FIELDS: BuyerProfileFields = {
   otherPurchaseIntention: "",
   contactPerson: "",
   registrationCode: "",
+  departureCity: "",
+  attendanceDay: "",
+  meetingOrVisiting: "",
+  passportName: "",
+  gender: "",
+  wechatId: "",
+  overseasCompanyAddress: "",
+  companyField: "",
+  jobTitle: "",
+  contactEmail: "",
 };
 
 function mapRow(row: RowDataPacket): BuyerProfile {
@@ -97,6 +120,16 @@ function mapRow(row: RowDataPacket): BuyerProfile {
     otherPurchaseIntention: row.other_purchase_intention || "",
     contactPerson: row.contact_person || "",
     registrationCode: row.registration_code || "",
+    departureCity: row.departure_city || "",
+    attendanceDay: row.attendance_day || "",
+    meetingOrVisiting: row.meeting_or_visiting || "",
+    passportName: row.passport_name || "",
+    gender: row.gender || "",
+    wechatId: row.wechat_id || "",
+    overseasCompanyAddress: row.overseas_company_address || "",
+    companyField: row.company_field || "",
+    jobTitle: row.job_title || "",
+    contactEmail: row.contact_email || "",
     hasDocument: {
       businessLicense: !!row.doc_business_license,
       businessCard: !!row.doc_business_card,
@@ -119,6 +152,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
 
 const SELECT_SUMMARY_COLUMNS =
   "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, registration_code, " +
+  "departure_city, attendance_day, meeting_or_visiting, passport_name, gender, wechat_id, overseas_company_address, company_field, job_title, contact_email, " +
   "doc_business_license, doc_business_card, doc_passport_front, doc_visa_page, doc_canton_fair_card, doc_buyer_photo, " +
   "doc_business_license_status, doc_business_license_note, doc_business_card_status, doc_business_card_note, " +
   "doc_passport_front_status, doc_passport_front_note, doc_visa_page_status, doc_visa_page_note, " +
@@ -225,6 +259,16 @@ const FIELD_COLUMNS: Record<keyof BuyerProfileFields, string> = {
   otherPurchaseIntention: "other_purchase_intention",
   contactPerson: "contact_person",
   registrationCode: "registration_code",
+  departureCity: "departure_city",
+  attendanceDay: "attendance_day",
+  meetingOrVisiting: "meeting_or_visiting",
+  passportName: "passport_name",
+  gender: "gender",
+  wechatId: "wechat_id",
+  overseasCompanyAddress: "overseas_company_address",
+  companyField: "company_field",
+  jobTitle: "job_title",
+  contactEmail: "contact_email",
 };
 
 // Buyer editing their own profile and admin editing on a buyer's behalf

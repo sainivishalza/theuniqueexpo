@@ -2612,6 +2612,7 @@
     "documents": "证件资料",
     "documentsHint": "请上传每份证件清晰的照片或扫描件(图片或PDF,最大8MB)。",
     "noFile": "尚未上传文件",
+    "selectPlaceholder": "请选择...",
     "fields": {
       "companyName": "公司名称",
       "nationality": "国籍",
@@ -2619,7 +2620,28 @@
       "annualTurnover": "年营业额",
       "contactPerson": "联系人",
       "purchaseIntention": "采购意向",
-      "otherPurchaseIntention": "其他采购意向"
+      "otherPurchaseIntention": "其他采购意向",
+      "departureCity": "出发城市",
+      "attendanceDay": "参会日期",
+      "meetingOrVisiting": "会议或参观",
+      "passportName": "护照姓名",
+      "gender": "请选择您的性别",
+      "wechatId": "微信号",
+      "overseasCompanyAddress": "海外公司地址",
+      "companyField": "公司行业",
+      "jobTitle": "职位",
+      "contactEmail": "邮箱"
+    },
+    "fieldOptions": {
+      "meetingOrVisiting": {
+        "meeting": "会议",
+        "visiting": "参观"
+      },
+      "gender": {
+        "male": "男",
+        "female": "女",
+        "other": "其他"
+      }
     },
     "docFields": {
       "businessLicense": "营业执照",
@@ -2667,6 +2689,7 @@
     "editProfile": "编辑买家资料",
     "documents": "证件资料",
     "noFile": "无文件",
+    "selectPlaceholder": "请选择...",
     "fields": {
       "companyName": "公司名称",
       "nationality": "国籍",
@@ -2675,7 +2698,28 @@
       "contactPerson": "联系人",
       "purchaseIntention": "采购意向",
       "otherPurchaseIntention": "其他采购意向",
-      "registrationCode": "登记代码(未分类)"
+      "registrationCode": "登记代码(未分类)",
+      "departureCity": "出发城市",
+      "attendanceDay": "参会日期",
+      "meetingOrVisiting": "会议或参观",
+      "passportName": "护照姓名",
+      "gender": "请选择您的性别",
+      "wechatId": "微信号",
+      "overseasCompanyAddress": "海外公司地址",
+      "companyField": "公司行业",
+      "jobTitle": "职位",
+      "contactEmail": "邮箱"
+    },
+    "fieldOptions": {
+      "meetingOrVisiting": {
+        "meeting": "会议",
+        "visiting": "参观"
+      },
+      "gender": {
+        "male": "男",
+        "female": "女",
+        "other": "其他"
+      }
     },
     "docFields": {
       "businessLicense": "营业执照",

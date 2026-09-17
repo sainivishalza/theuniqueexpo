@@ -34,6 +34,16 @@ interface BuyerProfileDetail {
   otherPurchaseIntention: string;
   contactPerson: string;
   registrationCode: string;
+  departureCity: string;
+  attendanceDay: string;
+  meetingOrVisiting: string;
+  passportName: string;
+  gender: string;
+  wechatId: string;
+  overseasCompanyAddress: string;
+  companyField: string;
+  jobTitle: string;
+  contactEmail: string;
   hasDocument: Record<string, boolean>;
   documentReview: Record<string, DocReview>;
 }
@@ -51,7 +61,27 @@ const DOC_STATUS_STYLES: Record<DocReviewStatus, string> = {
   rejected: "border-red-400",
 };
 
-const TEXT_FIELDS = ["companyName", "nationality", "passportNumber", "annualTurnover", "contactPerson", "registrationCode"] as const;
+const TEXT_FIELDS = [
+  "companyName",
+  "nationality",
+  "passportNumber",
+  "annualTurnover",
+  "contactPerson",
+  "registrationCode",
+  "departureCity",
+  "attendanceDay",
+  "passportName",
+  "wechatId",
+  "overseasCompanyAddress",
+  "companyField",
+  "jobTitle",
+  "contactEmail",
+] as const;
+const SELECT_FIELDS = ["meetingOrVisiting", "gender"] as const;
+const SELECT_OPTIONS: Record<(typeof SELECT_FIELDS)[number], readonly string[]> = {
+  meetingOrVisiting: ["meeting", "visiting"],
+  gender: ["male", "female", "other"],
+};
 const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto"] as const;
 
 export default function AdminBuyerProfilesPage() {
@@ -277,11 +307,26 @@ export default function AdminBuyerProfilesPage() {
                     <div key={field}>
                       <label className="block text-xs font-semibold text-gray-500 mb-1">{t(`fields.${field}`)}</label>
                       <input
-                        type="text"
+                        type={field === "contactEmail" ? "email" : "text"}
                         value={detail[field]}
                         onChange={(e) => setDetail({ ...detail, [field]: e.target.value })}
                         className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none"
                       />
+                    </div>
+                  ))}
+                  {SELECT_FIELDS.map((field) => (
+                    <div key={field}>
+                      <label className="block text-xs font-semibold text-gray-500 mb-1">{t(`fields.${field}`)}</label>
+                      <select
+                        value={detail[field]}
+                        onChange={(e) => setDetail({ ...detail, [field]: e.target.value })}
+                        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none"
+                      >
+                        <option value="">{t("selectPlaceholder")}</option>
+                        {SELECT_OPTIONS[field].map((opt) => (
+                          <option key={opt} value={opt}>{t(`fieldOptions.${field}.${opt}`)}</option>
+                        ))}
+                      </select>
                     </div>
                   ))}
                 </div>

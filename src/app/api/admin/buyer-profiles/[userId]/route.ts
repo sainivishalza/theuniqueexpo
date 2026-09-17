@@ -39,6 +39,16 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
     "otherPurchaseIntention",
     "contactPerson",
     "registrationCode",
+    "departureCity",
+    "attendanceDay",
+    "meetingOrVisiting",
+    "passportName",
+    "gender",
+    "wechatId",
+    "overseasCompanyAddress",
+    "companyField",
+    "jobTitle",
+    "contactEmail",
   ] as const;
   const update: Record<string, string> = {};
   for (const field of fields) {

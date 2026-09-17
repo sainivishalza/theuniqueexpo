@@ -344,6 +344,7 @@ run_mysql schema-migrations/032-buyer-profile-registration-code.sql
 run_mysql schema-migrations/033-backfill-buyer-registration-codes.sql
 run_mysql schema-migrations/034-buyer-document-verification.sql
 run_mysql schema-migrations/035-homepage-slideshow.sql
+run_mysql schema-migrations/036-buyer-profile-more-fields.sql
 
 echo "Installing dependencies and building ..."
 npm install

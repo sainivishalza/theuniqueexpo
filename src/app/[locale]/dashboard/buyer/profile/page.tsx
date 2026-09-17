@@ -22,12 +22,41 @@ interface BuyerProfile {
   purchaseIntention: string;
   otherPurchaseIntention: string;
   contactPerson: string;
+  departureCity: string;
+  attendanceDay: string;
+  meetingOrVisiting: string;
+  passportName: string;
+  gender: string;
+  wechatId: string;
+  overseasCompanyAddress: string;
+  companyField: string;
+  jobTitle: string;
+  contactEmail: string;
   hasDocument: Record<string, boolean>;
   documentReview: Record<string, DocReview>;
   updatedAt: number;
 }
 
-const TEXT_FIELDS = ["companyName", "nationality", "passportNumber", "annualTurnover", "contactPerson"] as const;
+const TEXT_FIELDS = [
+  "companyName",
+  "nationality",
+  "passportNumber",
+  "annualTurnover",
+  "contactPerson",
+  "departureCity",
+  "attendanceDay",
+  "passportName",
+  "wechatId",
+  "overseasCompanyAddress",
+  "companyField",
+  "jobTitle",
+  "contactEmail",
+] as const;
+const SELECT_FIELDS = ["meetingOrVisiting", "gender"] as const;
+const SELECT_OPTIONS: Record<(typeof SELECT_FIELDS)[number], readonly string[]> = {
+  meetingOrVisiting: ["meeting", "visiting"],
+  gender: ["male", "female", "other"],
+};
 const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto"] as const;
 
 const DOC_STATUS_BADGE: Record<DocReviewStatus, string> = {
@@ -136,11 +165,26 @@ export default function BuyerProfilePage() {
                 <div key={field}>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{t(`fields.${field}`)}</label>
                   <input
-                    type="text"
+                    type={field === "contactEmail" ? "email" : "text"}
                     value={profile[field]}
                     onChange={(e) => setProfile({ ...profile, [field]: e.target.value })}
                     className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none bg-white"
                   />
+                </div>
+              ))}
+              {SELECT_FIELDS.map((field) => (
+                <div key={field}>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t(`fields.${field}`)}</label>
+                  <select
+                    value={profile[field]}
+                    onChange={(e) => setProfile({ ...profile, [field]: e.target.value })}
+                    className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none bg-white"
+                  >
+                    <option value="">{t("selectPlaceholder")}</option>
+                    {SELECT_OPTIONS[field].map((opt) => (
+                      <option key={opt} value={opt}>{t(`fieldOptions.${field}.${opt}`)}</option>
+                    ))}
+                  </select>
                 </div>
               ))}
             </div>

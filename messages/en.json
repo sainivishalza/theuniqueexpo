@@ -2612,6 +2612,7 @@
     "documents": "Documents",
     "documentsHint": "Upload a clear photo or scan of each document (image or PDF, max 8MB).",
     "noFile": "No file uploaded",
+    "selectPlaceholder": "Select...",
     "fields": {
       "companyName": "Company Name",
       "nationality": "Nationality",
@@ -2619,7 +2620,28 @@
       "annualTurnover": "Annual Turnover",
       "contactPerson": "Contact Person",
       "purchaseIntention": "Purchase Intention",
-      "otherPurchaseIntention": "Other Purchase Intention"
+      "otherPurchaseIntention": "Other Purchase Intention",
+      "departureCity": "Departure City",
+      "attendanceDay": "Attendance Day",
+      "meetingOrVisiting": "Meeting or Visiting",
+      "passportName": "Passport Name",
+      "gender": "Please Select Your Gender",
+      "wechatId": "WeChat ID",
+      "overseasCompanyAddress": "Overseas Company Address",
+      "companyField": "Company Field",
+      "jobTitle": "Job Title",
+      "contactEmail": "Email"
+    },
+    "fieldOptions": {
+      "meetingOrVisiting": {
+        "meeting": "Meeting",
+        "visiting": "Visiting"
+      },
+      "gender": {
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      }
     },
     "docFields": {
       "businessLicense": "Business License",
@@ -2667,6 +2689,7 @@
     "editProfile": "Edit Buyer Profile",
     "documents": "Documents",
     "noFile": "No file",
+    "selectPlaceholder": "Select...",
     "fields": {
       "companyName": "Company Name",
       "nationality": "Nationality",
@@ -2675,7 +2698,28 @@
       "contactPerson": "Contact Person",
       "purchaseIntention": "Purchase Intention",
       "otherPurchaseIntention": "Other Purchase Intention",
-      "registrationCode": "Registration Code (uncategorized)"
+      "registrationCode": "Registration Code (uncategorized)",
+      "departureCity": "Departure City",
+      "attendanceDay": "Attendance Day",
+      "meetingOrVisiting": "Meeting or Visiting",
+      "passportName": "Passport Name",
+      "gender": "Please Select Your Gender",
+      "wechatId": "WeChat ID",
+      "overseasCompanyAddress": "Overseas Company Address",
+      "companyField": "Company Field",
+      "jobTitle": "Job Title",
+      "contactEmail": "Email"
+    },
+    "fieldOptions": {
+      "meetingOrVisiting": {
+        "meeting": "Meeting",
+        "visiting": "Visiting"
+      },
+      "gender": {
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      }
     },
     "docFields": {
       "businessLicense": "Business License",

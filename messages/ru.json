@@ -2612,6 +2612,7 @@
     "documents": "Документы",
     "documentsHint": "Загрузите чёткое фото или скан каждого документа (изображение или PDF, макс. 8 МБ).",
     "noFile": "Файл не загружен",
+    "selectPlaceholder": "Выберите...",
     "fields": {
       "companyName": "Название компании",
       "nationality": "Гражданство",
@@ -2619,7 +2620,28 @@
       "annualTurnover": "Годовой оборот",
       "contactPerson": "Контактное лицо",
       "purchaseIntention": "Интересующие товары",
-      "otherPurchaseIntention": "Другие интересующие товары"
+      "otherPurchaseIntention": "Другие интересующие товары",
+      "departureCity": "Город вылета",
+      "attendanceDay": "День посещения",
+      "meetingOrVisiting": "Встреча или посещение",
+      "passportName": "Имя как в паспорте",
+      "gender": "Укажите ваш пол",
+      "wechatId": "WeChat ID",
+      "overseasCompanyAddress": "Адрес зарубежной компании",
+      "companyField": "Сфера деятельности компании",
+      "jobTitle": "Должность",
+      "contactEmail": "Email"
+    },
+    "fieldOptions": {
+      "meetingOrVisiting": {
+        "meeting": "Встреча",
+        "visiting": "Посещение"
+      },
+      "gender": {
+        "male": "Мужской",
+        "female": "Женский",
+        "other": "Другое"
+      }
     },
     "docFields": {
       "businessLicense": "Лицензия компании",
@@ -2667,6 +2689,7 @@
     "editProfile": "Редактировать профиль покупателя",
     "documents": "Документы",
     "noFile": "Нет файла",
+    "selectPlaceholder": "Выберите...",
     "fields": {
       "companyName": "Название компании",
       "nationality": "Гражданство",
@@ -2675,7 +2698,28 @@
       "contactPerson": "Контактное лицо",
       "purchaseIntention": "Интересующие товары",
       "otherPurchaseIntention": "Другие интересующие товары",
-      "registrationCode": "Код регистрации (без категории)"
+      "registrationCode": "Код регистрации (без категории)",
+      "departureCity": "Город вылета",
+      "attendanceDay": "День посещения",
+      "meetingOrVisiting": "Встреча или посещение",
+      "passportName": "Имя как в паспорте",
+      "gender": "Укажите ваш пол",
+      "wechatId": "WeChat ID",
+      "overseasCompanyAddress": "Адрес зарубежной компании",
+      "companyField": "Сфера деятельности компании",
+      "jobTitle": "Должность",
+      "contactEmail": "Email"
+    },
+    "fieldOptions": {
+      "meetingOrVisiting": {
+        "meeting": "Встреча",
+        "visiting": "Посещение"
+      },
+      "gender": {
+        "male": "Мужской",
+        "female": "Женский",
+        "other": "Другое"
+      }
     },
     "docFields": {
       "businessLicense": "Лицензия компании",

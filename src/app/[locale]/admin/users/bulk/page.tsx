@@ -103,6 +103,7 @@ export default function BulkCreateUsersPage() {
         otherPurchaseIntention: r.otherPurchaseIntention !== undefined ? String(r.otherPurchaseIntention) : undefined,
         contactPerson: r.contactPerson !== undefined ? String(r.contactPerson) : undefined,
         registrationCode: r.registrationCode !== undefined ? String(r.registrationCode) : undefined,
+        sourceExhibitions: r.sourceExhibitions !== undefined ? String(r.sourceExhibitions) : undefined,
         departureCity: r.departureCity !== undefined ? String(r.departureCity) : undefined,
         attendanceDay: r.attendanceDay !== undefined ? String(r.attendanceDay) : undefined,
         meetingOrVisiting: r.meetingOrVisiting !== undefined ? String(r.meetingOrVisiting) : undefined,

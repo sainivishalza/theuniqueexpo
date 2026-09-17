@@ -30,6 +30,7 @@ interface AdminBuyerProfileRow {
   overseasCompanyAddress: string;
   contactEmail: string;
   registrationCode: string;
+  sourceExhibitions: string;
   annualTurnover: string;
   contactPerson: string;
   dateOfBirth: string;
@@ -46,7 +47,7 @@ const SEARCHABLE_ROW_FIELDS: StringRowKey[] = [
   "name", "email", "companyName", "nationality", "passportNumber", "passportName",
   "gender", "wechatId", "departureCity", "attendanceDay", "meetingOrVisiting",
   "jobTitle", "companyField", "overseasCompanyAddress", "contactEmail",
-  "registrationCode", "annualTurnover", "contactPerson", "dateOfBirth", "visaType",
+  "registrationCode", "sourceExhibitions", "annualTurnover", "contactPerson", "dateOfBirth", "visaType",
   "visaExpireDate",
 ];
 
@@ -64,6 +65,7 @@ interface BuyerProfileDetail {
   otherPurchaseIntention: string;
   contactPerson: string;
   registrationCode: string;
+  sourceExhibitions: string;
   departureCity: string;
   attendanceDay: string;
   meetingOrVisiting: string;
@@ -116,6 +118,7 @@ const FIELDS: FieldDef[] = [
   { key: "annualTurnover", kind: "text" },
   { key: "contactPerson", kind: "text" },
   { key: "registrationCode", kind: "text" },
+  { key: "sourceExhibitions", kind: "text" },
   { key: "departureCity", kind: "combo", options: DEPARTURE_CITIES },
   { key: "attendanceDay", kind: "text" },
   { key: "passportName", kind: "text" },
@@ -300,6 +303,7 @@ export default function AdminBuyerProfilesPage() {
                     <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
                     <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("company")}</th>
                     <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("nationality")}</th>
+                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("sourceExhibitionColumn")}</th>
                     <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("documentsColumn")}</th>
                     <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("verificationColumn")}</th>
                     <th className="text-right px-6 py-3 font-semibold text-gray-600">{ta("actions")}</th>
@@ -314,6 +318,7 @@ export default function AdminBuyerProfilesPage() {
                       </td>
                       <td className="px-6 py-4 text-gray-700">{r.companyName || "—"}</td>
                       <td className="px-6 py-4 text-gray-700">{r.nationality || "—"}</td>
+                      <td className="px-6 py-4 text-gray-700">{r.sourceExhibitions || "—"}</td>
                       <td className="px-6 py-4">
                         <span className="rounded-lg bg-cream-50 px-2.5 py-1 text-xs font-semibold text-gray-600">{r.documentsUploaded} / 6</span>
                       </td>
@@ -328,7 +333,7 @@ export default function AdminBuyerProfilesPage() {
                     </tr>
                   ))}
                   {filtered.length === 0 && (
-                    <tr><td colSpan={6} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
+                    <tr><td colSpan={7} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
                   )}
                 </tbody>
               </table>

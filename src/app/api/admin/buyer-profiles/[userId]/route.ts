@@ -39,6 +39,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
     "otherPurchaseIntention",
     "contactPerson",
     "registrationCode",
+    "sourceExhibitions",
     "departureCity",
     "attendanceDay",
     "meetingOrVisiting",

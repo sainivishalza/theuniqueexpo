@@ -25,6 +25,7 @@ interface BulkUserInput {
   otherPurchaseIntention?: string;
   contactPerson?: string;
   registrationCode?: string;
+  sourceExhibitions?: string;
   departureCity?: string;
   attendanceDay?: string;
   meetingOrVisiting?: string;
@@ -112,6 +113,7 @@ export async function POST(request: Request) {
           otherPurchaseIntention: input.otherPurchaseIntention?.trim() || "",
           contactPerson: input.contactPerson?.trim() || "",
           registrationCode: input.registrationCode?.trim() || "",
+          sourceExhibitions: input.sourceExhibitions?.trim() || "",
           departureCity: input.departureCity?.trim() || "",
           attendanceDay: input.attendanceDay?.trim() || "",
           meetingOrVisiting: input.meetingOrVisiting?.trim() || "",

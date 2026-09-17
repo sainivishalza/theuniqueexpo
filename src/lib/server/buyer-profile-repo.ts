@@ -54,6 +54,12 @@ export interface BuyerProfileFields {
   // kept as free text rather than assumed. Admin-only, not shown to the
   // buyer themselves since they wouldn't know what it means either.
   registrationCode: string;
+  // Which exhibition(s) this buyer's data came from (e.g. a bulk import
+  // from that exhibition's own registration spreadsheet) -- free text,
+  // comma-separated, since one buyer can appear in several exhibitions
+  // over time. Admin-only, like registrationCode, and searchable so an
+  // admin can find "everyone from CPHI" or a future exhibition by name.
+  sourceExhibitions: string;
   departureCity: string;
   attendanceDay: string;
   meetingOrVisiting: string;
@@ -100,6 +106,7 @@ const EMPTY_FIELDS: BuyerProfileFields = {
   otherPurchaseIntention: "",
   contactPerson: "",
   registrationCode: "",
+  sourceExhibitions: "",
   departureCity: "",
   attendanceDay: "",
   meetingOrVisiting: "",
@@ -126,6 +133,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
     otherPurchaseIntention: row.other_purchase_intention || "",
     contactPerson: row.contact_person || "",
     registrationCode: row.registration_code || "",
+    sourceExhibitions: row.source_exhibitions || "",
     departureCity: row.departure_city || "",
     attendanceDay: row.attendance_day || "",
     meetingOrVisiting: row.meeting_or_visiting || "",
@@ -160,7 +168,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
 }
 
 const SELECT_SUMMARY_COLUMNS =
-  "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, registration_code, " +
+  "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, registration_code, source_exhibitions, " +
   "departure_city, attendance_day, meeting_or_visiting, passport_name, gender, wechat_id, overseas_company_address, company_field, job_title, contact_email, " +
   "date_of_birth, visa_type, visa_expire_date, " +
   "doc_business_license, doc_business_card, doc_passport_front, doc_visa_page, doc_canton_fair_card, doc_buyer_photo, " +
@@ -224,6 +232,7 @@ export interface AdminBuyerProfileRow {
   overseasCompanyAddress: string;
   contactEmail: string;
   registrationCode: string;
+  sourceExhibitions: string;
   annualTurnover: string;
   contactPerson: string;
   dateOfBirth: string;
@@ -251,7 +260,7 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
     `SELECT u.id AS user_id, u.name, u.email, u.status,
             p.company_name, p.nationality, p.passport_number, p.passport_name, p.gender, p.wechat_id,
             p.departure_city, p.attendance_day, p.meeting_or_visiting, p.job_title, p.company_field,
-            p.overseas_company_address, p.contact_email, p.registration_code, p.annual_turnover, p.contact_person,
+            p.overseas_company_address, p.contact_email, p.registration_code, p.source_exhibitions, p.annual_turnover, p.contact_person,
             p.date_of_birth, p.visa_type, p.visa_expire_date,
             p.doc_business_license, p.doc_business_card, p.doc_passport_front,
             p.doc_visa_page, p.doc_canton_fair_card, p.doc_buyer_photo,
@@ -290,6 +299,7 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
       overseasCompanyAddress: row.overseas_company_address || "",
       contactEmail: row.contact_email || "",
       registrationCode: row.registration_code || "",
+      sourceExhibitions: row.source_exhibitions || "",
       annualTurnover: row.annual_turnover || "",
       contactPerson: row.contact_person || "",
       dateOfBirth: row.date_of_birth || "",
@@ -310,6 +320,7 @@ const FIELD_COLUMNS: Record<keyof BuyerProfileFields, string> = {
   otherPurchaseIntention: "other_purchase_intention",
   contactPerson: "contact_person",
   registrationCode: "registration_code",
+  sourceExhibitions: "source_exhibitions",
   departureCity: "departure_city",
   attendanceDay: "attendance_day",
   meetingOrVisiting: "meeting_or_visiting",

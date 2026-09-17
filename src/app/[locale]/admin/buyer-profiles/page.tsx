@@ -100,6 +100,10 @@ interface FieldDef {
   key: DetailFieldKey;
   kind: "text" | "email" | "date" | "combo" | "select";
   options?: readonly string[];
+  // "select" only: false when `options` are already human-readable and
+  // shouldn't be looked up in fieldOptions.<key>.<opt> (visaType's list is
+  // shown as-is; meetingOrVisiting/gender still need translation).
+  translateOptions?: boolean;
 }
 
 // "combo" fields render as a text input with a <datalist> of suggestions --
@@ -121,7 +125,7 @@ const FIELDS: FieldDef[] = [
   { key: "jobTitle", kind: "combo", options: JOB_TITLES },
   { key: "contactEmail", kind: "email" },
   { key: "dateOfBirth", kind: "date" },
-  { key: "visaType", kind: "combo", options: VISA_TYPES },
+  { key: "visaType", kind: "select", options: VISA_TYPES, translateOptions: false },
   { key: "visaExpireDate", kind: "date" },
   { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
@@ -358,7 +362,7 @@ export default function AdminBuyerProfilesPage() {
                         >
                           <option value="">{t("selectPlaceholder")}</option>
                           {field.options!.map((opt) => (
-                            <option key={opt} value={opt}>{t(`fieldOptions.${field.key}.${opt}`)}</option>
+                            <option key={opt} value={opt}>{field.translateOptions === false ? opt : t(`fieldOptions.${field.key}.${opt}`)}</option>
                           ))}
                         </select>
                       ) : (

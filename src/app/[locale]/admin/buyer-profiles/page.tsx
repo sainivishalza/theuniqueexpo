@@ -290,6 +290,10 @@ export default function AdminBuyerProfilesPage() {
   const [docVersion, setDocVersion] = useState(0);
   const [reviewingField, setReviewingField] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{ userId: number; field: string; buyerName: string } | null>(null);
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [exportFields, setExportFields] = useState<Set<string>>(new Set([...FIELDS.map((f) => f.key), "purchaseIntention", "otherPurchaseIntention", ...DOC_FIELDS]));
+  const [exportPickerOpen, setExportPickerOpen] = useState(false);
+  const [exporting, setExporting] = useState<"excel" | "zip" | null>(null);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -396,6 +400,82 @@ export default function AdminBuyerProfilesPage() {
     }
   }
 
+  function toggleSelected(userId: number) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(userId)) next.delete(userId);
+      else next.add(userId);
+      return next;
+    });
+  }
+
+  // "Select all" only ever acts on the rows the current search is
+  // showing -- selecting narrows the search first, "select all" ticks
+  // just that narrowed list, and it doesn't touch anything selected
+  // outside of it. If every currently-visible row is already selected,
+  // it deselects just those; otherwise it adds all of them.
+  function toggleSelectAllFiltered() {
+    const filteredIds = filtered.map((r) => r.userId);
+    const allSelected = filteredIds.length > 0 && filteredIds.every((id) => selected.has(id));
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (allSelected) filteredIds.forEach((id) => next.delete(id));
+      else filteredIds.forEach((id) => next.add(id));
+      return next;
+    });
+  }
+
+  async function downloadExport(url: string, body: unknown, filename: string, kind: "excel" | "zip") {
+    setExporting(kind);
+    setError("");
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || t("exportFailed"));
+      }
+      const blob = await res.blob();
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (err) {
+      setError(errorMessage(err, t("exportFailed")));
+    } finally {
+      setExporting(null);
+    }
+  }
+
+  function runExportExcel() {
+    const date = new Date().toISOString().slice(0, 10);
+    // Name and Account Email always ride along regardless of what's ticked
+    // -- an export with none of the identifying fields checked wouldn't
+    // even say whose row is whose.
+    const fields = Array.from(new Set(["name", "email", ...exportFields]));
+    downloadExport(
+      "/api/admin/buyer-profiles/export/excel",
+      { userIds: Array.from(selected), fields },
+      `buyer-profiles-${date}.xlsx`,
+      "excel"
+    );
+    setExportPickerOpen(false);
+  }
+
+  function runExportZip() {
+    const date = new Date().toISOString().slice(0, 10);
+    downloadExport(
+      "/api/admin/buyer-profiles/export/documents-zip",
+      { userIds: Array.from(selected) },
+      `buyer-documents-${date}.zip`,
+      "zip"
+    );
+  }
+
   if (authLoading) return null;
   if (!user || user.role !== "admin") {
     return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{t("accessDenied")}</p></div>;
@@ -437,13 +517,27 @@ export default function AdminBuyerProfilesPage() {
         <div className="mx-auto max-w-6xl px-6 space-y-4">
           {error && <div className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</div>}
 
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t("searchPlaceholder")}
-            className="w-full max-w-md rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          />
+          <div className="flex flex-wrap items-center gap-3">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t("searchPlaceholder")}
+              className="w-full max-w-md rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+            {selected.size > 0 && (
+              <div className="flex flex-wrap items-center gap-2 rounded-xl bg-emerald-50 px-3 py-2">
+                <span className="text-sm font-semibold text-emerald-800">{t("selectedCount", { count: selected.size })}</span>
+                <Button onClick={() => setExportPickerOpen(true)} variant="secondaryOutline" size="xs">{t("exportExcel")}</Button>
+                <Button onClick={runExportZip} disabled={exporting === "zip"} variant="secondaryOutline" size="xs">
+                  {exporting === "zip" ? ta("loading") : t("exportZip")}
+                </Button>
+                <button type="button" onClick={() => setSelected(new Set())} className="text-xs text-emerald-700 hover:text-emerald-900 underline">
+                  {t("clearSelection")}
+                </button>
+              </div>
+            )}
+          </div>
 
           {loading ? (
             <p className="text-gray-500 text-center py-10">{ta("loading")}</p>
@@ -452,7 +546,18 @@ export default function AdminBuyerProfilesPage() {
               <table className="w-full text-sm">
                 <thead className="bg-cream-50 border-b border-gray-100">
                   <tr>
-                    <th className="sticky left-0 z-10 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{ta("name")}</th>
+                    <th className="sticky left-0 z-10 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          checked={filtered.length > 0 && filtered.every((r) => selected.has(r.userId))}
+                          onChange={toggleSelectAllFiltered}
+                          className="h-4 w-4 rounded border-gray-300"
+                          aria-label={t("selectAll")}
+                        />
+                        {ta("name")}
+                      </div>
+                    </th>
                     {FIELDS.map((field) => (
                       <th key={field.key} className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t(`fields.${field.key}`)}</th>
                     ))}
@@ -469,8 +574,19 @@ export default function AdminBuyerProfilesPage() {
                   {filtered.map((r) => (
                     <tr key={r.userId} className="hover:bg-cream-50">
                       <td className="sticky left-0 z-10 bg-white px-6 py-4 whitespace-nowrap">
-                        <div className="font-semibold text-gray-900">{r.name}</div>
-                        <div className="text-xs text-gray-400">{r.email}</div>
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            checked={selected.has(r.userId)}
+                            onChange={() => toggleSelected(r.userId)}
+                            className="h-4 w-4 rounded border-gray-300"
+                            aria-label={r.name}
+                          />
+                          <div>
+                            <div className="font-semibold text-gray-900">{r.name}</div>
+                            <div className="text-xs text-gray-400">{r.email}</div>
+                          </div>
+                        </div>
                       </td>
                       {FIELDS.map((field) => (
                         <td key={field.key} className="px-6 py-4 text-gray-700 whitespace-nowrap">{fieldDisplayValue(r, field)}</td>
@@ -653,6 +769,82 @@ export default function AdminBuyerProfilesPage() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {exportPickerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setExportPickerOpen(false)}>
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-white rounded-2xl shadow-2xl p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-1">
+              <h2 className="text-lg font-bold text-heading">{t("exportPickerTitle")}</h2>
+              <button onClick={() => setExportPickerOpen(false)} className="text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+            <p className="text-sm text-gray-500 mb-4">{t("exportPickerHint", { count: selected.size })}</p>
+
+            <div className="flex gap-4 mb-3">
+              <button
+                type="button"
+                onClick={() => setExportFields(new Set([...FIELDS.map((f) => f.key), "purchaseIntention", "otherPurchaseIntention", ...DOC_FIELDS]))}
+                className="text-xs font-semibold text-emerald-700 hover:text-emerald-900 underline"
+              >
+                {t("selectAllFields")}
+              </button>
+              <button type="button" onClick={() => setExportFields(new Set())} className="text-xs font-semibold text-gray-500 hover:text-gray-700 underline">
+                {t("deselectAllFields")}
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 mb-5">
+              {[...FIELDS.map((f) => f.key), "purchaseIntention", "otherPurchaseIntention"].map((key) => (
+                <label key={key} className="flex items-center gap-2 text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={exportFields.has(key)}
+                    onChange={() =>
+                      setExportFields((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(key)) next.delete(key);
+                        else next.add(key);
+                        return next;
+                      })
+                    }
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  {t(`fields.${key}`)}
+                </label>
+              ))}
+            </div>
+
+            <p className="text-xs font-semibold text-gray-500 uppercase mb-2">{t("documents")}</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 mb-6">
+              {DOC_FIELDS.map((key) => (
+                <label key={key} className="flex items-center gap-2 text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={exportFields.has(key)}
+                    onChange={() =>
+                      setExportFields((prev) => {
+                        const next = new Set(prev);
+                        if (next.has(key)) next.delete(key);
+                        else next.add(key);
+                        return next;
+                      })
+                    }
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  {t(`docFields.${key}`)}
+                </label>
+              ))}
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <Button onClick={() => setExportPickerOpen(false)} variant="ghost" size="compact">{ta("cancel")}</Button>
+              <Button onClick={runExportExcel} disabled={exportFields.size === 0 || exporting === "excel"} variant="save" size="compact">
+                {exporting === "excel" ? ta("loading") : t("exportExcel")}
+              </Button>
+            </div>
           </div>
         </div>
       )}

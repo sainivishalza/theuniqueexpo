@@ -329,6 +329,73 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
   });
 }
 
+export interface BuyerExportProfile extends BuyerProfileFields {
+  userId: number;
+  name: string;
+  email: string;
+  // Raw data URL per document (null if never uploaded) -- unlike mapRow's
+  // hasDocument/documentReview, an export needs the actual image bytes to
+  // embed, not just a boolean.
+  documentData: Record<DocumentField, string | null>;
+  documentStatus: Record<DocumentField, DocumentReviewStatus>;
+}
+
+// Batched fetch for the Excel/ZIP export tools -- one query for however
+// many buyers the admin selected, rather than N round trips.
+export async function getBuyerProfilesForExport(userIds: number[]): Promise<BuyerExportProfile[]> {
+  if (userIds.length === 0) return [];
+  const placeholders = userIds.map(() => "?").join(", ");
+  const docColumns = DOCUMENT_FIELDS.map((f) => `p.${DOCUMENT_COLUMNS[f]}, p.${DOCUMENT_STATUS_COLUMNS[f]}`).join(", ");
+  const [rows] = await pool.query<RowDataPacket[]>(
+    `SELECT u.id AS user_id, u.name, u.email,
+            p.company_name, p.nationality, p.passport_number, p.annual_turnover, p.purchase_intention, p.other_purchase_intention,
+            p.contact_person, p.registration_code, p.source_exhibitions, p.departure_city, p.attendance_day, p.meeting_or_visiting,
+            p.passport_name, p.gender, p.wechat_id, p.overseas_company_address, p.company_field, p.job_title, p.contact_email,
+            p.date_of_birth, p.visa_type, p.visa_expire_date, ${docColumns}
+     FROM users u
+     LEFT JOIN buyer_profiles p ON p.user_id = u.id
+     WHERE u.id IN (${placeholders})`,
+    userIds
+  );
+  return rows.map((row) => {
+    const documentData = {} as Record<DocumentField, string | null>;
+    const documentStatus = {} as Record<DocumentField, DocumentReviewStatus>;
+    for (const f of DOCUMENT_FIELDS) {
+      documentData[f] = row[DOCUMENT_COLUMNS[f]] || null;
+      documentStatus[f] = (row[DOCUMENT_STATUS_COLUMNS[f]] || "pending") as DocumentReviewStatus;
+    }
+    return {
+      userId: row.user_id,
+      name: row.name,
+      email: row.email,
+      companyName: row.company_name || "",
+      nationality: row.nationality || "",
+      passportNumber: row.passport_number || "",
+      annualTurnover: row.annual_turnover || "",
+      purchaseIntention: row.purchase_intention || "",
+      otherPurchaseIntention: row.other_purchase_intention || "",
+      contactPerson: row.contact_person || "",
+      registrationCode: row.registration_code || "",
+      sourceExhibitions: row.source_exhibitions || "",
+      departureCity: row.departure_city || "",
+      attendanceDay: row.attendance_day || "",
+      meetingOrVisiting: row.meeting_or_visiting || "",
+      passportName: row.passport_name || "",
+      gender: row.gender || "",
+      wechatId: row.wechat_id || "",
+      overseasCompanyAddress: row.overseas_company_address || "",
+      companyField: row.company_field || "",
+      jobTitle: row.job_title || "",
+      contactEmail: row.contact_email || "",
+      dateOfBirth: row.date_of_birth || "",
+      visaType: row.visa_type || "",
+      visaExpireDate: row.visa_expire_date || "",
+      documentData,
+      documentStatus,
+    };
+  });
+}
+
 const FIELD_COLUMNS: Record<keyof BuyerProfileFields, string> = {
   companyName: "company_name",
   nationality: "nationality",

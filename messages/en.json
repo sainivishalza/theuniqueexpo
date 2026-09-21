@@ -40,7 +40,8 @@
     "businessTours": "Business Tours",
     "chinaTours": "China Tours",
     "partnerWithUs": "Partner With Us",
-    "more": "More"
+    "more": "More",
+    "planABusinessTrip": "Plan a Business Trip"
   },
   "footer": {
     "newsletterTitle": "Stay Updated",
@@ -2918,7 +2919,7 @@
   },
   "partnerWithUsPage": {
     "title": "Partner With Us",
-    "subtitle": "For exhibition organizers and companies looking to grow their reach in China and internationally.",
+    "subtitle": "We work with exhibition organizers, companies and service providers to create business connections between China and international markets.",
     "audiences": {
       "organizers": {
         "title": "Exhibition Organizers",
@@ -2929,7 +2930,7 @@
         "description": "Partner with us for co-marketing, sourcing support, or joint business development in China."
       }
     },
-    "formTitle": "Tell Us About Your Partnership",
+    "formTitle": "Partner With The Unique Expo",
     "formSubtitle": "Share a few details and our team will get back to you.",
     "form": {
       "name": "Full Name",
@@ -2943,11 +2944,86 @@
       },
       "message": "Message"
     },
-    "submit": "Send Inquiry",
+    "submit": "Submit Partnership Request",
     "submitting": "Sending...",
     "submitFailed": "Request failed. Please try again.",
-    "successTitle": "Thank you! We received your inquiry.",
-    "successSubtitle": "Our partnerships team will contact you shortly."
+    "successTitle": "Thank you! We received your partnership request.",
+    "successSubtitle": "Our partnerships team will contact you shortly.",
+    "organizers": {
+      "title": "For Exhibition Organizers",
+      "subtitle": "Connect your exhibition with international buyers, business visitors and professional delegations.",
+      "cta": "Partner With Us",
+      "services": {
+        "internationalVisitorPromotion": "International visitor promotion",
+        "buyerRecruitment": "Buyer recruitment",
+        "hostedBuyerPrograms": "Hosted buyer programs",
+        "businessDelegations": "Business delegations",
+        "exhibitionPromotion": "Exhibition promotion",
+        "b2bMatchmaking": "B2B matchmaking",
+        "businessTours": "Business tours",
+        "onSiteSupport": "On-site support"
+      }
+    },
+    "servicePartners": {
+      "title": "For Business & Service Partners",
+      "subtitle": "We cooperate with companies and professionals providing services for international businesses in China.",
+      "cta": "Become a Partner",
+      "examples": {
+        "hotels": "Hotels",
+        "transportationCompanies": "Transportation companies",
+        "interpreters": "Interpreters",
+        "logisticsCompanies": "Logistics companies",
+        "inspectionCompanies": "Inspection companies",
+        "sourcingCompanies": "Sourcing companies",
+        "factories": "Factories",
+        "businessServiceProviders": "Business service providers",
+        "tourismCompanies": "Tourism companies"
+      }
+    },
+    "companies": {
+      "title": "For Companies",
+      "subtitle": "Looking for suppliers, business opportunities or exhibition support in China?",
+      "cta": "Talk to Our Team",
+      "services": {
+        "exhibitionVisits": "Exhibition visits",
+        "businessTours": "Business tours",
+        "supplierMeetings": "Supplier meetings",
+        "factoryVisits": "Factory visits",
+        "businessMatchmaking": "Business matchmaking",
+        "marketExploration": "Market exploration"
+      }
+    },
+    "iAm": "I Am:",
+    "partnerTypes": {
+      "organizer": "Exhibition Organizer",
+      "company_brand": "Company / Brand",
+      "service_provider": "Service Provider",
+      "hotel_transportation": "Hotel / Transportation",
+      "factory_supplier": "Factory / Supplier",
+      "business_association": "Business Association",
+      "tourism_partner": "Tourism Partner",
+      "other": "Other"
+    },
+    "fields": {
+      "company": "Company Name",
+      "website": "Website",
+      "country": "Country",
+      "contactPerson": "Contact Person",
+      "email": "Email",
+      "whatsapp": "WhatsApp / WeChat",
+      "message": "Tell us about your company and proposal"
+    },
+    "whatWouldYouLikeToDiscuss": "What Would You Like to Discuss?",
+    "topics": {
+      "exhibitionPromotion": "Exhibition promotion",
+      "buyerRecruitment": "Buyer recruitment",
+      "businessDelegation": "Business delegation",
+      "b2bMatchmaking": "B2B matchmaking",
+      "businessTours": "Business tours",
+      "supplierNetwork": "Supplier network",
+      "localServices": "Local services",
+      "other": "Other"
+    }
   },
   "adminBusinessTripInquiries": {
     "title": "Business Trip Inquiries",
@@ -2964,7 +3040,11 @@
       "pending": "pending",
       "in-progress": "in progress",
       "completed": "completed"
-    }
+    },
+    "tripDetails": "Trip Details",
+    "needs": "Needs",
+    "from": "from",
+    "travelers": "{count, plural, one {# traveller} other {# travellers}}"
   },
   "adminPartnerInquiries": {
     "title": "Partner Inquiries",
@@ -2978,12 +3058,96 @@
     "partnerTypes": {
       "organizer": "Exhibition Organizer",
       "company": "Company",
-      "other": "Other"
+      "other": "Other",
+      "company_brand": "Company / Brand",
+      "service_provider": "Service Provider",
+      "hotel_transportation": "Hotel / Transportation",
+      "factory_supplier": "Factory / Supplier",
+      "business_association": "Business Association",
+      "tourism_partner": "Tourism Partner"
     },
     "statuses": {
       "pending": "pending",
       "in-progress": "in progress",
       "completed": "completed"
+    },
+    "topics": "Topics",
+    "topicLabels": {
+      "exhibitionPromotion": "Exhibition promotion",
+      "buyerRecruitment": "Buyer recruitment",
+      "businessDelegation": "Business delegation",
+      "b2bMatchmaking": "B2B matchmaking",
+      "businessTours": "Business tours",
+      "supplierNetwork": "Supplier network",
+      "localServices": "Local services",
+      "other": "Other"
     }
+  },
+  "planBusinessTripPage": {
+    "title": "Plan My Business Trip",
+    "subtitle": "Tell us about your trip and we'll send you a tailored plan.",
+    "selectedTourType": "Selected package: {tourType}",
+    "tourTypeLabels": {
+      "exhibitionVisit": "Exhibition Visit",
+      "businessTour": "Business Tour",
+      "businessPlus": "Business Plus",
+      "customProgram": "Custom Program"
+    },
+    "fields": {
+      "name": "Name",
+      "company": "Company",
+      "email": "Email",
+      "whatsapp": "WhatsApp / WeChat",
+      "country": "Country",
+      "departureCity": "City of Departure",
+      "exhibition": "Exhibition",
+      "exhibitionPlaceholder": "Select an exhibition (optional)",
+      "arrivalDate": "Arrival Date",
+      "departureDate": "Departure Date",
+      "travelers": "Number of Travellers",
+      "industry": "Industry / Products",
+      "message": "Tell us about your business trip"
+    },
+    "whatDoYouNeed": "What Do You Need?",
+    "needs": {
+      "hotel": "Hotel",
+      "airportTransfer": "Airport transfer",
+      "exhibitionTransfer": "Exhibition transfer",
+      "exhibitionAccompaniment": "Exhibition accompaniment",
+      "interpreter": "Interpreter",
+      "supplierMeetings": "Supplier meetings",
+      "factoryVisits": "Factory visits",
+      "supplierSearch": "Supplier search",
+      "samples": "Samples",
+      "additionalChinaTrip": "Additional China trip"
+    },
+    "submit": "Send Request",
+    "submitting": "Sending...",
+    "submitFailed": "Request failed. Please try again.",
+    "successTitle": "Thank you! We received your request.",
+    "successSubtitle": "Our team will contact you shortly to plan your trip."
+  },
+  "contactPage": {
+    "title": "Contact Us",
+    "subtitle": "Tell us what you need and we'll point you the right way.",
+    "options": {
+      "visit": {
+        "title": "I Want to Visit an Exhibition",
+        "description": "Browse our full calendar of exhibitions in China.",
+        "cta": "Explore Exhibitions"
+      },
+      "trip": {
+        "title": "I Want to Organize a Business Trip",
+        "description": "Hotel, transfers, exhibition assistance, meetings, and factory visits.",
+        "cta": "Plan My Business Trip"
+      },
+      "partner": {
+        "title": "I Want to Work With You",
+        "description": "Exhibition organizers, companies, and service providers.",
+        "cta": "Partner With Us"
+      }
+    },
+    "emailUs": "Or email us directly",
+    "email": "info@theuniqueexpo.com"
   }
 }

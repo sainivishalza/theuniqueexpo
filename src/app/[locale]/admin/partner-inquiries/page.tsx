@@ -7,8 +7,8 @@ import { errorMessage } from "@/lib/format";
 import Card from "@/components/ui/Card";
 
 interface PartnerInquiry {
-  id: string; name: string; email: string; company: string; partnerType: string;
-  message: string; status: string; createdAt: string;
+  id: string; name: string; email: string; whatsapp: string; company: string; website: string;
+  country: string; partnerType: string; topics: string[]; message: string; status: string; createdAt: string;
 }
 
 const STATUSES = ["pending", "in-progress", "completed"];
@@ -72,15 +72,23 @@ export default function AdminPartnerInquiriesPage() {
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("company")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("partnerType")}</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("topics")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("message")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {inquiries.map((a) => (
                   <tr key={a.id} className="hover:bg-cream-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{a.name}<br/><span className="text-xs text-gray-400">{a.email}</span></td>
-                    <td className="px-6 py-4 text-gray-500">{a.company || "—"}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900">
+                      {a.name}<br/><span className="text-xs text-gray-400">{a.email}{a.whatsapp ? ` · ${a.whatsapp}` : ""}</span>
+                      {a.country && <div className="text-xs text-gray-400">{a.country}</div>}
+                    </td>
+                    <td className="px-6 py-4 text-gray-500">
+                      {a.company || "—"}
+                      {a.website && <div className="text-xs text-gray-400 truncate max-w-[140px]">{a.website}</div>}
+                    </td>
                     <td className="px-6 py-4 text-gray-500">{t(`partnerTypes.${a.partnerType}`)}</td>
+                    <td className="px-6 py-4 text-gray-500 text-xs max-w-[160px]">{a.topics.length > 0 ? a.topics.map((tp) => t(`topicLabels.${tp}`)).join(", ") : "—"}</td>
                     <td className="px-6 py-4 text-gray-500 max-w-xs truncate">{a.message || "—"}</td>
                     <td className="px-6 py-4">
                       <select

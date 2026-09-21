@@ -10,7 +10,7 @@ import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 import { Link } from "@/i18n/navigation";
 import HowAreYouAttending from "@/components/HowAreYouAttending";
-import TripInquiryButton from "@/components/TripInquiryButton";
+import Button from "@/components/ui/Button";
 
 interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -192,14 +192,9 @@ export default function ExhibitionsPage() {
                   </div>
                 </Link>
                 <div className="px-5 pb-5">
-                  <TripInquiryButton
-                    label={t("planMyTrip")}
-                    variant="secondaryOutline"
-                    size="block"
-                    attendingType="traveling"
-                    exhibitionSlug={expo.slug}
-                    context={expo.title}
-                  />
+                  <Button href={`/plan-business-trip?exhibitionSlug=${encodeURIComponent(expo.slug)}`} variant="secondaryOutline" size="block">
+                    {t("planMyTrip")}
+                  </Button>
                 </div>
               </Card>
             ))}

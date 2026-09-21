@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { formatNumber } from "@/lib/format";
+import { formatNumber, initials } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -276,8 +276,8 @@ export default async function Home() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {teamMembers.map((member) => (
                 <div key={member.id} className="text-center">
-                  <div className="mx-auto aspect-square w-full max-w-[180px] overflow-hidden bg-gray-100 rounded-[var(--radius-card)] border border-gray-200">
-                    {member.photo && (
+                  <div className="mx-auto aspect-square w-full max-w-[180px] overflow-hidden bg-gray-100 rounded-[var(--radius-card)] border border-gray-200 flex items-center justify-center">
+                    {member.photo ? (
                       <Image
                         src={member.photo}
                         alt={member.name}
@@ -285,6 +285,8 @@ export default async function Home() {
                         height={224}
                         className="w-full h-full object-cover"
                       />
+                    ) : (
+                      <span className="text-3xl font-bold text-gray-400">{initials(member.name)}</span>
                     )}
                   </div>
                   <h3 className="mt-4 font-[family-name:var(--font-heading)] font-bold text-heading">{member.name}</h3>

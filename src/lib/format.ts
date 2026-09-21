@@ -19,3 +19,13 @@ export function errorMessage(err: unknown, fallback: string): string {
 export function isAbortError(err: unknown): boolean {
   return err instanceof Error && err.name === "AbortError";
 }
+
+// First letter of the first and last word, e.g. "Jane Doe" -> "JD",
+// "Cher" -> "C" -- used as a placeholder avatar when no photo is set.
+export function initials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "";
+  const first = words[0][0];
+  const last = words.length > 1 ? words[words.length - 1][0] : "";
+  return (first + last).toUpperCase();
+}

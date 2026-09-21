@@ -24,10 +24,10 @@ export default function NavDropdown({ label, href, items }: { label: string; hre
   }
 
   return (
-    <div className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
+    <div className="relative shrink-0" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
       <Link
         href={href}
-        className="flex items-center gap-1 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-emerald-900 hover:border-gold-500 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
+        className="flex items-center gap-1 py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-emerald-900 hover:border-gold-500 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 whitespace-nowrap"
         onClick={() => setOpen(false)}
       >
         {label}

@@ -14,7 +14,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 // matches the dropdown triggers in NavDropdown.tsx so every top-level nav
 // item (plain link or dropdown) reads as one consistent masthead style.
 const NAV_LINK_CLASS =
-  "py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-emerald-900 hover:border-gold-500 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2";
+  "py-2 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-emerald-900 hover:border-gold-500 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 whitespace-nowrap shrink-0";
 
 // Secondary items that exist but shouldn't outrank Exhibitions/Business
 // Tours/Partner With Us -- grouped behind one "More" trigger instead of
@@ -32,7 +32,7 @@ function MoreMenu({ label, items }: { label: string; items: { label: string; hre
   }
 
   return (
-    <div className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
+    <div className="relative shrink-0" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
       <button
         type="button"
         className={`flex items-center gap-1 ${NAV_LINK_CLASS}`}
@@ -105,8 +105,10 @@ export default function NavBar() {
           <Logo />
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden lg:flex items-center gap-5">
+        {/* Desktop nav -- kicks in at xl (1280px), not lg: there are too many
+            primary items (8 links/dropdowns + 2 CTA buttons + auth) to fit
+            cleanly at 1024-1279px without cramming or wrapping text. */}
+        <div className="hidden xl:flex items-center gap-2 2xl:gap-4">
           <Link href="/" className={NAV_LINK_CLASS}>
             {t("home")}
           </Link>
@@ -125,29 +127,27 @@ export default function NavBar() {
             {t("contact")}
           </Link>
           <MoreMenu label={t("more")} items={moreItems} />
-          <div className="w-px h-5 bg-gray-200" />
-          <Button href="/plan-business-trip" variant="secondaryOutline" size="compact">
+          <Button href="/plan-business-trip" variant="secondaryOutline" size="xs">
             {t("planABusinessTrip")}
           </Button>
-          <Button href="/partner-with-us" variant="gold" size="compact">
+          <Button href="/partner-with-us" variant="gold" size="xs">
             {t("partnerWithUs")}
           </Button>
           {user ? (
             <>
-              <div className="w-px h-5 bg-gray-200" />
               <Link href="/messages" className={NAV_LINK_CLASS}>
                 {t("messages")}
               </Link>
               <Link href="/dashboard" className={NAV_LINK_CLASS}>
                 {t("dashboard")}
               </Link>
-              <div className="flex items-center gap-2 ml-1">
-                <div className="w-8 h-8 rounded-full bg-emerald-900 flex items-center justify-center text-white text-xs font-bold">
+              <div className="flex items-center gap-2 ml-1 shrink-0">
+                <div className="w-8 h-8 rounded-full bg-emerald-900 flex items-center justify-center text-white text-xs font-bold shrink-0">
                   {user.email?.[0]?.toUpperCase() || "U"}
                 </div>
                 <button
                   onClick={logout}
-                  className="text-sm text-gray-500 hover:text-red-600 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-500 focus-visible:outline-offset-2 rounded-sm"
+                  className="text-sm text-gray-500 hover:text-red-600 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-500 focus-visible:outline-offset-2 rounded-sm whitespace-nowrap shrink-0"
                 >
                   {t("logout")}
                 </button>
@@ -155,22 +155,20 @@ export default function NavBar() {
             </>
           ) : (
             <>
-              <div className="w-px h-5 bg-gray-200" />
               <Link href="/login" className={NAV_LINK_CLASS}>
                 {t("login")}
               </Link>
-              <Button href="/register" variant="primary" size="compact">
+              <Button href="/register" variant="primary" size="xs">
                 {t("register")}
               </Button>
             </>
           )}
-          <div className="w-px h-5 bg-gray-200" />
           <LanguageSwitcher />
         </div>
 
         {/* Mobile hamburger */}
         <button
-          className="lg:hidden p-2 text-gray-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
+          className="xl:hidden p-2 text-gray-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
           aria-expanded={mobileOpen}

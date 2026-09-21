@@ -35,7 +35,12 @@
       "exhibitionReviews": "展会点评"
     },
     "openMenu": "打开菜单",
-    "closeMenu": "关闭菜单"
+    "closeMenu": "关闭菜单",
+    "home": "首页",
+    "businessTours": "商务考察",
+    "chinaTours": "中国旅游",
+    "partnerWithUs": "合作伙伴",
+    "more": "更多"
   },
   "footer": {
     "newsletterTitle": "获取最新资讯",
@@ -98,7 +103,8 @@
     "loading": "正在加载展会...",
     "viewDetails": "查看详情 →",
     "noResultsTitle": "未找到相关展会",
-    "noResultsSubtitle": "请尝试调整筛选条件以查找活动。"
+    "noResultsSubtitle": "请尝试调整筛选条件以查找活动。",
+    "planMyTrip": "规划我的行程"
   },
   "toursPage": {
     "title": "旅游",
@@ -504,6 +510,14 @@
       "homepageSlideshow": {
         "title": "首页幻灯片",
         "description": "管理首页顶部展示的照片幻灯片"
+      },
+      "businessTripInquiries": {
+        "title": "商务行程咨询",
+        "description": "查看来自「规划我的行程」及商务考察CTA的报价请求。"
+      },
+      "partnerInquiries": {
+        "title": "合作咨询",
+        "description": "查看来自展会主办方和企业的合作咨询。"
       }
     }
   },
@@ -1271,7 +1285,17 @@
     "officialWebsite": "官方网站 ↗",
     "close": "关闭",
     "previousPhoto": "上一张",
-    "nextPhoto": "下一张"
+    "nextPhoto": "下一张",
+    "productCategories": "产品类别",
+    "whoShouldAttend": "适合参加人群",
+    "whoShouldAttendItems": {
+      "importers": "进口商",
+      "distributors": "经销商",
+      "retailers": "零售商",
+      "manufacturers": "制造商",
+      "wholesalers": "批发商"
+    },
+    "exhibitionDetails": "展会详情"
   },
   "expoRegisterPage": {
     "loading": "加载中...",
@@ -1994,7 +2018,7 @@
     "badge": "2026年即将举行的展会共 {count} 场",
     "heroTitleLine1": "全球贸易",
     "heroTitleLine2": "在此发生",
-    "heroSubtitle": "发现优质展会,联系全球买家与展商,借助全球领先的 B2B 贸易平台发展您的业务。",
+    "heroSubtitle": "发现中国的展会，联系供应商，并为您安排从抵达到离境的完整商务行程。",
     "browseExhibitions": "浏览展会",
     "ourServices": "我们的服务",
     "stats": {
@@ -2054,7 +2078,9 @@
     "teamBadge": "我们的团队",
     "teamTitle": "认识我们的团队",
     "teamSubtitle": "TheUniqueExpo 背后的团队成员。",
-    "meetTheTeam": "查看完整团队"
+    "meetTheTeam": "查看完整团队",
+    "planABusinessTrip": "规划商务行程",
+    "planMyTrip": "规划我的行程"
   },
   "eventsPage": {
     "title": "活动",
@@ -2795,5 +2821,169 @@
   "formValidation": {
     "required": "此字段为必填项。",
     "invalidEmail": "请输入有效的电子邮件地址。"
+  },
+  "howAreYouAttending": {
+    "badge": "您将如何参展？",
+    "title": "您将如何参展？",
+    "inChina": {
+      "title": "我已在中国",
+      "subtitle": "我已经在中国生活或工作。",
+      "cta": "浏览展会"
+    },
+    "travelling": {
+      "title": "我将前往中国",
+      "subtitle": "我专程来中国参加展会。",
+      "cta": "规划我的商务行程"
+    },
+    "services": {
+      "exhibitionRegistration": "展会注册",
+      "localTransportation": "本地交通",
+      "exhibitionAccompaniment": "展会陪同",
+      "interpreter": "翻译",
+      "supplierMeetings": "供应商会面",
+      "factoryVisits": "工厂参观",
+      "businessNetworking": "商务社交",
+      "hotel": "酒店",
+      "airportTransfer": "机场接送",
+      "exhibitionTransfer": "展会接送",
+      "exhibitionAssistance": "展会协助",
+      "businessMeetings": "商务会议",
+      "additionalItinerary": "额外的中国行程"
+    }
+  },
+  "needHelpAttending": {
+    "title": "需要参展协助吗？",
+    "subtitle": "我们可以帮助您安排展会参观或完整的中国商务行程。",
+    "inChinaLabel": "我已在中国",
+    "travellingLabel": "我将前往中国",
+    "getLocalAssistance": "获取本地协助",
+    "planMyBusinessTrip": "规划我的商务行程"
+  },
+  "tripInquiryModal": {
+    "title": "规划我的商务行程",
+    "close": "关闭",
+    "name": "姓名",
+    "email": "电子邮箱",
+    "phone": "电话",
+    "company": "公司",
+    "message": "留言",
+    "submit": "提交申请",
+    "submitting": "提交中...",
+    "submitFailed": "提交失败，请重试。",
+    "successTitle": "感谢您！我们已收到您的申请。",
+    "successSubtitle": "我们的团队将尽快与您联系，为您规划行程。"
+  },
+  "businessToursOverviewPage": {
+    "title": "中国商务考察团",
+    "subtitle": "您的商务行程 — 从抵达到离境全程安排。",
+    "beforeYourTrip": "行前准备",
+    "duringYourTrip": "行程期间",
+    "before": {
+      "exhibitionSelection": "展会选择",
+      "tripPlanning": "行程规划",
+      "exhibitionRegistrationGuidance": "展会注册指导",
+      "businessMeetingPlanning": "商务会议安排",
+      "itineraryPreparation": "行程准备"
+    },
+    "during": {
+      "hotel": "酒店",
+      "airportTransfer": "机场接送",
+      "exhibitionTransfer": "展会接送",
+      "exhibitionAccompaniment": "展会陪同",
+      "interpreterCoordination": "翻译协调",
+      "supplierMeetings": "供应商会面",
+      "factoryVisits": "工厂参观"
+    },
+    "tourTypesTitle": "选择您的商务考察类型",
+    "tourTypesSubtitle": "四种简单的方案 — 告诉我们您的需求，我们将为您提供定制报价。",
+    "requestAQuote": "索取报价",
+    "tourTypes": {
+      "exhibitionVisit": {
+        "title": "展会参观",
+        "description": "展会参观的基础协助。"
+      },
+      "businessTour": {
+        "title": "商务考察团",
+        "description": "展会 + 酒店 + 接送 + 商务协助。"
+      },
+      "businessPlus": {
+        "title": "商务尊享",
+        "description": "展会 + 会议 + 供应商 + 工厂参观。"
+      },
+      "customProgram": {
+        "title": "定制方案",
+        "description": "在中国的个性化商务行程。"
+      }
+    }
+  },
+  "partnerWithUsPage": {
+    "title": "成为合作伙伴",
+    "subtitle": "面向希望拓展在中国及国际业务的展会主办方和企业。",
+    "audiences": {
+      "organizers": {
+        "title": "展会主办方",
+        "description": "向我们的国际买家网络推广您的展会，提高参展人数。"
+      },
+      "companies": {
+        "title": "企业",
+        "description": "与我们合作开展联合营销、采购支持或在中国的联合业务发展。"
+      }
+    },
+    "formTitle": "告诉我们您的合作意向",
+    "formSubtitle": "填写以下信息，我们的团队将与您联系。",
+    "form": {
+      "name": "姓名",
+      "email": "电子邮箱",
+      "company": "公司/机构",
+      "partnerType": "我的身份是",
+      "partnerTypes": {
+        "organizer": "展会主办方",
+        "company": "企业",
+        "other": "其他"
+      },
+      "message": "留言"
+    },
+    "submit": "发送咨询",
+    "submitting": "发送中...",
+    "submitFailed": "提交失败，请重试。",
+    "successTitle": "感谢您！我们已收到您的咨询。",
+    "successSubtitle": "我们的合作团队将尽快与您联系。"
+  },
+  "adminBusinessTripInquiries": {
+    "title": "商务行程咨询",
+    "inquiriesReceived": "已收到 {count} 条咨询",
+    "updateFailed": "更新失败",
+    "noResultsTitle": "暂无咨询",
+    "noResultsSubtitle": "商务行程咨询将显示在此处。",
+    "attendingType": "参展身份",
+    "interest": "咨询内容",
+    "message": "留言",
+    "inChina": "已在中国",
+    "traveling": "即将前往中国",
+    "statuses": {
+      "pending": "待处理",
+      "in-progress": "处理中",
+      "completed": "已完成"
+    }
+  },
+  "adminPartnerInquiries": {
+    "title": "合作咨询",
+    "inquiriesReceived": "已收到 {count} 条咨询",
+    "updateFailed": "更新失败",
+    "noResultsTitle": "暂无咨询",
+    "noResultsSubtitle": "合作咨询将显示在此处。",
+    "company": "公司",
+    "partnerType": "类型",
+    "message": "留言",
+    "partnerTypes": {
+      "organizer": "展会主办方",
+      "company": "企业",
+      "other": "其他"
+    },
+    "statuses": {
+      "pending": "待处理",
+      "in-progress": "处理中",
+      "completed": "已完成"
+    }
   }
 }

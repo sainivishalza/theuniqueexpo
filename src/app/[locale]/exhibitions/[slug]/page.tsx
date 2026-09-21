@@ -11,6 +11,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
 import RelatedVideos from "@/components/RelatedVideos";
+import NeedHelpAttending from "@/components/NeedHelpAttending";
 
 interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -27,6 +28,8 @@ const exhibitorLogos = [
   { name: "TradeLink", abbr: "TL", color: "bg-gold-500" },
   { name: "SupplyPro", abbr: "SP", color: "bg-emerald-800" },
 ];
+
+const WHO_SHOULD_ATTEND_KEYS = ["importers", "distributors", "retailers", "manufacturers", "wholesalers"];
 
 export default function ExhibitionDetailPage({
   params,
@@ -184,6 +187,30 @@ export default function ExhibitionDetailPage({
                 <p className="text-gray-600 leading-relaxed whitespace-pre-line">{expo.description}</p>
               </Card>
 
+              {/* Product Categories */}
+              <Card shadow="sm" bordered={false} className="p-8">
+                <h2 className="text-2xl font-bold text-heading mb-4">{t("productCategories")}</h2>
+                <div className="flex flex-wrap gap-2">
+                  <Badge tone="emerald" size="pill">{expo.industry}</Badge>
+                </div>
+              </Card>
+
+              {/* Who Should Attend */}
+              <Card shadow="sm" bordered={false} className="p-8">
+                <h2 className="text-2xl font-bold text-heading mb-5">{t("whoShouldAttend")}</h2>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {WHO_SHOULD_ATTEND_KEYS.map((key) => (
+                    <div key={key} className="flex items-center gap-3 p-3 rounded-[var(--radius-card)] bg-cream-50 border border-gray-100">
+                      <span className="text-gold-600 text-[10px]">●</span>
+                      <span className="text-sm text-gray-700">{t(`whoShouldAttendItems.${key}`)}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              {/* Need help attending -- mid-page placement */}
+              <NeedHelpAttending exhibitionSlug={expo.slug} exhibitionTitle={expo.title} />
+
               {/* Highlights */}
               <Card shadow="sm" bordered={false} className="p-8">
                 <h2 className="text-2xl font-bold text-heading mb-5">{t("eventHighlights")}</h2>
@@ -243,6 +270,25 @@ export default function ExhibitionDetailPage({
                 >
                   {t("viewAllExhibitors")}
                 </Link>
+              </Card>
+
+              {/* Exhibition Details */}
+              <Card shadow="sm" bordered={false} className="p-8">
+                <h2 className="text-2xl font-bold text-heading mb-5">{t("exhibitionDetails")}</h2>
+                <dl className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-400">{t("stats.duration")}</dt>
+                    <dd className="mt-1 text-sm font-semibold text-gray-800">{expo.dates}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-400">{t("stats.venue")}</dt>
+                    <dd className="mt-1 text-sm font-semibold text-gray-800">{expo.venue}, {expo.city}, {expo.country}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-400">{t("organizedBy")}</dt>
+                    <dd className="mt-1 text-sm font-semibold text-gray-800">{expo.organizer}</dd>
+                  </div>
+                </dl>
               </Card>
             </div>
 
@@ -329,6 +375,11 @@ export default function ExhibitionDetailPage({
                 )}
               </Card>
             </div>
+          </div>
+
+          {/* Need help attending -- bottom placement */}
+          <div className="mt-8">
+            <NeedHelpAttending exhibitionSlug={expo.slug} exhibitionTitle={expo.title} />
           </div>
         </div>
       </section>

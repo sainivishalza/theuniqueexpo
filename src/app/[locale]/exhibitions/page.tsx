@@ -8,6 +8,9 @@ import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
+import { Link } from "@/i18n/navigation";
+import HowAreYouAttending from "@/components/HowAreYouAttending";
+import TripInquiryButton from "@/components/TripInquiryButton";
 
 interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -117,72 +120,86 @@ export default function ExhibitionsPage() {
         </div>
       </section>
 
+      <HowAreYouAttending />
+
       {/* Exhibition Grid */}
       <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           {loading && <p className="text-center py-20 text-gray-400">{t("loading")}</p>}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map((expo) => (
-              <Card key={expo.id} href={`/exhibitions/${expo.slug}`} bordered={false}>
-                {/* Image */}
-                <div className="relative h-52 overflow-hidden bg-gray-900">
-                  {/* Blurred backdrop fills the frame regardless of the poster's aspect ratio */}
-                  <Image
-                    src={expo.image}
-                    alt=""
-                    aria-hidden="true"
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover blur-2xl scale-110 opacity-60 group-hover:scale-125 transition-transform duration-500"
-                  />
-                  {/* Full poster, never cropped, so any text/details stay readable */}
-                  <Image
-                    src={expo.image}
-                    alt={expo.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-contain group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 gradient-overlay" />
-                  <FavoriteButton exhibitionId={expo.id} className="absolute top-4 right-4 z-10 w-9 h-9 text-lg shadow-md" />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <Badge tone="white" size="tag">{expo.industry}</Badge>
-                    {new Date(expo.endDate) >= new Date() && (
-                      <Badge tone="live" size="tag">{t("upcoming")}</Badge>
-                    )}
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-lg font-bold text-white line-clamp-2 leading-tight drop-shadow-lg">
-                      {expo.title}
-                    </h3>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-5">
-                  <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-3">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    {expo.dates}
-                  </div>
-                  <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-4">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {expo.venue}, {expo.city}
-                  </div>
-                  <p className="text-sm text-gray-400 line-clamp-2 mb-4">{expo.description}</p>
-                  <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                    <div className="flex gap-4 text-xs text-gray-400">
-                      <span>🏢 {formatNumber(expo.exhibitors)}+</span>
-                      <span>👥 {expo.visitors}</span>
+              <Card key={expo.id} bordered={false} hoverable={false}>
+                <Link href={`/exhibitions/${expo.slug}`} className="group block">
+                  {/* Image */}
+                  <div className="relative h-52 overflow-hidden bg-gray-900">
+                    {/* Blurred backdrop fills the frame regardless of the poster's aspect ratio */}
+                    <Image
+                      src={expo.image}
+                      alt=""
+                      aria-hidden="true"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover blur-2xl scale-110 opacity-60 group-hover:scale-125 transition-transform duration-500"
+                    />
+                    {/* Full poster, never cropped, so any text/details stay readable */}
+                    <Image
+                      src={expo.image}
+                      alt={expo.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-contain group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 gradient-overlay" />
+                    <FavoriteButton exhibitionId={expo.id} className="absolute top-4 right-4 z-10 w-9 h-9 text-lg shadow-md" />
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      <Badge tone="white" size="tag">{expo.industry}</Badge>
+                      {new Date(expo.endDate) >= new Date() && (
+                        <Badge tone="live" size="tag">{t("upcoming")}</Badge>
+                      )}
                     </div>
-                    <span className="inline-flex items-center gap-1 rounded-[var(--radius-button)] bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-800 group-hover:bg-emerald-100 transition-colors">
-                      {t("viewDetails")}
-                    </span>
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <h3 className="text-lg font-bold text-white line-clamp-2 leading-tight drop-shadow-lg">
+                        {expo.title}
+                      </h3>
+                    </div>
                   </div>
+
+                  {/* Content */}
+                  <div className="p-5">
+                    <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-3">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      {expo.dates}
+                    </div>
+                    <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-4">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      {expo.venue}, {expo.city}
+                    </div>
+                    <p className="text-sm text-gray-400 line-clamp-2 mb-4">{expo.description}</p>
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                      <div className="flex gap-4 text-xs text-gray-400">
+                        <span>🏢 {formatNumber(expo.exhibitors)}+</span>
+                        <span>👥 {expo.visitors}</span>
+                      </div>
+                      <span className="inline-flex items-center gap-1 rounded-[var(--radius-button)] bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-800 group-hover:bg-emerald-100 transition-colors">
+                        {t("viewDetails")}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+                <div className="px-5 pb-5">
+                  <TripInquiryButton
+                    label={t("planMyTrip")}
+                    variant="secondaryOutline"
+                    size="block"
+                    attendingType="traveling"
+                    exhibitionSlug={expo.slug}
+                    context={expo.title}
+                  />
                 </div>
               </Card>
             ))}

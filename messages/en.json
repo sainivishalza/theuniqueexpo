@@ -35,7 +35,12 @@
       "exhibitionReviews": "Exhibition Reviews"
     },
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "home": "Home",
+    "businessTours": "Business Tours",
+    "chinaTours": "China Tours",
+    "partnerWithUs": "Partner With Us",
+    "more": "More"
   },
   "footer": {
     "newsletterTitle": "Stay Updated",
@@ -98,7 +103,8 @@
     "loading": "Loading exhibitions...",
     "viewDetails": "View Details →",
     "noResultsTitle": "No exhibitions found",
-    "noResultsSubtitle": "Try adjusting your filters to find events."
+    "noResultsSubtitle": "Try adjusting your filters to find events.",
+    "planMyTrip": "Plan My Trip"
   },
   "toursPage": {
     "title": "Tours",
@@ -504,6 +510,14 @@
       "homepageSlideshow": {
         "title": "Homepage Slideshow",
         "description": "Manage the photo slideshow shown at the top of the homepage"
+      },
+      "businessTripInquiries": {
+        "title": "Business Trip Inquiries",
+        "description": "Review quote requests from the Plan My Trip and business-tour CTAs."
+      },
+      "partnerInquiries": {
+        "title": "Partner Inquiries",
+        "description": "Review partnership inquiries from exhibition organizers and companies."
       }
     }
   },
@@ -1271,7 +1285,17 @@
     "officialWebsite": "Official Website ↗",
     "close": "Close",
     "previousPhoto": "Previous photo",
-    "nextPhoto": "Next photo"
+    "nextPhoto": "Next photo",
+    "productCategories": "Product Categories",
+    "whoShouldAttend": "Who Should Attend",
+    "whoShouldAttendItems": {
+      "importers": "Importers",
+      "distributors": "Distributors",
+      "retailers": "Retailers",
+      "manufacturers": "Manufacturers",
+      "wholesalers": "Wholesalers"
+    },
+    "exhibitionDetails": "Exhibition Details"
   },
   "expoRegisterPage": {
     "loading": "Loading...",
@@ -1994,7 +2018,7 @@
     "badge": "{count} Upcoming Exhibitions in 2026",
     "heroTitleLine1": "Where Global",
     "heroTitleLine2": "Trade Happens",
-    "heroSubtitle": "Discover exhibitions, connect with buyers & exhibitors, and grow your business on the world's leading B2B trade platform.",
+    "heroSubtitle": "Discover exhibitions in China, connect with suppliers and organize your complete business trip — from arrival to departure.",
     "browseExhibitions": "Browse Exhibitions",
     "ourServices": "Our Services",
     "stats": {
@@ -2054,7 +2078,9 @@
     "teamBadge": "Our People",
     "teamTitle": "Meet the Team",
     "teamSubtitle": "The people behind TheUniqueExpo.",
-    "meetTheTeam": "Meet the Full Team"
+    "meetTheTeam": "Meet the Full Team",
+    "planABusinessTrip": "Plan a Business Trip",
+    "planMyTrip": "Plan My Trip"
   },
   "eventsPage": {
     "title": "Events",
@@ -2795,5 +2821,169 @@
   "formValidation": {
     "required": "This field is required.",
     "invalidEmail": "Enter a valid email address."
+  },
+  "howAreYouAttending": {
+    "badge": "How Are You Attending?",
+    "title": "How Are You Attending?",
+    "inChina": {
+      "title": "I Am In China",
+      "subtitle": "I already live or work in China.",
+      "cta": "Explore Exhibitions"
+    },
+    "travelling": {
+      "title": "I Am Travelling To China",
+      "subtitle": "I am coming to China specifically for an exhibition.",
+      "cta": "Plan My Business Trip"
+    },
+    "services": {
+      "exhibitionRegistration": "Exhibition registration",
+      "localTransportation": "Local transportation",
+      "exhibitionAccompaniment": "Exhibition accompaniment",
+      "interpreter": "Interpreter",
+      "supplierMeetings": "Supplier meetings",
+      "factoryVisits": "Factory visits",
+      "businessNetworking": "Business networking",
+      "hotel": "Hotel",
+      "airportTransfer": "Airport transfer",
+      "exhibitionTransfer": "Exhibition transfer",
+      "exhibitionAssistance": "Exhibition assistance",
+      "businessMeetings": "Business meetings",
+      "additionalItinerary": "Additional China itinerary"
+    }
+  },
+  "needHelpAttending": {
+    "title": "Need Help Attending?",
+    "subtitle": "We can help organize your exhibition visit or complete business trip to China.",
+    "inChinaLabel": "I Am Already In China",
+    "travellingLabel": "I Am Travelling To China",
+    "getLocalAssistance": "Get Local Assistance",
+    "planMyBusinessTrip": "Plan My Business Trip"
+  },
+  "tripInquiryModal": {
+    "title": "Plan My Business Trip",
+    "close": "Close",
+    "name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Company",
+    "message": "Message",
+    "submit": "Submit Request",
+    "submitting": "Submitting...",
+    "submitFailed": "Request failed. Please try again.",
+    "successTitle": "Thank you! We received your request.",
+    "successSubtitle": "Our team will contact you shortly to plan your trip."
+  },
+  "businessToursOverviewPage": {
+    "title": "Business Tours in China",
+    "subtitle": "Your business trip — organized from arrival to departure.",
+    "beforeYourTrip": "Before Your Trip",
+    "duringYourTrip": "During Your Trip",
+    "before": {
+      "exhibitionSelection": "Exhibition selection",
+      "tripPlanning": "Trip planning",
+      "exhibitionRegistrationGuidance": "Exhibition registration guidance",
+      "businessMeetingPlanning": "Business meeting planning",
+      "itineraryPreparation": "Itinerary preparation"
+    },
+    "during": {
+      "hotel": "Hotel",
+      "airportTransfer": "Airport transfer",
+      "exhibitionTransfer": "Exhibition transfer",
+      "exhibitionAccompaniment": "Exhibition accompaniment",
+      "interpreterCoordination": "Interpreter coordination",
+      "supplierMeetings": "Supplier meetings",
+      "factoryVisits": "Factory visits"
+    },
+    "tourTypesTitle": "Choose Your Business Tour Type",
+    "tourTypesSubtitle": "Four simple options — tell us what you need and we'll send a tailored quote.",
+    "requestAQuote": "Request a Quote",
+    "tourTypes": {
+      "exhibitionVisit": {
+        "title": "Exhibition Visit",
+        "description": "Basic help with an exhibition visit."
+      },
+      "businessTour": {
+        "title": "Business Tour",
+        "description": "Exhibition + hotel + transfers + business assistance."
+      },
+      "businessPlus": {
+        "title": "Business Plus",
+        "description": "Exhibition + meetings + suppliers + factory visits."
+      },
+      "customProgram": {
+        "title": "Custom Program",
+        "description": "Individual business program in China."
+      }
+    }
+  },
+  "partnerWithUsPage": {
+    "title": "Partner With Us",
+    "subtitle": "For exhibition organizers and companies looking to grow their reach in China and internationally.",
+    "audiences": {
+      "organizers": {
+        "title": "Exhibition Organizers",
+        "description": "Promote your exhibition to our network of international buyers and increase attendance."
+      },
+      "companies": {
+        "title": "Companies",
+        "description": "Partner with us for co-marketing, sourcing support, or joint business development in China."
+      }
+    },
+    "formTitle": "Tell Us About Your Partnership",
+    "formSubtitle": "Share a few details and our team will get back to you.",
+    "form": {
+      "name": "Full Name",
+      "email": "Email",
+      "company": "Company / Organization",
+      "partnerType": "I Am A(n)",
+      "partnerTypes": {
+        "organizer": "Exhibition Organizer",
+        "company": "Company",
+        "other": "Other"
+      },
+      "message": "Message"
+    },
+    "submit": "Send Inquiry",
+    "submitting": "Sending...",
+    "submitFailed": "Request failed. Please try again.",
+    "successTitle": "Thank you! We received your inquiry.",
+    "successSubtitle": "Our partnerships team will contact you shortly."
+  },
+  "adminBusinessTripInquiries": {
+    "title": "Business Trip Inquiries",
+    "inquiriesReceived": "{count} inquiries received",
+    "updateFailed": "Update failed",
+    "noResultsTitle": "No inquiries yet",
+    "noResultsSubtitle": "Business trip inquiries will appear here.",
+    "attendingType": "Attending As",
+    "interest": "Interest",
+    "message": "Message",
+    "inChina": "Already in China",
+    "traveling": "Travelling to China",
+    "statuses": {
+      "pending": "pending",
+      "in-progress": "in progress",
+      "completed": "completed"
+    }
+  },
+  "adminPartnerInquiries": {
+    "title": "Partner Inquiries",
+    "inquiriesReceived": "{count} inquiries received",
+    "updateFailed": "Update failed",
+    "noResultsTitle": "No inquiries yet",
+    "noResultsSubtitle": "Partner inquiries will appear here.",
+    "company": "Company",
+    "partnerType": "Type",
+    "message": "Message",
+    "partnerTypes": {
+      "organizer": "Exhibition Organizer",
+      "company": "Company",
+      "other": "Other"
+    },
+    "statuses": {
+      "pending": "pending",
+      "in-progress": "in progress",
+      "completed": "completed"
+    }
   }
 }

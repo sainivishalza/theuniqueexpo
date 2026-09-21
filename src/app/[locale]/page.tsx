@@ -11,6 +11,8 @@ import { listTeamMembers } from "@/lib/server/team-members-repo";
 import { listSlideshowPhotos } from "@/lib/server/homepage-slideshow-repo";
 import HomepageSlideshow from "@/components/HomepageSlideshow";
 import FaqAccordion from "@/components/FaqAccordion";
+import HowAreYouAttending from "@/components/HowAreYouAttending";
+import TripInquiryButton from "@/components/TripInquiryButton";
 
 // How many of the soonest upcoming exhibitions to feature on the homepage.
 const FEATURED_COUNT = 6;
@@ -114,9 +116,7 @@ export default async function Home() {
                 {t("browseExhibitions")}
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Button>
-              <Button href="/services" variant="outline">
-                {t("ourServices")}
-              </Button>
+              <TripInquiryButton label={t("planABusinessTrip")} variant="outline" size="md" attendingType="traveling" />
             </div>
           </div>
 
@@ -153,48 +153,62 @@ export default async function Home() {
               at once instead of drifting out of sync. */}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {featured.map((evt) => (
-              <Card key={evt.id} href={`/exhibitions/${evt.slug}`} shadow="sm">
-                {/* Image, with the date as a small amber tag over it */}
-                {evt.image && (
-                  <div className="relative h-44 overflow-hidden border-b border-gray-100">
-                    <FavoriteButton exhibitionId={evt.id} className="absolute top-3 right-3 z-10 w-9 h-9 text-lg shadow-sm" />
-                    <span className="absolute top-3 left-3 z-10 bg-gold-500 text-white text-xs font-bold uppercase tracking-[0.08em] px-2.5 py-1">
-                      {evt.dates.split(",")[0]}
-                    </span>
-                    <Image
-                      src={evt.image}
-                      alt={evt.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500 [filter:saturate(0.85)]"
-                    />
-                  </div>
-                )}
+              <Card key={evt.id} shadow="sm" hoverable={false}>
+                <Link href={`/exhibitions/${evt.slug}`} className="group block">
+                  {/* Image, with the date as a small amber tag over it */}
+                  {evt.image && (
+                    <div className="relative h-44 overflow-hidden border-b border-gray-100">
+                      <FavoriteButton exhibitionId={evt.id} className="absolute top-3 right-3 z-10 w-9 h-9 text-lg shadow-sm" />
+                      <span className="absolute top-3 left-3 z-10 bg-gold-500 text-white text-xs font-bold uppercase tracking-[0.08em] px-2.5 py-1">
+                        {evt.dates.split(",")[0]}
+                      </span>
+                      <Image
+                        src={evt.image}
+                        alt={evt.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500 [filter:saturate(0.85)]"
+                      />
+                    </div>
+                  )}
 
-                <div className="p-6">
-                  <h3 className="text-xl font-extrabold leading-tight text-heading">{evt.title}</h3>
-                  <div className="mt-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.08em] text-gray-500">
-                    <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    {evt.venue}, {evt.city}
-                  </div>
+                  <div className="px-6 pt-6">
+                    <h3 className="text-xl font-extrabold leading-tight text-heading">{evt.title}</h3>
+                    <div className="mt-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.08em] text-gray-500">
+                      <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                      {evt.venue}, {evt.city}
+                    </div>
 
-                  <ul className="mt-4 space-y-1.5 mb-4">
-                    {evt.highlights.slice(0, 3).map((h) => (
-                      <li key={h} className="text-sm text-gray-600 flex items-start gap-2">
-                        <span className="text-gold-600 mt-1 shrink-0 text-[10px]">●</span>
-                        {h}
-                      </li>
-                    ))}
-                  </ul>
+                    <ul className="mt-4 space-y-1.5 mb-4">
+                      {evt.highlights.slice(0, 3).map((h) => (
+                        <li key={h} className="text-sm text-gray-600 flex items-start gap-2">
+                          <span className="text-gold-600 mt-1 shrink-0 text-[10px]">●</span>
+                          {h}
+                        </li>
+                      ))}
+                    </ul>
 
-                  {/* CTA */}
-                  <div className="pt-3 border-t border-gray-200 flex items-center justify-between">
-                    <span className="text-xs text-gray-500">{formatNumber(evt.exhibitors)}{t("exhibitorsSuffix")}</span>
-                    <span className="inline-flex items-center gap-1 rounded-[var(--radius-button)] bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 group-hover:bg-emerald-100 transition-colors">
-                      {t("viewDetails")}
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                    </span>
+                    <div className="pt-3 border-t border-gray-200 flex items-center justify-between">
+                      <span className="text-xs text-gray-500">{formatNumber(evt.exhibitors)}{t("exhibitorsSuffix")}</span>
+                      <span className="inline-flex items-center gap-1 rounded-[var(--radius-button)] bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 group-hover:bg-emerald-100 transition-colors">
+                        {t("viewDetails")}
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                      </span>
+                    </div>
                   </div>
+                </Link>
+
+                {/* Plan My Trip -- separate from the card's own link since it
+                    opens the inquiry modal instead of navigating. */}
+                <div className="px-6 pb-6 pt-3">
+                  <TripInquiryButton
+                    label={t("planMyTrip")}
+                    variant="secondaryOutline"
+                    size="block"
+                    attendingType="traveling"
+                    exhibitionSlug={evt.slug}
+                    context={evt.title}
+                  />
                 </div>
               </Card>
             ))}
@@ -208,6 +222,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <HowAreYouAttending />
 
       {/* ── Industry Categories ── */}
       <section className="py-20 bg-white">

@@ -118,9 +118,6 @@ export default function NavBar() {
           <Link href="/services" className={NAV_LINK_CLASS}>
             {t("services")}
           </Link>
-          <Link href="/partner-with-us" className={NAV_LINK_CLASS}>
-            {t("partnerWithUs")}
-          </Link>
           <Link href="/about" className={NAV_LINK_CLASS}>
             {t("about")}
           </Link>
@@ -128,6 +125,13 @@ export default function NavBar() {
             {t("contact")}
           </Link>
           <MoreMenu label={t("more")} items={moreItems} />
+          <div className="w-px h-5 bg-gray-200" />
+          <Button href="/plan-business-trip" variant="secondaryOutline" size="compact">
+            {t("planABusinessTrip")}
+          </Button>
+          <Button href="/partner-with-us" variant="gold" size="compact">
+            {t("partnerWithUs")}
+          </Button>
           {user ? (
             <>
               <div className="w-px h-5 bg-gray-200" />
@@ -187,6 +191,14 @@ export default function NavBar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div id="mobile-nav-menu" className="lg:hidden border-t border-gray-200 bg-white px-6 py-4 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <div className="pb-3 mb-2 border-b border-gray-100 space-y-2">
+            <Button href="/plan-business-trip" variant="secondaryOutline" size="blockSm" onClick={() => setMobileOpen(false)}>
+              {t("planABusinessTrip")}
+            </Button>
+            <Button href="/partner-with-us" variant="gold" size="blockSm" onClick={() => setMobileOpen(false)}>
+              {t("partnerWithUs")}
+            </Button>
+          </div>
           <Link href="/" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("home")}</Link>
           {navGroups.map((group) => (
             <div key={group.key} className="border-b border-gray-100 last:border-0">
@@ -229,7 +241,6 @@ export default function NavBar() {
           ))}
           <Link href="/business-tours" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("businessTours")}</Link>
           <Link href="/services" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("services")}</Link>
-          <Link href="/partner-with-us" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("partnerWithUs")}</Link>
           <Link href="/about" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("about")}</Link>
           <Link href="/contact" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("contact")}</Link>
 

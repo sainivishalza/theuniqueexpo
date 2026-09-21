@@ -7,9 +7,10 @@ import { errorMessage } from "@/lib/format";
 import Card from "@/components/ui/Card";
 
 interface BusinessTripInquiry {
-  id: string; name: string; email: string; phone: string; company: string;
-  attendingType: string; tourType: string; exhibitionSlug: string; message: string;
-  status: string; createdAt: string;
+  id: string; name: string; email: string; whatsapp: string; company: string; country: string;
+  departureCity: string; attendingType: string; tourType: string; exhibitionSlug: string;
+  arrivalDate: string; departureDate: string; travelers: number | null; needs: string[];
+  industry: string; message: string; status: string; createdAt: string;
 }
 
 const STATUSES = ["pending", "in-progress", "completed"];
@@ -72,7 +73,8 @@ export default function AdminBusinessTripInquiriesPage() {
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("attendingType")}</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("interest")}</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("tripDetails")}</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("needs")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("message")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
@@ -80,15 +82,21 @@ export default function AdminBusinessTripInquiriesPage() {
                 {inquiries.map((a) => (
                   <tr key={a.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">
-                      {a.name}<br/><span className="text-xs text-gray-400">{a.email}{a.phone ? ` · ${a.phone}` : ""}</span>
+                      {a.name}<br/><span className="text-xs text-gray-400">{a.email}{a.whatsapp ? ` · ${a.whatsapp}` : ""}</span>
                       {a.company && <div className="text-xs text-gray-400">{a.company}</div>}
+                      {a.country && <div className="text-xs text-gray-400">{a.country}</div>}
                     </td>
                     <td className="px-6 py-4 text-gray-500">{a.attendingType === "in_china" ? t("inChina") : a.attendingType === "traveling" ? t("traveling") : "—"}</td>
-                    <td className="px-6 py-4 text-gray-500">
+                    <td className="px-6 py-4 text-gray-500 text-xs space-y-0.5">
+                      {a.exhibitionSlug && <div>{a.exhibitionSlug}</div>}
                       {a.tourType && <div>{a.tourType}</div>}
-                      {a.exhibitionSlug && <div className="text-xs text-gray-400">{a.exhibitionSlug}</div>}
-                      {!a.tourType && !a.exhibitionSlug && "—"}
+                      {(a.arrivalDate || a.departureDate) && <div>{a.arrivalDate || "?"} → {a.departureDate || "?"}</div>}
+                      {a.departureCity && <div>{t("from")} {a.departureCity}</div>}
+                      {a.travelers != null && <div>{t("travelers", { count: a.travelers })}</div>}
+                      {a.industry && <div>{a.industry}</div>}
+                      {!a.exhibitionSlug && !a.tourType && !a.arrivalDate && !a.departureCity && a.travelers == null && !a.industry && "—"}
                     </td>
+                    <td className="px-6 py-4 text-gray-500 text-xs max-w-[160px]">{a.needs.length > 0 ? a.needs.join(", ") : "—"}</td>
                     <td className="px-6 py-4 text-gray-500 max-w-xs truncate">{a.message || "—"}</td>
                     <td className="px-6 py-4">
                       <select

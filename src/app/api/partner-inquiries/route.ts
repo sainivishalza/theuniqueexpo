@@ -6,11 +6,19 @@ import { rateLimitOrNull } from "@/lib/server/rate-limit";
 const LEAD_FORM_LIMIT = 5;
 const LEAD_FORM_WINDOW_MS = 60 * 60 * 1000;
 
-const PARTNER_TYPES = ["organizer", "company", "other"];
+const PARTNER_TYPES = [
+  "organizer", "company_brand", "service_provider", "hotel_transportation",
+  "factory_supplier", "business_association", "tourism_partner", "other",
+];
+const TOPICS_OPTIONS = [
+  "exhibitionPromotion", "buyerRecruitment", "businessDelegation", "b2bMatchmaking",
+  "businessTours", "supplierNetwork", "localServices", "other",
+];
 
 // Public lead capture for the "Partner With Us" page -- exhibition
-// organizers and companies enquiring about a partnership, not the
-// individual-affiliate Partner Program. No login required.
+// organizers, companies, and service providers enquiring about a
+// partnership, not the individual-affiliate Partner Program. No login
+// required.
 export async function POST(request: Request) {
   const limited = rateLimitOrNull(request, "partner-inquiries", LEAD_FORM_LIMIT, LEAD_FORM_WINDOW_MS);
   if (limited) return limited;
@@ -18,7 +26,7 @@ export async function POST(request: Request) {
   try {
     const user = await getSessionUser(request);
     const body = await request.json();
-    const { name, email, company, partnerType, message } = body;
+    const { name, email, whatsapp, company, website, country, partnerType, topics, message } = body;
 
     if (!name || !email) {
       return NextResponse.json({ error: "Name and email are required" }, { status: 400 });
@@ -28,8 +36,12 @@ export async function POST(request: Request) {
       userId: user?.id,
       name,
       email,
+      whatsapp: whatsapp || "",
       company: company || "",
+      website: website || "",
+      country: country || "",
       partnerType: PARTNER_TYPES.includes(partnerType) ? partnerType : "other",
+      topics: Array.isArray(topics) ? topics.filter((t: unknown) => typeof t === "string" && TOPICS_OPTIONS.includes(t)) : [],
       message: message || "",
     });
     return NextResponse.json({ id }, { status: 201 });

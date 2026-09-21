@@ -3,7 +3,6 @@ import { useTranslations } from "next-intl";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
-import TripInquiryButton from "@/components/TripInquiryButton";
 
 const IN_CHINA_SERVICE_KEYS = [
   "exhibitionRegistration",
@@ -71,14 +70,9 @@ export default function HowAreYouAttending() {
                 </li>
               ))}
             </ul>
-            <div className="mt-8">
-              <TripInquiryButton
-                label={t("travelling.cta")}
-                variant="gradientCta"
-                size="wide"
-                attendingType="traveling"
-              />
-            </div>
+            <Button href="/plan-business-trip" variant="gradientCta" size="wide" className="mt-8">
+              {t("travelling.cta")}
+            </Button>
           </Card>
         </div>
       </div>

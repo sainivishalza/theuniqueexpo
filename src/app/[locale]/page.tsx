@@ -12,7 +12,7 @@ import { listSlideshowPhotos } from "@/lib/server/homepage-slideshow-repo";
 import HomepageSlideshow from "@/components/HomepageSlideshow";
 import FaqAccordion from "@/components/FaqAccordion";
 import HowAreYouAttending from "@/components/HowAreYouAttending";
-import TripInquiryButton from "@/components/TripInquiryButton";
+import { SHOW_TEAM } from "@/lib/feature-flags";
 
 // How many of the soonest upcoming exhibitions to feature on the homepage.
 const FEATURED_COUNT = 6;
@@ -116,7 +116,9 @@ export default async function Home() {
                 {t("browseExhibitions")}
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Button>
-              <TripInquiryButton label={t("planABusinessTrip")} variant="outline" size="md" attendingType="traveling" />
+              <Button href="/plan-business-trip" variant="outline">
+                {t("planABusinessTrip")}
+              </Button>
             </div>
           </div>
 
@@ -199,16 +201,11 @@ export default async function Home() {
                 </Link>
 
                 {/* Plan My Trip -- separate from the card's own link since it
-                    opens the inquiry modal instead of navigating. */}
+                    goes to the business-trip form, not the exhibition page. */}
                 <div className="px-6 pb-6 pt-3">
-                  <TripInquiryButton
-                    label={t("planMyTrip")}
-                    variant="secondaryOutline"
-                    size="block"
-                    attendingType="traveling"
-                    exhibitionSlug={evt.slug}
-                    context={evt.title}
-                  />
+                  <Button href={`/plan-business-trip?exhibitionSlug=${encodeURIComponent(evt.slug)}`} variant="secondaryOutline" size="block">
+                    {t("planMyTrip")}
+                  </Button>
                 </div>
               </Card>
             ))}
@@ -281,7 +278,7 @@ export default async function Home() {
       </section>
 
       {/* ── Team Section ── */}
-      {teamMembers.length > 0 && (
+      {SHOW_TEAM && teamMembers.length > 0 && (
         <section className="py-20 bg-white">
           <div className="mx-auto max-w-6xl px-6">
             <div className="text-center mb-14">

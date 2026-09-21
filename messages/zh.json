@@ -40,7 +40,8 @@
     "businessTours": "商务考察",
     "chinaTours": "中国旅游",
     "partnerWithUs": "合作伙伴",
-    "more": "更多"
+    "more": "更多",
+    "planABusinessTrip": "规划商务行程"
   },
   "footer": {
     "newsletterTitle": "获取最新资讯",
@@ -2918,7 +2919,7 @@
   },
   "partnerWithUsPage": {
     "title": "成为合作伙伴",
-    "subtitle": "面向希望拓展在中国及国际业务的展会主办方和企业。",
+    "subtitle": "我们与展会主办方、企业和服务提供商合作，在中国与国际市场之间建立业务联系。",
     "audiences": {
       "organizers": {
         "title": "展会主办方",
@@ -2929,7 +2930,7 @@
         "description": "与我们合作开展联合营销、采购支持或在中国的联合业务发展。"
       }
     },
-    "formTitle": "告诉我们您的合作意向",
+    "formTitle": "与The Unique Expo合作",
     "formSubtitle": "填写以下信息，我们的团队将与您联系。",
     "form": {
       "name": "姓名",
@@ -2943,11 +2944,86 @@
       },
       "message": "留言"
     },
-    "submit": "发送咨询",
+    "submit": "提交合作申请",
     "submitting": "发送中...",
     "submitFailed": "提交失败，请重试。",
-    "successTitle": "感谢您！我们已收到您的咨询。",
-    "successSubtitle": "我们的合作团队将尽快与您联系。"
+    "successTitle": "感谢您！我们已收到您的合作申请。",
+    "successSubtitle": "我们的合作团队将尽快与您联系。",
+    "organizers": {
+      "title": "展会主办方",
+      "subtitle": "让您的展会与国际买家、商务访客和专业代表团建立联系。",
+      "cta": "成为合作伙伴",
+      "services": {
+        "internationalVisitorPromotion": "国际观众推广",
+        "buyerRecruitment": "买家招募",
+        "hostedBuyerPrograms": "买家接待计划",
+        "businessDelegations": "商务代表团",
+        "exhibitionPromotion": "展会推广",
+        "b2bMatchmaking": "B2B配对",
+        "businessTours": "商务考察团",
+        "onSiteSupport": "现场支持"
+      }
+    },
+    "servicePartners": {
+      "title": "商务及服务合作伙伴",
+      "subtitle": "我们与为在华国际企业提供服务的公司和专业人士合作。",
+      "cta": "成为合作伙伴",
+      "examples": {
+        "hotels": "酒店",
+        "transportationCompanies": "交通运输公司",
+        "interpreters": "翻译人员",
+        "logisticsCompanies": "物流公司",
+        "inspectionCompanies": "验货公司",
+        "sourcingCompanies": "采购公司",
+        "factories": "工厂",
+        "businessServiceProviders": "商务服务提供商",
+        "tourismCompanies": "旅游公司"
+      }
+    },
+    "companies": {
+      "title": "企业合作",
+      "subtitle": "正在寻找中国的供应商、商业机会或展会支持？",
+      "cta": "联系我们的团队",
+      "services": {
+        "exhibitionVisits": "展会参观",
+        "businessTours": "商务考察团",
+        "supplierMeetings": "供应商会面",
+        "factoryVisits": "工厂参观",
+        "businessMatchmaking": "商务配对",
+        "marketExploration": "市场考察"
+      }
+    },
+    "iAm": "我的身份是：",
+    "partnerTypes": {
+      "organizer": "展会主办方",
+      "company_brand": "企业/品牌",
+      "service_provider": "服务提供商",
+      "hotel_transportation": "酒店/交通",
+      "factory_supplier": "工厂/供应商",
+      "business_association": "商业协会",
+      "tourism_partner": "旅游合作伙伴",
+      "other": "其他"
+    },
+    "fields": {
+      "company": "公司名称",
+      "website": "网站",
+      "country": "国家",
+      "contactPerson": "联系人",
+      "email": "电子邮箱",
+      "whatsapp": "WhatsApp / 微信",
+      "message": "请介绍您的公司及合作提案"
+    },
+    "whatWouldYouLikeToDiscuss": "您希望讨论什么？",
+    "topics": {
+      "exhibitionPromotion": "展会推广",
+      "buyerRecruitment": "买家招募",
+      "businessDelegation": "商务代表团",
+      "b2bMatchmaking": "B2B配对",
+      "businessTours": "商务考察团",
+      "supplierNetwork": "供应商网络",
+      "localServices": "本地服务",
+      "other": "其他"
+    }
   },
   "adminBusinessTripInquiries": {
     "title": "商务行程咨询",
@@ -2964,7 +3040,11 @@
       "pending": "待处理",
       "in-progress": "处理中",
       "completed": "已完成"
-    }
+    },
+    "tripDetails": "行程详情",
+    "needs": "需求",
+    "from": "出发自",
+    "travelers": "{count} 位出行者"
   },
   "adminPartnerInquiries": {
     "title": "合作咨询",
@@ -2978,12 +3058,96 @@
     "partnerTypes": {
       "organizer": "展会主办方",
       "company": "企业",
-      "other": "其他"
+      "other": "其他",
+      "company_brand": "企业/品牌",
+      "service_provider": "服务提供商",
+      "hotel_transportation": "酒店/交通",
+      "factory_supplier": "工厂/供应商",
+      "business_association": "商业协会",
+      "tourism_partner": "旅游合作伙伴"
     },
     "statuses": {
       "pending": "待处理",
       "in-progress": "处理中",
       "completed": "已完成"
+    },
+    "topics": "话题",
+    "topicLabels": {
+      "exhibitionPromotion": "展会推广",
+      "buyerRecruitment": "买家招募",
+      "businessDelegation": "商务代表团",
+      "b2bMatchmaking": "B2B配对",
+      "businessTours": "商务考察团",
+      "supplierNetwork": "供应商网络",
+      "localServices": "本地服务",
+      "other": "其他"
     }
+  },
+  "planBusinessTripPage": {
+    "title": "规划我的商务行程",
+    "subtitle": "告诉我们您的行程需求，我们将为您提供定制方案。",
+    "selectedTourType": "已选套餐：{tourType}",
+    "tourTypeLabels": {
+      "exhibitionVisit": "展会参观",
+      "businessTour": "商务考察团",
+      "businessPlus": "商务尊享",
+      "customProgram": "定制方案"
+    },
+    "fields": {
+      "name": "姓名",
+      "company": "公司",
+      "email": "电子邮箱",
+      "whatsapp": "WhatsApp / 微信",
+      "country": "国家",
+      "departureCity": "出发城市",
+      "exhibition": "展会",
+      "exhibitionPlaceholder": "选择展会（可选）",
+      "arrivalDate": "抵达日期",
+      "departureDate": "离开日期",
+      "travelers": "出行人数",
+      "industry": "行业/产品",
+      "message": "请描述您的商务行程"
+    },
+    "whatDoYouNeed": "您需要什么？",
+    "needs": {
+      "hotel": "酒店",
+      "airportTransfer": "机场接送",
+      "exhibitionTransfer": "展会接送",
+      "exhibitionAccompaniment": "展会陪同",
+      "interpreter": "翻译",
+      "supplierMeetings": "供应商会面",
+      "factoryVisits": "工厂参观",
+      "supplierSearch": "供应商搜寻",
+      "samples": "样品",
+      "additionalChinaTrip": "额外的中国行程"
+    },
+    "submit": "发送申请",
+    "submitting": "发送中...",
+    "submitFailed": "提交失败，请重试。",
+    "successTitle": "感谢您！我们已收到您的申请。",
+    "successSubtitle": "我们的团队将尽快与您联系，为您规划行程。"
+  },
+  "contactPage": {
+    "title": "联系我们",
+    "subtitle": "告诉我们您的需求，我们将为您指引方向。",
+    "options": {
+      "visit": {
+        "title": "我想参观展会",
+        "description": "浏览我们在中国的完整展会日历。",
+        "cta": "浏览展会"
+      },
+      "trip": {
+        "title": "我想安排商务行程",
+        "description": "酒店、接送、展会协助、会议和工厂参观。",
+        "cta": "规划我的商务行程"
+      },
+      "partner": {
+        "title": "我想与您合作",
+        "description": "展会主办方、企业和服务提供商。",
+        "cta": "成为合作伙伴"
+      }
+    },
+    "emailUs": "或直接给我们发邮件",
+    "email": "info@theuniqueexpo.com"
   }
 }

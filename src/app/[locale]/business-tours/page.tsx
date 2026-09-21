@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
-import TripInquiryButton from "@/components/TripInquiryButton";
+import Button from "@/components/ui/Button";
 
 const BEFORE_TRIP_KEYS = [
   "exhibitionSelection",
@@ -98,14 +98,9 @@ export default function BusinessToursPage() {
                 <h3 className="mt-4 text-lg font-bold text-heading">{t(`tourTypes.${tourType.key}.title`)}</h3>
                 <p className="mt-2 text-sm text-gray-500 flex-1">{t(`tourTypes.${tourType.key}.description`)}</p>
                 <div className="mt-6">
-                  <TripInquiryButton
-                    label={t("requestAQuote")}
-                    variant="secondaryOutline"
-                    size="block"
-                    attendingType="traveling"
-                    tourType={tourType.key}
-                    context={t(`tourTypes.${tourType.key}.title`)}
-                  />
+                  <Button href={`/plan-business-trip?tourType=${tourType.key}`} variant="secondaryOutline" size="block">
+                    {t("requestAQuote")}
+                  </Button>
                 </div>
               </Card>
             ))}

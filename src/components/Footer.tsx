@@ -2,6 +2,7 @@ import Logo from "@/components/Logo";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { companyProfileSocialLinks, type CompanyProfile } from "@/lib/company-profile";
+import { SHOW_TEAM } from "@/lib/feature-flags";
 
 export default function Footer({ companyProfile }: { companyProfile: CompanyProfile }) {
   const t = useTranslations("footer");
@@ -11,8 +12,8 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
     [t("columns.platform")]: [
       { label: t("links.browseExhibitions"), href: "/exhibitions" },
       { label: t("links.ourServices"), href: "/services" },
-      { label: t("links.businessTours"), href: "/services/business-tours" },
-      { label: t("links.chinaTours"), href: "/services/china-tours" },
+      { label: t("links.businessTours"), href: "/business-tours" },
+      { label: t("links.chinaTours"), href: "/tours" },
       { label: t("links.events"), href: "/events" },
       { label: t("links.relocation"), href: "/relocation" },
       { label: t("links.exhibitorDirectory"), href: "/directory" },
@@ -22,7 +23,7 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
     ],
     [t("columns.company")]: [
       { label: t("links.aboutUs"), href: "/about" },
-      { label: t("links.ourTeam"), href: "/about#team" },
+      ...(SHOW_TEAM ? [{ label: t("links.ourTeam"), href: "/about#team" }] : []),
       { label: t("links.contact"), href: "/contact" },
       { label: t("links.careers"), href: "/careers" },
       { label: t("links.blog"), href: "/blog" },

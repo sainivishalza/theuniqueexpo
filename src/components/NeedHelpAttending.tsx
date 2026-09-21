@@ -1,5 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
+import Button from "@/components/ui/Button";
 import TripInquiryButton from "@/components/TripInquiryButton";
 
 interface NeedHelpAttendingProps {
@@ -32,14 +33,13 @@ export default function NeedHelpAttending({ exhibitionSlug, exhibitionTitle }: N
         </div>
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.08em] text-gold-400 mb-2">{t("travellingLabel")}</p>
-          <TripInquiryButton
-            label={t("planMyBusinessTrip")}
+          <Button
+            href={`/plan-business-trip${exhibitionSlug ? `?exhibitionSlug=${encodeURIComponent(exhibitionSlug)}` : ""}`}
             variant="primary"
             size="block"
-            attendingType="traveling"
-            exhibitionSlug={exhibitionSlug}
-            context={exhibitionTitle}
-          />
+          >
+            {t("planMyBusinessTrip")}
+          </Button>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
-import { safeParseArray } from "@/lib/server/db-helpers";
+import { safeParseArray, toDateOnlyString } from "@/lib/server/db-helpers";
 
 function mapTourAppRow(row: RowDataPacket) {
   return {
@@ -268,11 +268,18 @@ function mapBusinessTripInquiryRow(row: RowDataPacket) {
     userId: row.user_id ? String(row.user_id) : "",
     name: row.name,
     email: row.email,
-    phone: row.phone,
+    whatsapp: row.whatsapp,
     company: row.company,
+    country: row.country,
+    departureCity: row.departure_city,
     attendingType: row.attending_type,
     tourType: row.tour_type,
     exhibitionSlug: row.exhibition_slug,
+    arrivalDate: row.arrival_date ? toDateOnlyString(row.arrival_date) : "",
+    departureDate: row.departure_date ? toDateOnlyString(row.departure_date) : "",
+    travelers: row.travelers,
+    needs: safeParseArray(row.needs),
+    industry: row.industry,
     message: row.message,
     status: row.status,
     createdAt: row.created_at,
@@ -285,15 +292,23 @@ export async function listBusinessTripInquiries() {
 }
 
 export async function createBusinessTripInquiry(input: {
-  userId?: number; name: string; email: string; phone?: string; company?: string;
-  attendingType?: string; tourType?: string; exhibitionSlug?: string; message?: string;
+  userId?: number; name: string; email: string; whatsapp?: string; company?: string; country?: string;
+  departureCity?: string; attendingType?: string; tourType?: string; exhibitionSlug?: string;
+  arrivalDate?: string; departureDate?: string; travelers?: number; needs?: string[]; industry?: string;
+  message?: string;
 }) {
   const [result] = await pool.query<ResultSetHeader>(
-    `INSERT INTO business_trip_inquiries (user_id, name, email, phone, company, attending_type, tour_type, exhibition_slug, message, status)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+    `INSERT INTO business_trip_inquiries
+       (user_id, name, email, whatsapp, company, country, departure_city, attending_type, tour_type,
+        exhibition_slug, arrival_date, departure_date, travelers, needs, industry, message, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
     [
-      input.userId || null, input.name, input.email, input.phone || "", input.company || "",
-      input.attendingType || "unspecified", input.tourType || "", input.exhibitionSlug || "", input.message || "",
+      input.userId || null, input.name, input.email, input.whatsapp || "", input.company || "",
+      input.country || "", input.departureCity || "", input.attendingType || "unspecified",
+      input.tourType || "", input.exhibitionSlug || "", input.arrivalDate || null, input.departureDate || null,
+      Number.isInteger(input.travelers) ? input.travelers : null,
+      input.needs && input.needs.length ? JSON.stringify(input.needs) : null,
+      input.industry || "", input.message || "",
     ]
   );
   return result.insertId;
@@ -309,8 +324,12 @@ function mapPartnerInquiryRow(row: RowDataPacket) {
     userId: row.user_id ? String(row.user_id) : "",
     name: row.name,
     email: row.email,
+    whatsapp: row.whatsapp,
     company: row.company,
+    website: row.website,
+    country: row.country,
     partnerType: row.partner_type,
+    topics: safeParseArray(row.topics),
     message: row.message,
     status: row.status,
     createdAt: row.created_at,
@@ -323,12 +342,17 @@ export async function listPartnerInquiries() {
 }
 
 export async function createPartnerInquiry(input: {
-  userId?: number; name: string; email: string; company?: string; partnerType?: string; message?: string;
+  userId?: number; name: string; email: string; whatsapp?: string; company?: string; website?: string;
+  country?: string; partnerType?: string; topics?: string[]; message?: string;
 }) {
   const [result] = await pool.query<ResultSetHeader>(
-    `INSERT INTO partner_inquiries (user_id, name, email, company, partner_type, message, status)
-     VALUES (?, ?, ?, ?, ?, ?, 'pending')`,
-    [input.userId || null, input.name, input.email, input.company || "", input.partnerType || "other", input.message || ""]
+    `INSERT INTO partner_inquiries (user_id, name, email, whatsapp, company, website, country, partner_type, topics, message, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+    [
+      input.userId || null, input.name, input.email, input.whatsapp || "", input.company || "",
+      input.website || "", input.country || "", input.partnerType || "other",
+      input.topics && input.topics.length ? JSON.stringify(input.topics) : null, input.message || "",
+    ]
   );
   return result.insertId;
 }

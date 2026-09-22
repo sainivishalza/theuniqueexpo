@@ -92,8 +92,8 @@
     "meetTheTeamSubtitle": "The people behind TheUniqueExpo."
   },
   "exhibitionsPage": {
-    "title": "Exhibitions",
-    "subtitle": "Discover world-class trade fairs and exhibitions across the globe.",
+    "title": "Exhibitions in China",
+    "subtitle": "Discover exhibitions, trade fairs and business opportunities across China. Choose an exhibition, register to attend and build your complete China business trip around it.",
     "filter": "Filter:",
     "allIndustries": "All Industries",
     "allCities": "All Cities",
@@ -105,7 +105,8 @@
     "viewDetails": "View Details →",
     "noResultsTitle": "No exhibitions found",
     "noResultsSubtitle": "Try adjusting your filters to find events.",
-    "planMyTrip": "Plan My Trip"
+    "planMyTrip": "Plan My Trip",
+    "register": "Register"
   },
   "toursPage": {
     "title": "Tours",
@@ -519,6 +520,10 @@
       "partnerInquiries": {
         "title": "Partner Inquiries",
         "description": "Review partnership inquiries from exhibition organizers and companies."
+      },
+      "chinaTravel": {
+        "title": "China Travel",
+        "description": "Manage the destinations and pre-built routes shown on the China Travel page."
       }
     }
   },
@@ -1294,9 +1299,14 @@
       "distributors": "Distributors",
       "retailers": "Retailers",
       "manufacturers": "Manufacturers",
-      "wholesalers": "Wholesalers"
+      "wholesalers": "Wholesalers",
+      "businessOwners": "Business owners",
+      "purchasingManagers": "Purchasing managers"
     },
-    "exhibitionDetails": "Exhibition Details"
+    "exhibitionDetails": "Exhibition Details",
+    "addChinaTravelTitle": "Make More of Your China Trip",
+    "addChinaTravelText": "Your exhibition visit does not have to be only two days at the exhibition. Combine business with travel and discover more of China during the same trip.",
+    "addChinaTravel": "Add China Travel"
   },
   "expoRegisterPage": {
     "loading": "Loading...",
@@ -2081,7 +2091,8 @@
     "teamSubtitle": "The people behind TheUniqueExpo.",
     "meetTheTeam": "Meet the Full Team",
     "planABusinessTrip": "Plan a Business Trip",
-    "planMyTrip": "Plan My Trip"
+    "planMyTrip": "Plan My Trip",
+    "register": "Register"
   },
   "eventsPage": {
     "title": "Events",
@@ -2858,7 +2869,23 @@
     "inChinaLabel": "I Am Already In China",
     "travellingLabel": "I Am Travelling To China",
     "getLocalAssistance": "Get Local Assistance",
-    "planMyBusinessTrip": "Plan My Business Trip"
+    "planMyBusinessTrip": "Plan My Business Trip",
+    "fullTitle": "How Would You Like to Visit?",
+    "inChinaText": "I already live or work in China and want to visit this exhibition.",
+    "travellingText": "I am coming to China for this exhibition and need help organizing my business trip.",
+    "registerForExhibition": "Register for the Exhibition",
+    "services": {
+      "exhibitionRegistration": "Exhibition registration",
+      "localTransportation": "Local transportation",
+      "exhibitionAssistance": "Exhibition assistance",
+      "supplierMeetings": "Supplier meetings",
+      "factoryVisits": "Factory visits",
+      "interpreterCoordination": "Interpreter coordination",
+      "businessMeetings": "Business meetings",
+      "airportTransfer": "Airport transfer",
+      "hotel": "Hotel",
+      "exhibitionTransfers": "Exhibition transfers"
+    }
   },
   "tripInquiryModal": {
     "title": "Plan My Business Trip",
@@ -2915,7 +2942,10 @@
         "title": "Custom Program",
         "description": "Individual business program in China."
       }
-    }
+    },
+    "combineTitle": "Combine Business & Travel",
+    "combineText": "Choose your exhibition, add business services and extend your trip with one or more China destinations.",
+    "combineCta": "Explore China Travel"
   },
   "partnerWithUsPage": {
     "title": "Partner With Us",
@@ -3044,7 +3074,9 @@
     "tripDetails": "Trip Details",
     "needs": "Needs",
     "from": "from",
-    "travelers": "{count, plural, one {# traveller} other {# travellers}}"
+    "travelers": "{count, plural, one {# traveller} other {# travellers}}",
+    "route": "Route",
+    "destinations": "Destinations"
   },
   "adminPartnerInquiries": {
     "title": "Partner Inquiries",
@@ -3125,7 +3157,9 @@
     "submitting": "Sending...",
     "submitFailed": "Request failed. Please try again.",
     "successTitle": "Thank you! We received your request.",
-    "successSubtitle": "Our team will contact you shortly to plan your trip."
+    "successSubtitle": "Our team will contact you shortly to plan your trip.",
+    "whichDestinations": "Which China destinations would you like to visit?",
+    "selectedRoute": "Selected route: {route}"
   },
   "contactPage": {
     "title": "Contact Us",
@@ -3149,5 +3183,34 @@
     },
     "emailUs": "Or email us directly",
     "email": "info@theuniqueexpo.com"
+  },
+  "chinaTravelPage": {
+    "title": "China Travel",
+    "subtitle": "Combine business with travel. Choose your exhibition, add business services, and extend your trip with one or more China destinations.",
+    "destinationsTitle": "China Destinations",
+    "destinationsSubtitle": "Real destinations we can actually organize, from major business hubs to short countryside and beach extensions.",
+    "routesTitle": "Combine Business & Travel",
+    "routesSubtitle": "Choose your exhibition, add business services and extend your trip with one or more China destinations.",
+    "planThisRoute": "Plan This Route",
+    "customRouteTitle": "Create My Own China Route",
+    "customRouteSubtitle": "Have your own travel idea? Tell us which exhibition you are attending and which cities you would like to visit. We will help you create your itinerary.",
+    "createMyRoute": "Create My Route"
+  },
+  "adminChinaTravel": {
+    "title": "China Travel",
+    "subtitle": "Edit the destinations and routes shown on <link>the public China Travel page</link>.",
+    "destinations": "Destinations",
+    "destinationNamePlaceholder": "Destination name",
+    "destinationTaglinePlaceholder": "Short tagline",
+    "destinationHighlightsPlaceholder": "Highlights, comma separated",
+    "addDestination": "+ Add Destination",
+    "routes": "Routes",
+    "routesHint": "Pre-built business + travel combinations, e.g. \"Canton Fair + Guangzhou + Yangshuo\".",
+    "routeTitlePlaceholder": "Route title",
+    "routeDescriptionPlaceholder": "Short description",
+    "addRoute": "+ Add Route",
+    "saveFailed": "Save failed",
+    "saved": "Saved.",
+    "saveButton": "Save China Travel Content"
   }
 }

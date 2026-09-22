@@ -92,8 +92,8 @@
     "meetTheTeamSubtitle": "TheUniqueExpo 背后的团队成员。"
   },
   "exhibitionsPage": {
-    "title": "展会",
-    "subtitle": "探索全球顶级贸易博览会与展会。",
+    "title": "中国展会",
+    "subtitle": "发现中国各地的展会、贸易博览会和商业机会。选择一个展会，报名参加，并围绕它规划您完整的中国商务行程。",
     "filter": "筛选:",
     "allIndustries": "所有行业",
     "allCities": "所有城市",
@@ -105,7 +105,8 @@
     "viewDetails": "查看详情 →",
     "noResultsTitle": "未找到相关展会",
     "noResultsSubtitle": "请尝试调整筛选条件以查找活动。",
-    "planMyTrip": "规划我的行程"
+    "planMyTrip": "规划我的行程",
+    "register": "报名"
   },
   "toursPage": {
     "title": "旅游",
@@ -519,6 +520,10 @@
       "partnerInquiries": {
         "title": "合作咨询",
         "description": "查看来自展会主办方和企业的合作咨询。"
+      },
+      "chinaTravel": {
+        "title": "中国旅行",
+        "description": "管理中国旅行页面上显示的目的地和预设路线。"
       }
     }
   },
@@ -1294,9 +1299,14 @@
       "distributors": "经销商",
       "retailers": "零售商",
       "manufacturers": "制造商",
-      "wholesalers": "批发商"
+      "wholesalers": "批发商",
+      "businessOwners": "企业主",
+      "purchasingManagers": "采购经理"
     },
-    "exhibitionDetails": "展会详情"
+    "exhibitionDetails": "展会详情",
+    "addChinaTravelTitle": "让您的中国之行更精彩",
+    "addChinaTravelText": "您的展会参观不必只是两天的展会行程。将商务与旅行结合，在同一次旅程中探索更多中国。",
+    "addChinaTravel": "添加中国旅行"
   },
   "expoRegisterPage": {
     "loading": "加载中...",
@@ -2081,7 +2091,8 @@
     "teamSubtitle": "TheUniqueExpo 背后的团队成员。",
     "meetTheTeam": "查看完整团队",
     "planABusinessTrip": "规划商务行程",
-    "planMyTrip": "规划我的行程"
+    "planMyTrip": "规划我的行程",
+    "register": "报名"
   },
   "eventsPage": {
     "title": "活动",
@@ -2858,7 +2869,23 @@
     "inChinaLabel": "我已在中国",
     "travellingLabel": "我将前往中国",
     "getLocalAssistance": "获取本地协助",
-    "planMyBusinessTrip": "规划我的商务行程"
+    "planMyBusinessTrip": "规划我的商务行程",
+    "fullTitle": "您希望如何参展？",
+    "inChinaText": "我已经在中国生活或工作，想参观这个展会。",
+    "travellingText": "我专程来中国参加这个展会，需要帮助安排商务行程。",
+    "registerForExhibition": "报名参加展会",
+    "services": {
+      "exhibitionRegistration": "展会注册",
+      "localTransportation": "本地交通",
+      "exhibitionAssistance": "展会协助",
+      "supplierMeetings": "供应商会面",
+      "factoryVisits": "工厂参观",
+      "interpreterCoordination": "翻译协调",
+      "businessMeetings": "商务会议",
+      "airportTransfer": "机场接送",
+      "hotel": "酒店",
+      "exhibitionTransfers": "展会接送"
+    }
   },
   "tripInquiryModal": {
     "title": "规划我的商务行程",
@@ -2915,7 +2942,10 @@
         "title": "定制方案",
         "description": "在中国的个性化商务行程。"
       }
-    }
+    },
+    "combineTitle": "结合商务与旅行",
+    "combineText": "选择您的展会，添加商务服务，并通过一个或多个中国目的地延长您的行程。",
+    "combineCta": "探索中国旅行"
   },
   "partnerWithUsPage": {
     "title": "成为合作伙伴",
@@ -3044,7 +3074,9 @@
     "tripDetails": "行程详情",
     "needs": "需求",
     "from": "出发自",
-    "travelers": "{count} 位出行者"
+    "travelers": "{count} 位出行者",
+    "route": "路线",
+    "destinations": "目的地"
   },
   "adminPartnerInquiries": {
     "title": "合作咨询",
@@ -3125,7 +3157,9 @@
     "submitting": "发送中...",
     "submitFailed": "提交失败，请重试。",
     "successTitle": "感谢您！我们已收到您的申请。",
-    "successSubtitle": "我们的团队将尽快与您联系，为您规划行程。"
+    "successSubtitle": "我们的团队将尽快与您联系，为您规划行程。",
+    "whichDestinations": "您想参观中国的哪些目的地？",
+    "selectedRoute": "已选路线：{route}"
   },
   "contactPage": {
     "title": "联系我们",
@@ -3149,5 +3183,34 @@
     },
     "emailUs": "或直接给我们发邮件",
     "email": "info@theuniqueexpo.com"
+  },
+  "chinaTravelPage": {
+    "title": "中国旅行",
+    "subtitle": "将商务与旅行结合。选择您的展会，添加商务服务，并通过一个或多个中国目的地延长您的行程。",
+    "destinationsTitle": "中国目的地",
+    "destinationsSubtitle": "我们真正能够安排的目的地，从主要商业中心到短途乡村和海滩延伸行程。",
+    "routesTitle": "结合商务与旅行",
+    "routesSubtitle": "选择您的展会，添加商务服务，并通过一个或多个中国目的地延长您的行程。",
+    "planThisRoute": "规划此路线",
+    "customRouteTitle": "创建我自己的中国路线",
+    "customRouteSubtitle": "有自己的旅行想法吗？告诉我们您要参加的展会以及想参观的城市，我们将帮您制定行程。",
+    "createMyRoute": "创建我的路线"
+  },
+  "adminChinaTravel": {
+    "title": "中国旅行",
+    "subtitle": "编辑<link>公开中国旅行页面</link>上显示的目的地和路线。",
+    "destinations": "目的地",
+    "destinationNamePlaceholder": "目的地名称",
+    "destinationTaglinePlaceholder": "简短标语",
+    "destinationHighlightsPlaceholder": "亮点，用逗号分隔",
+    "addDestination": "+ 添加目的地",
+    "routes": "路线",
+    "routesHint": "预设的商务+旅行组合，例如「广交会 + 广州 + 阳朔」。",
+    "routeTitlePlaceholder": "路线标题",
+    "routeDescriptionPlaceholder": "简短描述",
+    "addRoute": "+ 添加路线",
+    "saveFailed": "保存失败",
+    "saved": "已保存。",
+    "saveButton": "保存中国旅行内容"
   }
 }

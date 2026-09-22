@@ -352,6 +352,9 @@ run_mysql schema-migrations/040-buyer-source-exhibitions.sql
 run_mysql schema-migrations/041-backfill-cphi-source-exhibition.sql
 run_mysql schema-migrations/042-buyer-invoice-order-list-document.sql
 run_mysql schema-migrations/043-auto-verify-existing-documents.sql
+run_mysql schema-migrations/044-business-partner-inquiries.sql
+run_mysql schema-migrations/045-business-trip-form-and-partner-form.sql
+run_mysql schema-migrations/046-china-travel-content.sql
 
 echo "Installing dependencies and building ..."
 npm install

@@ -35,7 +35,13 @@
       "exhibitionReviews": "展会点评"
     },
     "openMenu": "打开菜单",
-    "closeMenu": "关闭菜单"
+    "closeMenu": "关闭菜单",
+    "home": "首页",
+    "businessTours": "商务考察",
+    "chinaTours": "中国旅游",
+    "partnerWithUs": "合作伙伴",
+    "more": "更多",
+    "planABusinessTrip": "规划行程"
   },
   "footer": {
     "newsletterTitle": "获取最新资讯",
@@ -86,8 +92,8 @@
     "meetTheTeamSubtitle": "TheUniqueExpo 背后的团队成员。"
   },
   "exhibitionsPage": {
-    "title": "展会",
-    "subtitle": "探索全球顶级贸易博览会与展会。",
+    "title": "中国展会",
+    "subtitle": "发现中国各地的展会、贸易博览会和商业机会。选择一个展会，报名参加，并围绕它规划您完整的中国商务行程。",
     "filter": "筛选:",
     "allIndustries": "所有行业",
     "allCities": "所有城市",
@@ -98,7 +104,9 @@
     "loading": "正在加载展会...",
     "viewDetails": "查看详情 →",
     "noResultsTitle": "未找到相关展会",
-    "noResultsSubtitle": "请尝试调整筛选条件以查找活动。"
+    "noResultsSubtitle": "请尝试调整筛选条件以查找活动。",
+    "planMyTrip": "规划我的行程",
+    "register": "报名"
   },
   "toursPage": {
     "title": "旅游",
@@ -504,6 +512,18 @@
       "homepageSlideshow": {
         "title": "首页幻灯片",
         "description": "管理首页顶部展示的照片幻灯片"
+      },
+      "businessTripInquiries": {
+        "title": "商务行程咨询",
+        "description": "查看来自「规划我的行程」及商务考察CTA的报价请求。"
+      },
+      "partnerInquiries": {
+        "title": "合作咨询",
+        "description": "查看来自展会主办方和企业的合作咨询。"
+      },
+      "chinaTravel": {
+        "title": "中国旅行",
+        "description": "管理中国旅行页面上显示的目的地和预设路线。"
       }
     }
   },
@@ -1271,7 +1291,22 @@
     "officialWebsite": "官方网站 ↗",
     "close": "关闭",
     "previousPhoto": "上一张",
-    "nextPhoto": "下一张"
+    "nextPhoto": "下一张",
+    "productCategories": "产品类别",
+    "whoShouldAttend": "适合参加人群",
+    "whoShouldAttendItems": {
+      "importers": "进口商",
+      "distributors": "经销商",
+      "retailers": "零售商",
+      "manufacturers": "制造商",
+      "wholesalers": "批发商",
+      "businessOwners": "企业主",
+      "purchasingManagers": "采购经理"
+    },
+    "exhibitionDetails": "展会详情",
+    "addChinaTravelTitle": "让您的中国之行更精彩",
+    "addChinaTravelText": "您的展会参观不必只是两天的展会行程。将商务与旅行结合，在同一次旅程中探索更多中国。",
+    "addChinaTravel": "添加中国旅行"
   },
   "expoRegisterPage": {
     "loading": "加载中...",
@@ -1994,7 +2029,7 @@
     "badge": "2026年即将举行的展会共 {count} 场",
     "heroTitleLine1": "全球贸易",
     "heroTitleLine2": "在此发生",
-    "heroSubtitle": "发现优质展会,联系全球买家与展商,借助全球领先的 B2B 贸易平台发展您的业务。",
+    "heroSubtitle": "发现中国的展会，联系供应商，并为您安排从抵达到离境的完整商务行程。",
     "browseExhibitions": "浏览展会",
     "ourServices": "我们的服务",
     "stats": {
@@ -2054,7 +2089,10 @@
     "teamBadge": "我们的团队",
     "teamTitle": "认识我们的团队",
     "teamSubtitle": "TheUniqueExpo 背后的团队成员。",
-    "meetTheTeam": "查看完整团队"
+    "meetTheTeam": "查看完整团队",
+    "planABusinessTrip": "规划商务行程",
+    "planMyTrip": "规划我的行程",
+    "register": "报名"
   },
   "eventsPage": {
     "title": "活动",
@@ -2795,5 +2833,384 @@
   "formValidation": {
     "required": "此字段为必填项。",
     "invalidEmail": "请输入有效的电子邮件地址。"
+  },
+  "howAreYouAttending": {
+    "badge": "您将如何参展？",
+    "title": "您将如何参展？",
+    "inChina": {
+      "title": "我已在中国",
+      "subtitle": "我已经在中国生活或工作。",
+      "cta": "浏览展会"
+    },
+    "travelling": {
+      "title": "我将前往中国",
+      "subtitle": "我专程来中国参加展会。",
+      "cta": "规划我的商务行程"
+    },
+    "services": {
+      "exhibitionRegistration": "展会注册",
+      "localTransportation": "本地交通",
+      "exhibitionAccompaniment": "展会陪同",
+      "interpreter": "翻译",
+      "supplierMeetings": "供应商会面",
+      "factoryVisits": "工厂参观",
+      "businessNetworking": "商务社交",
+      "hotel": "酒店",
+      "airportTransfer": "机场接送",
+      "exhibitionTransfer": "展会接送",
+      "exhibitionAssistance": "展会协助",
+      "businessMeetings": "商务会议",
+      "additionalItinerary": "额外的中国行程"
+    }
+  },
+  "needHelpAttending": {
+    "title": "需要参展协助吗？",
+    "subtitle": "我们可以帮助您安排展会参观或完整的中国商务行程。",
+    "inChinaLabel": "我已在中国",
+    "travellingLabel": "我将前往中国",
+    "getLocalAssistance": "获取本地协助",
+    "planMyBusinessTrip": "规划我的商务行程",
+    "fullTitle": "您希望如何参展？",
+    "inChinaText": "我已经在中国生活或工作，想参观这个展会。",
+    "travellingText": "我专程来中国参加这个展会，需要帮助安排商务行程。",
+    "registerForExhibition": "报名参加展会",
+    "services": {
+      "exhibitionRegistration": "展会注册",
+      "localTransportation": "本地交通",
+      "exhibitionAssistance": "展会协助",
+      "supplierMeetings": "供应商会面",
+      "factoryVisits": "工厂参观",
+      "interpreterCoordination": "翻译协调",
+      "businessMeetings": "商务会议",
+      "airportTransfer": "机场接送",
+      "hotel": "酒店",
+      "exhibitionTransfers": "展会接送"
+    }
+  },
+  "tripInquiryModal": {
+    "title": "规划我的商务行程",
+    "close": "关闭",
+    "name": "姓名",
+    "email": "电子邮箱",
+    "phone": "电话",
+    "company": "公司",
+    "message": "留言",
+    "submit": "提交申请",
+    "submitting": "提交中...",
+    "submitFailed": "提交失败，请重试。",
+    "successTitle": "感谢您！我们已收到您的申请。",
+    "successSubtitle": "我们的团队将尽快与您联系，为您规划行程。"
+  },
+  "businessToursOverviewPage": {
+    "title": "中国商务考察团",
+    "subtitle": "您的商务行程 — 从抵达到离境全程安排。",
+    "beforeYourTrip": "行前准备",
+    "duringYourTrip": "行程期间",
+    "before": {
+      "exhibitionSelection": "展会选择",
+      "tripPlanning": "行程规划",
+      "exhibitionRegistrationGuidance": "展会注册指导",
+      "businessMeetingPlanning": "商务会议安排",
+      "itineraryPreparation": "行程准备"
+    },
+    "during": {
+      "hotel": "酒店",
+      "airportTransfer": "机场接送",
+      "exhibitionTransfer": "展会接送",
+      "exhibitionAccompaniment": "展会陪同",
+      "interpreterCoordination": "翻译协调",
+      "supplierMeetings": "供应商会面",
+      "factoryVisits": "工厂参观"
+    },
+    "tourTypesTitle": "选择您的商务考察类型",
+    "tourTypesSubtitle": "四种简单的方案 — 告诉我们您的需求，我们将为您提供定制报价。",
+    "requestAQuote": "索取报价",
+    "tourTypes": {
+      "exhibitionVisit": {
+        "title": "展会参观",
+        "description": "展会参观的基础协助。"
+      },
+      "businessTour": {
+        "title": "商务考察团",
+        "description": "展会 + 酒店 + 接送 + 商务协助。"
+      },
+      "businessPlus": {
+        "title": "商务尊享",
+        "description": "展会 + 会议 + 供应商 + 工厂参观。"
+      },
+      "customProgram": {
+        "title": "定制方案",
+        "description": "在中国的个性化商务行程。"
+      }
+    },
+    "combineTitle": "结合商务与旅行",
+    "combineText": "选择您的展会，添加商务服务，并通过一个或多个中国目的地延长您的行程。",
+    "combineCta": "探索中国旅行"
+  },
+  "partnerWithUsPage": {
+    "title": "成为合作伙伴",
+    "subtitle": "我们与展会主办方、企业和服务提供商合作，在中国与国际市场之间建立业务联系。",
+    "audiences": {
+      "organizers": {
+        "title": "展会主办方",
+        "description": "向我们的国际买家网络推广您的展会，提高参展人数。"
+      },
+      "companies": {
+        "title": "企业",
+        "description": "与我们合作开展联合营销、采购支持或在中国的联合业务发展。"
+      }
+    },
+    "formTitle": "与The Unique Expo合作",
+    "formSubtitle": "填写以下信息，我们的团队将与您联系。",
+    "form": {
+      "name": "姓名",
+      "email": "电子邮箱",
+      "company": "公司/机构",
+      "partnerType": "我的身份是",
+      "partnerTypes": {
+        "organizer": "展会主办方",
+        "company": "企业",
+        "other": "其他"
+      },
+      "message": "留言"
+    },
+    "submit": "提交合作申请",
+    "submitting": "发送中...",
+    "submitFailed": "提交失败，请重试。",
+    "successTitle": "感谢您！我们已收到您的合作申请。",
+    "successSubtitle": "我们的合作团队将尽快与您联系。",
+    "organizers": {
+      "title": "展会主办方",
+      "subtitle": "让您的展会与国际买家、商务访客和专业代表团建立联系。",
+      "cta": "成为合作伙伴",
+      "services": {
+        "internationalVisitorPromotion": "国际观众推广",
+        "buyerRecruitment": "买家招募",
+        "hostedBuyerPrograms": "买家接待计划",
+        "businessDelegations": "商务代表团",
+        "exhibitionPromotion": "展会推广",
+        "b2bMatchmaking": "B2B配对",
+        "businessTours": "商务考察团",
+        "onSiteSupport": "现场支持"
+      }
+    },
+    "servicePartners": {
+      "title": "商务及服务合作伙伴",
+      "subtitle": "我们与为在华国际企业提供服务的公司和专业人士合作。",
+      "cta": "成为合作伙伴",
+      "examples": {
+        "hotels": "酒店",
+        "transportationCompanies": "交通运输公司",
+        "interpreters": "翻译人员",
+        "logisticsCompanies": "物流公司",
+        "inspectionCompanies": "验货公司",
+        "sourcingCompanies": "采购公司",
+        "factories": "工厂",
+        "businessServiceProviders": "商务服务提供商",
+        "tourismCompanies": "旅游公司"
+      }
+    },
+    "companies": {
+      "title": "企业合作",
+      "subtitle": "正在寻找中国的供应商、商业机会或展会支持？",
+      "cta": "联系我们的团队",
+      "services": {
+        "exhibitionVisits": "展会参观",
+        "businessTours": "商务考察团",
+        "supplierMeetings": "供应商会面",
+        "factoryVisits": "工厂参观",
+        "businessMatchmaking": "商务配对",
+        "marketExploration": "市场考察"
+      }
+    },
+    "iAm": "我的身份是：",
+    "partnerTypes": {
+      "organizer": "展会主办方",
+      "company_brand": "企业/品牌",
+      "service_provider": "服务提供商",
+      "hotel_transportation": "酒店/交通",
+      "factory_supplier": "工厂/供应商",
+      "business_association": "商业协会",
+      "tourism_partner": "旅游合作伙伴",
+      "other": "其他"
+    },
+    "fields": {
+      "company": "公司名称",
+      "website": "网站",
+      "country": "国家",
+      "contactPerson": "联系人",
+      "email": "电子邮箱",
+      "whatsapp": "WhatsApp / 微信",
+      "message": "请介绍您的公司及合作提案"
+    },
+    "whatWouldYouLikeToDiscuss": "您希望讨论什么？",
+    "topics": {
+      "exhibitionPromotion": "展会推广",
+      "buyerRecruitment": "买家招募",
+      "businessDelegation": "商务代表团",
+      "b2bMatchmaking": "B2B配对",
+      "businessTours": "商务考察团",
+      "supplierNetwork": "供应商网络",
+      "localServices": "本地服务",
+      "other": "其他"
+    }
+  },
+  "adminBusinessTripInquiries": {
+    "title": "商务行程咨询",
+    "inquiriesReceived": "已收到 {count} 条咨询",
+    "updateFailed": "更新失败",
+    "noResultsTitle": "暂无咨询",
+    "noResultsSubtitle": "商务行程咨询将显示在此处。",
+    "attendingType": "参展身份",
+    "interest": "咨询内容",
+    "message": "留言",
+    "inChina": "已在中国",
+    "traveling": "即将前往中国",
+    "statuses": {
+      "pending": "待处理",
+      "in-progress": "处理中",
+      "completed": "已完成"
+    },
+    "tripDetails": "行程详情",
+    "needs": "需求",
+    "from": "出发自",
+    "travelers": "{count} 位出行者",
+    "route": "路线",
+    "destinations": "目的地"
+  },
+  "adminPartnerInquiries": {
+    "title": "合作咨询",
+    "inquiriesReceived": "已收到 {count} 条咨询",
+    "updateFailed": "更新失败",
+    "noResultsTitle": "暂无咨询",
+    "noResultsSubtitle": "合作咨询将显示在此处。",
+    "company": "公司",
+    "partnerType": "类型",
+    "message": "留言",
+    "partnerTypes": {
+      "organizer": "展会主办方",
+      "company": "企业",
+      "other": "其他",
+      "company_brand": "企业/品牌",
+      "service_provider": "服务提供商",
+      "hotel_transportation": "酒店/交通",
+      "factory_supplier": "工厂/供应商",
+      "business_association": "商业协会",
+      "tourism_partner": "旅游合作伙伴"
+    },
+    "statuses": {
+      "pending": "待处理",
+      "in-progress": "处理中",
+      "completed": "已完成"
+    },
+    "topics": "话题",
+    "topicLabels": {
+      "exhibitionPromotion": "展会推广",
+      "buyerRecruitment": "买家招募",
+      "businessDelegation": "商务代表团",
+      "b2bMatchmaking": "B2B配对",
+      "businessTours": "商务考察团",
+      "supplierNetwork": "供应商网络",
+      "localServices": "本地服务",
+      "other": "其他"
+    }
+  },
+  "planBusinessTripPage": {
+    "title": "规划我的商务行程",
+    "subtitle": "告诉我们您的行程需求，我们将为您提供定制方案。",
+    "selectedTourType": "已选套餐：{tourType}",
+    "tourTypeLabels": {
+      "exhibitionVisit": "展会参观",
+      "businessTour": "商务考察团",
+      "businessPlus": "商务尊享",
+      "customProgram": "定制方案"
+    },
+    "fields": {
+      "name": "姓名",
+      "company": "公司",
+      "email": "电子邮箱",
+      "whatsapp": "WhatsApp / 微信",
+      "country": "国家",
+      "departureCity": "出发城市",
+      "exhibition": "展会",
+      "exhibitionPlaceholder": "选择展会（可选）",
+      "arrivalDate": "抵达日期",
+      "departureDate": "离开日期",
+      "travelers": "出行人数",
+      "industry": "行业/产品",
+      "message": "请描述您的商务行程"
+    },
+    "whatDoYouNeed": "您需要什么？",
+    "needs": {
+      "hotel": "酒店",
+      "airportTransfer": "机场接送",
+      "exhibitionTransfer": "展会接送",
+      "exhibitionAccompaniment": "展会陪同",
+      "interpreter": "翻译",
+      "supplierMeetings": "供应商会面",
+      "factoryVisits": "工厂参观",
+      "supplierSearch": "供应商搜寻",
+      "samples": "样品",
+      "additionalChinaTrip": "额外的中国行程"
+    },
+    "submit": "发送申请",
+    "submitting": "发送中...",
+    "submitFailed": "提交失败，请重试。",
+    "successTitle": "感谢您！我们已收到您的申请。",
+    "successSubtitle": "我们的团队将尽快与您联系，为您规划行程。",
+    "whichDestinations": "您想参观中国的哪些目的地？",
+    "selectedRoute": "已选路线：{route}"
+  },
+  "contactPage": {
+    "title": "联系我们",
+    "subtitle": "告诉我们您的需求，我们将为您指引方向。",
+    "options": {
+      "visit": {
+        "title": "我想参观展会",
+        "description": "浏览我们在中国的完整展会日历。",
+        "cta": "浏览展会"
+      },
+      "trip": {
+        "title": "我想安排商务行程",
+        "description": "酒店、接送、展会协助、会议和工厂参观。",
+        "cta": "规划我的商务行程"
+      },
+      "partner": {
+        "title": "我想与您合作",
+        "description": "展会主办方、企业和服务提供商。",
+        "cta": "成为合作伙伴"
+      }
+    },
+    "emailUs": "或直接给我们发邮件",
+    "email": "info@theuniqueexpo.com"
+  },
+  "chinaTravelPage": {
+    "title": "中国旅行",
+    "subtitle": "将商务与旅行结合。选择您的展会，添加商务服务，并通过一个或多个中国目的地延长您的行程。",
+    "destinationsTitle": "中国目的地",
+    "destinationsSubtitle": "我们真正能够安排的目的地，从主要商业中心到短途乡村和海滩延伸行程。",
+    "routesTitle": "结合商务与旅行",
+    "routesSubtitle": "选择您的展会，添加商务服务，并通过一个或多个中国目的地延长您的行程。",
+    "planThisRoute": "规划此路线",
+    "customRouteTitle": "创建我自己的中国路线",
+    "customRouteSubtitle": "有自己的旅行想法吗？告诉我们您要参加的展会以及想参观的城市，我们将帮您制定行程。",
+    "createMyRoute": "创建我的路线"
+  },
+  "adminChinaTravel": {
+    "title": "中国旅行",
+    "subtitle": "编辑<link>公开中国旅行页面</link>上显示的目的地和路线。",
+    "destinations": "目的地",
+    "destinationNamePlaceholder": "目的地名称",
+    "destinationTaglinePlaceholder": "简短标语",
+    "destinationHighlightsPlaceholder": "亮点，用逗号分隔",
+    "addDestination": "+ 添加目的地",
+    "routes": "路线",
+    "routesHint": "预设的商务+旅行组合，例如「广交会 + 广州 + 阳朔」。",
+    "routeTitlePlaceholder": "路线标题",
+    "routeDescriptionPlaceholder": "简短描述",
+    "addRoute": "+ 添加路线",
+    "saveFailed": "保存失败",
+    "saved": "已保存。",
+    "saveButton": "保存中国旅行内容"
   }
 }

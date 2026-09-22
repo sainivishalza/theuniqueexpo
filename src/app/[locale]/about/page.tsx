@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { getAboutContent } from "@/lib/server/about-content-repo";
+import { initials } from "@/lib/format";
 import { listTeamMembers } from "@/lib/server/team-members-repo";
 import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
+import { SHOW_TEAM } from "@/lib/feature-flags";
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
@@ -85,7 +87,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {teamMembers.length > 0 && (
+      {SHOW_TEAM && teamMembers.length > 0 && (
         <section id="team" className="py-14 bg-white border-t border-gray-100 scroll-mt-20">
           <div className="mx-auto max-w-5xl px-6">
             <div className="text-center mb-10">
@@ -95,8 +97,8 @@ export default async function AboutPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {teamMembers.map((member) => (
                 <div key={member.id} className="text-center">
-                  <div className="mx-auto w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden bg-gray-100 shadow-md">
-                    {member.photo && (
+                  <div className="mx-auto w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden bg-gray-100 shadow-md flex items-center justify-center">
+                    {member.photo ? (
                       <Image
                         src={member.photo}
                         alt={member.name}
@@ -104,6 +106,8 @@ export default async function AboutPage() {
                         height={256}
                         className="w-full h-full object-cover"
                       />
+                    ) : (
+                      <span className="text-2xl md:text-3xl font-bold text-gray-400">{initials(member.name)}</span>
                     )}
                   </div>
                   <h3 className="mt-4 font-bold text-heading">{member.name}</h3>

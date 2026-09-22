@@ -35,7 +35,13 @@
       "exhibitionReviews": "Обзоры выставок"
     },
     "openMenu": "Открыть меню",
-    "closeMenu": "Закрыть меню"
+    "closeMenu": "Закрыть меню",
+    "home": "Главная",
+    "businessTours": "Бизнес-туры",
+    "chinaTours": "Туры по Китаю",
+    "partnerWithUs": "Партнёрство",
+    "more": "Ещё",
+    "planABusinessTrip": "Поездка"
   },
   "footer": {
     "newsletterTitle": "Будьте в курсе",
@@ -86,8 +92,8 @@
     "meetTheTeamSubtitle": "Люди, которые стоят за TheUniqueExpo."
   },
   "exhibitionsPage": {
-    "title": "Выставки",
-    "subtitle": "Находите торговые ярмарки и выставки мирового уровня по всему миру.",
+    "title": "Выставки в Китае",
+    "subtitle": "Находите выставки, торговые ярмарки и деловые возможности по всему Китаю. Выберите выставку, зарегистрируйтесь для участия и постройте вокруг неё свою полную деловую поездку в Китай.",
     "filter": "Фильтр:",
     "allIndustries": "Все отрасли",
     "allCities": "Все города",
@@ -98,7 +104,9 @@
     "loading": "Загрузка выставок...",
     "viewDetails": "Подробнее →",
     "noResultsTitle": "Выставки не найдены",
-    "noResultsSubtitle": "Попробуйте изменить фильтры, чтобы найти события."
+    "noResultsSubtitle": "Попробуйте изменить фильтры, чтобы найти события.",
+    "planMyTrip": "Спланировать поездку",
+    "register": "Регистрация"
   },
   "toursPage": {
     "title": "Туры",
@@ -504,6 +512,18 @@
       "homepageSlideshow": {
         "title": "Слайд-шоу на главной",
         "description": "Управление фотослайд-шоу вверху главной страницы"
+      },
+      "businessTripInquiries": {
+        "title": "Запросы на бизнес-поездки",
+        "description": "Просмотр запросов из CTA «Спланировать поездку» и бизнес-туров."
+      },
+      "partnerInquiries": {
+        "title": "Запросы о партнёрстве",
+        "description": "Просмотр запросов о партнёрстве от организаторов выставок и компаний."
+      },
+      "chinaTravel": {
+        "title": "Путешествие по Китаю",
+        "description": "Управление направлениями и готовыми маршрутами на странице «Путешествие по Китаю»."
       }
     }
   },
@@ -1271,7 +1291,22 @@
     "officialWebsite": "Официальный сайт ↗",
     "close": "Закрыть",
     "previousPhoto": "Предыдущее фото",
-    "nextPhoto": "Следующее фото"
+    "nextPhoto": "Следующее фото",
+    "productCategories": "Категории продукции",
+    "whoShouldAttend": "Кому стоит посетить",
+    "whoShouldAttendItems": {
+      "importers": "Импортёры",
+      "distributors": "Дистрибьюторы",
+      "retailers": "Розничные продавцы",
+      "manufacturers": "Производители",
+      "wholesalers": "Оптовики",
+      "businessOwners": "Владельцы бизнеса",
+      "purchasingManagers": "Менеджеры по закупкам"
+    },
+    "exhibitionDetails": "Информация о выставке",
+    "addChinaTravelTitle": "Сделайте больше из вашей поездки в Китай",
+    "addChinaTravelText": "Ваш визит на выставку не обязательно должен ограничиваться двумя днями. Совместите бизнес с путешествием и откройте для себя больше Китая в той же поездке.",
+    "addChinaTravel": "Добавить путешествие по Китаю"
   },
   "expoRegisterPage": {
     "loading": "Загрузка...",
@@ -1994,7 +2029,7 @@
     "badge": "{count} предстоящих выставок в 2026 году",
     "heroTitleLine1": "Место, где рождается",
     "heroTitleLine2": "мировая торговля",
-    "heroSubtitle": "Находите выставки, устанавливайте контакты с покупателями и экспонентами и развивайте свой бизнес на ведущей мировой B2B-платформе.",
+    "heroSubtitle": "Находите выставки в Китае, знакомьтесь с поставщиками и организуйте свою деловую поездку целиком — от прибытия до отъезда.",
     "browseExhibitions": "Смотреть выставки",
     "ourServices": "Наши услуги",
     "stats": {
@@ -2054,7 +2089,10 @@
     "teamBadge": "Наша команда",
     "teamTitle": "Наша команда",
     "teamSubtitle": "Люди, которые стоят за TheUniqueExpo.",
-    "meetTheTeam": "Познакомиться со всей командой"
+    "meetTheTeam": "Познакомиться со всей командой",
+    "planABusinessTrip": "Спланировать бизнес-поездку",
+    "planMyTrip": "Спланировать поездку",
+    "register": "Регистрация"
   },
   "eventsPage": {
     "title": "События",
@@ -2795,5 +2833,384 @@
   "formValidation": {
     "required": "Это поле обязательно для заполнения.",
     "invalidEmail": "Введите действительный адрес электронной почты."
+  },
+  "howAreYouAttending": {
+    "badge": "Как вы планируете посещение?",
+    "title": "Как вы планируете посещение?",
+    "inChina": {
+      "title": "Я уже в Китае",
+      "subtitle": "Я уже живу или работаю в Китае.",
+      "cta": "Смотреть выставки"
+    },
+    "travelling": {
+      "title": "Я приезжаю в Китай",
+      "subtitle": "Я приезжаю в Китай специально на выставку.",
+      "cta": "Спланировать бизнес-поездку"
+    },
+    "services": {
+      "exhibitionRegistration": "Регистрация на выставку",
+      "localTransportation": "Местный транспорт",
+      "exhibitionAccompaniment": "Сопровождение на выставке",
+      "interpreter": "Переводчик",
+      "supplierMeetings": "Встречи с поставщиками",
+      "factoryVisits": "Посещение заводов",
+      "businessNetworking": "Деловые networking-мероприятия",
+      "hotel": "Отель",
+      "airportTransfer": "Трансфер из аэропорта",
+      "exhibitionTransfer": "Трансфер до выставки",
+      "exhibitionAssistance": "Помощь на выставке",
+      "businessMeetings": "Деловые встречи",
+      "additionalItinerary": "Дополнительная программа по Китаю"
+    }
+  },
+  "needHelpAttending": {
+    "title": "Нужна помощь с посещением?",
+    "subtitle": "Мы поможем организовать посещение выставки или полную деловую поездку в Китай.",
+    "inChinaLabel": "Я уже в Китае",
+    "travellingLabel": "Я приезжаю в Китай",
+    "getLocalAssistance": "Получить помощь на месте",
+    "planMyBusinessTrip": "Спланировать бизнес-поездку",
+    "fullTitle": "Как вы хотите посетить?",
+    "inChinaText": "Я уже живу или работаю в Китае и хочу посетить эту выставку.",
+    "travellingText": "Я приезжаю в Китай на эту выставку, и мне нужна помощь в организации деловой поездки.",
+    "registerForExhibition": "Зарегистрироваться на выставку",
+    "services": {
+      "exhibitionRegistration": "Регистрация на выставку",
+      "localTransportation": "Местный транспорт",
+      "exhibitionAssistance": "Помощь на выставке",
+      "supplierMeetings": "Встречи с поставщиками",
+      "factoryVisits": "Посещение заводов",
+      "interpreterCoordination": "Координация переводчика",
+      "businessMeetings": "Деловые встречи",
+      "airportTransfer": "Трансфер из аэропорта",
+      "hotel": "Отель",
+      "exhibitionTransfers": "Трансферы до выставки"
+    }
+  },
+  "tripInquiryModal": {
+    "title": "Спланировать бизнес-поездку",
+    "close": "Закрыть",
+    "name": "Полное имя",
+    "email": "Эл. почта",
+    "phone": "Телефон",
+    "company": "Компания",
+    "message": "Сообщение",
+    "submit": "Отправить запрос",
+    "submitting": "Отправка...",
+    "submitFailed": "Не удалось отправить запрос. Попробуйте ещё раз.",
+    "successTitle": "Спасибо! Мы получили ваш запрос.",
+    "successSubtitle": "Наша команда скоро свяжется с вами, чтобы спланировать поездку."
+  },
+  "businessToursOverviewPage": {
+    "title": "Бизнес-туры по Китаю",
+    "subtitle": "Ваша деловая поездка — организована от прибытия до отъезда.",
+    "beforeYourTrip": "До поездки",
+    "duringYourTrip": "Во время поездки",
+    "before": {
+      "exhibitionSelection": "Выбор выставки",
+      "tripPlanning": "Планирование поездки",
+      "exhibitionRegistrationGuidance": "Помощь с регистрацией на выставку",
+      "businessMeetingPlanning": "Планирование деловых встреч",
+      "itineraryPreparation": "Подготовка маршрута"
+    },
+    "during": {
+      "hotel": "Отель",
+      "airportTransfer": "Трансфер из аэропорта",
+      "exhibitionTransfer": "Трансфер до выставки",
+      "exhibitionAccompaniment": "Сопровождение на выставке",
+      "interpreterCoordination": "Координация переводчика",
+      "supplierMeetings": "Встречи с поставщиками",
+      "factoryVisits": "Посещение заводов"
+    },
+    "tourTypesTitle": "Выберите тип бизнес-тура",
+    "tourTypesSubtitle": "Четыре простых варианта — расскажите, что вам нужно, и мы пришлём индивидуальное предложение.",
+    "requestAQuote": "Запросить предложение",
+    "tourTypes": {
+      "exhibitionVisit": {
+        "title": "Посещение выставки",
+        "description": "Базовая помощь с посещением выставки."
+      },
+      "businessTour": {
+        "title": "Бизнес-тур",
+        "description": "Выставка + отель + трансферы + деловая поддержка."
+      },
+      "businessPlus": {
+        "title": "Бизнес Плюс",
+        "description": "Выставка + встречи + поставщики + посещение заводов."
+      },
+      "customProgram": {
+        "title": "Индивидуальная программа",
+        "description": "Индивидуальная деловая программа в Китае."
+      }
+    },
+    "combineTitle": "Совместите бизнес и путешествие",
+    "combineText": "Выберите выставку, добавьте бизнес-услуги и продлите поездку одним или несколькими направлениями по Китаю.",
+    "combineCta": "Изучить путешествия по Китаю"
+  },
+  "partnerWithUsPage": {
+    "title": "Стать партнёром",
+    "subtitle": "Мы сотрудничаем с организаторами выставок, компаниями и поставщиками услуг, создавая деловые связи между Китаем и международными рынками.",
+    "audiences": {
+      "organizers": {
+        "title": "Организаторы выставок",
+        "description": "Продвигайте свою выставку среди нашей сети международных байеров и увеличьте посещаемость."
+      },
+      "companies": {
+        "title": "Компании",
+        "description": "Сотрудничайте с нами в совместном маркетинге, поиске поставщиков или развитии бизнеса в Китае."
+      }
+    },
+    "formTitle": "Партнёрство с The Unique Expo",
+    "formSubtitle": "Укажите несколько деталей, и наша команда свяжется с вами.",
+    "form": {
+      "name": "Полное имя",
+      "email": "Эл. почта",
+      "company": "Компания / Организация",
+      "partnerType": "Я являюсь",
+      "partnerTypes": {
+        "organizer": "Организатором выставки",
+        "company": "Компанией",
+        "other": "Другое"
+      },
+      "message": "Сообщение"
+    },
+    "submit": "Отправить запрос о партнёрстве",
+    "submitting": "Отправка...",
+    "submitFailed": "Не удалось отправить запрос. Попробуйте ещё раз.",
+    "successTitle": "Спасибо! Мы получили ваш запрос о партнёрстве.",
+    "successSubtitle": "Наша команда по партнёрству скоро свяжется с вами.",
+    "organizers": {
+      "title": "Для организаторов выставок",
+      "subtitle": "Свяжите вашу выставку с международными байерами, бизнес-посетителями и профессиональными делегациями.",
+      "cta": "Стать партнёром",
+      "services": {
+        "internationalVisitorPromotion": "Продвижение среди международных посетителей",
+        "buyerRecruitment": "Привлечение байеров",
+        "hostedBuyerPrograms": "Программы для приглашённых байеров",
+        "businessDelegations": "Деловые делегации",
+        "exhibitionPromotion": "Продвижение выставки",
+        "b2bMatchmaking": "B2B-подбор партнёров",
+        "businessTours": "Бизнес-туры",
+        "onSiteSupport": "Поддержка на месте"
+      }
+    },
+    "servicePartners": {
+      "title": "Для бизнес- и сервис-партнёров",
+      "subtitle": "Мы сотрудничаем с компаниями и специалистами, предоставляющими услуги для международного бизнеса в Китае.",
+      "cta": "Стать партнёром",
+      "examples": {
+        "hotels": "Отели",
+        "transportationCompanies": "Транспортные компании",
+        "interpreters": "Переводчики",
+        "logisticsCompanies": "Логистические компании",
+        "inspectionCompanies": "Инспекционные компании",
+        "sourcingCompanies": "Компании по поиску поставщиков",
+        "factories": "Заводы",
+        "businessServiceProviders": "Поставщики бизнес-услуг",
+        "tourismCompanies": "Туристические компании"
+      }
+    },
+    "companies": {
+      "title": "Для компаний",
+      "subtitle": "Ищете поставщиков, деловые возможности или поддержку на выставках в Китае?",
+      "cta": "Связаться с нашей командой",
+      "services": {
+        "exhibitionVisits": "Посещение выставок",
+        "businessTours": "Бизнес-туры",
+        "supplierMeetings": "Встречи с поставщиками",
+        "factoryVisits": "Посещение заводов",
+        "businessMatchmaking": "Деловой подбор партнёров",
+        "marketExploration": "Изучение рынка"
+      }
+    },
+    "iAm": "Я являюсь:",
+    "partnerTypes": {
+      "organizer": "Организатор выставки",
+      "company_brand": "Компания / Бренд",
+      "service_provider": "Поставщик услуг",
+      "hotel_transportation": "Отель / Транспорт",
+      "factory_supplier": "Завод / Поставщик",
+      "business_association": "Бизнес-ассоциация",
+      "tourism_partner": "Туристический партнёр",
+      "other": "Другое"
+    },
+    "fields": {
+      "company": "Название компании",
+      "website": "Веб-сайт",
+      "country": "Страна",
+      "contactPerson": "Контактное лицо",
+      "email": "Эл. почта",
+      "whatsapp": "WhatsApp / WeChat",
+      "message": "Расскажите о вашей компании и предложении"
+    },
+    "whatWouldYouLikeToDiscuss": "Что вы хотели бы обсудить?",
+    "topics": {
+      "exhibitionPromotion": "Продвижение выставки",
+      "buyerRecruitment": "Привлечение байеров",
+      "businessDelegation": "Деловая делегация",
+      "b2bMatchmaking": "B2B-подбор партнёров",
+      "businessTours": "Бизнес-туры",
+      "supplierNetwork": "Сеть поставщиков",
+      "localServices": "Местные услуги",
+      "other": "Другое"
+    }
+  },
+  "adminBusinessTripInquiries": {
+    "title": "Запросы на бизнес-поездки",
+    "inquiriesReceived": "Получено запросов: {count}",
+    "updateFailed": "Не удалось обновить",
+    "noResultsTitle": "Пока нет запросов",
+    "noResultsSubtitle": "Здесь будут отображаться запросы на бизнес-поездки.",
+    "attendingType": "Статус посещения",
+    "interest": "Интерес",
+    "message": "Сообщение",
+    "inChina": "Уже в Китае",
+    "traveling": "Едет в Китай",
+    "statuses": {
+      "pending": "в ожидании",
+      "in-progress": "в работе",
+      "completed": "завершено"
+    },
+    "tripDetails": "Детали поездки",
+    "needs": "Потребности",
+    "from": "из",
+    "travelers": "{count, plural, one {# путешественник} other {# путешественников}}",
+    "route": "Маршрут",
+    "destinations": "Направления"
+  },
+  "adminPartnerInquiries": {
+    "title": "Запросы о партнёрстве",
+    "inquiriesReceived": "Получено запросов: {count}",
+    "updateFailed": "Не удалось обновить",
+    "noResultsTitle": "Пока нет запросов",
+    "noResultsSubtitle": "Здесь будут отображаться запросы о партнёрстве.",
+    "company": "Компания",
+    "partnerType": "Тип",
+    "message": "Сообщение",
+    "partnerTypes": {
+      "organizer": "Организатор выставки",
+      "company": "Компания",
+      "other": "Другое",
+      "company_brand": "Компания / Бренд",
+      "service_provider": "Поставщик услуг",
+      "hotel_transportation": "Отель / Транспорт",
+      "factory_supplier": "Завод / Поставщик",
+      "business_association": "Бизнес-ассоциация",
+      "tourism_partner": "Туристический партнёр"
+    },
+    "statuses": {
+      "pending": "в ожидании",
+      "in-progress": "в работе",
+      "completed": "завершено"
+    },
+    "topics": "Темы",
+    "topicLabels": {
+      "exhibitionPromotion": "Продвижение выставки",
+      "buyerRecruitment": "Привлечение байеров",
+      "businessDelegation": "Деловая делегация",
+      "b2bMatchmaking": "B2B-подбор партнёров",
+      "businessTours": "Бизнес-туры",
+      "supplierNetwork": "Сеть поставщиков",
+      "localServices": "Местные услуги",
+      "other": "Другое"
+    }
+  },
+  "planBusinessTripPage": {
+    "title": "Спланировать бизнес-поездку",
+    "subtitle": "Расскажите нам о вашей поездке, и мы пришлём индивидуальный план.",
+    "selectedTourType": "Выбранный пакет: {tourType}",
+    "tourTypeLabels": {
+      "exhibitionVisit": "Посещение выставки",
+      "businessTour": "Бизнес-тур",
+      "businessPlus": "Бизнес Плюс",
+      "customProgram": "Индивидуальная программа"
+    },
+    "fields": {
+      "name": "Имя",
+      "company": "Компания",
+      "email": "Эл. почта",
+      "whatsapp": "WhatsApp / WeChat",
+      "country": "Страна",
+      "departureCity": "Город вылета",
+      "exhibition": "Выставка",
+      "exhibitionPlaceholder": "Выберите выставку (необязательно)",
+      "arrivalDate": "Дата прибытия",
+      "departureDate": "Дата отъезда",
+      "travelers": "Количество путешественников",
+      "industry": "Отрасль / Продукция",
+      "message": "Расскажите о вашей деловой поездке"
+    },
+    "whatDoYouNeed": "Что вам нужно?",
+    "needs": {
+      "hotel": "Отель",
+      "airportTransfer": "Трансфер из аэропорта",
+      "exhibitionTransfer": "Трансфер до выставки",
+      "exhibitionAccompaniment": "Сопровождение на выставке",
+      "interpreter": "Переводчик",
+      "supplierMeetings": "Встречи с поставщиками",
+      "factoryVisits": "Посещение заводов",
+      "supplierSearch": "Поиск поставщиков",
+      "samples": "Образцы",
+      "additionalChinaTrip": "Дополнительная поездка по Китаю"
+    },
+    "submit": "Отправить запрос",
+    "submitting": "Отправка...",
+    "submitFailed": "Не удалось отправить запрос. Попробуйте ещё раз.",
+    "successTitle": "Спасибо! Мы получили ваш запрос.",
+    "successSubtitle": "Наша команда скоро свяжется с вами, чтобы спланировать поездку.",
+    "whichDestinations": "Какие направления в Китае вы хотели бы посетить?",
+    "selectedRoute": "Выбранный маршрут: {route}"
+  },
+  "contactPage": {
+    "title": "Свяжитесь с нами",
+    "subtitle": "Расскажите, что вам нужно, и мы направим вас в нужную сторону.",
+    "options": {
+      "visit": {
+        "title": "Я хочу посетить выставку",
+        "description": "Просмотрите полный календарь выставок в Китае.",
+        "cta": "Смотреть выставки"
+      },
+      "trip": {
+        "title": "Я хочу организовать бизнес-поездку",
+        "description": "Отель, трансферы, помощь на выставке, встречи и посещение заводов.",
+        "cta": "Спланировать бизнес-поездку"
+      },
+      "partner": {
+        "title": "Я хочу сотрудничать с вами",
+        "description": "Организаторы выставок, компании и поставщики услуг.",
+        "cta": "Стать партнёром"
+      }
+    },
+    "emailUs": "Или напишите нам напрямую",
+    "email": "info@theuniqueexpo.com"
+  },
+  "chinaTravelPage": {
+    "title": "Путешествие по Китаю",
+    "subtitle": "Совместите бизнес с путешествием. Выберите выставку, добавьте бизнес-услуги и продлите поездку одним или несколькими направлениями по Китаю.",
+    "destinationsTitle": "Направления по Китаю",
+    "destinationsSubtitle": "Реальные направления, которые мы можем организовать — от крупных деловых центров до коротких загородных и пляжных поездок.",
+    "routesTitle": "Совместите бизнес и путешествие",
+    "routesSubtitle": "Выберите выставку, добавьте бизнес-услуги и продлите поездку одним или несколькими направлениями по Китаю.",
+    "planThisRoute": "Спланировать этот маршрут",
+    "customRouteTitle": "Создать свой маршрут по Китаю",
+    "customRouteSubtitle": "Есть своя идея для поездки? Расскажите, на какую выставку вы едете и какие города хотели бы посетить. Мы поможем составить маршрут.",
+    "createMyRoute": "Создать мой маршрут"
+  },
+  "adminChinaTravel": {
+    "title": "Путешествие по Китаю",
+    "subtitle": "Редактируйте направления и маршруты, показанные на <link>публичной странице «Путешествие по Китаю»</link>.",
+    "destinations": "Направления",
+    "destinationNamePlaceholder": "Название направления",
+    "destinationTaglinePlaceholder": "Короткое описание",
+    "destinationHighlightsPlaceholder": "Особенности через запятую",
+    "addDestination": "+ Добавить направление",
+    "routes": "Маршруты",
+    "routesHint": "Готовые комбинации бизнеса и путешествий, например «Кантонская ярмарка + Гуанчжоу + Яншо».",
+    "routeTitlePlaceholder": "Название маршрута",
+    "routeDescriptionPlaceholder": "Короткое описание",
+    "addRoute": "+ Добавить маршрут",
+    "saveFailed": "Не удалось сохранить",
+    "saved": "Сохранено.",
+    "saveButton": "Сохранить контент"
   }
 }

@@ -3216,6 +3216,12 @@
     "addRoute": "+ 添加路线",
     "saveFailed": "保存失败",
     "saved": "已保存。",
-    "saveButton": "保存中国旅行内容"
+    "saveButton": "保存中国旅行内容",
+    "uploadPhoto": "上传照片",
+    "removeImage": "删除照片",
+    "uploadedImageSet": "已上传照片 — 粘贴网址即可替换",
+    "chooseImageFile": "请选择一个图片文件。",
+    "imageTooLarge": "图片过大，请选择小于 8 MB 的文件。",
+    "couldNotReadFile": "无法读取该文件，请重试。"
   }
 }

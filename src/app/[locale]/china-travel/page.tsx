@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { getChinaTravelContent } from "@/lib/server/china-travel-content-repo";
 import Button from "@/components/ui/Button";
@@ -35,20 +36,40 @@ export default async function ChinaTravelPage({
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {content.destinations.map((dest) => (
-                <Card key={dest.name} shadow="sm" bordered={false} className="p-6">
-                  <IconBadge icon={dest.icon} size="md" tint="bg-emerald-50" />
-                  <h3 className="mt-4 text-lg font-bold text-heading">{dest.name}</h3>
-                  <p className="mt-1 text-sm text-gray-500">{dest.tagline}</p>
-                  {dest.highlights.length > 0 && (
-                    <ul className="mt-4 space-y-1.5">
-                      {dest.highlights.map((h) => (
-                        <li key={h} className="flex items-start gap-2 text-sm text-gray-700">
-                          <span className="text-gold-600 mt-1 shrink-0 text-[10px]">●</span>
-                          {h}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                <Card key={dest.name} shadow="sm" bordered={false}>
+                  <div className="relative h-44 overflow-hidden bg-gray-900">
+                    {dest.image ? (
+                      <Image
+                        src={dest.image}
+                        alt={dest.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 gradient-brand flex items-center justify-center text-5xl">{dest.icon}</div>
+                    )}
+                    <div className="absolute inset-0 gradient-overlay" />
+                    <div className="absolute top-3 left-3">
+                      <IconBadge icon={dest.icon} size="sm" bgClassName="bg-white/90 text-current shadow-sm" />
+                    </div>
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <h3 className="text-lg font-bold text-white leading-tight drop-shadow-lg">{dest.name}</h3>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-sm text-gray-500">{dest.tagline}</p>
+                    {dest.highlights.length > 0 && (
+                      <ul className="mt-4 space-y-1.5">
+                        {dest.highlights.map((h) => (
+                          <li key={h} className="flex items-start gap-2 text-sm text-gray-700">
+                            <span className="text-gold-600 mt-1 shrink-0 text-[10px]">●</span>
+                            {h}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </Card>
               ))}
             </div>

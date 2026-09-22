@@ -3216,6 +3216,12 @@
     "addRoute": "+ Add Route",
     "saveFailed": "Save failed",
     "saved": "Saved.",
-    "saveButton": "Save China Travel Content"
+    "saveButton": "Save China Travel Content",
+    "uploadPhoto": "Upload photo",
+    "removeImage": "Remove image",
+    "uploadedImageSet": "Uploaded photo set — paste a URL to replace it",
+    "chooseImageFile": "Please choose an image file.",
+    "imageTooLarge": "Photo is too large. Please choose one under 8 MB.",
+    "couldNotReadFile": "Couldn't read that file. Please try again."
   }
 }

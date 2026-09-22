@@ -15,12 +15,13 @@ const SECTION_KEYS = [
   { key: "movingQuotes", href: "/admin/services/moving-quotes", icon: "📦", color: "from-indigo-500 to-violet-600" },
   { key: "consultationRequests", href: "/admin/services/consultations", icon: "💬", color: "from-orange-500 to-red-500" },
   { key: "conferenceInquiries", href: "/admin/services/conference-inquiries", icon: "🎤", color: "from-slate-600 to-gray-800" },
+  { key: "tourDestinationInterest", href: "/admin/services/tour-destination-interest", icon: "🗺️", color: "from-pink-500 to-rose-600" },
 ];
 
 export default function AdminServicesPage() {
   const t = useTranslations("adminServicesHome");
   const { user } = useAuth();
-  const [counts, setCounts] = useState({ tourApps: 0, visaApps: 0, consultations: 0, subsidyApps: 0, movingQuotes: 0, conferenceInquiries: 0 });
+  const [counts, setCounts] = useState({ tourApps: 0, visaApps: 0, consultations: 0, subsidyApps: 0, movingQuotes: 0, conferenceInquiries: 0, tourDestinationInterest: 0 });
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -31,7 +32,8 @@ export default function AdminServicesPage() {
       fetch("/api/admin/subsidy-applications").then((r) => r.json()),
       fetch("/api/admin/moving-quotes").then((r) => r.json()),
       fetch("/api/admin/conference-inquiries").then((r) => r.json()),
-    ]).then(([tourData, visaData, consultData, subsidyData, movingData, conferenceData]) => {
+      fetch("/api/admin/tour-destination-interest").then((r) => r.json()),
+    ]).then(([tourData, visaData, consultData, subsidyData, movingData, conferenceData, destinationData]) => {
       setCounts({
         tourApps: (tourData.applications || []).length,
         visaApps: (visaData.applications || []).length,
@@ -39,6 +41,7 @@ export default function AdminServicesPage() {
         subsidyApps: (subsidyData.applications || []).length,
         movingQuotes: (movingData.quotes || []).length,
         conferenceInquiries: (conferenceData.inquiries || []).length,
+        tourDestinationInterest: (destinationData.requests || []).length,
       });
     });
   }, [user]);
@@ -54,6 +57,7 @@ export default function AdminServicesPage() {
     movingQuotes: counts.movingQuotes,
     consultationRequests: counts.consultations,
     conferenceInquiries: counts.conferenceInquiries,
+    tourDestinationInterest: counts.tourDestinationInterest,
   };
   const sections = SECTION_KEYS.map((s) => ({
     ...s,

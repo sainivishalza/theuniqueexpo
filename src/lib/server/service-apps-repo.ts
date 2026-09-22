@@ -261,3 +261,37 @@ export async function createCityPartnershipInquiry(input: {
 export async function updateCityPartnershipInquiryStatus(id: number, status: string) {
   await pool.query("UPDATE city_partnership_inquiries SET status = ? WHERE id = ?", [status, id]);
 }
+
+function mapTourDestinationInterestRow(row: RowDataPacket) {
+  return {
+    id: String(row.id),
+    userId: row.user_id ? String(row.user_id) : "",
+    destination: row.destination,
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    message: row.message,
+    status: row.status,
+    createdAt: row.created_at,
+  };
+}
+
+export async function listTourDestinationInterest() {
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM tour_destination_interest ORDER BY created_at DESC");
+  return rows.map(mapTourDestinationInterestRow);
+}
+
+export async function createTourDestinationInterest(input: {
+  userId?: number; destination: string; name: string; email: string; phone?: string; message?: string;
+}) {
+  const [result] = await pool.query<ResultSetHeader>(
+    `INSERT INTO tour_destination_interest (user_id, destination, name, email, phone, message, status)
+     VALUES (?, ?, ?, ?, ?, ?, 'pending')`,
+    [input.userId || null, input.destination, input.name, input.email, input.phone || "", input.message || ""]
+  );
+  return result.insertId;
+}
+
+export async function updateTourDestinationInterestStatus(id: number, status: string) {
+  await pool.query("UPDATE tour_destination_interest SET status = ? WHERE id = ?", [status, id]);
+}

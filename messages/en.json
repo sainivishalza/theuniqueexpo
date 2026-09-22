@@ -123,6 +123,24 @@
         "title": "Get confirmation",
         "desc": "Our travel team reviews and confirms your booking."
       }
+    },
+    "destinations": {
+      "title": "Browse by Destination",
+      "all": "All",
+      "otherToursHeading": "Tours available now",
+      "noTourTitle": "No tours to {destination} yet",
+      "noTourSubtitle": "Tell us you're interested and our travel team will reach out when a tour opens up.",
+      "thankYouTitle": "Thanks — we've got it!",
+      "thankYouSubtitle": "We'll be in touch about tours to {destination}.",
+      "requestFailed": "Request failed. Please try again.",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone (optional)",
+        "message": "What are you hoping to see or do there? (optional)",
+        "submit": "Register interest",
+        "submitting": "Submitting..."
+      }
     }
   },
   "marketplacePage": {
@@ -571,6 +589,10 @@
       "movingQuotes": {
         "title": "Moving Quote Requests",
         "description": "Review relocation quote requests."
+      },
+      "tourDestinationInterest": {
+        "title": "Destination Interest",
+        "description": "Leads from buyers interested in a China destination with no tour yet."
       }
     }
   },
@@ -2795,5 +2817,20 @@
   "formValidation": {
     "required": "This field is required.",
     "invalidEmail": "Enter a valid email address."
+  },
+  "adminTourDestinationInterest": {
+    "title": "Destination Interest Requests",
+    "backToServicesAdmin": "Back to Services Admin",
+    "requestsReceived": "{count} requests received",
+    "updateFailed": "Update failed",
+    "noResultsTitle": "No requests yet",
+    "noResultsSubtitle": "Destination interest requests from the /tours page will appear here.",
+    "destination": "Destination",
+    "message": "Message",
+    "statuses": {
+      "pending": "pending",
+      "in-progress": "in progress",
+      "completed": "completed"
+    }
   }
 }

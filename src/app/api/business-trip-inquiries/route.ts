@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {
       name, email, whatsapp, company, country, departureCity, attendingType, tourType,
-      exhibitionSlug, arrivalDate, departureDate, travelers, needs, industry, message,
+      exhibitionSlug, arrivalDate, departureDate, travelers, needs, industry, route, destinations, message,
     } = body;
 
     if (!name || !email) {
@@ -49,6 +49,10 @@ export async function POST(request: Request) {
       travelers: Number.isInteger(travelersNum) && travelersNum > 0 ? travelersNum : undefined,
       needs: Array.isArray(needs) ? needs.filter((n: unknown) => typeof n === "string" && NEEDS_OPTIONS.includes(n)) : [],
       industry: industry || "",
+      route: typeof route === "string" ? route.slice(0, 255) : "",
+      destinations: Array.isArray(destinations)
+        ? destinations.filter((d: unknown): d is string => typeof d === "string").slice(0, 20).map((d) => d.slice(0, 100))
+        : [],
       message: message || "",
     });
     return NextResponse.json({ id }, { status: 201 });

@@ -200,10 +200,22 @@ export default async function Home() {
                   </div>
                 </Link>
 
-                {/* Plan My Trip -- separate from the card's own link since it
-                    goes to the business-trip form, not the exhibition page. */}
-                <div className="px-6 pb-6 pt-3">
-                  <Button href={`/plan-business-trip?exhibitionSlug=${encodeURIComponent(evt.slug)}`} variant="secondaryOutline" size="block">
+                {/* Register + Plan My Trip -- separate from the card's own
+                    link since Register goes straight to the registration
+                    flow and Plan My Trip to the business-trip form, neither
+                    of which is the exhibition detail page itself. */}
+                <div className="px-6 pb-6 pt-3 grid grid-cols-2 gap-2">
+                  {evt.registrationEnabled && (
+                    <Button href={`/exhibitions/${evt.slug}/register`} variant="gradientCta" size="block">
+                      {t("register")}
+                    </Button>
+                  )}
+                  <Button
+                    href={`/plan-business-trip?exhibitionSlug=${encodeURIComponent(evt.slug)}`}
+                    variant="secondaryOutline"
+                    size="block"
+                    className={evt.registrationEnabled ? "" : "col-span-2"}
+                  >
                     {t("planMyTrip")}
                   </Button>
                 </div>

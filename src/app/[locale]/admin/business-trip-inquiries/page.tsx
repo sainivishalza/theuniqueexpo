@@ -10,7 +10,7 @@ interface BusinessTripInquiry {
   id: string; name: string; email: string; whatsapp: string; company: string; country: string;
   departureCity: string; attendingType: string; tourType: string; exhibitionSlug: string;
   arrivalDate: string; departureDate: string; travelers: number | null; needs: string[];
-  industry: string; message: string; status: string; createdAt: string;
+  industry: string; route: string; destinations: string[]; message: string; status: string; createdAt: string;
 }
 
 const STATUSES = ["pending", "in-progress", "completed"];
@@ -94,7 +94,9 @@ export default function AdminBusinessTripInquiriesPage() {
                       {a.departureCity && <div>{t("from")} {a.departureCity}</div>}
                       {a.travelers != null && <div>{t("travelers", { count: a.travelers })}</div>}
                       {a.industry && <div>{a.industry}</div>}
-                      {!a.exhibitionSlug && !a.tourType && !a.arrivalDate && !a.departureCity && a.travelers == null && !a.industry && "—"}
+                      {a.route && <div>{t("route")}: {a.route}</div>}
+                      {a.destinations.length > 0 && <div>{t("destinations")}: {a.destinations.join(", ")}</div>}
+                      {!a.exhibitionSlug && !a.tourType && !a.arrivalDate && !a.departureCity && a.travelers == null && !a.industry && !a.route && a.destinations.length === 0 && "—"}
                     </td>
                     <td className="px-6 py-4 text-gray-500 text-xs max-w-[160px]">{a.needs.length > 0 ? a.needs.join(", ") : "—"}</td>
                     <td className="px-6 py-4 text-gray-500 max-w-xs truncate">{a.message || "—"}</td>

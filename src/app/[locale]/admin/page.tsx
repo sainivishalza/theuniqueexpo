@@ -22,6 +22,7 @@ const SECTION_KEYS = [
   { key: "cityPartnershipInquiries", href: "/admin/city-partnership-inquiries", icon: "🏙️", color: "from-sky-500 to-cyan-600" },
   { key: "businessTripInquiries", href: "/admin/business-trip-inquiries", icon: "🧳", color: "from-teal-500 to-cyan-700" },
   { key: "partnerInquiries", href: "/admin/partner-inquiries", icon: "🤝", color: "from-indigo-500 to-violet-600" },
+  { key: "chinaTravel", href: "/admin/china-travel", icon: "🗺️", color: "from-amber-500 to-orange-600" },
   { key: "photoOrganizer", href: "/admin/photo-organizer", icon: "🗂️", color: "from-slate-500 to-gray-600" },
   { key: "websitePages", href: "/admin/pages", icon: "📄", color: "from-sky-500 to-indigo-600" },
   { key: "companyProfile", href: "/admin/company-profile", icon: "🏢", color: "from-teal-500 to-emerald-600" },

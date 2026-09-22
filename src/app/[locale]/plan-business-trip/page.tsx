@@ -19,10 +19,15 @@ interface Exhibition {
   title: string;
 }
 
+interface ChinaDestination {
+  name: string;
+  icon: string;
+}
+
 const EMPTY_FORM = {
   name: "", company: "", email: "", whatsapp: "", country: "", departureCity: "",
   exhibitionSlug: "", arrivalDate: "", departureDate: "", travelers: "1",
-  needs: [] as string[], industry: "", message: "",
+  needs: [] as string[], industry: "", destinations: [] as string[], message: "",
 };
 
 export default function PlanBusinessTripPage() {
@@ -31,6 +36,7 @@ export default function PlanBusinessTripPage() {
   const locale = useLocale();
   const searchParams = useSearchParams();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
+  const [destinations, setDestinations] = useState<ChinaDestination[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -38,12 +44,19 @@ export default function PlanBusinessTripPage() {
   const [form, setForm] = useState(EMPTY_FORM);
 
   const tourType = searchParams.get("tourType") || "";
+  const route = searchParams.get("route") || "";
 
   useEffect(() => {
     fetch(`/api/exhibitions?locale=${locale}`)
       .then((res) => res.json())
       .then((data) => setExhibitions(data.exhibitions || []));
   }, [locale]);
+
+  useEffect(() => {
+    fetch("/api/china-travel-content")
+      .then((res) => res.json())
+      .then((data) => setDestinations(data.content?.destinations || []));
+  }, []);
 
   useEffect(() => {
     const exhibitionSlug = searchParams.get("exhibitionSlug");
@@ -54,6 +67,13 @@ export default function PlanBusinessTripPage() {
     setForm((prev) => ({
       ...prev,
       needs: prev.needs.includes(key) ? prev.needs.filter((n) => n !== key) : [...prev.needs, key],
+    }));
+  }
+
+  function toggleDestination(name: string) {
+    setForm((prev) => ({
+      ...prev,
+      destinations: prev.destinations.includes(name) ? prev.destinations.filter((d) => d !== name) : [...prev.destinations, name],
     }));
   }
 
@@ -75,7 +95,7 @@ export default function PlanBusinessTripPage() {
       const res = await fetch("/api/business-trip-inquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, travelers: Number(form.travelers) || 1, attendingType: "traveling", tourType }),
+        body: JSON.stringify({ ...form, travelers: Number(form.travelers) || 1, attendingType: "traveling", tourType, route }),
       });
       if (!res.ok) throw new Error((await res.json()).error || t("submitFailed"));
       setSubmitted(true);
@@ -101,6 +121,11 @@ export default function PlanBusinessTripPage() {
             {tourType && (
               <div className="mb-6 rounded-[var(--radius-card)] bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
                 {t("selectedTourType", { tourType: t(`tourTypeLabels.${tourType}`) })}
+              </div>
+            )}
+            {route && (
+              <div className="mb-6 rounded-[var(--radius-card)] bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                {t("selectedRoute", { route })}
               </div>
             )}
 
@@ -165,6 +190,20 @@ export default function PlanBusinessTripPage() {
                     ))}
                   </div>
                 </div>
+
+                {destinations.length > 0 && (
+                  <div>
+                    <p className="block text-sm font-medium text-gray-700 mb-2">{t("whichDestinations")}</p>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {destinations.map((dest) => (
+                        <label key={dest.name} className="flex items-center gap-2 text-sm text-gray-700 rounded-[var(--radius-button)] border border-gray-200 px-3 py-2 cursor-pointer hover:bg-cream-50">
+                          <input type="checkbox" checked={form.destinations.includes(dest.name)} onChange={() => toggleDestination(dest.name)} className="accent-emerald-800" />
+                          {dest.icon} {dest.name}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <FormField label={t("fields.industry")} htmlFor="pbt-industry">
                   <input id="pbt-industry" className={fieldClasses()} value={form.industry} onChange={(e) => setForm((f) => ({ ...f, industry: e.target.value }))} />

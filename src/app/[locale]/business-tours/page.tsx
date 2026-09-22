@@ -107,6 +107,18 @@ export default function BusinessToursPage() {
           </div>
         </div>
       </section>
+
+      {/* Combine with China Travel */}
+      <section className="py-16 bg-white">
+        <div className="mx-auto max-w-2xl px-6 text-center">
+          <IconBadge icon="🗺️" size="lg" tint="bg-emerald-50" className="mx-auto" />
+          <h2 className="mt-5 font-[family-name:var(--font-heading)] text-3xl font-bold text-heading">{t("combineTitle")}</h2>
+          <p className="mt-3 text-gray-500">{t("combineText")}</p>
+          <Button href="/china-travel" variant="gradientCta" size="wide" className="mt-6">
+            {t("combineCta")}
+          </Button>
+        </div>
+      </section>
     </div>
   );
 }

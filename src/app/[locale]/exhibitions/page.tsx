@@ -16,7 +16,7 @@ interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
   venue: string; city: string; country: string; industry: string; description: string;
   highlights: string[]; exhibitors: number; visitors: string; organizer: string; website: string;
-  color: string; image: string;
+  color: string; image: string; registrationEnabled: boolean;
 }
 
 export default function ExhibitionsPage() {
@@ -191,8 +191,18 @@ export default function ExhibitionsPage() {
                     </div>
                   </div>
                 </Link>
-                <div className="px-5 pb-5">
-                  <Button href={`/plan-business-trip?exhibitionSlug=${encodeURIComponent(expo.slug)}`} variant="secondaryOutline" size="block">
+                <div className="px-5 pb-5 grid grid-cols-2 gap-2">
+                  {expo.registrationEnabled && (
+                    <Button href={`/exhibitions/${expo.slug}/register`} variant="gradientCta" size="block">
+                      {t("register")}
+                    </Button>
+                  )}
+                  <Button
+                    href={`/plan-business-trip?exhibitionSlug=${encodeURIComponent(expo.slug)}`}
+                    variant="secondaryOutline"
+                    size="block"
+                    className={expo.registrationEnabled ? "" : "col-span-2"}
+                  >
                     {t("planMyTrip")}
                   </Button>
                 </div>

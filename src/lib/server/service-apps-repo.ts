@@ -280,6 +280,8 @@ function mapBusinessTripInquiryRow(row: RowDataPacket) {
     travelers: row.travelers,
     needs: safeParseArray(row.needs),
     industry: row.industry,
+    route: row.route,
+    destinations: safeParseArray(row.destinations),
     message: row.message,
     status: row.status,
     createdAt: row.created_at,
@@ -295,20 +297,22 @@ export async function createBusinessTripInquiry(input: {
   userId?: number; name: string; email: string; whatsapp?: string; company?: string; country?: string;
   departureCity?: string; attendingType?: string; tourType?: string; exhibitionSlug?: string;
   arrivalDate?: string; departureDate?: string; travelers?: number; needs?: string[]; industry?: string;
-  message?: string;
+  route?: string; destinations?: string[]; message?: string;
 }) {
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO business_trip_inquiries
        (user_id, name, email, whatsapp, company, country, departure_city, attending_type, tour_type,
-        exhibition_slug, arrival_date, departure_date, travelers, needs, industry, message, status)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+        exhibition_slug, arrival_date, departure_date, travelers, needs, industry, route, destinations, message, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
     [
       input.userId || null, input.name, input.email, input.whatsapp || "", input.company || "",
       input.country || "", input.departureCity || "", input.attendingType || "unspecified",
       input.tourType || "", input.exhibitionSlug || "", input.arrivalDate || null, input.departureDate || null,
       Number.isInteger(input.travelers) ? input.travelers : null,
       input.needs && input.needs.length ? JSON.stringify(input.needs) : null,
-      input.industry || "", input.message || "",
+      input.industry || "", input.route || "",
+      input.destinations && input.destinations.length ? JSON.stringify(input.destinations) : null,
+      input.message || "",
     ]
   );
   return result.insertId;

@@ -29,7 +29,9 @@ const exhibitorLogos = [
   { name: "SupplyPro", abbr: "SP", color: "bg-emerald-800" },
 ];
 
-const WHO_SHOULD_ATTEND_KEYS = ["importers", "distributors", "retailers", "manufacturers", "wholesalers"];
+const WHO_SHOULD_ATTEND_KEYS = [
+  "importers", "distributors", "retailers", "wholesalers", "manufacturers", "businessOwners", "purchasingManagers",
+];
 
 export default function ExhibitionDetailPage({
   params,
@@ -175,8 +177,16 @@ export default function ExhibitionDetailPage({
         </div>
       </section>
 
+      {/* Need help attending -- top placement, so the next step is visible
+          before the visitor has to scroll past everything else. */}
+      <section className="py-8 bg-cream-50">
+        <div className="mx-auto max-w-7xl px-6">
+          <NeedHelpAttending exhibitionSlug={expo.slug} exhibitionTitle={expo.title} />
+        </div>
+      </section>
+
       {/* Main Content */}
-      <section className="py-12 bg-cream-50">
+      <section className="pb-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Left: main content */}
@@ -208,8 +218,23 @@ export default function ExhibitionDetailPage({
                 </div>
               </Card>
 
-              {/* Need help attending -- mid-page placement */}
-              <NeedHelpAttending exhibitionSlug={expo.slug} exhibitionTitle={expo.title} />
+              {/* How would you like to visit -- full mid-page section with
+                  per-path service lists and a Register button. */}
+              <NeedHelpAttending
+                exhibitionSlug={expo.slug}
+                exhibitionTitle={expo.title}
+                registrationEnabled={expo.registrationEnabled}
+                variant="full"
+              />
+
+              {/* Add China Travel */}
+              <Card shadow="sm" bordered={false} className="p-8 text-center">
+                <h2 className="text-2xl font-bold text-heading">{t("addChinaTravelTitle")}</h2>
+                <p className="mt-2 text-gray-500 max-w-2xl mx-auto">{t("addChinaTravelText")}</p>
+                <Button href={`/china-travel?exhibitionSlug=${encodeURIComponent(expo.slug)}`} variant="gradientCta" size="wide" className="mt-6">
+                  {t("addChinaTravel")}
+                </Button>
+              </Card>
 
               {/* Highlights */}
               <Card shadow="sm" bordered={false} className="p-8">

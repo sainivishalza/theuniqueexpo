@@ -3,6 +3,11 @@ export interface ChinaDestination {
   name: string;
   tagline: string;
   highlights: string[];
+  /** Photo shown on the destination card -- data URL or external URL.
+   * Optional: existing rows seeded before this field existed have none, and
+   * the public page falls back to a plain icon tile until an admin uploads
+   * one via /admin/china-travel. */
+  image?: string;
 }
 
 export interface ChinaRoute {
@@ -48,6 +53,7 @@ export function normalizeChinaTravelContent(input: unknown): ChinaTravelContent 
           name: d.name,
           tagline: d.tagline,
           highlights: d.highlights.filter((h): h is string => typeof h === "string"),
+          image: typeof d.image === "string" ? d.image : "",
         }))
       : [],
     routes: Array.isArray(record.routes)

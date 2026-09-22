@@ -4,11 +4,12 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
+import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { DEFAULT_CHINA_TRAVEL_CONTENT, type ChinaTravelContent, type ChinaDestination, type ChinaRoute } from "@/lib/china-travel-content";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 
-const EMPTY_DESTINATION: ChinaDestination = { icon: "🏙️", name: "", tagline: "", highlights: [] };
+const EMPTY_DESTINATION: ChinaDestination = { icon: "🏙️", name: "", tagline: "", highlights: [], image: "" };
 const EMPTY_ROUTE: ChinaRoute = { title: "", duration: "", description: "" };
 
 export default function AdminChinaTravelPage() {
@@ -20,6 +21,7 @@ export default function AdminChinaTravelPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [imageErrors, setImageErrors] = useState<Record<number, string>>({});
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -46,6 +48,30 @@ export default function AdminChinaTravelPage() {
 
   function removeDestination(index: number) {
     setContent((prev) => ({ ...prev, destinations: prev.destinations.filter((_, i) => i !== index) }));
+    setImageErrors((prev) => {
+      const next = { ...prev };
+      delete next[index];
+      return next;
+    });
+  }
+
+  async function handleDestinationImageFile(index: number, file: File | null) {
+    setImageErrors((prev) => ({ ...prev, [index]: "" }));
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setImageErrors((prev) => ({ ...prev, [index]: t("chooseImageFile") }));
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      setImageErrors((prev) => ({ ...prev, [index]: t("imageTooLarge") }));
+      return;
+    }
+    try {
+      const dataUrl = await readDocumentAsDataUrl(file);
+      updateDestination(index, { image: dataUrl });
+    } catch {
+      setImageErrors((prev) => ({ ...prev, [index]: t("couldNotReadFile") }));
+    }
   }
 
   function updateRoute(index: number, patch: Partial<ChinaRoute>) {
@@ -142,6 +168,41 @@ export default function AdminChinaTravelPage() {
                       placeholder={t("destinationHighlightsPlaceholder")}
                       className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
                     />
+                    <div className="flex gap-3 items-start pt-1">
+                      <div className="relative w-20 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-900 border border-gray-200">
+                        {dest.image ? (
+                          <img src={dest.image} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center text-xl gradient-brand">{dest.icon}</div>
+                        )}
+                      </div>
+                      <div className="flex-1 space-y-1.5">
+                        <input
+                          type="text"
+                          value={dest.image?.startsWith("data:") ? "" : dest.image || ""}
+                          placeholder={dest.image?.startsWith("data:") ? t("uploadedImageSet") : "https://..."}
+                          onChange={(e) => updateDestination(i, { image: e.target.value })}
+                          className="w-full rounded-lg border border-gray-200 px-3 py-1.5 text-xs"
+                        />
+                        <div className="flex items-center gap-3">
+                          <label className="cursor-pointer rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors">
+                            {t("uploadPhoto")}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => handleDestinationImageFile(i, e.target.files?.[0] || null)}
+                            />
+                          </label>
+                          {dest.image && (
+                            <Button onClick={() => updateDestination(i, { image: "" })} variant="linkDanger" size="inline">
+                              {t("removeImage")}
+                            </Button>
+                          )}
+                        </div>
+                        {imageErrors[i] && <p className="text-xs text-red-600">{imageErrors[i]}</p>}
+                      </div>
+                    </div>
                   </div>
                 ))}
                 <Button onClick={addDestination} variant="dashedAdd" size="blockSm">

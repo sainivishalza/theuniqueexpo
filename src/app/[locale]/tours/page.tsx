@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
 
 interface Tour {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -57,6 +58,19 @@ export default function ToursPage() {
           <p className="mt-3 text-lg text-gray-300 max-w-xl">
             {t("subtitle")}
           </p>
+        </div>
+      </section>
+
+      {/* Browse all China destinations */}
+      <section className="py-10 bg-white border-b border-gray-100">
+        <div className="mx-auto max-w-7xl px-6">
+          <Card shadow="sm" bordered={false} className="p-8 text-center">
+            <h2 className="text-2xl font-bold text-heading">{t("chinaTravelBanner.title")}</h2>
+            <p className="mt-2 text-gray-500 max-w-2xl mx-auto">{t("chinaTravelBanner.text")}</p>
+            <Button href="/china-travel" variant="gradientCta" size="wide" className="mt-6">
+              {t("chinaTravelBanner.cta")}
+            </Button>
+          </Card>
         </div>
       </section>
 

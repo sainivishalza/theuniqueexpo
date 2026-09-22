@@ -131,6 +131,11 @@
         "title": "Get confirmation",
         "desc": "Our travel team reviews and confirms your booking."
       }
+    },
+    "chinaTravelBanner": {
+      "title": "Looking for More Than a Tour?",
+      "text": "Browse all our China destinations and pre-built business + travel routes -- from Guangzhou and Hong Kong to Beijing, Chengdu, and beyond.",
+      "cta": "See All China Destinations"
     }
   },
   "marketplacePage": {

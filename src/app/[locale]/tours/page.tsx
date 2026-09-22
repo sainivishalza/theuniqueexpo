@@ -1,16 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
-import { TOUR_DESTINATIONS, tourMatchesDestination } from "@/lib/tour-destinations";
-import type { AppLocale } from "@/i18n/routing";
-import { errorMessage } from "@/lib/format";
-import Button from "@/components/ui/Button";
-import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 interface Tour {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -24,11 +19,10 @@ interface RecentReview {
 
 export default function ToursPage() {
   const t = useTranslations("toursPage");
-  const locale = useLocale() as AppLocale;
+  const locale = useLocale();
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
   const [recentReviews, setRecentReviews] = useState<RecentReview[]>([]);
-  const [selectedDestinationId, setSelectedDestinationId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`/api/tours?locale=${locale}`)
@@ -43,17 +37,6 @@ export default function ToursPage() {
       .then((data) => setRecentReviews(data.reviews || []))
       .catch(() => {});
   }, []);
-
-  const selectedDestination = useMemo(
-    () => TOUR_DESTINATIONS.find((d) => d.id === selectedDestinationId) || null,
-    [selectedDestinationId]
-  );
-  const matchingTours = useMemo(
-    () => (selectedDestination ? tours.filter((tour) => tourMatchesDestination(selectedDestination, tour)) : tours),
-    [selectedDestination, tours]
-  );
-  const hasMatch = !selectedDestination || matchingTours.length > 0;
-  const displayedTours = selectedDestination && hasMatch ? matchingTours : tours;
 
   return (
     <div>
@@ -77,56 +60,12 @@ export default function ToursPage() {
         </div>
       </section>
 
-      {/* Browse by Destination */}
-      <section className="py-8 bg-white border-b border-gray-100">
-        <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-lg font-bold text-heading mb-4">{t("destinations.title")}</h2>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setSelectedDestinationId(null)}
-              className={`rounded-[var(--radius-button)] px-4 py-1.5 text-sm font-semibold transition-colors ${
-                selectedDestinationId === null ? "bg-emerald-600 text-white" : "bg-cream-50 text-gray-600 hover:bg-emerald-50"
-              }`}
-            >
-              {t("destinations.all")}
-            </button>
-            {TOUR_DESTINATIONS.map((dest) => (
-              <button
-                key={dest.id}
-                type="button"
-                onClick={() => setSelectedDestinationId(dest.id)}
-                className={`rounded-[var(--radius-button)] px-4 py-1.5 text-sm font-semibold transition-colors ${
-                  selectedDestinationId === dest.id ? "bg-emerald-600 text-white" : "bg-cream-50 text-gray-600 hover:bg-emerald-50"
-                }`}
-              >
-                {dest.name[locale]}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {selectedDestination && !hasMatch && (
-        <section className="py-10 bg-cream-50 border-b border-gray-100">
-          <div className="mx-auto max-w-7xl px-6">
-            <DestinationInterestForm
-              destinationName={selectedDestination.name[locale]}
-              destinationKey={selectedDestination.name.en}
-            />
-          </div>
-        </section>
-      )}
-
       {/* Tours Grid */}
       <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
-          {selectedDestination && !hasMatch && (
-            <h3 className="text-lg font-bold text-heading mb-6">{t("destinations.otherToursHeading")}</h3>
-          )}
           {loading && <p className="text-center py-20 text-gray-400">{t("loading")}</p>}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {displayedTours.map((tour) => (
+            {tours.map((tour) => (
               <Card key={tour.id} href={`/tours/${tour.slug}`} bordered={false}>
                 <div className="relative h-52 overflow-hidden bg-gray-900">
                   {tour.image && (
@@ -187,7 +126,7 @@ export default function ToursPage() {
             ))}
           </div>
 
-          {!loading && displayedTours.length === 0 && (
+          {!loading && tours.length === 0 && (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">🧳</div>
               <h3 className="text-xl font-bold text-heading mb-2">{t("noResultsTitle")}</h3>
@@ -237,110 +176,5 @@ export default function ToursPage() {
         </section>
       )}
     </div>
-  );
-}
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function DestinationInterestForm({ destinationName, destinationKey }: { destinationName: string; destinationKey: string }) {
-  const t = useTranslations("toursPage");
-  const tv = useTranslations("formValidation");
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
-
-  useEffect(() => {
-    setSubmitted(false);
-    setError("");
-    setFieldErrors({});
-    setForm({ name: "", email: "", phone: "", message: "" });
-  }, [destinationName]);
-
-  function validate() {
-    const errors: Record<string, string> = {};
-    if (!form.name.trim()) errors.name = tv("required");
-    if (!form.email.trim()) errors.email = tv("required");
-    else if (!EMAIL_RE.test(form.email)) errors.email = tv("invalidEmail");
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!validate()) return;
-    setSubmitting(true);
-    setError("");
-    try {
-      const res = await fetch("/api/tour-destination-interest", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ destination: destinationKey, ...form }),
-      });
-      if (!res.ok) throw new Error((await res.json()).error || t("destinations.requestFailed"));
-      setSubmitted(true);
-    } catch (err) {
-      setError(errorMessage(err, t("destinations.requestFailed")));
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  if (submitted) {
-    return (
-      <Card shadow="sm" bordered={false} className="text-center max-w-lg mx-auto p-8">
-        <div className="text-5xl mb-4">🗺️</div>
-        <h3 className="text-xl font-bold text-heading mb-2">{t("destinations.thankYouTitle")}</h3>
-        <p className="text-gray-500">{t("destinations.thankYouSubtitle", { destination: destinationName })}</p>
-      </Card>
-    );
-  }
-
-  return (
-    <Card shadow="sm" bordered={false} className="max-w-lg mx-auto p-8">
-      <h3 className="text-xl font-bold text-heading mb-1">{t("destinations.noTourTitle", { destination: destinationName })}</h3>
-      <p className="text-sm text-gray-500 mb-6">{t("destinations.noTourSubtitle")}</p>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <FormField label={t("destinations.form.name")} htmlFor="interest-name" error={fieldErrors.name}>
-          <input
-            id="interest-name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className={fieldClasses(!!fieldErrors.name)}
-          />
-        </FormField>
-        <FormField label={t("destinations.form.email")} htmlFor="interest-email" error={fieldErrors.email}>
-          <input
-            id="interest-email"
-            type="email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className={fieldClasses(!!fieldErrors.email)}
-          />
-        </FormField>
-        <FormField label={t("destinations.form.phone")} htmlFor="interest-phone">
-          <input
-            id="interest-phone"
-            value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className={fieldClasses()}
-          />
-        </FormField>
-        <FormField label={t("destinations.form.message")} htmlFor="interest-message">
-          <textarea
-            id="interest-message"
-            rows={3}
-            value={form.message}
-            onChange={(e) => setForm({ ...form, message: e.target.value })}
-            className={fieldClasses(false, "resize-none")}
-          />
-        </FormField>
-        {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
-        <Button type="submit" variant="gradientCta" size="block" disabled={submitting}>
-          {submitting ? t("destinations.form.submitting") : t("destinations.form.submit")}
-        </Button>
-      </form>
-    </Card>
   );
 }

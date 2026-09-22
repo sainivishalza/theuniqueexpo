@@ -123,24 +123,6 @@
         "title": "获得确认",
         "desc": "我们的旅行团队将审核并确认您的预订。"
       }
-    },
-    "destinations": {
-      "title": "按目的地浏览",
-      "all": "全部",
-      "otherToursHeading": "当前可预订的旅行团",
-      "noTourTitle": "暂无前往{destination}的旅行团",
-      "noTourSubtitle": "告诉我们您感兴趣，一旦有相关旅行团开放，我们的旅行团队会与您联系。",
-      "thankYouTitle": "谢谢，我们已收到！",
-      "thankYouSubtitle": "我们会就前往{destination}的旅行团与您联系。",
-      "requestFailed": "请求失败，请重试。",
-      "form": {
-        "name": "姓名",
-        "email": "电子邮箱",
-        "phone": "电话（选填）",
-        "message": "您希望在那里看到或体验什么？（选填）",
-        "submit": "登记兴趣",
-        "submitting": "提交中..."
-      }
     }
   },
   "marketplacePage": {
@@ -589,10 +571,6 @@
       "movingQuotes": {
         "title": "搬迁报价申请",
         "description": "查看搬迁报价申请请求。"
-      },
-      "tourDestinationInterest": {
-        "title": "目的地意向",
-        "description": "对尚未开通旅行团的中国目的地感兴趣的买家线索。"
       }
     }
   },
@@ -2817,20 +2795,5 @@
   "formValidation": {
     "required": "此字段为必填项。",
     "invalidEmail": "请输入有效的电子邮件地址。"
-  },
-  "adminTourDestinationInterest": {
-    "title": "目的地意向请求",
-    "backToServicesAdmin": "返回服务管理",
-    "requestsReceived": "已收到 {count} 条请求",
-    "updateFailed": "更新失败",
-    "noResultsTitle": "暂无请求",
-    "noResultsSubtitle": "来自 /tours 页面的目的地意向请求将显示在此处。",
-    "destination": "目的地",
-    "message": "留言",
-    "statuses": {
-      "pending": "待处理",
-      "in-progress": "处理中",
-      "completed": "已完成"
-    }
   }
 }

@@ -356,6 +356,7 @@ run_mysql schema-migrations/044-business-partner-inquiries.sql
 run_mysql schema-migrations/045-business-trip-form-and-partner-form.sql
 run_mysql schema-migrations/046-china-travel-content.sql
 run_mysql schema-migrations/047-buyer-profile-phone-number.sql
+run_mysql schema-migrations/048-import-fashion-fair-buyers.sql
 
 echo "Installing dependencies and building ..."
 npm install

@@ -2676,7 +2676,8 @@
       "overseasCompanyAddress": "Overseas Company Address",
       "companyField": "Company Field",
       "jobTitle": "Job Title",
-      "contactEmail": "Email"
+      "contactEmail": "Email",
+      "phoneNumber": "Phone Number"
     },
     "fieldOptions": {
       "meetingOrVisiting": {
@@ -2770,7 +2771,8 @@
       "overseasCompanyAddress": "Overseas Company Address",
       "companyField": "Company Field",
       "jobTitle": "Job Title",
-      "contactEmail": "Email"
+      "contactEmail": "Email",
+      "phoneNumber": "Phone Number"
     },
     "fieldOptions": {
       "meetingOrVisiting": {

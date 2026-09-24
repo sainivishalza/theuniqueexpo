@@ -34,6 +34,7 @@ interface BuyerProfile {
   companyField: string;
   jobTitle: string;
   contactEmail: string;
+  phoneNumber: string;
   dateOfBirth: string;
   visaType: string;
   visaExpireDate: string;
@@ -71,6 +72,7 @@ const FIELDS: FieldDef[] = [
   { key: "companyField", kind: "text" },
   { key: "jobTitle", kind: "combo", options: JOB_TITLES },
   { key: "contactEmail", kind: "email" },
+  { key: "phoneNumber", kind: "text" },
   { key: "dateOfBirth", kind: "date" },
   { key: "visaType", kind: "select", options: VISA_TYPES, translateOptions: false },
   { key: "visaExpireDate", kind: "date" },

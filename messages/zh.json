@@ -2676,7 +2676,8 @@
       "overseasCompanyAddress": "海外公司地址",
       "companyField": "公司行业",
       "jobTitle": "职位",
-      "contactEmail": "邮箱"
+      "contactEmail": "邮箱",
+      "phoneNumber": "电话号码"
     },
     "fieldOptions": {
       "meetingOrVisiting": {
@@ -2770,7 +2771,8 @@
       "overseasCompanyAddress": "海外公司地址",
       "companyField": "公司行业",
       "jobTitle": "职位",
-      "contactEmail": "邮箱"
+      "contactEmail": "邮箱",
+      "phoneNumber": "电话号码"
     },
     "fieldOptions": {
       "meetingOrVisiting": {

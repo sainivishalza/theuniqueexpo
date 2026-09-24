@@ -2676,7 +2676,8 @@
       "overseasCompanyAddress": "Адрес зарубежной компании",
       "companyField": "Сфера деятельности компании",
       "jobTitle": "Должность",
-      "contactEmail": "Email"
+      "contactEmail": "Email",
+      "phoneNumber": "Номер телефона"
     },
     "fieldOptions": {
       "meetingOrVisiting": {
@@ -2770,7 +2771,8 @@
       "overseasCompanyAddress": "Адрес зарубежной компании",
       "companyField": "Сфера деятельности компании",
       "jobTitle": "Должность",
-      "contactEmail": "Email"
+      "contactEmail": "Email",
+      "phoneNumber": "Номер телефона"
     },
     "fieldOptions": {
       "meetingOrVisiting": {

@@ -99,16 +99,18 @@ export default function NavBar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-gray-200">
-      <div className="mx-auto max-w-7xl px-6 flex items-center justify-between h-16">
+      <div className="mx-auto max-w-7xl px-6 flex items-center justify-between gap-4 h-16">
         {/* Logo */}
-        <Link href="/" className="group focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-4 rounded-sm">
+        <Link href="/" className="group shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-4 rounded-sm">
           <Logo />
         </Link>
 
-        {/* Desktop nav -- kicks in at xl (1280px), not lg: there are too many
-            primary items (8 links/dropdowns + 2 CTA buttons + auth) to fit
-            cleanly at 1024-1279px without cramming or wrapping text. */}
-        <div className="hidden xl:flex items-center gap-2 2xl:gap-4">
+        {/* Desktop nav -- kicks in at a custom 1400px, not the xl (1280px)
+            default: there are too many primary items (8 links/dropdowns + 2
+            CTA buttons + auth) to fit cleanly below that, especially once
+            Russian labels (which run longer than English/Chinese) are
+            accounted for. The mobile menu handles anything narrower well. */}
+        <div className="hidden min-[1400px]:flex items-center gap-1.5 2xl:gap-4">
           <Link href="/" className={NAV_LINK_CLASS}>
             {t("home")}
           </Link>
@@ -168,7 +170,7 @@ export default function NavBar() {
 
         {/* Mobile hamburger */}
         <button
-          className="xl:hidden p-2 text-gray-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
+          className="min-[1400px]:hidden p-2 text-gray-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
           aria-expanded={mobileOpen}

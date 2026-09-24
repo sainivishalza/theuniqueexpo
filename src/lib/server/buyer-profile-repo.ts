@@ -77,6 +77,7 @@ export interface BuyerProfileFields {
   // email (users.email) -- named contactEmail in the DB/API to avoid ever
   // confusing the two.
   contactEmail: string;
+  phoneNumber: string;
   dateOfBirth: string;
   visaType: string;
   visaExpireDate: string;
@@ -121,6 +122,7 @@ const EMPTY_FIELDS: BuyerProfileFields = {
   companyField: "",
   jobTitle: "",
   contactEmail: "",
+  phoneNumber: "",
   dateOfBirth: "",
   visaType: "",
   visaExpireDate: "",
@@ -148,6 +150,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
     companyField: row.company_field || "",
     jobTitle: row.job_title || "",
     contactEmail: row.contact_email || "",
+    phoneNumber: row.phone_number || "",
     dateOfBirth: row.date_of_birth || "",
     visaType: row.visa_type || "",
     visaExpireDate: row.visa_expire_date || "",
@@ -175,7 +178,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
 
 const SELECT_SUMMARY_COLUMNS =
   "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, registration_code, source_exhibitions, " +
-  "departure_city, attendance_day, meeting_or_visiting, passport_name, gender, wechat_id, overseas_company_address, company_field, job_title, contact_email, " +
+  "departure_city, attendance_day, meeting_or_visiting, passport_name, gender, wechat_id, overseas_company_address, company_field, job_title, contact_email, phone_number, " +
   "date_of_birth, visa_type, visa_expire_date, " +
   "doc_business_license, doc_business_card, doc_passport_front, doc_visa_page, doc_canton_fair_card, doc_buyer_photo, doc_invoice_order_list, " +
   "doc_business_license_status, doc_business_license_note, doc_business_card_status, doc_business_card_note, " +
@@ -239,6 +242,7 @@ export interface AdminBuyerProfileRow {
   companyField: string;
   overseasCompanyAddress: string;
   contactEmail: string;
+  phoneNumber: string;
   registrationCode: string;
   sourceExhibitions: string;
   annualTurnover: string;
@@ -273,7 +277,7 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
     `SELECT u.id AS user_id, u.name, u.email, u.status,
             p.company_name, p.nationality, p.passport_number, p.passport_name, p.gender, p.wechat_id,
             p.departure_city, p.attendance_day, p.meeting_or_visiting, p.job_title, p.company_field,
-            p.overseas_company_address, p.contact_email, p.registration_code, p.source_exhibitions, p.annual_turnover, p.contact_person,
+            p.overseas_company_address, p.contact_email, p.phone_number, p.registration_code, p.source_exhibitions, p.annual_turnover, p.contact_person,
             p.date_of_birth, p.visa_type, p.visa_expire_date, p.purchase_intention, p.other_purchase_intention,
             p.doc_business_license, p.doc_business_card, p.doc_passport_front,
             p.doc_visa_page, p.doc_canton_fair_card, p.doc_buyer_photo, p.doc_invoice_order_list,
@@ -313,6 +317,7 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
       companyField: row.company_field || "",
       overseasCompanyAddress: row.overseas_company_address || "",
       contactEmail: row.contact_email || "",
+      phoneNumber: row.phone_number || "",
       registrationCode: row.registration_code || "",
       sourceExhibitions: row.source_exhibitions || "",
       annualTurnover: row.annual_turnover || "",
@@ -350,7 +355,7 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
     `SELECT u.id AS user_id, u.name, u.email,
             p.company_name, p.nationality, p.passport_number, p.annual_turnover, p.purchase_intention, p.other_purchase_intention,
             p.contact_person, p.registration_code, p.source_exhibitions, p.departure_city, p.attendance_day, p.meeting_or_visiting,
-            p.passport_name, p.gender, p.wechat_id, p.overseas_company_address, p.company_field, p.job_title, p.contact_email,
+            p.passport_name, p.gender, p.wechat_id, p.overseas_company_address, p.company_field, p.job_title, p.contact_email, p.phone_number,
             p.date_of_birth, p.visa_type, p.visa_expire_date, ${docColumns}
      FROM users u
      LEFT JOIN buyer_profiles p ON p.user_id = u.id
@@ -387,6 +392,7 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
       companyField: row.company_field || "",
       jobTitle: row.job_title || "",
       contactEmail: row.contact_email || "",
+      phoneNumber: row.phone_number || "",
       dateOfBirth: row.date_of_birth || "",
       visaType: row.visa_type || "",
       visaExpireDate: row.visa_expire_date || "",
@@ -416,6 +422,7 @@ const FIELD_COLUMNS: Record<keyof BuyerProfileFields, string> = {
   companyField: "company_field",
   jobTitle: "job_title",
   contactEmail: "contact_email",
+  phoneNumber: "phone_number",
   dateOfBirth: "date_of_birth",
   visaType: "visa_type",
   visaExpireDate: "visa_expire_date",

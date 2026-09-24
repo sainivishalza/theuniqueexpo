@@ -29,6 +29,7 @@ interface AdminBuyerProfileRow {
   companyField: string;
   overseasCompanyAddress: string;
   contactEmail: string;
+  phoneNumber: string;
   registrationCode: string;
   sourceExhibitions: string;
   annualTurnover: string;
@@ -49,7 +50,7 @@ type StringRowKey = { [K in keyof AdminBuyerProfileRow]: AdminBuyerProfileRow[K]
 const SEARCHABLE_ROW_FIELDS: StringRowKey[] = [
   "name", "email", "companyName", "nationality", "passportNumber", "passportName",
   "gender", "wechatId", "departureCity", "attendanceDay", "meetingOrVisiting",
-  "jobTitle", "companyField", "overseasCompanyAddress", "contactEmail",
+  "jobTitle", "companyField", "overseasCompanyAddress", "contactEmail", "phoneNumber",
   "registrationCode", "sourceExhibitions", "annualTurnover", "contactPerson", "dateOfBirth", "visaType",
   "visaExpireDate", "purchaseIntention", "otherPurchaseIntention",
 ];
@@ -79,6 +80,7 @@ interface BuyerProfileDetail {
   companyField: string;
   jobTitle: string;
   contactEmail: string;
+  phoneNumber: string;
   dateOfBirth: string;
   visaType: string;
   visaExpireDate: string;
@@ -136,6 +138,7 @@ const FIELDS: FieldDef[] = [
   { key: "companyField", kind: "text" },
   { key: "jobTitle", kind: "combo", options: JOB_TITLES },
   { key: "contactEmail", kind: "email" },
+  { key: "phoneNumber", kind: "text" },
   { key: "dateOfBirth", kind: "date" },
   { key: "visaType", kind: "select", options: VISA_TYPES, translateOptions: false },
   { key: "visaExpireDate", kind: "date" },

@@ -37,6 +37,7 @@ export async function PATCH(request: Request) {
     "companyField",
     "jobTitle",
     "contactEmail",
+    "phoneNumber",
     "dateOfBirth",
     "visaType",
     "visaExpireDate",

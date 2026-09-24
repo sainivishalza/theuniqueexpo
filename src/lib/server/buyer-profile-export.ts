@@ -31,6 +31,7 @@ export const FIELD_LABELS: Record<string, string> = {
   companyField: "Company Field",
   jobTitle: "Job Title",
   contactEmail: "Contact Email",
+  phoneNumber: "Phone Number",
 };
 
 export const DOC_LABELS: Record<DocumentField, string> = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
@@ -9,6 +9,7 @@ import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import { useFormScroll } from "@/lib/client/use-form-scroll";
 
 interface Exhibition {
   id: string;
@@ -53,6 +54,7 @@ export default function AdminExhibitionsPage() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
+  const { formRef, scrollToForm } = useFormScroll();
   const [form, setForm] = useState(EMPTY_FORM);
   // Once the admin hand-edits the slug, stop overwriting it as they keep
   // typing the title -- only auto-derive it while it's still untouched.
@@ -63,14 +65,6 @@ export default function AdminExhibitionsPage() {
   const [imageError, setImageError] = useState("");
   const [galleryError, setGalleryError] = useState("");
   const [galleryUploading, setGalleryUploading] = useState(false);
-
-  // The edit/new form renders above the (long) list, so on a phone clicking
-  // Edit on a lower card appeared to do nothing -- bring the form into view.
-  const formRef = useRef<HTMLElement>(null);
-  const [formOpenTick, setFormOpenTick] = useState(0);
-  useEffect(() => {
-    if (formOpenTick > 0) formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [formOpenTick]);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -104,7 +98,7 @@ export default function AdminExhibitionsPage() {
       image: expo.image || "", galleryImages: [],
     });
     setFormError("");
-    setFormOpenTick((n) => n + 1);
+    scrollToForm();
     setEditingId(expo.id);
     setShowNew(false);
     setSlugTouched(true);
@@ -133,7 +127,7 @@ export default function AdminExhibitionsPage() {
   function openNew() {
     setForm(EMPTY_FORM);
     setFormError("");
-    setFormOpenTick((n) => n + 1);
+    scrollToForm();
     setShowNew(true);
     setEditingId(null);
     setSlugTouched(false);

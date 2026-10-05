@@ -8,6 +8,7 @@ import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import { useFormScroll } from "@/lib/client/use-form-scroll";
 
 interface TeamMember {
   id: string;
@@ -28,6 +29,7 @@ export default function AdminTeamPage() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
+  const { formRef, scrollToForm } = useFormScroll();
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
@@ -57,6 +59,7 @@ export default function AdminTeamPage() {
   async function openEdit(member: TeamMember) {
     setForm({ name: member.name, role: member.role, photo: member.photo || "", displayOrder: member.displayOrder });
     setFormError("");
+    scrollToForm();
     setPhotoError("");
     setEditingId(member.id);
     setShowNew(false);
@@ -83,6 +86,7 @@ export default function AdminTeamPage() {
   function openNew() {
     setForm({ ...EMPTY_FORM, displayOrder: members.length });
     setFormError("");
+    scrollToForm();
     setPhotoError("");
     setShowNew(true);
     setEditingId(null);
@@ -186,7 +190,7 @@ export default function AdminTeamPage() {
       </section>
 
       {showForm && (
-        <section className="py-8 bg-white border-b border-gray-200">
+        <section ref={formRef} className="py-8 bg-white border-b border-gray-200">
           <div className="mx-auto max-w-2xl px-6">
             <h2 className="text-xl font-bold text-heading mb-4">{editingId ? t("editMember") : t("newMemberHeading")}</h2>
             {formError && <div className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{formError}</div>}

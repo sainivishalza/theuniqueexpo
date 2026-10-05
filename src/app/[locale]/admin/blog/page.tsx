@@ -10,6 +10,7 @@ import type { FaqItem } from "@/lib/faq-content";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
+import { useFormScroll } from "@/lib/client/use-form-scroll";
 
 interface Post {
   id: string;
@@ -41,6 +42,7 @@ export default function AdminBlogPage() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
+  const { formRef, scrollToForm } = useFormScroll();
   const [form, setForm] = useState(EMPTY_FORM);
   const [slugTouched, setSlugTouched] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -75,6 +77,7 @@ export default function AdminBlogPage() {
       faqItems: post.faqItems || [], published: post.published,
     });
     setFormError("");
+    scrollToForm();
     setEditingId(post.id);
     setShowNew(false);
     setSlugTouched(true);
@@ -95,6 +98,7 @@ export default function AdminBlogPage() {
   function openNew() {
     setForm(EMPTY_FORM);
     setFormError("");
+    scrollToForm();
     setShowNew(true);
     setEditingId(null);
     setSlugTouched(false);
@@ -178,7 +182,7 @@ export default function AdminBlogPage() {
       </section>
 
       {showForm && (
-        <section className="py-8 bg-white border-b border-gray-200">
+        <section ref={formRef} className="py-8 bg-white border-b border-gray-200">
           <div className="mx-auto max-w-4xl px-6">
             <h2 className="text-xl font-bold text-heading mb-4">{editingId ? t("editPost") : t("newPostHeading")}</h2>
             {formError && <div className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{formError}</div>}

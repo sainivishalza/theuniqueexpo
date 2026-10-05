@@ -83,7 +83,9 @@
     "privacyPolicy": "Политика конфиденциальности",
     "termsOfService": "Условия использования",
     "cookiePolicy": "Политика Cookie",
-    "cookieSettings": "Настройки cookie"
+    "cookieSettings": "Настройки cookie",
+    "subscribeSuccess": "Спасибо за подписку!",
+    "subscribeError": "Не удалось подписаться. Проверьте email и попробуйте снова."
   },
   "about": {
     "ourStory": "Наша история",
@@ -530,6 +532,10 @@
       "chinaTravel": {
         "title": "Путешествие по Китаю",
         "description": "Управление направлениями и готовыми маршрутами на странице «Путешествие по Китаю»."
+      },
+      "newsletter": {
+        "title": "Подписчики рассылки",
+        "description": "Кто подписался через форму в подвале сайта; список можно скачать."
       }
     }
   },
@@ -3325,5 +3331,13 @@
     "policyLink": "Читать политику Cookie",
     "accept": "Разрешить аналитику",
     "decline": "Отклонить"
+  },
+  "adminNewsletter": {
+    "title": "Подписчики рассылки",
+    "subscribersCount": "Подписчиков: {count}",
+    "noResultsTitle": "Пока нет подписчиков",
+    "noResultsSubtitle": "Здесь будут email-адреса из формы в подвале сайта.",
+    "language": "Язык",
+    "downloadCsv": "Скачать CSV"
   }
 }

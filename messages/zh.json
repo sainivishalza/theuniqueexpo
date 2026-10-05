@@ -83,7 +83,9 @@
     "privacyPolicy": "隐私政策",
     "termsOfService": "服务条款",
     "cookiePolicy": "Cookie 政策",
-    "cookieSettings": "Cookie 设置"
+    "cookieSettings": "Cookie 设置",
+    "subscribeSuccess": "感谢订阅!",
+    "subscribeError": "订阅失败,请检查邮箱后重试。"
   },
   "about": {
     "ourStory": "我们的故事",
@@ -530,6 +532,10 @@
       "chinaTravel": {
         "title": "中国旅行",
         "description": "管理中国旅行页面上显示的目的地和预设路线。"
+      },
+      "newsletter": {
+        "title": "邮件订阅用户",
+        "description": "查看通过网站页脚订阅的用户并下载名单。"
       }
     }
   },
@@ -3325,5 +3331,13 @@
     "policyLink": "查看 Cookie 政策",
     "accept": "接受分析",
     "decline": "拒绝"
+  },
+  "adminNewsletter": {
+    "title": "邮件订阅用户",
+    "subscribersCount": "共 {count} 位订阅者",
+    "noResultsTitle": "暂无订阅者",
+    "noResultsSubtitle": "通过网站页脚提交的邮箱将显示在此处。",
+    "language": "语言",
+    "downloadCsv": "下载 CSV"
   }
 }

@@ -356,6 +356,7 @@ run_mysql schema-migrations/044-business-partner-inquiries.sql
 run_mysql schema-migrations/045-business-trip-form-and-partner-form.sql
 run_mysql schema-migrations/046-china-travel-content.sql
 run_mysql schema-migrations/047-buyer-profile-phone-number.sql
+run_mysql schema-migrations/049-newsletter-subscribers.sql
 
 echo "Installing dependencies and building ..."
 npm install
@@ -378,15 +379,24 @@ pm2 restart theuniqueexpo || pm2 start npm --name theuniqueexpo --cwd "$APP_DIR"
 pm2 save
 
 echo "Checking the app responds (it may take a few seconds to finish booting) ..."
+APP_UP=0
 for i in 1 2 3 4 5 6 7 8 9 10; do
   CODE=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/ || true)
   if [ -n "$CODE" ] && [ "$CODE" != "000" ]; then
     echo "HTTP $CODE"
+    APP_UP=1
     break
   fi
   echo "  not up yet (attempt $i/10), waiting 3s..."
   sleep 3
 done
+if [ "$APP_UP" != "1" ]; then
+  # Fail the deploy instead of reporting success for a site that isn't
+  # answering (an earlier run logged EADDRINUSE on :3000 and still passed).
+  echo "ERROR: nothing answered on http://localhost:3000/ after 10 attempts -- the deploy did not bring the app up." >&2
+  tail -n 40 "$HOME/.pm2/logs/theuniqueexpo-error.log" 2>/dev/null >&2 || true
+  exit 1
+fi
 
 echo "Origin-level check of the new registration routes (bypasses any CDN cache in front of the public domain):"
 echo "  /exhibitions/global-ocean-city-food-expo-2026/register -> $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/exhibitions/global-ocean-city-food-expo-2026/register)"

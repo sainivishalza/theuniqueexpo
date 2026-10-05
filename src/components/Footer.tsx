@@ -1,4 +1,5 @@
 import Logo from "@/components/Logo";
+import NewsletterForm from "@/components/NewsletterForm";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { companyProfileSocialLinks, type CompanyProfile } from "@/lib/company-profile";
@@ -56,16 +57,7 @@ export default function Footer({
             <h3 className="text-xl font-bold text-white">{t("newsletterTitle")}</h3>
             <p className="text-sm text-gray-400 mt-1">{t("newsletterSubtitle")}</p>
           </div>
-          <form className="flex gap-2 w-full md:w-auto" onSubmit={(e) => e.preventDefault()}>
-            <input
-              type="email"
-              placeholder={t("emailPlaceholder")}
-              className="flex-1 min-w-0 md:w-72 rounded-[var(--radius-button)] bg-[var(--color-footer-surface)] border border-[var(--color-footer-border)] px-4 py-3 text-sm text-white placeholder-gray-500 focus:border-gold-400 focus:ring-2 focus:ring-gold-400/30 outline-none transition-colors"
-            />
-            <button className="rounded-[var(--radius-button)] bg-gold-500 px-6 py-3 text-sm font-semibold text-emerald-950 hover:bg-gold-600 transition-colors whitespace-nowrap focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2">
-              {t("subscribe")}
-            </button>
-          </form>
+          <NewsletterForm />
         </div>
       </div>
 

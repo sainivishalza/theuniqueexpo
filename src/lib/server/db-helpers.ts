@@ -26,6 +26,24 @@ export function formatDateRange(start: string | Date, end: string | Date): strin
   return `${s.toLocaleDateString("en-US", opts)} – ${e.toLocaleDateString("en-US", opts)}, ${e.getFullYear()}`;
 }
 
+// Dynamic route params can arrive percent-encoded -- sometimes twice, when a
+// client component re-encodes a param it got from the router -- for slugs with
+// non-ASCII letters, spaces or "&" (e.g. a Chinese-titled exhibition), so a
+// plain `slug = ?` lookup misses them and the page 404s. Always returns three
+// values (raw, decoded once, decoded twice; repeats are harmless) so queries
+// can use a fixed `slug IN (?, ?, ?)`.
+export function slugLookupValues(slugOrId: string): [string, string, string] {
+  const decode = (v: string) => {
+    try {
+      return decodeURIComponent(v);
+    } catch {
+      return v; // malformed escape sequence -- keep as is
+    }
+  };
+  const once = decode(slugOrId);
+  return [slugOrId, once, decode(once)];
+}
+
 export function safeParseArray(value: unknown): string[] {
   if (!value) return [];
   if (Array.isArray(value)) return value;

@@ -1,6 +1,6 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
-import { toDateOnlyString } from "@/lib/server/db-helpers";
+import { toDateOnlyString, slugLookupValues } from "@/lib/server/db-helpers";
 
 export type EventCategory = "networking" | "hiking" | "picnic" | "cultural" | "other";
 
@@ -50,8 +50,8 @@ export async function listEvents(view?: "upcoming" | "past") {
 
 export async function getEventBySlugOrId(slugOrId: string) {
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT * FROM events WHERE slug = ? OR id = ? LIMIT 1",
-    [slugOrId, Number(slugOrId) || 0]
+    "SELECT * FROM events WHERE slug IN (?, ?, ?) OR id = ? ORDER BY slug = ? DESC LIMIT 1",
+    [...slugLookupValues(slugOrId), Number(slugOrId) || 0, slugOrId]
   );
   const row = rows[0];
   return row ? mapEventRow(row) : null;

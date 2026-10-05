@@ -38,7 +38,7 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
-    fetch(`/api/admin/tours/${slug}/registration-form`)
+    fetch(`/api/admin/tours/${encodeURIComponent(slug)}/registration-form`)
       .then((res) => res.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
@@ -80,7 +80,7 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
     setError("");
     setSaved(false);
     try {
-      const res = await fetch(`/api/admin/tours/${slug}/registration-form`, {
+      const res = await fetch(`/api/admin/tours/${encodeURIComponent(slug)}/registration-form`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

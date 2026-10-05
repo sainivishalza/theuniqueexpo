@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { listPublishedIssues } from "@/lib/server/magazine-repo";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import { metaDescription } from "@/lib/seo";
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
@@ -12,7 +13,8 @@ export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("magazinePage");
-  return { title: t("title"), description: t("subtitle") };
+  const siteTail = (await getTranslations("meta"))("siteTail");
+  return { title: t("title"), description: metaDescription(t("subtitle"), siteTail) };
 }
 
 export default async function MagazinePage() {

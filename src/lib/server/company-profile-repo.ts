@@ -1,9 +1,14 @@
 import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { safeParseJson } from "@/lib/server/db-helpers";
+import { clearTtlCache, ttlCached } from "@/lib/server/ttl-cache";
 import { DEFAULT_COMPANY_PROFILE, normalizeCompanyProfile, type CompanyProfile } from "@/lib/company-profile";
 
-export async function getCompanyProfile(): Promise<CompanyProfile> {
+export function getCompanyProfile(): Promise<CompanyProfile> {
+  return ttlCached("company-profile", 30_000, loadCompanyProfile);
+}
+
+async function loadCompanyProfile(): Promise<CompanyProfile> {
   const [rows] = await pool.query<RowDataPacket[]>("SELECT content FROM company_profile WHERE id = 1 LIMIT 1");
   const row = rows[0];
   if (!row) return DEFAULT_COMPANY_PROFILE;
@@ -16,4 +21,5 @@ export async function updateCompanyProfile(content: CompanyProfile): Promise<voi
      ON DUPLICATE KEY UPDATE content = VALUES(content)`,
     [JSON.stringify(content)]
   );
+  clearTtlCache("company-profile");
 }

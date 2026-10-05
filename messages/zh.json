@@ -2809,7 +2809,8 @@
     "next": "下一张照片",
     "goToSlide": "跳转到第 {number} 张照片",
     "zoomHint": "点击放大",
-    "close": "关闭"
+    "close": "关闭",
+    "photoAlt": "照片 {number}"
   },
   "adminSlideshow": {
     "backToAdmin": "← 返回管理后台",
@@ -3319,7 +3320,8 @@
     "tours": {
       "title": "旅游线路",
       "description": "中国及其他地区的导游旅行线路 — 告诉我们谁出行、喜欢什么,我们将为您定制行程。"
-    }
+    },
+    "siteTail": "The Unique Expo — 中国 B2B 展会、考察团与采购支持。"
   },
   "whatsappButton": {
     "label": "通过 WhatsApp 联系我们",

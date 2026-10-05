@@ -4,12 +4,14 @@ import { listVideos } from "@/lib/server/videos-repo";
 import VideoEmbed from "@/components/VideoEmbed";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import { metaDescription } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("videosPage");
-  return { title: t("title"), description: t("subtitle") };
+  const siteTail = (await getTranslations("meta"))("siteTail");
+  return { title: t("title"), description: metaDescription(t("subtitle"), siteTail) };
 }
 
 export default async function VideosPage() {

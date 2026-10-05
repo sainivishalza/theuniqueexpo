@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTourBySlugOrId } from "@/lib/server/tours-repo";
 import { getTranslations } from "next-intl/server";
+import { metaDescription } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -14,9 +15,10 @@ export async function generateMetadata({
     return { title: t("tourNotFound") };
   }
 
-  const description =
-    tour.description?.slice(0, 200) ||
-    `${tour.title} — ${tour.dates}, ${tour.departureCity} to ${tour.destination}.`;
+  const description = metaDescription(
+    tour.description,
+    `${tour.title} — ${tour.dates}, ${tour.departureCity} to ${tour.destination}.`
+  );
   const imageUrl = tour.image?.startsWith("data:")
     ? `/api/tours/${tour.slug}/image`
     : tour.image;

@@ -2809,7 +2809,8 @@
     "next": "Следующее фото",
     "goToSlide": "Перейти к фото {number}",
     "zoomHint": "Нажмите, чтобы увеличить",
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "photoAlt": "Фото {number}"
   },
   "adminSlideshow": {
     "backToAdmin": "← Назад в админ-панель",
@@ -3319,7 +3320,8 @@
     "tours": {
       "title": "Туры",
       "description": "Туры с гидом по Китаю и не только — расскажите, кто едет и что вам нравится, и мы составим маршрут."
-    }
+    },
+    "siteTail": "The Unique Expo — B2B-выставки, туры и закупки в Китае."
   },
   "whatsappButton": {
     "label": "Напишите нам в WhatsApp",

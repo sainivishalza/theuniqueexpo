@@ -3,10 +3,12 @@ import { getTranslations } from "next-intl/server";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
+import { metaDescription } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("contactPage");
-  return { title: t("title"), description: t("subtitle") };
+  const siteTail = (await getTranslations("meta"))("siteTail");
+  return { title: t("title"), description: metaDescription(t("subtitle"), siteTail) };
 }
 
 export default async function ContactPage() {

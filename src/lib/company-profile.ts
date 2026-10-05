@@ -4,6 +4,9 @@ export interface CompanyProfile {
   faviconUrl: string;
   contactEmail: string;
   phone: string;
+  // Digits with optional leading + (e.g. +86 138 0000 0000); powers the
+  // floating click-to-chat button. Empty hides the button.
+  whatsapp: string;
   addressLine: string;
   addressCity: string;
   addressCountry: string;
@@ -25,6 +28,7 @@ export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
   faviconUrl: "",
   contactEmail: "info@theuniqueexpo.com",
   phone: "",
+  whatsapp: "",
   addressLine: "",
   addressCity: "",
   addressCountry: "",
@@ -44,6 +48,7 @@ export function normalizeCompanyProfile(input: unknown): CompanyProfile {
     faviconUrl: str("faviconUrl"),
     contactEmail: str("contactEmail"),
     phone: str("phone"),
+    whatsapp: str("whatsapp"),
     addressLine: str("addressLine"),
     addressCity: str("addressCity"),
     addressCountry: str("addressCountry"),
@@ -63,4 +68,11 @@ export function companyProfileSocialLinks(profile: CompanyProfile): { label: str
     { label: "Instagram", icon: "IG", url: profile.socialInstagram },
     { label: "YouTube", icon: "▶", url: profile.socialYoutube },
   ].filter((s) => s.url);
+}
+
+// wa.me links take the full international number as digits only.
+export function whatsappChatUrl(number: string, message: string): string | null {
+  const digits = number.replace(/\D/g, "");
+  if (digits.length < 8) return null;
+  return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }

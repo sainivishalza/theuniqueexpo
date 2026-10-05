@@ -2,6 +2,7 @@
 
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { AuthProvider } from "@/lib/auth-context";
 import { CompanyProfileProvider } from "@/lib/company-profile-context";
 import type { CompanyProfile } from "@/lib/company-profile";
@@ -20,6 +21,7 @@ export default function ClientShell({
           <NavBar />
           <main className="flex-1 pt-16">{children}</main>
           <Footer companyProfile={companyProfile} />
+          <WhatsAppButton number={companyProfile.whatsapp} />
         </div>
       </AuthProvider>
     </CompanyProfileProvider>

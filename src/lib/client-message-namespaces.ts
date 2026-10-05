@@ -23,6 +23,9 @@ export const DASHBOARD_NAMESPACES = [
   "buyerDashboard", "buyerProfile", "exhibitorDashboard", "partnerDashboard",
 ];
 
+// Only read by server-side generateMetadata, never by client components.
+export const SERVER_ONLY_NAMESPACES = ["meta"];
+
 export function pickMessages<T extends Record<string, unknown>>(messages: T, namespaces: string[]): Partial<T> {
   const picked: Partial<T> = {};
   for (const ns of namespaces) {

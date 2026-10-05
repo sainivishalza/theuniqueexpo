@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "China Travel",
-  description: "Combine your exhibition visit with real China travel -- Guangzhou, Shenzhen, Yangshuo, Hong Kong and more, or build your own route.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta.chinaTravel");
+  return { title: t("title"), description: t("description") };
+}
 
 export default function ChinaTravelLayout({ children }: { children: React.ReactNode }) {
   return children;

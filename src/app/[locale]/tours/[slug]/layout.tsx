@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTourBySlugOrId } from "@/lib/server/tours-repo";
+import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata({
   params,
@@ -9,7 +10,8 @@ export async function generateMetadata({
   const { slug, locale } = await params;
   const tour = await getTourBySlugOrId(slug, locale);
   if (!tour) {
-    return { title: "Tour not found" };
+    const t = await getTranslations({ locale, namespace: "meta" });
+    return { title: t("tourNotFound") };
   }
 
   const description =

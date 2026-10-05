@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Events",
-  description: "Networking, hiking, picnics, and cultural meetups in Guangzhou and other cities.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta.events");
+  return { title: t("title"), description: t("description") };
+}
 
 export default function EventsLayout({ children }: { children: React.ReactNode }) {
   return children;

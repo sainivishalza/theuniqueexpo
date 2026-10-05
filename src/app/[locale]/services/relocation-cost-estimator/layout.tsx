@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Relocation Cost Estimator",
-  description: "Free calculator for estimating office, residential, freight, or pet relocation costs to or within China -- then request an exact quote.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta.servicesRelocationCostEstimator");
+  return { title: t("title"), description: t("description") };
+}
 
 export default function RelocationCostEstimatorLayout({ children }: { children: React.ReactNode }) {
   return children;

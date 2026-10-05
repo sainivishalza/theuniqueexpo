@@ -82,7 +82,8 @@
     "copyright": "© {year} The Unique Expo. 保留所有权利。",
     "privacyPolicy": "隐私政策",
     "termsOfService": "服务条款",
-    "cookiePolicy": "Cookie 政策"
+    "cookiePolicy": "Cookie 政策",
+    "cookieSettings": "Cookie 设置"
   },
   "about": {
     "ourStory": "我们的故事",
@@ -3317,5 +3318,12 @@
   "whatsappButton": {
     "label": "通过 WhatsApp 联系我们",
     "prefill": "您好!我在 theuniqueexpo.com 上看到了你们,想了解更多信息。"
+  },
+  "cookieConsent": {
+    "title": "您的隐私选择",
+    "body": "我们使用一个必要的 Cookie 来保持您的登录状态。经您许可,我们还会使用 Google Analytics 了解访客如何使用本网站,这会设置分析类 Cookie。您可随时通过页脚的“Cookie 设置”更改选择。",
+    "policyLink": "查看 Cookie 政策",
+    "accept": "接受分析",
+    "decline": "拒绝"
   }
 }

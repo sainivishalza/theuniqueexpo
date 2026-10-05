@@ -2,9 +2,16 @@ import Logo from "@/components/Logo";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { companyProfileSocialLinks, type CompanyProfile } from "@/lib/company-profile";
+import { openCookieSettings } from "@/lib/cookie-consent";
 import { SHOW_TEAM } from "@/lib/feature-flags";
 
-export default function Footer({ companyProfile }: { companyProfile: CompanyProfile }) {
+export default function Footer({
+  companyProfile,
+  analyticsEnabled,
+}: {
+  companyProfile: CompanyProfile;
+  analyticsEnabled: boolean;
+}) {
   const t = useTranslations("footer");
   const socialLinks = companyProfileSocialLinks(companyProfile);
 
@@ -116,6 +123,11 @@ export default function Footer({ companyProfile }: { companyProfile: CompanyProf
             <Link href="/privacy" className="hover:text-white transition-colors">{t("privacyPolicy")}</Link>
             <Link href="/terms" className="hover:text-white transition-colors">{t("termsOfService")}</Link>
             <Link href="/cookies" className="hover:text-white transition-colors">{t("cookiePolicy")}</Link>
+            {analyticsEnabled && (
+              <button type="button" onClick={openCookieSettings} className="hover:text-white transition-colors">
+                {t("cookieSettings")}
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -56,7 +56,7 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
-    fetch(`/api/admin/tour-registrations?tour=${slug}`)
+    fetch(`/api/admin/tour-registrations?tour=${encodeURIComponent(slug)}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);

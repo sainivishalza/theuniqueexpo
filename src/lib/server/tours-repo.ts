@@ -1,6 +1,6 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
-import { toDateOnlyString, formatDateRange, safeParseArray, safeParseJson } from "@/lib/server/db-helpers";
+import { toDateOnlyString, formatDateRange, safeParseArray, safeParseJson, slugLookupValues } from "@/lib/server/db-helpers";
 import { DEFAULT_TOUR_REGISTRATION_FIELDS } from "@/lib/default-tour-registration-form";
 import type { CustomFormSchema } from "@/lib/custom-registration-form";
 
@@ -51,21 +51,21 @@ export function mapTourRow(row: RowDataPacket, locale?: string) {
     dates: formatDateRange(row.start_date, row.end_date),
     startDate: toDateOnlyString(row.start_date),
     endDate: toDateOnlyString(row.end_date),
-    duration: row.duration,
-    departureCity: row.departure_city,
-    destination: row.destination,
-    description,
+    duration: row.duration ?? "",
+    departureCity: row.departure_city ?? "",
+    destination: row.destination ?? "",
+    description: description ?? "",
     highlights,
     descriptionRu,
     descriptionZh,
     highlightsRu,
     highlightsZh,
-    price: row.price,
-    currency: row.currency,
-    groupSize: row.group_size,
-    organizer: row.organizer,
-    color: row.color,
-    image: row.image,
+    price: row.price ?? 0,
+    currency: row.currency || "USD",
+    groupSize: row.group_size ?? 0,
+    organizer: row.organizer ?? "",
+    color: row.color || "#075b4f",
+    image: row.image ?? "",
     galleryImages: safeParseArray(row.gallery_images),
     registrationEnabled: row.registration_enabled === undefined ? true : !!row.registration_enabled,
     registrationFormSchema: safeParseJson(row.registration_form_schema) as CustomFormSchema | null,
@@ -89,8 +89,8 @@ export async function listTours(locale?: string) {
 
 export async function getTourBySlugOrId(slugOrId: string, locale?: string) {
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT * FROM tours WHERE slug = ? OR id = ? LIMIT 1",
-    [slugOrId, Number(slugOrId) || 0]
+    "SELECT * FROM tours WHERE slug IN (?, ?, ?) OR id = ? ORDER BY slug = ? DESC LIMIT 1",
+    [...slugLookupValues(slugOrId), Number(slugOrId) || 0, slugOrId]
   );
   const row = rows[0];
   return row ? mapTourRow(row, locale) : null;
@@ -98,8 +98,8 @@ export async function getTourBySlugOrId(slugOrId: string, locale?: string) {
 
 export async function getTourImageValue(slugOrId: string): Promise<string | null> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT image FROM tours WHERE slug = ? OR id = ? LIMIT 1",
-    [slugOrId, Number(slugOrId) || 0]
+    "SELECT image FROM tours WHERE slug IN (?, ?, ?) OR id = ? ORDER BY slug = ? DESC LIMIT 1",
+    [...slugLookupValues(slugOrId), Number(slugOrId) || 0, slugOrId]
   );
   const row = rows[0];
   return row ? row.image : null;
@@ -107,8 +107,8 @@ export async function getTourImageValue(slugOrId: string): Promise<string | null
 
 export async function getTourGalleryImageValue(slugOrId: string, index: number): Promise<string | null> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT gallery_images FROM tours WHERE slug = ? OR id = ? LIMIT 1",
-    [slugOrId, Number(slugOrId) || 0]
+    "SELECT gallery_images FROM tours WHERE slug IN (?, ?, ?) OR id = ? ORDER BY slug = ? DESC LIMIT 1",
+    [...slugLookupValues(slugOrId), Number(slugOrId) || 0, slugOrId]
   );
   const row = rows[0];
   if (!row) return null;

@@ -1,6 +1,6 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
-import { toDateOnlyString, formatDateRange, safeParseArray, safeParseJson } from "@/lib/server/db-helpers";
+import { toDateOnlyString, formatDateRange, safeParseArray, safeParseJson, slugLookupValues } from "@/lib/server/db-helpers";
 import type { CustomFormSchema } from "@/lib/custom-registration-form";
 
 export interface ExhibitionInput {
@@ -52,22 +52,22 @@ export function mapExhibitionRow(row: RowDataPacket, locale?: string) {
     dates: formatDateRange(row.start_date, row.end_date),
     startDate: toDateOnlyString(row.start_date),
     endDate: toDateOnlyString(row.end_date),
-    venue: row.venue,
-    city: row.city,
-    country: row.country,
-    industry: row.industry,
-    description,
+    venue: row.venue ?? "",
+    city: row.city ?? "",
+    country: row.country ?? "",
+    industry: row.industry ?? "",
+    description: description ?? "",
     highlights,
     descriptionRu,
     descriptionZh,
     highlightsRu,
     highlightsZh,
-    exhibitors: row.exhibitors,
-    visitors: row.visitors,
-    organizer: row.organizer,
-    website: row.website,
-    color: row.color,
-    image: row.image,
+    exhibitors: row.exhibitors ?? 0,
+    visitors: row.visitors ?? "",
+    organizer: row.organizer ?? "",
+    website: row.website ?? "",
+    color: row.color || "#075b4f",
+    image: row.image ?? "",
     galleryImages: safeParseArray(row.gallery_images),
     registrationEnabled: row.registration_enabled === undefined ? true : !!row.registration_enabled,
     registrationFormSchema: safeParseJson(row.registration_form_schema) as CustomFormSchema | null,
@@ -97,8 +97,8 @@ export async function listExhibitions(locale?: string) {
 
 export async function getExhibitionBySlugOrId(slugOrId: string, locale?: string) {
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT * FROM exhibitions WHERE slug = ? OR id = ? LIMIT 1",
-    [slugOrId, Number(slugOrId) || 0]
+    "SELECT * FROM exhibitions WHERE slug IN (?, ?, ?) OR id = ? ORDER BY slug = ? DESC LIMIT 1",
+    [...slugLookupValues(slugOrId), Number(slugOrId) || 0, slugOrId]
   );
   const row = rows[0];
   return row ? mapExhibitionRow(row, locale) : null;
@@ -108,8 +108,8 @@ export async function getExhibitionBySlugOrId(slugOrId: string, locale?: string)
 // every other column just to read the (potentially huge) image value.
 export async function getExhibitionImageValue(slugOrId: string): Promise<string | null> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT image FROM exhibitions WHERE slug = ? OR id = ? LIMIT 1",
-    [slugOrId, Number(slugOrId) || 0]
+    "SELECT image FROM exhibitions WHERE slug IN (?, ?, ?) OR id = ? ORDER BY slug = ? DESC LIMIT 1",
+    [...slugLookupValues(slugOrId), Number(slugOrId) || 0, slugOrId]
   );
   const row = rows[0];
   return row ? row.image : null;
@@ -119,8 +119,8 @@ export async function getExhibitionImageValue(slugOrId: string): Promise<string 
 // reasoning as getExhibitionImageValue above.
 export async function getExhibitionGalleryImageValue(slugOrId: string, index: number): Promise<string | null> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT gallery_images FROM exhibitions WHERE slug = ? OR id = ? LIMIT 1",
-    [slugOrId, Number(slugOrId) || 0]
+    "SELECT gallery_images FROM exhibitions WHERE slug IN (?, ?, ?) OR id = ? ORDER BY slug = ? DESC LIMIT 1",
+    [...slugLookupValues(slugOrId), Number(slugOrId) || 0, slugOrId]
   );
   const row = rows[0];
   if (!row) return null;

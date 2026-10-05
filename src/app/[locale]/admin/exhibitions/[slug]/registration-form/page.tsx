@@ -39,7 +39,7 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
-    fetch(`/api/admin/exhibitions/${slug}/registration-form`)
+    fetch(`/api/admin/exhibitions/${encodeURIComponent(slug)}/registration-form`)
       .then((res) => res.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
@@ -87,7 +87,7 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
     setError("");
     setSaved(false);
     try {
-      const res = await fetch(`/api/admin/exhibitions/${slug}/registration-form`, {
+      const res = await fetch(`/api/admin/exhibitions/${encodeURIComponent(slug)}/registration-form`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

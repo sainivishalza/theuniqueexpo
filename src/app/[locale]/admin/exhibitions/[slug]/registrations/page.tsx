@@ -53,7 +53,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
-    fetch(`/api/admin/expo-registrations?exhibition=${slug}`)
+    fetch(`/api/admin/expo-registrations?exhibition=${encodeURIComponent(slug)}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
@@ -112,7 +112,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
             </div>
             {exhibition && (
               <a
-                href={`/api/admin/expo-registrations/export?exhibition=${exhibition.slug}`}
+                href={`/api/admin/expo-registrations/export?exhibition=${encodeURIComponent(exhibition.slug)}`}
                 className="rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/20 transition-colors"
               >
                 {t("exportToExcel")}

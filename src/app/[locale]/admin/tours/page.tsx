@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
@@ -61,6 +61,14 @@ export default function AdminToursPage() {
   const [galleryError, setGalleryError] = useState("");
   const [galleryUploading, setGalleryUploading] = useState(false);
 
+  // The edit/new form renders above the (long) list, so on a phone clicking
+  // Edit on a lower card appeared to do nothing -- bring the form into view.
+  const formRef = useRef<HTMLElement>(null);
+  const [formOpenTick, setFormOpenTick] = useState(0);
+  useEffect(() => {
+    if (formOpenTick > 0) formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [formOpenTick]);
+
   useEffect(() => {
     if (!user || user.role !== "admin") return;
     void loadTours();
@@ -93,6 +101,7 @@ export default function AdminToursPage() {
       image: tour.image || "", galleryImages: [],
     });
     setFormError("");
+    setFormOpenTick((n) => n + 1);
     setEditingId(tour.id);
     setShowNew(false);
     setSlugTouched(true);
@@ -101,7 +110,7 @@ export default function AdminToursPage() {
     // instead of embedding raw base64 -- fetch the real value so saving
     // without touching the image doesn't overwrite the stored poster.
     try {
-      const res = await fetch(`/api/tours/${tour.slug}`);
+      const res = await fetch(`/api/tours/${encodeURIComponent(tour.slug)}`);
       const data = await res.json();
       if (res.ok && data.tour) {
         setForm((prev) =>
@@ -118,6 +127,7 @@ export default function AdminToursPage() {
   function openNew() {
     setForm(EMPTY_FORM);
     setFormError("");
+    setFormOpenTick((n) => n + 1);
     setShowNew(true);
     setEditingId(null);
     setSlugTouched(false);
@@ -265,7 +275,7 @@ export default function AdminToursPage() {
       </section>
 
       {showForm && (
-        <section className="py-8 bg-white border-b border-gray-200">
+        <section ref={formRef} className="py-8 bg-white border-b border-gray-200">
           <div className="mx-auto max-w-4xl px-6">
             <h2 className="text-xl font-bold text-heading mb-4">{editingId ? t("editTour") : t("newTourHeading")}</h2>
             {formError && <div className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{formError}</div>}

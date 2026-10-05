@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { listPublishedPosts, type BlogCategory } from "@/lib/server/blog-repo";
 import Card from "@/components/ui/Card";
+import { metaDescription } from "@/lib/seo";
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
@@ -13,7 +14,8 @@ const CATEGORIES: BlogCategory[] = ["life-in-china", "relocation-tips", "exhibit
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("blogPage");
-  return { title: t("title"), description: t("subtitle") };
+  const siteTail = (await getTranslations("meta"))("siteTail");
+  return { title: t("title"), description: metaDescription(t("subtitle"), siteTail) };
 }
 
 export default async function BlogPage({

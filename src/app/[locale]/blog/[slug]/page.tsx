@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { renderMarkdown } from "@/lib/markdown";
 import { getPublishedPostBySlug } from "@/lib/server/blog-repo";
 import Card from "@/components/ui/Card";
+import { defaultOgImage, metaDescription } from "@/lib/seo";
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
@@ -17,20 +18,22 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const post = await getPublishedPostBySlug(slug);
   if (!post) return { title: "Post not found" };
+  const description = metaDescription(post.excerpt, post.title);
+  const images = [{ url: post.coverImage || defaultOgImage(locale) }];
   return {
     title: post.title,
-    description: post.excerpt,
+    description,
     openGraph: {
       type: "article",
       title: post.title,
-      description: post.excerpt,
-      images: post.coverImage ? [{ url: post.coverImage }] : undefined,
+      description,
+      images,
       publishedTime: post.publishedAt || undefined,
     },
-    twitter: { card: "summary_large_image", title: post.title, description: post.excerpt },
+    twitter: { card: "summary_large_image", title: post.title, description, images },
   };
 }
 

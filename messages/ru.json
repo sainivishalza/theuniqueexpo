@@ -83,7 +83,9 @@
     "privacyPolicy": "Политика конфиденциальности",
     "termsOfService": "Условия использования",
     "cookiePolicy": "Политика Cookie",
-    "cookieSettings": "Настройки cookie"
+    "cookieSettings": "Настройки cookie",
+    "subscribeSuccess": "Спасибо за подписку!",
+    "subscribeError": "Не удалось подписаться. Проверьте email и попробуйте снова."
   },
   "about": {
     "ourStory": "Наша история",
@@ -530,6 +532,10 @@
       "chinaTravel": {
         "title": "Путешествие по Китаю",
         "description": "Управление направлениями и готовыми маршрутами на странице «Путешествие по Китаю»."
+      },
+      "newsletter": {
+        "title": "Подписчики рассылки",
+        "description": "Кто подписался через форму в подвале сайта; список можно скачать."
       }
     }
   },
@@ -2803,7 +2809,8 @@
     "next": "Следующее фото",
     "goToSlide": "Перейти к фото {number}",
     "zoomHint": "Нажмите, чтобы увеличить",
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "photoAlt": "Фото {number}"
   },
   "adminSlideshow": {
     "backToAdmin": "← Назад в админ-панель",
@@ -3313,7 +3320,8 @@
     "tours": {
       "title": "Туры",
       "description": "Туры с гидом по Китаю и не только — расскажите, кто едет и что вам нравится, и мы составим маршрут."
-    }
+    },
+    "siteTail": "The Unique Expo — B2B-выставки, туры и закупки в Китае."
   },
   "whatsappButton": {
     "label": "Напишите нам в WhatsApp",
@@ -3325,5 +3333,13 @@
     "policyLink": "Читать политику Cookie",
     "accept": "Разрешить аналитику",
     "decline": "Отклонить"
+  },
+  "adminNewsletter": {
+    "title": "Подписчики рассылки",
+    "subscribersCount": "Подписчиков: {count}",
+    "noResultsTitle": "Пока нет подписчиков",
+    "noResultsSubtitle": "Здесь будут email-адреса из формы в подвале сайта.",
+    "language": "Язык",
+    "downloadCsv": "Скачать CSV"
   }
 }

@@ -83,7 +83,9 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "cookiePolicy": "Cookie Policy",
-    "cookieSettings": "Cookie settings"
+    "cookieSettings": "Cookie settings",
+    "subscribeSuccess": "Thanks for subscribing!",
+    "subscribeError": "Couldn't subscribe. Please check your email and try again."
   },
   "about": {
     "ourStory": "Our Story",
@@ -530,6 +532,10 @@
       "chinaTravel": {
         "title": "China Travel",
         "description": "Manage the destinations and pre-built routes shown on the China Travel page."
+      },
+      "newsletter": {
+        "title": "Newsletter Subscribers",
+        "description": "See who signed up through the website footer and download the list."
       }
     }
   },
@@ -2803,7 +2809,8 @@
     "next": "Next photo",
     "goToSlide": "Go to photo {number}",
     "zoomHint": "Click to zoom",
-    "close": "Close"
+    "close": "Close",
+    "photoAlt": "Photo {number}"
   },
   "adminSlideshow": {
     "backToAdmin": "← Back to Admin",
@@ -3313,7 +3320,8 @@
     "tours": {
       "title": "Tours",
       "description": "Guided travel tours across China and beyond — tell us who's going and what you love, and we'll tailor the itinerary."
-    }
+    },
+    "siteTail": "The Unique Expo — B2B exhibitions, tours and sourcing in China."
   },
   "whatsappButton": {
     "label": "Chat with us on WhatsApp",
@@ -3325,5 +3333,13 @@
     "policyLink": "Read our Cookie Policy",
     "accept": "Accept analytics",
     "decline": "Decline"
+  },
+  "adminNewsletter": {
+    "title": "Newsletter Subscribers",
+    "subscribersCount": "{count} subscribers",
+    "noResultsTitle": "No subscribers yet",
+    "noResultsSubtitle": "Emails entered in the website footer will appear here.",
+    "language": "Language",
+    "downloadCsv": "Download CSV"
   }
 }

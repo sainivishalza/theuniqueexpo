@@ -1,9 +1,14 @@
 import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { safeParseJson } from "@/lib/server/db-helpers";
+import { clearTtlCache, ttlCached } from "@/lib/server/ttl-cache";
 import { DEFAULT_SITE_THEME, normalizeSiteTheme, type SiteTheme } from "@/lib/site-theme";
 
-export async function getSiteTheme(): Promise<SiteTheme> {
+export function getSiteTheme(): Promise<SiteTheme> {
+  return ttlCached("site-theme", 30_000, loadSiteTheme);
+}
+
+async function loadSiteTheme(): Promise<SiteTheme> {
   const [rows] = await pool.query<RowDataPacket[]>("SELECT content FROM site_theme WHERE id = 1 LIMIT 1");
   const row = rows[0];
   if (!row) return DEFAULT_SITE_THEME;
@@ -16,4 +21,5 @@ export async function updateSiteTheme(theme: SiteTheme): Promise<void> {
      ON DUPLICATE KEY UPDATE content = VALUES(content)`,
     [JSON.stringify(theme)]
   );
+  clearTtlCache("site-theme");
 }

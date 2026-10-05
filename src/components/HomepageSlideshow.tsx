@@ -112,7 +112,7 @@ export default function HomepageSlideshow({ photos }: { photos: SlideshowPhoto[]
             {visited.has(i) && (
               <Image
                 src={photo.image}
-                alt={photo.caption || ""}
+                alt={photo.caption || t("photoAlt", { number: i + 1 })}
                 fill
                 sizes="100vw"
                 priority={i === 0}
@@ -206,7 +206,7 @@ export default function HomepageSlideshow({ photos }: { photos: SlideshowPhoto[]
           <div className="w-full h-full flex items-center justify-center overflow-auto p-6 md:p-10">
             <img
               src={current.image}
-              alt={current.caption || ""}
+              alt={current.caption || t("photoAlt", { number: index + 1 })}
               onClick={() => setZoomed((z) => !z)}
               className={`transition-transform duration-300 ease-out select-none ${
                 zoomed ? "max-w-none w-[180%] md:w-[160%] cursor-zoom-out" : "max-w-full max-h-full object-contain cursor-zoom-in"

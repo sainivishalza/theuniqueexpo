@@ -83,7 +83,9 @@
     "privacyPolicy": "隐私政策",
     "termsOfService": "服务条款",
     "cookiePolicy": "Cookie 政策",
-    "cookieSettings": "Cookie 设置"
+    "cookieSettings": "Cookie 设置",
+    "subscribeSuccess": "感谢订阅!",
+    "subscribeError": "订阅失败,请检查邮箱后重试。"
   },
   "about": {
     "ourStory": "我们的故事",
@@ -530,6 +532,10 @@
       "chinaTravel": {
         "title": "中国旅行",
         "description": "管理中国旅行页面上显示的目的地和预设路线。"
+      },
+      "newsletter": {
+        "title": "邮件订阅用户",
+        "description": "查看通过网站页脚订阅的用户并下载名单。"
       }
     }
   },
@@ -2803,7 +2809,8 @@
     "next": "下一张照片",
     "goToSlide": "跳转到第 {number} 张照片",
     "zoomHint": "点击放大",
-    "close": "关闭"
+    "close": "关闭",
+    "photoAlt": "照片 {number}"
   },
   "adminSlideshow": {
     "backToAdmin": "← 返回管理后台",
@@ -3313,7 +3320,8 @@
     "tours": {
       "title": "旅游线路",
       "description": "中国及其他地区的导游旅行线路 — 告诉我们谁出行、喜欢什么,我们将为您定制行程。"
-    }
+    },
+    "siteTail": "The Unique Expo — 中国 B2B 展会、考察团与采购支持。"
   },
   "whatsappButton": {
     "label": "通过 WhatsApp 联系我们",
@@ -3325,5 +3333,13 @@
     "policyLink": "查看 Cookie 政策",
     "accept": "接受分析",
     "decline": "拒绝"
+  },
+  "adminNewsletter": {
+    "title": "邮件订阅用户",
+    "subscribersCount": "共 {count} 位订阅者",
+    "noResultsTitle": "暂无订阅者",
+    "noResultsSubtitle": "通过网站页脚提交的邮箱将显示在此处。",
+    "language": "语言",
+    "downloadCsv": "下载 CSV"
   }
 }

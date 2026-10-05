@@ -60,6 +60,7 @@ const nextConfig = {
       { pathname: "/api/exhibitions/**" },
       { pathname: "/api/tours/**" },
       { pathname: "/api/team-members/**" },
+      { pathname: "/api/slideshow-photos/**" },
       { pathname: "/api/magazine/**" },
     ],
   },

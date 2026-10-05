@@ -7,6 +7,8 @@ export interface CompanyProfile {
   // Digits with optional leading + (e.g. +86 138 0000 0000); powers the
   // floating click-to-chat button. Empty hides the button.
   whatsapp: string;
+  // GA4 measurement ID (G-XXXXXXXXXX). Empty disables analytics.
+  googleAnalyticsId: string;
   addressLine: string;
   addressCity: string;
   addressCountry: string;
@@ -29,6 +31,7 @@ export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
   contactEmail: "info@theuniqueexpo.com",
   phone: "",
   whatsapp: "",
+  googleAnalyticsId: "",
   addressLine: "",
   addressCity: "",
   addressCountry: "",
@@ -38,6 +41,10 @@ export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
   socialX: "",
   socialYoutube: "",
 };
+
+// The ID is interpolated into an inline <script>, so only this exact shape
+// is ever accepted.
+export const GA_MEASUREMENT_ID_RE = /^G-[A-Z0-9]{4,20}$/;
 
 export function normalizeCompanyProfile(input: unknown): CompanyProfile {
   const record = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
@@ -49,6 +56,7 @@ export function normalizeCompanyProfile(input: unknown): CompanyProfile {
     contactEmail: str("contactEmail"),
     phone: str("phone"),
     whatsapp: str("whatsapp"),
+    googleAnalyticsId: GA_MEASUREMENT_ID_RE.test(str("googleAnalyticsId").trim()) ? str("googleAnalyticsId").trim() : "",
     addressLine: str("addressLine"),
     addressCity: str("addressCity"),
     addressCountry: str("addressCountry"),

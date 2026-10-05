@@ -2381,7 +2381,9 @@
     "socialHint": "只有在此处填写的链接才会显示在网站页脚和 Organization 结构化数据中 -- 留空即可隐藏。",
     "faviconUrl": "网站图标 URL",
     "whatsapp": "WhatsApp 号码",
-    "whatsappHint": "包含国家代码的完整国际号码。填写后,所有公开页面都会显示绿色的 WhatsApp 聊天按钮;留空则隐藏。"
+    "whatsappHint": "包含国家代码的完整国际号码。填写后,所有公开页面都会显示绿色的 WhatsApp 聊天按钮;留空则隐藏。",
+    "googleAnalyticsId": "Google Analytics ID",
+    "googleAnalyticsIdHint": "您的 GA4 衡量 ID(以 G- 开头)。填写后将在公开页面收集访客统计;留空则关闭分析。"
   },
   "adminFaq": {
     "title": "常见问题管理",

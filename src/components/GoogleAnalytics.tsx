@@ -1,11 +1,16 @@
-import Script from "next/script";
+"use client";
 
-// Renders nothing until NEXT_PUBLIC_GA_MEASUREMENT_ID is set (in the
-// server's .env.local, alongside the DB_* vars) -- keeps analytics off
-// in local/dev builds and avoids shipping a placeholder ID by mistake.
-export default function GoogleAnalytics() {
-  const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-  if (!measurementId) return null;
+import Script from "next/script";
+import { usePathname } from "@/i18n/navigation";
+import { GA_MEASUREMENT_ID_RE } from "@/lib/company-profile";
+
+// Renders nothing until a GA4 ID is set -- in Admin -> Company Profile, or
+// failing that NEXT_PUBLIC_GA_MEASUREMENT_ID in the server's .env.local.
+// Skipped on /admin and /dashboard so staff activity doesn't skew the numbers.
+export default function GoogleAnalytics({ measurementId }: { measurementId: string }) {
+  const pathname = usePathname();
+  if (!GA_MEASUREMENT_ID_RE.test(measurementId)) return null;
+  if (pathname.startsWith("/admin") || pathname.startsWith("/dashboard")) return null;
 
   return (
     <>

@@ -2381,7 +2381,9 @@
     "socialHint": "Only links you enter here will appear in the site footer and Organization schema -- leave any blank to hide them.",
     "faviconUrl": "Favicon URL",
     "whatsapp": "WhatsApp Number",
-    "whatsappHint": "Full international number with country code. When set, a green WhatsApp chat button appears on every public page; leave blank to hide it."
+    "whatsappHint": "Full international number with country code. When set, a green WhatsApp chat button appears on every public page; leave blank to hide it.",
+    "googleAnalyticsId": "Google Analytics ID",
+    "googleAnalyticsIdHint": "Your GA4 Measurement ID (starts with G-). When set, visitor statistics are collected on public pages; leave blank to turn analytics off."
   },
   "adminFaq": {
     "title": "FAQ Management",

@@ -5,7 +5,7 @@ import {
   Caveat, Dancing_Script, Pacifico,
 } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import "./globals.css";
@@ -17,7 +17,7 @@ import { getCompanyProfile } from "@/lib/server/company-profile-repo";
 import { getSiteTheme } from "@/lib/server/site-theme-repo";
 import { headingFontStack, bodyFontStack, scriptFontStack, cornerRadii, cardShadows } from "@/lib/site-theme";
 import { generateScale, deriveTints } from "@/lib/theme-colors";
-import { ADMIN_NAMESPACES, DASHBOARD_NAMESPACES, omitMessages } from "@/lib/client-message-namespaces";
+import { ADMIN_NAMESPACES, DASHBOARD_NAMESPACES, SERVER_ONLY_NAMESPACES, omitMessages } from "@/lib/client-message-namespaces";
 
 // Every font an admin can pick from (see src/lib/site-theme.ts) is self-
 // hosted at build time, same as the original Inter -- next/font requires
@@ -25,23 +25,28 @@ import { ADMIN_NAMESPACES, DASHBOARD_NAMESPACES, omitMessages } from "@/lib/clie
 // one is currently selected. Each only exposes its CSS variable; picking
 // one costs nothing extra over another since a browser only ever fetches
 // the @font-face files actually referenced by rendered text.
-const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"], display: "swap", variable: "--font-inter" });
-const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], display: "swap", variable: "--font-manrope" });
-const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], display: "swap", variable: "--font-montserrat" });
-const openSans = Open_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], display: "swap", variable: "--font-open-sans" });
+const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"], display: "swap", preload: false, variable: "--font-inter" });
+const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], display: "swap", preload: false, variable: "--font-manrope" });
+const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], display: "swap", preload: false, variable: "--font-montserrat" });
+const openSans = Open_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], display: "swap", preload: false, variable: "--font-open-sans" });
 const ibmPlexSans = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], display: "swap", variable: "--font-ibm-plex-sans" });
 
-const oswald = Oswald({ subsets: ["latin"], weight: ["500", "600", "700"], display: "swap", variable: "--font-oswald" });
-const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"], display: "swap", variable: "--font-bebas-neue" });
-const anton = Anton({ subsets: ["latin"], weight: ["400"], display: "swap", variable: "--font-anton" });
-const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["500", "600", "700"], display: "swap", variable: "--font-roboto-condensed" });
-const archivoNarrow = Archivo_Narrow({ subsets: ["latin"], weight: ["500", "600", "700"], display: "swap", variable: "--font-archivo-narrow" });
+const oswald = Oswald({ subsets: ["latin"], weight: ["500", "600", "700"], display: "swap", preload: false, variable: "--font-oswald" });
+const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: ["400"], display: "swap", preload: false, variable: "--font-bebas-neue" });
+const anton = Anton({ subsets: ["latin"], weight: ["400"], display: "swap", preload: false, variable: "--font-anton" });
+const robotoCondensed = Roboto_Condensed({ subsets: ["latin"], weight: ["500", "600", "700"], display: "swap", preload: false, variable: "--font-roboto-condensed" });
+const archivoNarrow = Archivo_Narrow({ subsets: ["latin"], weight: ["500", "600", "700"], display: "swap", preload: false, variable: "--font-archivo-narrow" });
 const playfairDisplay = Playfair_Display({ subsets: ["latin"], weight: ["600", "700", "800", "900"], display: "swap", variable: "--font-playfair-display" });
 
-const caveat = Caveat({ subsets: ["latin"], weight: ["500", "600"], display: "swap", variable: "--font-caveat" });
-const dancingScript = Dancing_Script({ subsets: ["latin"], weight: ["500", "600"], display: "swap", variable: "--font-dancing-script" });
-const pacifico = Pacifico({ subsets: ["latin"], weight: ["400"], display: "swap", variable: "--font-pacifico" });
+const caveat = Caveat({ subsets: ["latin"], weight: ["500", "600"], display: "swap", preload: false, variable: "--font-caveat" });
+const dancingScript = Dancing_Script({ subsets: ["latin"], weight: ["500", "600"], display: "swap", preload: false, variable: "--font-dancing-script" });
+const pacifico = Pacifico({ subsets: ["latin"], weight: ["400"], display: "swap", preload: false, variable: "--font-pacifico" });
 
+// Only the fonts the live theme actually renders (Playfair Display headings,
+// IBM Plex Sans body) are preloaded. Without `preload: false`, next/font
+// adds a <link rel="preload"> for every font here, so every page downloaded
+// all 14 files (~465 KB) though a page only paints with two or three. The
+// rest still load on demand if an admin picks them in the theme editor.
 const FONT_VARIABLES = [
   inter, manrope, montserrat, openSans, ibmPlexSans,
   oswald, bebasNeue, anton, robotoCondensed, archivoNarrow, playfairDisplay,
@@ -50,8 +55,6 @@ const FONT_VARIABLES = [
 
 const SITE_URL = "https://theuniqueexpo.com";
 const SITE_NAME = "The Unique Expo";
-const DEFAULT_DESCRIPTION =
-  "Discover Something Unique Together — The world's leading B2B exhibition, trade-fair & sourcing platform connecting buyers with exhibitors worldwide.";
 
 // Per-page canonical + hreflang alternates without touching every one of
 // the ~70+ individual page files: the sitemap already carries hreflang
@@ -78,13 +81,16 @@ async function localeAlternates() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const companyProfile = await getCompanyProfile();
+  const t = await getTranslations("meta");
+  const defaultTitle = `${SITE_NAME} — ${t("tagline")}`;
+  const defaultDescription = t("defaultDescription");
   return {
     metadataBase: new URL(SITE_URL),
     title: {
-      default: `${SITE_NAME} — Discover Something Unique Together`,
+      default: defaultTitle,
       template: `%s | ${SITE_NAME}`,
     },
-    description: DEFAULT_DESCRIPTION,
+    description: defaultDescription,
     alternates: await localeAlternates(),
     // Admin-set favicon (Company Profile -> Favicon URL) overrides the
     // framework default when set; omitted entirely otherwise so Next
@@ -93,14 +99,14 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website",
       siteName: SITE_NAME,
-      title: `${SITE_NAME} — Discover Something Unique Together`,
-      description: DEFAULT_DESCRIPTION,
+      title: defaultTitle,
+      description: defaultDescription,
       url: SITE_URL,
     },
     twitter: {
       card: "summary_large_image",
-      title: `${SITE_NAME} — Discover Something Unique Together`,
-      description: DEFAULT_DESCRIPTION,
+      title: defaultTitle,
+      description: defaultDescription,
     },
   };
 }
@@ -129,7 +135,7 @@ export default async function RootLayout({
   // Admin/dashboard-only namespaces (~38% of the whole bundle) are added
   // back by their own nested providers in admin/layout.tsx and
   // dashboard/layout.tsx -- every other page doesn't need them at all.
-  const messages = omitMessages(rawMessages, [...ADMIN_NAMESPACES, ...DASHBOARD_NAMESPACES]);
+  const messages = omitMessages(rawMessages, [...ADMIN_NAMESPACES, ...DASHBOARD_NAMESPACES, ...SERVER_ONLY_NAMESPACES]);
 
   // Admin-controlled colors/fonts (src/app/admin/site-theme) as an inline
   // style on <html>: an inline style beats the static hex/font-stack
@@ -163,7 +169,7 @@ export default async function RootLayout({
       <body className="antialiased">
         <OrganizationSchema profile={companyProfile} />
         <NextIntlClientProvider messages={messages}>
-          <GoogleAnalytics />
+          <GoogleAnalytics measurementId={companyProfile.googleAnalyticsId || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ""} />
           <ClientShell companyProfile={companyProfile}>{children}</ClientShell>
         </NextIntlClientProvider>
       </body>

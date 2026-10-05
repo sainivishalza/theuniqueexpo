@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Exhibitor Directory",
-  description:
-    "Search the exhibitor directory to find verified manufacturers and suppliers by industry, country, and product category.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta.directory");
+  return { title: t("title"), description: t("description") };
+}
 
 export default function DirectoryLayout({ children }: { children: React.ReactNode }) {
   return children;

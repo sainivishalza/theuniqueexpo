@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "B2B Marketplace",
-  description:
-    "Post buy requests and get quotes from verified suppliers, or browse open buy requests to submit a quotation as an exhibitor.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta.marketplace");
+  return { title: t("title"), description: t("description") };
+}
 
 export default function MarketplaceLayout({ children }: { children: React.ReactNode }) {
   return children;

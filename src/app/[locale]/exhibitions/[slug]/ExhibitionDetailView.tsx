@@ -1,0 +1,405 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { formatNumber } from "@/lib/format";
+import FavoriteButton from "@/components/FavoriteButton";
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import IconBadge from "@/components/ui/IconBadge";
+import RelatedVideos from "@/components/RelatedVideos";
+import NeedHelpAttending from "@/components/NeedHelpAttending";
+
+export interface Exhibition {
+  id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
+  venue: string; city: string; country: string; industry: string; description: string;
+  highlights: string[]; exhibitors: number; visitors: string; organizer: string; website: string;
+  color: string; image: string; galleryImages: string[]; registrationEnabled: boolean;
+}
+
+
+const WHO_SHOULD_ATTEND_KEYS = [
+  "importers", "distributors", "retailers", "wholesalers", "manufacturers", "businessOwners", "purchasingManagers",
+];
+
+export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null }) {
+  const t = useTranslations("exhibitionDetail");
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  if (!expo) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">😕</div>
+          <h1 className="text-2xl font-bold text-heading">{t("notFound")}</h1>
+          <Link href="/exhibitions" className="mt-4 inline-block text-emerald-600 hover:underline">
+            {t("browseAll")}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const isUpcoming = new Date(expo.endDate) >= new Date();
+  // Hero poster first, then gallery photos -- one combined set so the
+  // lightbox's prev/next cycles through every picture for this exhibition,
+  // not just the gallery ones.
+  const allImages = [expo.image, ...expo.galleryImages].filter(Boolean);
+
+  return (
+    <div>
+      {/* Title header — plain text, never overlaps the poster */}
+      <section className="bg-[var(--color-hero-bg)] py-8 md:py-10">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex flex-wrap gap-2 mb-4">
+            <Badge tone="outline-light" size="pill">{expo.industry}</Badge>
+            <Badge tone="outline-light" size="pill">{expo.city}, {expo.country}</Badge>
+            {isUpcoming && (
+              <Badge tone="live" size="pill">{t("upcoming")}</Badge>
+            )}
+          </div>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight max-w-3xl">
+              {expo.title}
+            </h1>
+            <FavoriteButton exhibitionId={expo.id} showLabel />
+          </div>
+          <p className="mt-3 text-lg text-white/80 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {expo.dates}
+          </p>
+        </div>
+      </section>
+
+      {/* Poster — shown in full at its own proportions, never cropped or shrunk to illegibility */}
+      {expo.image && (
+        <section className="relative bg-gray-950 py-8 md:py-10 overflow-hidden">
+          <Image
+            src={expo.image}
+            alt=""
+            aria-hidden="true"
+            fill
+            sizes="100vw"
+            className="object-cover blur-3xl scale-110 opacity-25"
+          />
+          <div className="relative mx-auto max-w-4xl px-6 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setLightboxIndex(0)}
+              className="relative group cursor-zoom-in"
+              aria-label={t("viewFullSizePoster")}
+            >
+              <Image
+                src={expo.image}
+                alt={expo.title}
+                width={1200}
+                height={900}
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="max-w-full max-h-[75vh] w-auto h-auto rounded-[var(--radius-card)] shadow-[var(--shadow-card-lg)]"
+                priority
+              />
+              <div className="absolute inset-0 rounded-[var(--radius-card)] bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity w-12 h-12 rounded-full bg-white/90 flex items-center justify-center text-2xl">
+                  🔍
+                </div>
+              </div>
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* Quick stats bar */}
+      <section className="bg-white border-b border-gray-200">
+        <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { label: t("stats.exhibitors"), value: formatNumber(expo.exhibitors) + "+", icon: "🏢" },
+            { label: t("stats.visitors"), value: expo.visitors, icon: "👥" },
+            { label: t("stats.venue"), value: expo.city, icon: "📍" },
+            { label: t("stats.duration"), value: expo.dates, icon: "📅" },
+          ].map((s) => (
+            <div key={s.label} className="flex items-center gap-3">
+              <IconBadge size="sm" icon={s.icon} tint="bg-gray-100" />
+              <div>
+                <div className="text-xs text-gray-400">{s.label}</div>
+                <div className="text-sm font-bold text-gray-900">{s.value}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Need help attending -- top placement, so the next step is visible
+          before the visitor has to scroll past everything else. */}
+      <section className="py-8 bg-cream-50">
+        <div className="mx-auto max-w-7xl px-6">
+          <NeedHelpAttending exhibitionSlug={expo.slug} exhibitionTitle={expo.title} />
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="pb-12 bg-cream-50">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            {/* Left: main content */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* About */}
+              <Card shadow="sm" bordered={false} className="p-8">
+                <h2 className="text-2xl font-bold text-heading mb-4">{t("aboutThisExhibition")}</h2>
+                <p className="text-gray-600 leading-relaxed whitespace-pre-line">{expo.description}</p>
+              </Card>
+
+              {/* Product Categories */}
+              <Card shadow="sm" bordered={false} className="p-8">
+                <h2 className="text-2xl font-bold text-heading mb-4">{t("productCategories")}</h2>
+                <div className="flex flex-wrap gap-2">
+                  <Badge tone="emerald" size="pill">{expo.industry}</Badge>
+                </div>
+              </Card>
+
+              {/* Who Should Attend */}
+              <Card shadow="sm" bordered={false} className="p-8">
+                <h2 className="text-2xl font-bold text-heading mb-5">{t("whoShouldAttend")}</h2>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {WHO_SHOULD_ATTEND_KEYS.map((key) => (
+                    <div key={key} className="flex items-center gap-3 p-3 rounded-[var(--radius-card)] bg-cream-50 border border-gray-100">
+                      <span className="text-gold-600 text-[10px]">●</span>
+                      <span className="text-sm text-gray-700">{t(`whoShouldAttendItems.${key}`)}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              {/* How would you like to visit -- full mid-page section with
+                  per-path service lists and a Register button. */}
+              <NeedHelpAttending
+                exhibitionSlug={expo.slug}
+                exhibitionTitle={expo.title}
+                registrationEnabled={expo.registrationEnabled}
+                variant="full"
+              />
+
+              {/* Add China Travel */}
+              <Card shadow="sm" bordered={false} className="p-8 text-center">
+                <h2 className="text-2xl font-bold text-heading">{t("addChinaTravelTitle")}</h2>
+                <p className="mt-2 text-gray-500 max-w-2xl mx-auto">{t("addChinaTravelText")}</p>
+                <Button href={`/china-travel?exhibitionSlug=${encodeURIComponent(expo.slug)}`} variant="gradientCta" size="wide" className="mt-6">
+                  {t("addChinaTravel")}
+                </Button>
+              </Card>
+
+              {/* Highlights */}
+              <Card shadow="sm" bordered={false} className="p-8">
+                <h2 className="text-2xl font-bold text-heading mb-5">{t("eventHighlights")}</h2>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {expo.highlights.map((h, i) => (
+                    <div key={i} className="flex items-start gap-3 p-4 rounded-[var(--radius-card)] bg-cream-50 border border-gray-100">
+                      <IconBadge size="xs" icon={i + 1} bgClassName="gradient-brand text-white" className="flex-shrink-0" />
+                      <span className="text-sm text-gray-700 pt-1">{h}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              <RelatedVideos relatedType="exhibition" relatedId={expo.slug} />
+
+              {/* Photo gallery */}
+              {expo.galleryImages && expo.galleryImages.length > 0 && (
+                <Card shadow="sm" bordered={false} className="p-8">
+                  <h2 className="text-2xl font-bold text-heading mb-5">{t("photoGallery")}</h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {expo.galleryImages.map((img, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => setLightboxIndex(allImages.indexOf(img))}
+                        className="relative aspect-video rounded-[var(--radius-card)] overflow-hidden bg-gray-100 group focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
+                      >
+                        <Image
+                          src={img}
+                          alt={`${expo.title} photo ${i + 1}`}
+                          fill
+                          sizes="(max-width: 640px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
+
+              {/* Exhibition Details */}
+              <Card shadow="sm" bordered={false} className="p-8">
+                <h2 className="text-2xl font-bold text-heading mb-5">{t("exhibitionDetails")}</h2>
+                <dl className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-400">{t("stats.duration")}</dt>
+                    <dd className="mt-1 text-sm font-semibold text-gray-800">{expo.dates}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-400">{t("stats.venue")}</dt>
+                    <dd className="mt-1 text-sm font-semibold text-gray-800">{expo.venue}, {expo.city}, {expo.country}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-400">{t("organizedBy")}</dt>
+                    <dd className="mt-1 text-sm font-semibold text-gray-800">{expo.organizer}</dd>
+                  </div>
+                </dl>
+              </Card>
+            </div>
+
+            {/* Right: sidebar */}
+            <div className="space-y-6">
+              {/* Buyer/Visitor registration CTA */}
+              {expo.registrationEnabled && (
+                <Card shadow="sm" className="p-6">
+                  <h3 className="text-lg font-bold text-heading mb-2">{t("registerToAttend")}</h3>
+                  <p className="text-sm text-gray-500 mb-5">{t("registerToAttendHint")}</p>
+                  <Button href={`/exhibitions/${expo.slug}/register`} variant="gradientCta" size="block">
+                    {t("registerAsBuyerVisitor")}
+                  </Button>
+                </Card>
+              )}
+
+              {/* Booking CTA */}
+              <Card shadow="sm" className="p-6">
+                <h3 className="text-lg font-bold text-heading mb-4">{t("bookYourBooth")}</h3>
+                <p className="text-sm text-gray-500 mb-5">{t("bookYourBoothHint")}</p>
+                {isUpcoming ? (
+                  <Button href={`/exhibitions/${expo.slug}/floor-plan`} variant="gradientCta" size="block">
+                    {t("viewFloorPlanAndBook")}
+                  </Button>
+                ) : (
+                  <div className="block w-full text-center rounded-[var(--radius-button)] bg-gray-200 py-3 text-sm font-semibold text-gray-500">
+                    {t("exhibitionEnded")}
+                  </div>
+                )}
+              </Card>
+
+              {/* Hotels */}
+              <Card shadow="sm" className="p-6">
+                <h3 className="text-lg font-bold text-heading mb-3">{t("hotelsNearby")}</h3>
+                <div className="relative h-32 rounded-[var(--radius-card)] overflow-hidden mb-4">
+                  <Image
+                    src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=200&fit=crop&q=80"
+                    alt={t("hotelsNearby")}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 400px"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 gradient-overlay-light" />
+                  <div className="absolute bottom-2 left-3 text-xs font-semibold text-white bg-black/40 backdrop-blur-sm rounded px-2 py-1">
+                    {t("partnerHotels")}
+                  </div>
+                </div>
+                <Link
+                  href={`/exhibitions/${expo.slug}/hotels`}
+                  className="block w-full text-center rounded-[var(--radius-button)] border border-gray-700 py-2.5 text-sm font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
+                >
+                  {t("browseHotels")}
+                </Link>
+              </Card>
+
+              {/* Share */}
+              <Card shadow="sm" className="p-6">
+                <h3 className="text-lg font-bold text-heading mb-3">{t("shareThisEvent")}</h3>
+                <div className="flex gap-2">
+                  {["𝕏", "in", "f", "✉"].map((icon, i) => (
+                    <button
+                      key={i}
+                      className="w-10 h-10 rounded-[var(--radius-icon-sm)] bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
+                    >
+                      {icon}
+                    </button>
+                  ))}
+                </div>
+              </Card>
+
+              {/* Organizer */}
+              <Card shadow="sm" className="p-6">
+                <h3 className="text-sm font-bold text-heading mb-2">{t("organizedBy")}</h3>
+                <p className="text-sm text-gray-500">{expo.organizer}</p>
+                {expo.website && (
+                  <a
+                    href={expo.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3 block text-center rounded-[var(--radius-button)] border border-gray-700 py-2 text-xs font-semibold text-gray-600 hover:bg-cream-50 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
+                  >
+                    {t("officialWebsite")}
+                  </a>
+                )}
+              </Card>
+            </div>
+          </div>
+
+          {/* Need help attending -- bottom placement */}
+          <div className="mt-8">
+            <NeedHelpAttending exhibitionSlug={expo.slug} exhibitionTitle={expo.title} />
+          </div>
+        </div>
+      </section>
+
+      {/* Poster / gallery lightbox -- covers the hero poster and every
+          gallery photo as one browsable set. Pinch-to-zoom works natively
+          here since the site doesn't restrict viewport scaling; this modal
+          just needs to actually show the image at full size, which the
+          poster previously never did (no click handler at all). */}
+      {lightboxIndex !== null && allImages[lightboxIndex] && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          onClick={() => setLightboxIndex(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxIndex(null)}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
+            aria-label={t("close")}
+          >
+            ×
+          </button>
+          {allImages.length > 1 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex((i) => (i === null ? null : (i - 1 + allImages.length) % allImages.length));
+              }}
+              className="absolute left-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
+              aria-label={t("previousPhoto")}
+            >
+              ‹
+            </button>
+          )}
+          <Image
+            src={allImages[lightboxIndex]}
+            alt={`${expo.title} photo ${lightboxIndex + 1}`}
+            width={1200}
+            height={900}
+            sizes="100vw"
+            className="max-w-full max-h-[85vh] w-auto h-auto rounded-[var(--radius-card)] shadow-[var(--shadow-card-lg)]"
+            onClick={(e) => e.stopPropagation()}
+          />
+          {allImages.length > 1 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex((i) => (i === null ? null : (i + 1) % allImages.length));
+              }}
+              className="absolute right-4 w-10 h-10 rounded-full bg-white/10 text-white text-xl flex items-center justify-center hover:bg-white/20 transition-colors"
+              aria-label={t("nextPhoto")}
+            >
+              ›
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

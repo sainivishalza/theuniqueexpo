@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Relocation",
-  description: "Housing, schools, visas, and settling-in support for moving to China.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta.relocation");
+  return { title: t("title"), description: t("description") };
+}
 
 export default function RelocationLayout({ children }: { children: React.ReactNode }) {
   return children;

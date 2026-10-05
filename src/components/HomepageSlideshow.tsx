@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 export interface SlideshowPhoto {
@@ -25,6 +26,13 @@ export default function HomepageSlideshow({ photos }: { photos: SlideshowPhoto[]
   const dragDeltaX = useRef(0);
 
   const count = photos.length;
+  // Slides that have been (or are about to be) shown. The rest aren't
+  // rendered at all, so the homepage no longer downloads every photo up front.
+  const [visited, setVisited] = useState<Set<number>>(() => new Set([0, 1 % Math.max(photos.length, 1)]));
+  useEffect(() => {
+    if (count === 0) return;
+    setVisited((v) => (v.has(index) && v.has((index + 1) % count) ? v : new Set(v).add(index).add((index + 1) % count)));
+  }, [index, count]);
 
   const goTo = useCallback(
     (next: number, userInitiated: boolean) => {
@@ -99,10 +107,18 @@ export default function HomepageSlideshow({ photos }: { photos: SlideshowPhoto[]
               i === index ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
             }`}
           >
-            {/* Plain <img>, not next/image: these are admin-uploaded data:
-                URLs as often as external links, and next/image's optimizer
-                can't proxy arbitrary base64 payloads. */}
-            <img src={photo.image} alt={photo.caption || ""} className="w-full h-full object-cover" />
+            {/* Resized by next/image; the full-size original is only loaded
+                in the zoom view below. */}
+            {visited.has(i) && (
+              <Image
+                src={photo.image}
+                alt={photo.caption || ""}
+                fill
+                sizes="100vw"
+                priority={i === 0}
+                className="object-cover"
+              />
+            )}
             {photo.caption && (
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-6 py-4 text-left">
                 <p className="text-white text-sm md:text-base font-medium">{photo.caption}</p>

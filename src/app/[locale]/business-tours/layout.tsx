@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Business Tours in China",
-  description: "Your business trip to China, organized from arrival to departure — exhibition visits, hotels, transfers, interpreters, supplier meetings, and factory visits.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta.businessTours");
+  return { title: t("title"), description: t("description") };
+}
 
 export default function BusinessToursLayout({ children }: { children: React.ReactNode }) {
   return children;

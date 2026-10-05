@@ -97,6 +97,10 @@ export default function AdminCompanyProfilePage() {
                 {field("faviconUrl", t("faviconUrl"), "https://...")}
                 {field("contactEmail", t("contactEmail"))}
                 {field("phone", t("phone"), "+86 ...")}
+                {field("whatsapp", t("whatsapp"), "+86 138 0000 0000")}
+                <p className="text-xs text-gray-400 -mt-3">{t("whatsappHint")}</p>
+                {field("googleAnalyticsId", t("googleAnalyticsId"), "G-XXXXXXXXXX")}
+                <p className="text-xs text-gray-400 -mt-3">{t("googleAnalyticsIdHint")}</p>
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">

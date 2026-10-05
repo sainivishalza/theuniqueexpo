@@ -1279,8 +1279,6 @@
     "aboutThisExhibition": "About This Exhibition",
     "eventHighlights": "Event Highlights",
     "photoGallery": "Photo Gallery",
-    "featuredExhibitors": "Featured Exhibitors",
-    "viewAllExhibitors": "View all exhibitors →",
     "registerToAttend": "Register to Attend",
     "registerToAttendHint": "Buyers and visitors must register separately for this exhibition.",
     "registerAsBuyerVisitor": "Register as Buyer / Visitor",
@@ -2381,7 +2379,11 @@
     "addressCountry": "Country",
     "social": "Social Links",
     "socialHint": "Only links you enter here will appear in the site footer and Organization schema -- leave any blank to hide them.",
-    "faviconUrl": "Favicon URL"
+    "faviconUrl": "Favicon URL",
+    "whatsapp": "WhatsApp Number",
+    "whatsappHint": "Full international number with country code. When set, a green WhatsApp chat button appears on every public page; leave blank to hide it.",
+    "googleAnalyticsId": "Google Analytics ID",
+    "googleAnalyticsIdHint": "Your GA4 Measurement ID (starts with G-). When set, visitor statistics are collected on public pages; leave blank to turn analytics off."
   },
   "adminFaq": {
     "title": "FAQ Management",
@@ -3225,5 +3227,95 @@
     "chooseImageFile": "Please choose an image file.",
     "imageTooLarge": "Photo is too large. Please choose one under 8 MB.",
     "couldNotReadFile": "Couldn't read that file. Please try again."
+  },
+  "meta": {
+    "tagline": "Discover Something Unique Together",
+    "defaultDescription": "Discover Something Unique Together — The world's leading B2B exhibition, trade-fair & sourcing platform connecting buyers with exhibitors worldwide.",
+    "exhibitionNotFound": "Exhibition not found",
+    "tourNotFound": "Tour not found",
+    "businessTours": {
+      "title": "Business Tours in China",
+      "description": "Your business trip to China, organized from arrival to departure — exhibition visits, hotels, transfers, interpreters, supplier meetings, and factory visits."
+    },
+    "chinaTravel": {
+      "title": "China Travel",
+      "description": "Combine your exhibition visit with real China travel -- Guangzhou, Shenzhen, Yangshuo, Hong Kong and more, or build your own route."
+    },
+    "directory": {
+      "title": "Exhibitor Directory",
+      "description": "Search the exhibitor directory to find verified manufacturers and suppliers by industry, country, and product category."
+    },
+    "events": {
+      "title": "Events",
+      "description": "Networking, hiking, picnics, and cultural meetups in Guangzhou and other cities."
+    },
+    "exhibitions": {
+      "title": "Exhibitions",
+      "description": "Browse upcoming B2B trade exhibitions and sourcing fairs worldwide. Find dates, venues, and industries, then register to attend or exhibit."
+    },
+    "login": {
+      "title": "Log In",
+      "description": "Log in to The Unique Expo to manage your registrations, buy requests, and quotes."
+    },
+    "marketplace": {
+      "title": "B2B Marketplace",
+      "description": "Post buy requests and get quotes from verified suppliers, or browse open buy requests to submit a quotation as an exhibitor."
+    },
+    "partnerWithUs": {
+      "title": "Partner With Us",
+      "description": "Exhibition organizers and companies -- partner with The Unique Expo to reach international buyers and grow your event or business in China."
+    },
+    "planBusinessTrip": {
+      "title": "Plan My Business Trip",
+      "description": "Tell us about your business trip to China -- exhibition, dates, and what you need -- and we'll send a tailored plan."
+    },
+    "register": {
+      "title": "Create Account",
+      "description": "Create your free account to connect with exhibitors, buyers, and trade professionals worldwide."
+    },
+    "relocation": {
+      "title": "Relocation",
+      "description": "Housing, schools, visas, and settling-in support for moving to China."
+    },
+    "services": {
+      "title": "Services",
+      "description": "Business tours, China sourcing trips, consultation, visa setup, moving assistance, and transport subsidies for exhibitors and buyers."
+    },
+    "servicesBusinessTours": {
+      "title": "Business Tours",
+      "description": "All-inclusive business tours to major trade exhibitions — hotel, transport, B2B matchmaking, and factory visits bundled into one trip."
+    },
+    "servicesChinaTours": {
+      "title": "China Sourcing Tours",
+      "description": "Guided sourcing tours to China's major trade fairs, with factory visits, interpreters, and hotel and transport included."
+    },
+    "servicesConsultation": {
+      "title": "Consultation Services",
+      "description": "Market entry strategy, supplier sourcing, and trade consultation services for buyers and exhibitors expanding into new markets."
+    },
+    "servicesMovingAssistance": {
+      "title": "Moving & Freight Assistance",
+      "description": "Sea, air, and land freight shipping with full tracking for exhibitors moving goods to and from trade exhibitions."
+    },
+    "servicesRelocationCostEstimator": {
+      "title": "Relocation Cost Estimator",
+      "description": "Free calculator for estimating office, residential, freight, or pet relocation costs to or within China -- then request an exact quote."
+    },
+    "servicesTransportSubsidies": {
+      "title": "Transport Subsidies",
+      "description": "Check eligibility for transport subsidies covering travel to major B2B exhibitions and trade fairs."
+    },
+    "servicesVisaSetup": {
+      "title": "Visa Setup Assistance",
+      "description": "Business visa application support and setup assistance for attending or exhibiting at overseas trade exhibitions."
+    },
+    "tours": {
+      "title": "Tours",
+      "description": "Guided travel tours across China and beyond — tell us who's going and what you love, and we'll tailor the itinerary."
+    }
+  },
+  "whatsappButton": {
+    "label": "Chat with us on WhatsApp",
+    "prefill": "Hello! I found you on theuniqueexpo.com and I'd like to know more."
   }
 }

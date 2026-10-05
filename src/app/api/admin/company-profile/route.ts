@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getCompanyProfile, updateCompanyProfile } from "@/lib/server/company-profile-repo";
-import { normalizeCompanyProfile } from "@/lib/company-profile";
+import { normalizeCompanyProfile, GA_MEASUREMENT_ID_RE } from "@/lib/company-profile";
 import { isValidImageField } from "@/lib/server/validate-upload";
 
 export async function GET(request: Request) {
@@ -22,6 +22,11 @@ export async function PUT(request: Request) {
   }
   if (!isValidImageField(body.logoUrl) || !isValidImageField(body.faviconUrl)) {
     return NextResponse.json({ error: "Logo/favicon must be a valid image file or URL" }, { status: 400 });
+  }
+
+  const gaId = typeof body.googleAnalyticsId === "string" ? body.googleAnalyticsId.trim() : "";
+  if (gaId && !GA_MEASUREMENT_ID_RE.test(gaId)) {
+    return NextResponse.json({ error: "Google Analytics ID must look like G-XXXXXXXXXX" }, { status: 400 });
   }
 
   await updateCompanyProfile(normalizeCompanyProfile(body));

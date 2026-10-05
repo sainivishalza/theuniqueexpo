@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getExhibitionBySlugOrId } from "@/lib/server/exhibitions-repo";
+import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata({
   params,
@@ -9,7 +10,8 @@ export async function generateMetadata({
   const { slug, locale } = await params;
   const expo = await getExhibitionBySlugOrId(slug, locale);
   if (!expo) {
-    return { title: "Exhibition not found" };
+    const t = await getTranslations({ locale, namespace: "meta" });
+    return { title: t("exhibitionNotFound") };
   }
 
   const description =

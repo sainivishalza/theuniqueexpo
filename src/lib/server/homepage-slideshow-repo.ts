@@ -19,11 +19,13 @@ function mapSlideshowPhotoRow(row: RowDataPacket) {
 
 // List views only ever render a thumbnail/slide, never re-submit the raw
 // photo, so never pull the full column -- point at the dedicated image
-// endpoint instead, same reasoning as listTeamMembers.
+// endpoint instead, same reasoning as listTeamMembers. Photos stored as
+// plain external URLs are returned as-is so next/image can fetch them
+// directly instead of through the endpoint's redirect.
 export async function listSlideshowPhotos() {
   const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT id, caption, display_order, updated_at,
-            CONCAT('/api/slideshow-photos/', id, '/image?v=', UNIX_TIMESTAMP(updated_at)) AS image
+            IF(LEFT(image, 5) = 'data:', CONCAT('/api/slideshow-photos/', id, '/image?v=', UNIX_TIMESTAMP(updated_at)), image) AS image
      FROM homepage_slideshow_photos ORDER BY display_order ASC, id ASC`
   );
   return rows.map(mapSlideshowPhotoRow);

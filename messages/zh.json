@@ -1279,8 +1279,6 @@
     "aboutThisExhibition": "关于本展会",
     "eventHighlights": "展会亮点",
     "photoGallery": "照片图库",
-    "featuredExhibitors": "精选展商",
-    "viewAllExhibitors": "查看所有展商 →",
     "registerToAttend": "报名参观",
     "registerToAttendHint": "买家和观众需分别报名参加本展会。",
     "registerAsBuyerVisitor": "以买家/观众身份报名",
@@ -2381,7 +2379,11 @@
     "addressCountry": "国家",
     "social": "社交媒体链接",
     "socialHint": "只有在此处填写的链接才会显示在网站页脚和 Organization 结构化数据中 -- 留空即可隐藏。",
-    "faviconUrl": "网站图标 URL"
+    "faviconUrl": "网站图标 URL",
+    "whatsapp": "WhatsApp 号码",
+    "whatsappHint": "包含国家代码的完整国际号码。填写后,所有公开页面都会显示绿色的 WhatsApp 聊天按钮;留空则隐藏。",
+    "googleAnalyticsId": "Google Analytics ID",
+    "googleAnalyticsIdHint": "您的 GA4 衡量 ID(以 G- 开头)。填写后将在公开页面收集访客统计;留空则关闭分析。"
   },
   "adminFaq": {
     "title": "常见问题管理",
@@ -3225,5 +3227,95 @@
     "chooseImageFile": "请选择一个图片文件。",
     "imageTooLarge": "图片过大，请选择小于 8 MB 的文件。",
     "couldNotReadFile": "无法读取该文件，请重试。"
+  },
+  "meta": {
+    "tagline": "共同发现独特之处",
+    "defaultDescription": "共同发现独特之处 — 全球领先的B2B展会、贸易博览会与采购平台,连接全球采购商与参展商。",
+    "exhibitionNotFound": "未找到展会",
+    "tourNotFound": "未找到旅游线路",
+    "businessTours": {
+      "title": "中国商务考察团",
+      "description": "您的中国商务之行全程安排 — 从抵达到离开:展会参观、酒店、接送、翻译、供应商会面及工厂参观。"
+    },
+    "chinaTravel": {
+      "title": "中国旅行",
+      "description": "在参观展会的同时畅游中国 — 广州、深圳、阳朔、香港等地,或定制您自己的路线。"
+    },
+    "directory": {
+      "title": "展商目录",
+      "description": "在展商目录中按行业、国家和产品类别查找经过认证的制造商和供应商。"
+    },
+    "events": {
+      "title": "活动",
+      "description": "在广州及其他城市参加社交、徒步、野餐和文化交流活动。"
+    },
+    "exhibitions": {
+      "title": "展会",
+      "description": "浏览全球即将举办的B2B贸易展会和采购博览会,查看日期、场馆和行业,并报名参观或参展。"
+    },
+    "login": {
+      "title": "登录",
+      "description": "登录The Unique Expo,管理您的报名、采购需求和报价。"
+    },
+    "marketplace": {
+      "title": "B2B交易市场",
+      "description": "发布采购需求并获取认证供应商的报价,或作为参展商浏览公开采购需求并提交报价。"
+    },
+    "partnerWithUs": {
+      "title": "成为合作伙伴",
+      "description": "展会主办方和企业 — 与The Unique Expo合作,触达国际采购商,在中国发展您的展会或业务。"
+    },
+    "planBusinessTrip": {
+      "title": "规划我的商务行程",
+      "description": "告诉我们您的中国商务行程 — 展会、日期及需求 — 我们将为您发送定制方案。"
+    },
+    "register": {
+      "title": "创建账户",
+      "description": "创建免费账户,与全球参展商、采购商和贸易专业人士建立联系。"
+    },
+    "relocation": {
+      "title": "搬迁",
+      "description": "为移居中国提供住房、学校、签证及安顿方面的支持。"
+    },
+    "services": {
+      "title": "服务",
+      "description": "为参展商和采购商提供商务考察、中国采购之旅、咨询、签证办理、搬迁协助及交通补贴。"
+    },
+    "servicesBusinessTours": {
+      "title": "商务考察",
+      "description": "前往主要贸易展会的一站式商务考察 — 酒店、交通、B2B配对和工厂参观尽在一次行程。"
+    },
+    "servicesChinaTours": {
+      "title": "中国采购之旅",
+      "description": "带领您参加中国主要贸易展会的采购之旅,包含工厂参观、翻译、酒店及交通。"
+    },
+    "servicesConsultation": {
+      "title": "咨询服务",
+      "description": "为拓展新市场的采购商和参展商提供市场进入策略、供应商寻源及贸易咨询服务。"
+    },
+    "servicesMovingAssistance": {
+      "title": "搬迁与货运协助",
+      "description": "为往返贸易展会运输货物的参展商提供全程跟踪的海运、空运和陆运服务。"
+    },
+    "servicesRelocationCostEstimator": {
+      "title": "搬迁成本估算器",
+      "description": "免费估算前往中国或在中国境内搬迁办公室、住宅、货物或宠物的费用,然后申请精确报价。"
+    },
+    "servicesTransportSubsidies": {
+      "title": "交通补贴",
+      "description": "查看您是否有资格获得前往主要B2B展会和贸易博览会的交通补贴。"
+    },
+    "servicesVisaSetup": {
+      "title": "签证办理协助",
+      "description": "为参观或参加海外贸易展会提供商务签证申请支持和办理协助。"
+    },
+    "tours": {
+      "title": "旅游线路",
+      "description": "中国及其他地区的导游旅行线路 — 告诉我们谁出行、喜欢什么,我们将为您定制行程。"
+    }
+  },
+  "whatsappButton": {
+    "label": "通过 WhatsApp 联系我们",
+    "prefill": "您好!我在 theuniqueexpo.com 上看到了你们,想了解更多信息。"
   }
 }

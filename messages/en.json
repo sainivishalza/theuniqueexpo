@@ -82,7 +82,8 @@
     "copyright": "© {year} The Unique Expo. All rights reserved.",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
-    "cookiePolicy": "Cookie Policy"
+    "cookiePolicy": "Cookie Policy",
+    "cookieSettings": "Cookie settings"
   },
   "about": {
     "ourStory": "Our Story",
@@ -3317,5 +3318,12 @@
   "whatsappButton": {
     "label": "Chat with us on WhatsApp",
     "prefill": "Hello! I found you on theuniqueexpo.com and I'd like to know more."
+  },
+  "cookieConsent": {
+    "title": "Your privacy choices",
+    "body": "We use one essential cookie to keep you signed in. With your permission we would also use Google Analytics to see how visitors use the site, which sets analytics cookies. You can change your mind at any time from \"Cookie settings\" in the footer.",
+    "policyLink": "Read our Cookie Policy",
+    "accept": "Accept analytics",
+    "decline": "Decline"
   }
 }

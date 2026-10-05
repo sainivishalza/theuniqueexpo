@@ -10,7 +10,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import "./globals.css";
 import ClientShell from "@/components/ClientShell";
-import GoogleAnalytics from "@/components/GoogleAnalytics";
+import CookieConsent from "@/components/CookieConsent";
 import OrganizationSchema from "@/components/OrganizationSchema";
 import { routing } from "@/i18n/routing";
 import { getCompanyProfile } from "@/lib/server/company-profile-repo";
@@ -137,6 +137,10 @@ export default async function RootLayout({
   // dashboard/layout.tsx -- every other page doesn't need them at all.
   const messages = omitMessages(rawMessages, [...ADMIN_NAMESPACES, ...DASHBOARD_NAMESPACES, ...SERVER_ONLY_NAMESPACES]);
 
+  // GA4 ID from Company Profile, or the build-time env var as a fallback;
+  // empty means analytics (and the consent banner) are off.
+  const analyticsId = companyProfile.googleAnalyticsId || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "";
+
   // Admin-controlled colors/fonts (src/app/admin/site-theme) as an inline
   // style on <html>: an inline style beats the static hex/font-stack
   // fallbacks declared in globals.css's `@theme`/`h1..h6` rules, so every
@@ -169,8 +173,8 @@ export default async function RootLayout({
       <body className="antialiased">
         <OrganizationSchema profile={companyProfile} />
         <NextIntlClientProvider messages={messages}>
-          <GoogleAnalytics measurementId={companyProfile.googleAnalyticsId || process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ""} />
-          <ClientShell companyProfile={companyProfile}>{children}</ClientShell>
+          <CookieConsent measurementId={analyticsId} />
+          <ClientShell companyProfile={companyProfile} analyticsId={analyticsId}>{children}</ClientShell>
         </NextIntlClientProvider>
       </body>
     </html>

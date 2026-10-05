@@ -8,6 +8,7 @@ import { slugify } from "@/lib/slugify";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import { useFormScroll } from "@/lib/client/use-form-scroll";
 
 interface Event {
   id: string;
@@ -42,6 +43,7 @@ export default function AdminEventsPage() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
+  const { formRef, scrollToForm } = useFormScroll();
   const [form, setForm] = useState(EMPTY_FORM);
   const [slugTouched, setSlugTouched] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -75,6 +77,7 @@ export default function AdminEventsPage() {
       price: event.price, capacity: event.capacity, description: event.description, image: event.image || "",
     });
     setFormError("");
+    scrollToForm();
     setEditingId(event.id);
     setShowNew(false);
     setSlugTouched(true);
@@ -83,6 +86,7 @@ export default function AdminEventsPage() {
   function openNew() {
     setForm(EMPTY_FORM);
     setFormError("");
+    scrollToForm();
     setShowNew(true);
     setEditingId(null);
     setSlugTouched(false);
@@ -166,7 +170,7 @@ export default function AdminEventsPage() {
       </section>
 
       {showForm && (
-        <section className="py-8 bg-white border-b border-gray-200">
+        <section ref={formRef} className="py-8 bg-white border-b border-gray-200">
           <div className="mx-auto max-w-4xl px-6">
             <h2 className="text-xl font-bold text-heading mb-4">{editingId ? t("editEvent") : t("newEventHeading")}</h2>
             {formError && <div className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{formError}</div>}

@@ -11,6 +11,9 @@ export const ADMIN_NAMESPACES = [
   "adminEventRegistrations", "adminEventsCrud", "adminExhibitionRegForm", "adminExhibitionRegistrations",
   "adminExhibitionsCrud", "adminFaq", "adminHome", "adminHotels", "adminNewsletter", "adminMovingQuotes", "adminPagesIndex",
   "adminPhotoOrganizer",
+  // Pages added after this list was written; without them the page showed raw
+  // keys like "adminSlideshow.editButton" instead of text.
+  "adminBusinessTripInquiries", "adminChinaTravel", "adminPartnerInquiries", "adminSlideshow",
   "adminRegFormBuilder", "adminRegistrationsCommon", "adminRfqs", "adminServiceTours", "adminServicesHome",
   "adminCityPartnershipInquiries", "adminCityPartnershipsContent", "adminConferenceHostingContent", "adminConferenceInquiries", "adminMagazine", "adminVideos",
   "adminBuyerProfiles",
@@ -21,6 +24,8 @@ export const ADMIN_NAMESPACES = [
 
 export const DASHBOARD_NAMESPACES = [
   "buyerDashboard", "buyerProfile", "exhibitorDashboard", "partnerDashboard",
+  // The buyer profile page reuses its Save / error strings.
+  "adminCommon",
 ];
 
 // Only read by server-side generateMetadata, never by client components.

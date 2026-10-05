@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
@@ -9,6 +9,7 @@ import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import { useFormScroll } from "@/lib/client/use-form-scroll";
 
 interface Tour {
   id: string;
@@ -52,6 +53,7 @@ export default function AdminToursPage() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
+  const { formRef, scrollToForm } = useFormScroll();
   const [form, setForm] = useState(EMPTY_FORM);
   const [slugTouched, setSlugTouched] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -60,14 +62,6 @@ export default function AdminToursPage() {
   const [imageError, setImageError] = useState("");
   const [galleryError, setGalleryError] = useState("");
   const [galleryUploading, setGalleryUploading] = useState(false);
-
-  // The edit/new form renders above the (long) list, so on a phone clicking
-  // Edit on a lower card appeared to do nothing -- bring the form into view.
-  const formRef = useRef<HTMLElement>(null);
-  const [formOpenTick, setFormOpenTick] = useState(0);
-  useEffect(() => {
-    if (formOpenTick > 0) formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [formOpenTick]);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -101,7 +95,7 @@ export default function AdminToursPage() {
       image: tour.image || "", galleryImages: [],
     });
     setFormError("");
-    setFormOpenTick((n) => n + 1);
+    scrollToForm();
     setEditingId(tour.id);
     setShowNew(false);
     setSlugTouched(true);
@@ -127,7 +121,7 @@ export default function AdminToursPage() {
   function openNew() {
     setForm(EMPTY_FORM);
     setFormError("");
-    setFormOpenTick((n) => n + 1);
+    scrollToForm();
     setShowNew(true);
     setEditingId(null);
     setSlugTouched(false);

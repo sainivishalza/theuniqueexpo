@@ -9,6 +9,7 @@ import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import { useFormScroll } from "@/lib/client/use-form-scroll";
 
 interface MagazineIssue {
   id: string;
@@ -39,6 +40,7 @@ export default function AdminMagazinePage() {
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
+  const { formRef, scrollToForm } = useFormScroll();
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
@@ -81,6 +83,7 @@ export default function AdminMagazinePage() {
       publishDate: issue.publishDate ? issue.publishDate.slice(0, 10) : "",
     });
     setFormError("");
+    scrollToForm();
     setCoverError("");
     setEditingId(issue.id);
     setShowNew(false);
@@ -90,6 +93,7 @@ export default function AdminMagazinePage() {
     const nextNumber = issues.length > 0 ? Math.max(...issues.map((i) => i.issueNumber)) + 1 : 1;
     setForm({ ...EMPTY_FORM, issueNumber: String(nextNumber) });
     setFormError("");
+    scrollToForm();
     setCoverError("");
     setShowNew(true);
     setEditingId(null);
@@ -190,7 +194,7 @@ export default function AdminMagazinePage() {
       </section>
 
       {showForm && (
-        <section className="py-8 bg-white border-b border-gray-200">
+        <section ref={formRef} className="py-8 bg-white border-b border-gray-200">
           <div className="mx-auto max-w-3xl px-6">
             <h2 className="text-xl font-bold text-heading mb-4">{editingId ? t("editIssue") : t("newIssueHeading")}</h2>
             {formError && <div className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{formError}</div>}

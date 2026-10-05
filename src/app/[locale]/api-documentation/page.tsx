@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getSitePage } from "@/lib/server/site-pages-repo";
 import SitePageView from "@/components/SitePageView";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { metaDescription } from "@/lib/seo";
 
 // Content only changes via the admin panel -- cache the rendered page and
@@ -9,12 +9,14 @@ import { metaDescription } from "@/lib/seo";
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const content = await getSitePage("api-documentation");
+  const locale = await getLocale();
+  const content = await getSitePage("api-documentation", locale);
   const siteTail = (await getTranslations("meta"))("siteTail");
   return { title: content.heading, description: metaDescription(content.tagline, siteTail) };
 }
 
 export default async function ApiDocumentationPage() {
-  const content = await getSitePage("api-documentation");
+  const locale = await getLocale();
+  const content = await getSitePage("api-documentation", locale);
   return <SitePageView content={content} />;
 }

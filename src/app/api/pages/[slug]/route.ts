@@ -8,7 +8,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const content = await getSitePage(slug);
+  const locale = new URL(request.url).searchParams.get("locale") || undefined;
+  const content = await getSitePage(slug, locale);
   return NextResponse.json(
     { content },
     { headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=300" } }

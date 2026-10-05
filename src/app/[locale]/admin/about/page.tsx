@@ -4,9 +4,16 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
-import { DEFAULT_ABOUT_CONTENT, type AboutContent, type AboutStat } from "@/lib/about-content";
+import { DEFAULT_ABOUT_CONTENT, type AboutContent, type AboutLocale, type AboutStat, type AboutTranslation } from "@/lib/about-content";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+
+const EMPTY_TRANSLATION: AboutTranslation = { heading: "", tagline: "", story: "", mission: "", vision: "", stats: [] };
+const LANGUAGES: { code: "en" | AboutLocale; label: string }[] = [
+  { code: "en", label: "English" },
+  { code: "ru", label: "Русский" },
+  { code: "zh", label: "中文" },
+];
 
 export default function AdminAboutPage() {
   const t = useTranslations("adminAbout");
@@ -17,6 +24,9 @@ export default function AdminAboutPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  // Which language the text fields below edit; the hero image is shared.
+  const [lang, setLang] = useState<"en" | AboutLocale>("en");
+  const current: AboutTranslation = lang === "en" ? content : (content.translations?.[lang] ?? EMPTY_TRANSLATION);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -34,19 +44,28 @@ export default function AdminAboutPage() {
     setContent((prev) => ({ ...prev, ...patch }));
   }
 
+  // Translatable fields go to the selected language.
+  function updateText(patch: Partial<AboutTranslation>) {
+    if (lang === "en") {
+      setContent((prev) => ({ ...prev, ...patch }));
+    } else {
+      setContent((prev) => ({
+        ...prev,
+        translations: { ...prev.translations, [lang]: { ...(prev.translations?.[lang] ?? EMPTY_TRANSLATION), ...patch } },
+      }));
+    }
+  }
+
   function updateStat(index: number, patch: Partial<AboutStat>) {
-    setContent((prev) => ({
-      ...prev,
-      stats: prev.stats.map((s, i) => (i === index ? { ...s, ...patch } : s)),
-    }));
+    updateText({ stats: current.stats.map((s, i) => (i === index ? { ...s, ...patch } : s)) });
   }
 
   function addStat() {
-    setContent((prev) => ({ ...prev, stats: [...prev.stats, { label: "", value: "" }] }));
+    updateText({ stats: [...current.stats, { label: "", value: "" }] });
   }
 
   function removeStat(index: number) {
-    setContent((prev) => ({ ...prev, stats: prev.stats.filter((_, i) => i !== index) }));
+    updateText({ stats: current.stats.filter((_, i) => i !== index) });
   }
 
   async function handleSave() {
@@ -93,14 +112,30 @@ export default function AdminAboutPage() {
             <p className="text-center text-gray-500 py-10">{ta("loading")}</p>
           ) : (
             <>
+              <div role="tablist" aria-label={t("languageTabs")} className="flex flex-wrap gap-2">
+                {LANGUAGES.map((l) => (
+                  <button
+                    key={l.code}
+                    type="button"
+                    role="tab"
+                    aria-selected={lang === l.code}
+                    onClick={() => setLang(l.code)}
+                    className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition-colors ${lang === l.code ? "bg-emerald-900 text-white border-emerald-900" : "bg-white text-gray-600 border-gray-200 hover:bg-cream-50"}`}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+              {lang !== "en" && <p className="text-xs text-gray-500">{t("translationHint")}</p>}
+
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-heading">{t("header")}</h2>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heading")}</label>
                   <input
                     type="text"
-                    value={content.heading}
-                    onChange={(e) => update({ heading: e.target.value })}
+                    value={current.heading}
+                    onChange={(e) => updateText({ heading: e.target.value })}
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
                   />
                 </div>
@@ -108,11 +143,12 @@ export default function AdminAboutPage() {
                   <label className="block text-xs font-semibold text-gray-500 mb-1">{t("tagline")}</label>
                   <input
                     type="text"
-                    value={content.tagline}
-                    onChange={(e) => update({ tagline: e.target.value })}
+                    value={current.tagline}
+                    onChange={(e) => updateText({ tagline: e.target.value })}
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
                   />
                 </div>
+                {lang === "en" && (
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heroImageUrl")}</label>
                   <input
@@ -123,14 +159,15 @@ export default function AdminAboutPage() {
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
                   />
                 </div>
+                )}
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-3">
                 <h2 className="font-bold text-heading">{t("ourStory")}</h2>
                 <p className="text-xs text-gray-400">{t("storyHint")}</p>
                 <textarea
-                  value={content.story}
-                  onChange={(e) => update({ story: e.target.value })}
+                  value={current.story}
+                  onChange={(e) => updateText({ story: e.target.value })}
                   rows={8}
                   className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-y"
                 />
@@ -140,8 +177,8 @@ export default function AdminAboutPage() {
                 <Card shadow="sm" bordered={false} className="p-6 space-y-3">
                   <h2 className="font-bold text-heading">{t("mission")}</h2>
                   <textarea
-                    value={content.mission}
-                    onChange={(e) => update({ mission: e.target.value })}
+                    value={current.mission}
+                    onChange={(e) => updateText({ mission: e.target.value })}
                     rows={4}
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-y"
                   />
@@ -149,8 +186,8 @@ export default function AdminAboutPage() {
                 <Card shadow="sm" bordered={false} className="p-6 space-y-3">
                   <h2 className="font-bold text-heading">{t("vision")}</h2>
                   <textarea
-                    value={content.vision}
-                    onChange={(e) => update({ vision: e.target.value })}
+                    value={current.vision}
+                    onChange={(e) => updateText({ vision: e.target.value })}
                     rows={4}
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-y"
                   />
@@ -159,7 +196,7 @@ export default function AdminAboutPage() {
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-4">
                 <h2 className="font-bold text-heading">{t("stats")}</h2>
-                {content.stats.map((stat, i) => (
+                {current.stats.map((stat, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <input
                       type="text"

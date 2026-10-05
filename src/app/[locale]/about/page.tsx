@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { getAboutContent } from "@/lib/server/about-content-repo";
 import { initials } from "@/lib/format";
 import { listTeamMembers } from "@/lib/server/team-members-repo";
@@ -13,13 +13,13 @@ import { SHOW_TEAM } from "@/lib/feature-flags";
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const content = await getAboutContent();
+  const content = await getAboutContent(await getLocale());
   return { title: content.heading, description: content.tagline };
 }
 
 export default async function AboutPage() {
   const t = await getTranslations("about");
-  const content = await getAboutContent();
+  const content = await getAboutContent(await getLocale());
   const teamMembers = await listTeamMembers();
   const storyParagraphs = content.story.split(/\n{2,}/).filter(Boolean);
 

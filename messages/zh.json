@@ -1016,7 +1016,9 @@
     "addStat": "+ 添加统计项",
     "saved": "已保存。",
     "saveButton": "保存关于我们页面",
-    "statLabelPlaceholder": "例如：支持的展会"
+    "statLabelPlaceholder": "例如：支持的展会",
+    "languageTabs": "语言",
+    "translationHint": "此语言的文本。留空则显示英文文本。头图为各语言共用,请在 English 标签下编辑。"
   },
   "adminSitePageEditor": {
     "saveFailed": "保存失败",
@@ -1036,7 +1038,9 @@
     "itemDescription": "描述",
     "addItem": "+ 添加条目",
     "saved": "已保存。",
-    "saveButton": "保存{name}"
+    "saveButton": "保存{name}",
+    "languageTabs": "语言",
+    "translationHint": "此语言的文本。留空则显示英文文本。联系方式为各语言共用,请在 English 标签下编辑。"
   },
   "adminRegFormBuilder": {
     "types": {

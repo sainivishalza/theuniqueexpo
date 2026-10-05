@@ -1016,7 +1016,9 @@
     "addStat": "+ Add Stat",
     "saved": "Saved.",
     "saveButton": "Save About Page",
-    "statLabelPlaceholder": "e.g. Exhibitions Supported"
+    "statLabelPlaceholder": "e.g. Exhibitions Supported",
+    "languageTabs": "Language",
+    "translationHint": "Text for this language. Leave it blank to show the English text. The hero image is shared and edited under English."
   },
   "adminSitePageEditor": {
     "saveFailed": "Save failed",
@@ -1036,7 +1038,9 @@
     "itemDescription": "Description",
     "addItem": "+ Add Item",
     "saved": "Saved.",
-    "saveButton": "Save {name}"
+    "saveButton": "Save {name}",
+    "languageTabs": "Language",
+    "translationHint": "Text for this language. Leave it blank to show the English text. Contact details are shared and edited under English."
   },
   "adminRegFormBuilder": {
     "types": {

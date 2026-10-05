@@ -4,13 +4,20 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
-import { SITE_PAGES, isValidSitePageSlug, type SitePageContent, type SitePageItem } from "@/lib/site-pages";
+import { SITE_PAGES, isValidSitePageSlug, type SitePageContent, type SitePageItem, type SitePageTranslation, type TranslatedLocale } from "@/lib/site-pages";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 
 const EMPTY_CONTENT: SitePageContent = {
   heading: "", tagline: "", body: "", itemsLabel: "Details", items: [], contactEmail: "", contactPhone: "",
 };
+
+const EMPTY_TRANSLATION: SitePageTranslation = { heading: "", tagline: "", body: "", itemsLabel: "", items: [] };
+const LANGUAGES: { code: "en" | TranslatedLocale; label: string }[] = [
+  { code: "en", label: "English" },
+  { code: "ru", label: "Русский" },
+  { code: "zh", label: "中文" },
+];
 
 export default function AdminSitePageEditor({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -22,6 +29,10 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  // Which language's text the form below is editing. Russian/Chinese are
+  // stored under content.translations; contact details are shared.
+  const [lang, setLang] = useState<"en" | TranslatedLocale>("en");
+  const current: SitePageTranslation = lang === "en" ? content : (content.translations?.[lang] ?? EMPTY_TRANSLATION);
 
   const pageDef = SITE_PAGES.find((p) => p.slug === slug);
 
@@ -37,20 +48,33 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
       .finally(() => setLoading(false));
   }, [user, slug]);
 
+  // Shared fields (contact details) always live on the English content.
   function update(patch: Partial<SitePageContent>) {
     setContent((prev) => ({ ...prev, ...patch }));
   }
 
+  // Translatable fields go to the selected language.
+  function updateText(patch: Partial<SitePageTranslation>) {
+    if (lang === "en") {
+      setContent((prev) => ({ ...prev, ...patch }));
+    } else {
+      setContent((prev) => ({
+        ...prev,
+        translations: { ...prev.translations, [lang]: { ...(prev.translations?.[lang] ?? EMPTY_TRANSLATION), ...patch } },
+      }));
+    }
+  }
+
   function updateItem(index: number, patch: Partial<SitePageItem>) {
-    setContent((prev) => ({ ...prev, items: prev.items.map((it, i) => (i === index ? { ...it, ...patch } : it)) }));
+    updateText({ items: current.items.map((it, i) => (i === index ? { ...it, ...patch } : it)) });
   }
 
   function addItem() {
-    setContent((prev) => ({ ...prev, items: [...prev.items, { title: "", description: "" }] }));
+    updateText({ items: [...current.items, { title: "", description: "" }] });
   }
 
   function removeItem(index: number) {
-    setContent((prev) => ({ ...prev, items: prev.items.filter((_, i) => i !== index) }));
+    updateText({ items: current.items.filter((_, i) => i !== index) });
   }
 
   async function handleSave() {
@@ -100,14 +124,30 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
             <p className="text-center text-gray-500 py-10">{ta("loading")}</p>
           ) : (
             <>
+              <div role="tablist" aria-label={t("languageTabs")} className="flex flex-wrap gap-2">
+                {LANGUAGES.map((l) => (
+                  <button
+                    key={l.code}
+                    type="button"
+                    role="tab"
+                    aria-selected={lang === l.code}
+                    onClick={() => setLang(l.code)}
+                    className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition-colors ${lang === l.code ? "bg-emerald-900 text-white border-emerald-900" : "bg-white text-gray-600 border-gray-200 hover:bg-cream-50"}`}
+                  >
+                    {l.label}
+                  </button>
+                ))}
+              </div>
+              {lang !== "en" && <p className="text-xs text-gray-500">{t("translationHint")}</p>}
+
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-heading">{t("header")}</h2>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heading")}</label>
                   <input
                     type="text"
-                    value={content.heading}
-                    onChange={(e) => update({ heading: e.target.value })}
+                    value={current.heading}
+                    onChange={(e) => updateText({ heading: e.target.value })}
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
                   />
                 </div>
@@ -115,8 +155,8 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                   <label className="block text-xs font-semibold text-gray-500 mb-1">{t("tagline")}</label>
                   <input
                     type="text"
-                    value={content.tagline}
-                    onChange={(e) => update({ tagline: e.target.value })}
+                    value={current.tagline}
+                    onChange={(e) => updateText({ tagline: e.target.value })}
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
                   />
                 </div>
@@ -126,13 +166,14 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                 <h2 className="font-bold text-heading">{t("bodyText")}</h2>
                 <p className="text-xs text-gray-400">{t("bodyHint")}</p>
                 <textarea
-                  value={content.body}
-                  onChange={(e) => update({ body: e.target.value })}
+                  value={current.body}
+                  onChange={(e) => updateText({ body: e.target.value })}
                   rows={5}
                   className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-y"
                 />
               </Card>
 
+              {lang === "en" && (
               <Card shadow="sm" bordered={false} className="p-6 space-y-4">
                 <h2 className="font-bold text-heading">{t("contactDetails")}</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -158,6 +199,7 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                   </div>
                 </div>
               </Card>
+              )}
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-4">
                 <div>
@@ -165,13 +207,13 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                   <label className="block text-xs font-semibold text-gray-500 mt-3 mb-1">{t("sectionHeading")}</label>
                   <input
                     type="text"
-                    value={content.itemsLabel}
-                    onChange={(e) => update({ itemsLabel: e.target.value })}
+                    value={current.itemsLabel}
+                    onChange={(e) => updateText({ itemsLabel: e.target.value })}
                     placeholder="e.g. FAQs, Open Positions, Endpoints"
                     className="w-full max-w-sm rounded-lg border border-gray-200 px-3 py-2 text-sm"
                   />
                 </div>
-                {content.items.map((item, i) => (
+                {current.items.map((item, i) => (
                   <div key={i} className="rounded-xl border border-gray-200 p-4 space-y-2">
                     <input
                       type="text"

@@ -3,6 +3,18 @@ export interface SitePageItem {
   description: string;
 }
 
+// The parts of a page that are translated; contact email/phone are shared.
+export interface SitePageTranslation {
+  heading: string;
+  tagline: string;
+  body: string;
+  itemsLabel: string;
+  items: SitePageItem[];
+}
+
+export type TranslatedLocale = "ru" | "zh";
+export const TRANSLATED_LOCALES: TranslatedLocale[] = ["ru", "zh"];
+
 export interface SitePageContent {
   heading: string;
   tagline: string;
@@ -11,6 +23,10 @@ export interface SitePageContent {
   items: SitePageItem[];
   contactEmail: string;
   contactPhone: string;
+  // Admin-entered Russian/Chinese text. Optional: a missing language falls
+  // back to the built-in default translation (while the English text is still
+  // the unedited default) and then to English.
+  translations?: Partial<Record<TranslatedLocale, SitePageTranslation>>;
 }
 
 export interface SitePageDef {
@@ -213,10 +229,33 @@ function isSitePageItem(value: unknown): value is SitePageItem {
   return !!record && typeof record.title === "string" && typeof record.description === "string";
 }
 
+function normalizeTranslation(input: unknown): SitePageTranslation | null {
+  const r = (input && typeof input === "object" ? input : null) as Record<string, unknown> | null;
+  if (!r) return null;
+  const str = (v: unknown) => (typeof v === "string" ? v : "");
+  const translation: SitePageTranslation = {
+    heading: str(r.heading),
+    tagline: str(r.tagline),
+    body: str(r.body),
+    itemsLabel: str(r.itemsLabel),
+    items: Array.isArray(r.items) ? r.items.filter(isSitePageItem).map((i) => ({ title: i.title, description: i.description })) : [],
+  };
+  // An all-empty translation means "not translated" -- don't store it.
+  const hasText = translation.heading || translation.tagline || translation.body || translation.items.length > 0;
+  return hasText ? translation : null;
+}
+
 export function normalizeSitePageContent(slug: string, input: unknown): SitePageContent {
   const fallback = DEFAULT_SITE_PAGE_CONTENT[slug] || EMPTY_CONTENT;
   const record = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
+  const rawTranslations = (record.translations && typeof record.translations === "object" ? record.translations : {}) as Record<string, unknown>;
+  const translations: Partial<Record<TranslatedLocale, SitePageTranslation>> = {};
+  for (const loc of TRANSLATED_LOCALES) {
+    const t = normalizeTranslation(rawTranslations[loc]);
+    if (t) translations[loc] = t;
+  }
   return {
+    ...(Object.keys(translations).length > 0 ? { translations } : {}),
     heading: typeof record.heading === "string" ? record.heading : fallback.heading,
     tagline: typeof record.tagline === "string" ? record.tagline : fallback.tagline,
     body: typeof record.body === "string" ? record.body : fallback.body,
@@ -227,4 +266,29 @@ export function normalizeSitePageContent(slug: string, input: unknown): SitePage
     contactEmail: typeof record.contactEmail === "string" ? record.contactEmail : fallback.contactEmail,
     contactPhone: typeof record.contactPhone === "string" ? record.contactPhone : fallback.contactPhone,
   };
+}
+
+function sameEnglish(a: SitePageContent, b: SitePageContent): boolean {
+  return (
+    a.heading === b.heading && a.tagline === b.tagline && a.body === b.body &&
+    a.itemsLabel === b.itemsLabel && JSON.stringify(a.items) === JSON.stringify(b.items)
+  );
+}
+
+// The Russian/Chinese text for a page, or null to show English: the admin's
+// own translation if they entered one, else the built-in default translation
+// -- but only while the English text is still the unedited default, since a
+// translation of text that has since changed would be wrong.
+export function resolveSitePageTranslation(
+  slug: string,
+  content: SitePageContent,
+  locale: string,
+  defaultTranslations: Record<string, Partial<Record<TranslatedLocale, SitePageTranslation>>>
+): SitePageTranslation | null {
+  if (locale !== "ru" && locale !== "zh") return null;
+  const own = content.translations?.[locale];
+  if (own && own.heading) return own;
+  const defaults = DEFAULT_SITE_PAGE_CONTENT[slug];
+  if (defaults && sameEnglish(content, defaults)) return defaultTranslations[slug]?.[locale] ?? null;
+  return null;
 }

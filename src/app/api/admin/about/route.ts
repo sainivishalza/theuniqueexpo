@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
-import { getAboutContent, updateAboutContent } from "@/lib/server/about-content-repo";
+import { getAboutContentForAdmin, updateAboutContent } from "@/lib/server/about-content-repo";
 import { normalizeAboutContent } from "@/lib/about-content";
 import { isValidImageField } from "@/lib/server/validate-upload";
 
@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   const admin = await requireAdmin(request);
   if (!admin) return NextResponse.json({ error: "Admin access required" }, { status: 401 });
 
-  const content = await getAboutContent();
+  const content = await getAboutContentForAdmin();
   return NextResponse.json({ content });
 }
 

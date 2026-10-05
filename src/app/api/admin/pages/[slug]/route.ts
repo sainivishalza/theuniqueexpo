@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { isValidSitePageSlug, normalizeSitePageContent } from "@/lib/site-pages";
-import { getSitePage, updateSitePage } from "@/lib/server/site-pages-repo";
+import { getSitePageForAdmin, updateSitePage } from "@/lib/server/site-pages-repo";
 
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const admin = await requireAdmin(request);
@@ -12,7 +12,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     return NextResponse.json({ error: "Unknown page" }, { status: 404 });
   }
 
-  const content = await getSitePage(slug);
+  const content = await getSitePageForAdmin(slug);
   return NextResponse.json({ content });
 }
 

@@ -92,6 +92,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: defaultDescription,
     alternates: await localeAlternates(),
+    // Search Console ownership check (HTML tag method), editable in Company Profile.
+    ...(companyProfile.googleSiteVerification ? { verification: { google: companyProfile.googleSiteVerification } } : {}),
     // Admin-set favicon (Company Profile -> Favicon URL) overrides the
     // framework default when set; omitted entirely otherwise so Next
     // falls back to its own default favicon handling.

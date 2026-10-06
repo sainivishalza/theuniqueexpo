@@ -101,6 +101,8 @@ export default function AdminCompanyProfilePage() {
                 <p className="text-xs text-gray-400 -mt-3">{t("whatsappHint")}</p>
                 {field("googleAnalyticsId", t("googleAnalyticsId"), "G-XXXXXXXXXX")}
                 <p className="text-xs text-gray-400 -mt-3">{t("googleAnalyticsIdHint")}</p>
+                {field("googleSiteVerification", t("googleSiteVerification"), "abc123...")}
+                <p className="text-xs text-gray-400 -mt-3">{t("googleSiteVerificationHint")}</p>
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">

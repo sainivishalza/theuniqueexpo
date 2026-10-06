@@ -6,6 +6,8 @@ import { renderMarkdown } from "@/lib/markdown";
 import { getPublishedPostBySlug } from "@/lib/server/blog-repo";
 import Card from "@/components/ui/Card";
 import { defaultOgImage, metaDescription } from "@/lib/seo";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { getAboutContent } from "@/lib/server/about-content-repo";
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
@@ -42,9 +44,11 @@ export default async function BlogPostPage({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const t = await getTranslations("blogPostPage");
+  const tb = await getTranslations("breadcrumbs");
   const post = await getPublishedPostBySlug(slug);
+  const aboutTagline = post && !post.authorName ? (await getAboutContent(locale)).tagline : "";
 
   if (!post) {
     return (
@@ -68,7 +72,9 @@ export default async function BlogPostPage({
     url: `${SITE_URL}/blog/${post.slug}`,
     ...(post.publishedAt && { datePublished: post.publishedAt }),
     ...(post.coverImage && { image: post.coverImage }),
-    ...(post.authorName && { author: { "@type": "Person", name: post.authorName, ...(post.authorBio && { description: post.authorBio }) } }),
+    author: post.authorName
+      ? { "@type": "Person", name: post.authorName, ...(post.authorBio && { description: post.authorBio }) }
+      : { "@type": "Organization", name: t("editorialTeam"), url: SITE_URL },
   };
   const schemaJson = JSON.stringify(schema).replace(/</g, "\\u003c");
 
@@ -94,6 +100,7 @@ export default async function BlogPostPage({
 
       <section className="bg-[var(--color-hero-bg)] py-12">
         <div className="mx-auto max-w-3xl px-6 text-white">
+          <Breadcrumbs homeLabel={tb("home")} items={[{ name: tb("blog"), href: "/blog" }, { name: post.title }]} />
           <Link href={`/blog?category=${post.category}`} className="text-sm text-emerald-300 hover:underline font-semibold uppercase tracking-wide">
             {t(`categories.${post.category}`)}
           </Link>
@@ -126,18 +133,20 @@ export default async function BlogPostPage({
             dangerouslySetInnerHTML={{ __html: renderMarkdown(post.content) }}
           />
 
-          {post.authorName && (
-            <Card shadow="sm" bordered={false} className="mt-6 p-6 flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full gradient-brand flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
-                {post.authorName.charAt(0)}
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{t("writtenBy")}</p>
-                <p className="font-bold text-gray-900">{post.authorName}</p>
-                {post.authorBio && <p className="text-sm text-gray-500 mt-1">{post.authorBio}</p>}
-              </div>
-            </Card>
-          )}
+          {/* Posts without a named author fall back to the editorial team, with
+              the About-page tagline as its bio, so every post shows who it is by. */}
+          <Card shadow="sm" bordered={false} className="mt-6 p-6 flex items-start gap-4">
+            <div className="w-12 h-12 rounded-full gradient-brand flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+              {(post.authorName || t("editorialTeam")).charAt(0)}
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{t("writtenBy")}</p>
+              <p className="font-bold text-gray-900">{post.authorName || t("editorialTeam")}</p>
+              {(post.authorName ? post.authorBio : aboutTagline) && (
+                <p className="text-sm text-gray-500 mt-1">{post.authorName ? post.authorBio : aboutTagline}</p>
+              )}
+            </div>
+          </Card>
 
           {post.faqItems.length > 0 && (
             <Card shadow="sm" bordered={false} className="mt-6 p-6">

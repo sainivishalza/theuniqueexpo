@@ -1,0 +1,184 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useTranslations, useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import Badge from "@/components/ui/Badge";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
+
+export interface Tour {
+  id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
+  duration: string; departureCity: string; destination: string; description: string;
+  price: string; currency: string; groupSize: string; color: string; image: string;
+}
+
+interface RecentReview {
+  id: string; tourSlug: string; userName: string; rating: number; comment: string; createdAt: string;
+}
+
+export default function ToursView({ tours }: { tours: Tour[] }) {
+  const t = useTranslations("toursPage");
+  const locale = useLocale();
+  const [recentReviews, setRecentReviews] = useState<RecentReview[]>([]);
+
+  useEffect(() => {
+    fetch("/api/tours/reviews/recent")
+      .then((res) => res.json())
+      .then((data) => setRecentReviews(data.reviews || []))
+      .catch(() => {});
+  }, []);
+
+  return (
+    <div>
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-[var(--color-hero-bg)] py-20">
+        <div className="absolute inset-0 opacity-15">
+          <Image
+            src="https://images.unsplash.com/photo-1549167008-f02ad8abf052?w=1600&h=600&fit=crop&q=80"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
+        <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
+          <h1 className="text-4xl md:text-5xl font-extrabold">{t("title")}</h1>
+          <p className="mt-3 text-lg text-gray-300 max-w-xl">
+            {t("subtitle")}
+          </p>
+        </div>
+      </section>
+
+      {/* Browse all China destinations */}
+      <section className="py-10 bg-white border-b border-gray-100">
+        <div className="mx-auto max-w-7xl px-6">
+          <Card shadow="sm" bordered={false} className="p-8 text-center">
+            <h2 className="text-2xl font-bold text-heading">{t("chinaTravelBanner.title")}</h2>
+            <p className="mt-2 text-gray-500 max-w-2xl mx-auto">{t("chinaTravelBanner.text")}</p>
+            <Button href="/china-travel" variant="gradientCta" size="wide" className="mt-6">
+              {t("chinaTravelBanner.cta")}
+            </Button>
+          </Card>
+        </div>
+      </section>
+
+      {/* Tours Grid */}
+      <section className="py-12 bg-cream-50">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {tours.map((tour) => (
+              <Card key={tour.id} href={`/tours/${tour.slug}`} bordered={false}>
+                <div className="relative h-52 overflow-hidden bg-gray-900">
+                  {tour.image && (
+                    <>
+                      <Image
+                        src={tour.image}
+                        alt=""
+                        aria-hidden="true"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover blur-2xl scale-110 opacity-60 group-hover:scale-125 transition-transform duration-500"
+                      />
+                      <Image
+                        src={tour.image}
+                        alt={tour.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-contain group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </>
+                  )}
+                  <div className="absolute inset-0 gradient-overlay" />
+                  <div className="absolute top-4 left-4">
+                    <Badge tone="white" size="tag">{tour.duration}</Badge>
+                  </div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="text-lg font-bold text-white line-clamp-2 leading-tight drop-shadow-lg">
+                      {tour.title}
+                    </h3>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-2">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {tour.dates}
+                  </div>
+                  <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-4">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {tour.departureCity} → {tour.destination}
+                  </div>
+                  <p className="text-sm text-gray-400 line-clamp-2 mb-4">{tour.description}</p>
+                  <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                    <div className="text-sm font-bold text-gray-900">
+                      {tour.currency}{tour.price} <span className="font-normal text-gray-400">{t("perPerson")}</span>
+                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-[var(--radius-button)] bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-800 group-hover:bg-emerald-100 transition-colors">
+                      {t("viewDetails")}
+                    </span>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {tours.length === 0 && (
+            <div className="text-center py-20">
+              <div className="text-5xl mb-4">🧳</div>
+              <h3 className="text-xl font-bold text-heading mb-2">{t("noResultsTitle")}</h3>
+              <p className="text-gray-500">{t("noResultsSubtitle")}</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section id="how-to-book" className="py-12 bg-cream-50 border-t border-gray-100">
+        <div className="mx-auto max-w-7xl px-6">
+          <h2 className="text-2xl font-bold text-heading mb-6">{t("howToBook")}</h2>
+          <div className="grid gap-6 sm:grid-cols-3">
+            {["browse", "register", "confirm"].map((step, i) => (
+              <Card key={step} shadow="sm" className="p-6">
+                <div className="w-9 h-9 rounded-full gradient-brand flex items-center justify-center text-white text-sm font-bold mb-3">
+                  {i + 1}
+                </div>
+                <h3 className="font-bold text-heading mb-1">{t(`howToBookSteps.${step}.title`)}</h3>
+                <p className="text-sm text-gray-500">{t(`howToBookSteps.${step}.desc`)}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {recentReviews.length > 0 && (
+        <section id="reviews" className="py-12 bg-white border-t border-gray-100">
+          <div className="mx-auto max-w-7xl px-6">
+            <h2 className="text-2xl font-bold text-heading mb-6">{t("travelerReviews")}</h2>
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {recentReviews.map((r) => (
+                <Link
+                  key={r.id}
+                  href={`/tours/${r.tourSlug}#reviews`}
+                  className="block rounded-[var(--radius-card)] bg-cream-50 border border-gray-100 p-5 hover:border-emerald-300 transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold text-gray-900 text-sm">{r.userName}</span>
+                    <span className="text-amber-400 text-sm">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
+                  </div>
+                  {r.comment && <p className="text-sm text-gray-600 line-clamp-3">{r.comment}</p>}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}

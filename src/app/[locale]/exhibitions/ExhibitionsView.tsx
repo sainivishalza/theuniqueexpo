@@ -46,6 +46,11 @@ export default function ExhibitionsView({
     return true;
   });
 
+  // Past exhibitions are hidden by the default "upcoming" filter, which left
+  // their pages with no link from anywhere. List them as plain links below the
+  // grid so visitors (and search engines) can still reach every exhibition.
+  const pastExhibitions = exhibitions.filter((e) => new Date(e.endDate) < new Date());
+
   return (
     <div>
       {/* Hero */}
@@ -201,6 +206,21 @@ export default function ExhibitionsView({
               </Card>
             ))}
           </div>
+
+          {dateFilter === "upcoming" && pastExhibitions.length > 0 && (
+            <nav aria-labelledby="past-exhibitions-title" className="mt-16 border-t border-gray-200 pt-10">
+              <h2 id="past-exhibitions-title" className="text-xl font-bold text-heading">{t("pastArchiveTitle")}</h2>
+              <p className="mt-1 text-sm text-gray-500">{t("pastArchiveSubtitle")}</p>
+              <ul className="mt-5 grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+                {pastExhibitions.map((e) => (
+                  <li key={e.id}>
+                    <Link href={`/exhibitions/${e.slug}`} className="text-emerald-800 font-semibold hover:underline">{e.title}</Link>
+                    <span className="block text-xs text-gray-500">{e.dates} · {e.city}</span>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
 
           {filtered.length === 0 && (
             <div className="text-center py-20">

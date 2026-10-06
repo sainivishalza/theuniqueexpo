@@ -109,7 +109,9 @@
     "noResultsTitle": "No exhibitions found",
     "noResultsSubtitle": "Try adjusting your filters to find events.",
     "planMyTrip": "Plan My Trip",
-    "register": "Register"
+    "register": "Register",
+    "pastArchiveTitle": "Past exhibitions",
+    "pastArchiveSubtitle": "Browse exhibitions that have already taken place."
   },
   "toursPage": {
     "title": "Tours",
@@ -2228,7 +2230,8 @@
       "exhibition-reviews": "Exhibition Reviews"
     },
     "writtenBy": "Written by",
-    "faqTitle": "Frequently Asked Questions"
+    "faqTitle": "Frequently Asked Questions",
+    "editorialTeam": "The Unique Expo Editorial Team"
   },
   "adminBlogCrud": {
     "loadFailed": "Failed to load posts",
@@ -2394,7 +2397,9 @@
     "whatsapp": "WhatsApp Number",
     "whatsappHint": "Full international number with country code. When set, a green WhatsApp chat button appears on every public page; leave blank to hide it.",
     "googleAnalyticsId": "Google Analytics ID",
-    "googleAnalyticsIdHint": "Your GA4 Measurement ID (starts with G-). When set, visitor statistics are collected on public pages; leave blank to turn analytics off."
+    "googleAnalyticsIdHint": "Your GA4 Measurement ID (starts with G-). When set, visitor statistics are collected on public pages; leave blank to turn analytics off.",
+    "googleSiteVerification": "Google Search Console verification code",
+    "googleSiteVerificationHint": "The code from Search Console → Add property → URL prefix → \"HTML tag\". You can paste the whole <meta> tag or just the content value. Leave blank if you verify another way."
   },
   "adminFaq": {
     "title": "FAQ Management",
@@ -3287,7 +3292,7 @@
     },
     "relocation": {
       "title": "Relocation",
-      "description": "Housing, schools, visas, and settling-in support for moving to China."
+      "description": "Housing, schools, visas, and settling-in support for moving to China, with local help from The Unique Expo team."
     },
     "services": {
       "title": "Services",
@@ -3345,5 +3350,33 @@
     "noResultsSubtitle": "Emails entered in the website footer will appear here.",
     "language": "Language",
     "downloadCsv": "Download CSV"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "exhibitions": "Exhibitions",
+    "tours": "Tours",
+    "blog": "Blog",
+    "directory": "Directory"
+  },
+  "visaApplyPage": {
+    "title": "Apply: {name}",
+    "subtitle": "Tell us a little about you and what you need. Our team will contact you to confirm the details and next steps.",
+    "loginRequired": "Please log in to send your application.",
+    "logIn": "Log in",
+    "fullName": "Full name",
+    "email": "Email",
+    "phone": "Phone / WhatsApp",
+    "company": "Company (optional)",
+    "nationality": "Nationality (optional)",
+    "details": "What do you need help with?",
+    "detailsPlaceholder": "e.g. company type, visa type, planned travel dates",
+    "submit": "Submit application",
+    "submitting": "Submitting...",
+    "submissionFailed": "Submission failed",
+    "successTitle": "Application received",
+    "successText": "Thanks! We have your request for {name} and will be in touch shortly.",
+    "backToServices": "← Back to visa and company setup",
+    "unknownService": "Service not found",
+    "unknownServiceHint": "Please pick a service from the visa and company setup page."
   }
 }

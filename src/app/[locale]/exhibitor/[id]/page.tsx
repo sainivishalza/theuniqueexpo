@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { Link } from "@/i18n/navigation";
 import { mockExhibitorProfiles } from "@/lib/booths";
 import ReviewsSection from "@/components/ReviewsSection";
@@ -23,6 +24,7 @@ const avatarColors = [
 
 export default function ExhibitorProfilePage() {
   const t = useTranslations("exhibitorProfilePage");
+  const tb = useTranslations("breadcrumbs");
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "";
   const profile = mockExhibitorProfiles.find((p) => p.id === id || p.slug === id);
@@ -54,6 +56,9 @@ export default function ExhibitorProfilePage() {
           className="object-cover opacity-30"
         />
         <div className="absolute inset-0 gradient-overlay" />
+        <div className="relative z-10 mx-auto max-w-5xl px-6 pt-6">
+          <Breadcrumbs homeLabel={tb("home")} items={[{ name: tb("directory"), href: "/directory" }, { name: profile.name }]} />
+        </div>
       </section>
 
       {/* Profile header */}

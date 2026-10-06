@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getCompanyProfile, updateCompanyProfile } from "@/lib/server/company-profile-repo";
-import { normalizeCompanyProfile, GA_MEASUREMENT_ID_RE } from "@/lib/company-profile";
+import { normalizeCompanyProfile, GA_MEASUREMENT_ID_RE, extractSiteVerification, SITE_VERIFICATION_RE } from "@/lib/company-profile";
 import { isValidImageField } from "@/lib/server/validate-upload";
 
 export async function GET(request: Request) {
@@ -27,6 +27,11 @@ export async function PUT(request: Request) {
   const gaId = typeof body.googleAnalyticsId === "string" ? body.googleAnalyticsId.trim() : "";
   if (gaId && !GA_MEASUREMENT_ID_RE.test(gaId)) {
     return NextResponse.json({ error: "Google Analytics ID must look like G-XXXXXXXXXX" }, { status: 400 });
+  }
+
+  const verification = typeof body.googleSiteVerification === "string" ? extractSiteVerification(body.googleSiteVerification) : "";
+  if (verification && !SITE_VERIFICATION_RE.test(verification)) {
+    return NextResponse.json({ error: "Search Console verification code looks wrong -- paste the code from the HTML tag option" }, { status: 400 });
   }
 
   await updateCompanyProfile(normalizeCompanyProfile(body));

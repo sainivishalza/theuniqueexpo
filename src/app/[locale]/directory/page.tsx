@@ -122,7 +122,7 @@ export default function DirectoryPage() {
               </div>
             ) : (
               filtered.map((ex, idx) => (
-                <Card key={ex.id} href={`/exhibitor/${ex.id}`} shadow="sm" className="p-6">
+                <Card key={ex.id} href={`/exhibitor/${ex.slug}`} shadow="sm" className="p-6">
                   <div className="flex items-start gap-4">
                     <div className={`w-12 h-12 rounded-[var(--radius-icon-md)] bg-gradient-to-br ${avatarColors[idx % avatarColors.length]} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
                       {ex.name[0]}

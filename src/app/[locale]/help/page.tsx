@@ -18,5 +18,23 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HelpCenterPage() {
   const locale = await getLocale();
   const content = await getSitePage("help-center", locale);
-  return <SitePageView content={content} />;
+  // The Help Center items are question/answer pairs -- expose them as FAQPage
+  // structured data so they can appear as rich results.
+  const faqJson = content.items.length > 0
+    ? JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: content.items.map((item) => ({
+          "@type": "Question",
+          name: item.title,
+          acceptedAnswer: { "@type": "Answer", text: item.description },
+        })),
+      }).replace(/</g, "\\u003c")
+    : null;
+  return (
+    <>
+      {faqJson && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJson }} />}
+      <SitePageView content={content} />
+    </>
+  );
 }

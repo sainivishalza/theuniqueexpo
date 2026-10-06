@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { Link } from "@/i18n/navigation";
 import ReviewsSection from "@/components/ReviewsSection";
 import Badge from "@/components/ui/Badge";
@@ -20,6 +21,7 @@ export interface Tour {
 
 export default function TourDetailView({ tour }: { tour: Tour | null }) {
   const t = useTranslations("tourDetail");
+  const tb = useTranslations("breadcrumbs");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   if (!tour) {
@@ -43,6 +45,7 @@ export default function TourDetailView({ tour }: { tour: Tour | null }) {
       {/* Title header */}
       <section className="bg-[var(--color-hero-bg)] py-8 md:py-10">
         <div className="mx-auto max-w-7xl px-6">
+          <Breadcrumbs homeLabel={tb("home")} items={[{ name: tb("tours"), href: "/tours" }, { name: tour.title }]} />
           <div className="flex flex-wrap gap-2 mb-4">
             <Badge tone="outline-light" size="pill">{tour.duration}</Badge>
             <Badge tone="outline-light" size="pill">{tour.departureCity} → {tour.destination}</Badge>

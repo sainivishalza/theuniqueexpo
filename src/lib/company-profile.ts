@@ -9,6 +9,8 @@ export interface CompanyProfile {
   whatsapp: string;
   // GA4 measurement ID (G-XXXXXXXXXX). Empty disables analytics.
   googleAnalyticsId: string;
+  // Google Search Console "HTML tag" verification token (the content="..." value).
+  googleSiteVerification: string;
   addressLine: string;
   addressCity: string;
   addressCountry: string;
@@ -32,6 +34,7 @@ export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
   phone: "",
   whatsapp: "",
   googleAnalyticsId: "",
+  googleSiteVerification: "",
   addressLine: "",
   addressCity: "",
   addressCountry: "",
@@ -46,6 +49,16 @@ export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
 // is ever accepted.
 export const GA_MEASUREMENT_ID_RE = /^G-[A-Z0-9]{4,20}$/;
 
+// The token goes into a <meta> tag, so only this shape is accepted. Admins
+// often paste the whole tag from Search Console; pull the token out of it.
+export const SITE_VERIFICATION_RE = /^[A-Za-z0-9_-]{20,100}$/;
+
+export function extractSiteVerification(value: string): string {
+  const raw = value.trim();
+  const fromTag = raw.match(/content\s*=\s*["']([^"']+)["']/i);
+  return (fromTag ? fromTag[1] : raw).trim();
+}
+
 export function normalizeCompanyProfile(input: unknown): CompanyProfile {
   const record = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
   const str = (key: keyof CompanyProfile) => (typeof record[key] === "string" ? (record[key] as string) : DEFAULT_COMPANY_PROFILE[key]);
@@ -57,6 +70,7 @@ export function normalizeCompanyProfile(input: unknown): CompanyProfile {
     phone: str("phone"),
     whatsapp: str("whatsapp"),
     googleAnalyticsId: GA_MEASUREMENT_ID_RE.test(str("googleAnalyticsId").trim()) ? str("googleAnalyticsId").trim() : "",
+    googleSiteVerification: SITE_VERIFICATION_RE.test(extractSiteVerification(str("googleSiteVerification"))) ? extractSiteVerification(str("googleSiteVerification")) : "",
     addressLine: str("addressLine"),
     addressCity: str("addressCity"),
     addressCountry: str("addressCountry"),

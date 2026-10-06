@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { chinaToursData, getTourDataBySlug, localizeTour } from "@/lib/tours";
 import { formatNumber } from "@/lib/format";
 import Button from "@/components/ui/Button";
+import { metaDescription } from "@/lib/seo";
 import Card from "@/components/ui/Card";
 
 export function generateStaticParams() {
@@ -20,11 +21,13 @@ export async function generateMetadata({
   const tourData = getTourDataBySlug(slug);
   if (!tourData) return { title: "Tour not found" };
   const tour = localizeTour(tourData, locale);
+  const siteTail = (await getTranslations({ locale, namespace: "meta" }))("siteTail");
+  const description = metaDescription(tour.description, siteTail);
   return {
     title: tour.title,
-    description: tour.description,
-    openGraph: { title: tour.title, description: tour.description, images: [{ url: tour.image }] },
-    twitter: { title: tour.title, description: tour.description, images: [{ url: tour.image }] },
+    description,
+    openGraph: { title: tour.title, description, images: [{ url: tour.image }] },
+    twitter: { title: tour.title, description, images: [{ url: tour.image }] },
   };
 }
 

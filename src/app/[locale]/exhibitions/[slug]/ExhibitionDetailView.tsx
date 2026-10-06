@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -27,6 +28,7 @@ const WHO_SHOULD_ATTEND_KEYS = [
 
 export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null }) {
   const t = useTranslations("exhibitionDetail");
+  const tb = useTranslations("breadcrumbs");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   if (!expo) {
@@ -54,6 +56,7 @@ export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null
       {/* Title header — plain text, never overlaps the poster */}
       <section className="bg-[var(--color-hero-bg)] py-8 md:py-10">
         <div className="mx-auto max-w-7xl px-6">
+          <Breadcrumbs homeLabel={tb("home")} items={[{ name: tb("exhibitions"), href: "/exhibitions" }, { name: expo.title }]} />
           <div className="flex flex-wrap gap-2 mb-4">
             <Badge tone="outline-light" size="pill">{expo.industry}</Badge>
             <Badge tone="outline-light" size="pill">{expo.city}, {expo.country}</Badge>

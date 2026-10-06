@@ -109,7 +109,9 @@
     "noResultsTitle": "未找到相关展会",
     "noResultsSubtitle": "请尝试调整筛选条件以查找活动。",
     "planMyTrip": "规划我的行程",
-    "register": "报名"
+    "register": "报名",
+    "pastArchiveTitle": "往期展会",
+    "pastArchiveSubtitle": "浏览已经举办过的展会。"
   },
   "toursPage": {
     "title": "旅游",
@@ -2228,7 +2230,8 @@
       "exhibition-reviews": "展会点评"
     },
     "writtenBy": "作者",
-    "faqTitle": "常见问题解答"
+    "faqTitle": "常见问题解答",
+    "editorialTeam": "The Unique Expo 编辑团队"
   },
   "adminBlogCrud": {
     "loadFailed": "加载文章失败",
@@ -2394,7 +2397,9 @@
     "whatsapp": "WhatsApp 号码",
     "whatsappHint": "包含国家代码的完整国际号码。填写后,所有公开页面都会显示绿色的 WhatsApp 聊天按钮;留空则隐藏。",
     "googleAnalyticsId": "Google Analytics ID",
-    "googleAnalyticsIdHint": "您的 GA4 衡量 ID(以 G- 开头)。填写后将在公开页面收集访客统计;留空则关闭分析。"
+    "googleAnalyticsIdHint": "您的 GA4 衡量 ID(以 G- 开头)。填写后将在公开页面收集访客统计;留空则关闭分析。",
+    "googleSiteVerification": "Google Search Console 验证码",
+    "googleSiteVerificationHint": "来自 Search Console →添加资源→网址前缀→“HTML 标记”的代码。可粘贴整个 <meta> 标签,或只粘贴 content 的值。若用其他方式验证,请留空。"
   },
   "adminFaq": {
     "title": "常见问题管理",
@@ -3345,5 +3350,33 @@
     "noResultsSubtitle": "通过网站页脚提交的邮箱将显示在此处。",
     "language": "语言",
     "downloadCsv": "下载 CSV"
+  },
+  "breadcrumbs": {
+    "home": "首页",
+    "exhibitions": "展会",
+    "tours": "旅行团",
+    "blog": "博客",
+    "directory": "名录"
+  },
+  "visaApplyPage": {
+    "title": "申请:{name}",
+    "subtitle": "请简要介绍您自己和您的需求。我们的团队会联系您确认细节和后续步骤。",
+    "loginRequired": "请先登录后再提交申请。",
+    "logIn": "登录",
+    "fullName": "姓名",
+    "email": "邮箱",
+    "phone": "电话 / WhatsApp",
+    "company": "公司(选填)",
+    "nationality": "国籍(选填)",
+    "details": "您需要哪方面的帮助?",
+    "detailsPlaceholder": "例如:公司类型、签证类型、计划出行日期",
+    "submit": "提交申请",
+    "submitting": "提交中...",
+    "submissionFailed": "提交失败",
+    "successTitle": "已收到您的申请",
+    "successText": "谢谢!我们已收到您关于「{name}」的申请,会尽快与您联系。",
+    "backToServices": "← 返回签证与公司注册",
+    "unknownService": "未找到该服务",
+    "unknownServiceHint": "请在签证与公司注册页面选择服务。"
   }
 }

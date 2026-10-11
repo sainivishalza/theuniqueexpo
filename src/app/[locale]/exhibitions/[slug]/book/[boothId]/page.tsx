@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { useState, useMemo, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { initBooths, bookBooth } from "@/lib/booths";
 import { useAuth } from "@/lib/auth-context";
 import { formatNumber, formatCurrency } from "@/lib/format";
@@ -13,6 +13,7 @@ interface Exhibition { id: string; slug: string; title: string; }
 
 export default function BookBoothPage() {
   const t = useTranslations("bookBoothPage");
+  const locale = useLocale();
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
@@ -24,7 +25,7 @@ export default function BookBoothPage() {
 
   useEffect(() => {
     if (!slug) return;
-    fetch(`/api/exhibitions/${slug}`)
+    fetch(`/api/exhibitions/${slug}?locale=${locale}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => setExpo(data.exhibition))
       .catch(() => setExpo(null));

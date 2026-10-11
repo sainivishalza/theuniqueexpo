@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 import { getFaqItems } from "@/lib/server/faq-content-repo";
+import { translateContent } from "@/lib/server/content-translations";
 import { listTeamMembers } from "@/lib/server/team-members-repo";
 import { listSlideshowPhotos } from "@/lib/server/homepage-slideshow-repo";
 import HomepageSlideshow from "@/components/HomepageSlideshow";
@@ -40,13 +41,14 @@ export default async function Home() {
   // getFaqItems() doesn't depend on locale/translations, so it doesn't need
   // to wait behind them -- exhibitions still has to wait for locale to
   // resolve first since it's an input to the query.
-  const [t, locale, faqItems, teamMembers, slideshowPhotos] = await Promise.all([
+  const [t, locale, faqItemsEnglish, teamMembers, slideshowPhotos] = await Promise.all([
     getTranslations("home"),
     getLocale(),
     getFaqItems(),
     listTeamMembers(),
     listSlideshowPhotos(),
   ]);
+  const faqItems = translateContent(faqItemsEnglish, locale);
   const exhibitions = await listExhibitions(locale);
   // listExhibitions returns every exhibition (past and future) sorted
   // oldest-first, so the homepage needs its own "upcoming" filter --

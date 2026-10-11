@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { getChinaTravelContent } from "@/lib/server/china-travel-content-repo";
+import { translateContent } from "@/lib/server/content-translations";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
@@ -13,7 +14,7 @@ export default async function ChinaTravelPage({
   searchParams: Promise<{ exhibitionSlug?: string }>;
 }) {
   const t = await getTranslations("chinaTravelPage");
-  const content = await getChinaTravelContent();
+  const content = translateContent(await getChinaTravelContent(), await getLocale());
   const { exhibitionSlug } = await searchParams;
   const contextQuery = exhibitionSlug ? `?exhibitionSlug=${encodeURIComponent(exhibitionSlug)}` : "";
 

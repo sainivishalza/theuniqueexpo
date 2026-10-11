@@ -1,6 +1,6 @@
 "use client";
 import { use, useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage, isAbortError } from "@/lib/format";
@@ -29,6 +29,7 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs = 6
 
 export default function TourRegisterPage({ params }: { params: Promise<{ slug: string }> }) {
   const t = useTranslations("tourRegisterPage");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const { slug } = use(params);
   const { user, loading: authLoading, setUser } = useAuth();
@@ -44,7 +45,7 @@ export default function TourRegisterPage({ params }: { params: Promise<{ slug: s
   const [customFileErrors, setCustomFileErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    fetch(`/api/tours/${slug}`)
+    fetch(`/api/tours/${slug}?locale=${locale}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => setTour(data.tour))
       .catch(() => setTour(null));

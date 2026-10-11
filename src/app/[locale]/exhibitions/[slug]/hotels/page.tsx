@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
@@ -30,6 +30,7 @@ const hotelImages = [
 
 export default function HotelsPage() {
   const t = useTranslations("hotelsPage");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const params = useParams();
   const slug = typeof params.slug === "string" ? params.slug : "";
@@ -46,7 +47,7 @@ export default function HotelsPage() {
 
   useEffect(() => {
     if (!slug) return;
-    fetch(`/api/exhibitions/${slug}`)
+    fetch(`/api/exhibitions/${slug}?locale=${locale}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => setExpo(data.exhibition))
       .catch(() => setExpo(null));

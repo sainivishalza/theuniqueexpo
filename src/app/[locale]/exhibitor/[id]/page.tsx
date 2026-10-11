@@ -2,10 +2,11 @@
 
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Link } from "@/i18n/navigation";
-import { mockExhibitorProfiles } from "@/lib/booths";
+import { mockExhibitorProfiles as mockExhibitorProfilesEnglish } from "@/lib/booths";
+import { translateClientContent } from "@/lib/client-content-translations";
 import ReviewsSection from "@/components/ReviewsSection";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -24,6 +25,7 @@ const avatarColors = [
 
 export default function ExhibitorProfilePage() {
   const t = useTranslations("exhibitorProfilePage");
+  const mockExhibitorProfiles = translateClientContent(mockExhibitorProfilesEnglish, useLocale());
   const tb = useTranslations("breadcrumbs");
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "";

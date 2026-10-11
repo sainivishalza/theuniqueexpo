@@ -3,6 +3,7 @@ import pool from "@/lib/db";
 import { toDateOnlyString, formatDateRange, safeParseArray, safeParseJson, slugLookupValues } from "@/lib/server/db-helpers";
 import { DEFAULT_TOUR_REGISTRATION_FIELDS } from "@/lib/default-tour-registration-form";
 import type { CustomFormSchema } from "@/lib/custom-registration-form";
+import { translateString } from "@/lib/server/content-translations";
 
 export interface TourInput {
   slug: string;
@@ -47,13 +48,13 @@ export function mapTourRow(row: RowDataPacket, locale?: string) {
   return {
     id: String(row.id),
     slug: row.slug,
-    title: row.title,
+    title: translateString(row.title, locale),
     dates: formatDateRange(row.start_date, row.end_date),
     startDate: toDateOnlyString(row.start_date),
     endDate: toDateOnlyString(row.end_date),
-    duration: row.duration ?? "",
-    departureCity: row.departure_city ?? "",
-    destination: row.destination ?? "",
+    duration: translateString(row.duration ?? "", locale),
+    departureCity: translateString(row.departure_city ?? "", locale),
+    destination: translateString(row.destination ?? "", locale),
     description: description ?? "",
     highlights,
     descriptionRu,

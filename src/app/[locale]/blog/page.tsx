@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { translateContent } from "@/lib/server/content-translations";
 import { Link } from "@/i18n/navigation";
 import { listPublishedPosts, type BlogCategory } from "@/lib/server/blog-repo";
 import Card from "@/components/ui/Card";
@@ -26,7 +27,7 @@ export default async function BlogPage({
   const t = await getTranslations("blogPage");
   const { category: categoryParam } = await searchParams;
   const category = CATEGORIES.includes(categoryParam as BlogCategory) ? (categoryParam as BlogCategory) : undefined;
-  const posts = await listPublishedPosts(category);
+  const posts = translateContent(await listPublishedPosts(category), await getLocale());
 
   return (
     <div>

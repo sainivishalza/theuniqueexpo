@@ -1,12 +1,14 @@
 "use client";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { visaServices } from "@/lib/visa-setup";
+import { translateClientContent } from "@/lib/client-content-translations";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 
 export default function VisaSetupPage() {
   const t = useTranslations("visaSetupPage");
+  const services = translateClientContent(visaServices, useLocale());
   return (
     <div>
       <section className="relative overflow-hidden bg-[var(--color-hero-bg)] py-20">
@@ -21,7 +23,7 @@ export default function VisaSetupPage() {
       </section>
       <section className="py-16 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 space-y-12">
-          {visaServices.map((svc) => (
+          {services.map((svc) => (
             <Card key={svc.id} shadow="sm" bordered={false}>
               <div className="grid md:grid-cols-2 gap-0">
                 <div className="relative h-64 md:h-auto">

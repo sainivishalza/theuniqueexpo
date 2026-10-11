@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { initBooths, type Booth } from "@/lib/booths";
 import { useAuth } from "@/lib/auth-context";
 import { formatNumber, formatCurrency } from "@/lib/format";
@@ -27,6 +27,7 @@ const SIZE_PRICES: Record<string, string> = {
 
 export default function FloorPlanPage() {
   const t = useTranslations("floorPlanPage");
+  const locale = useLocale();
   const SIZE_LABELS: Record<string, { label: string; price: string }> = {
     platinum: { label: t("sizes.platinum"), price: SIZE_PRICES.platinum },
     gold: { label: t("sizes.gold"), price: SIZE_PRICES.gold },
@@ -40,7 +41,7 @@ export default function FloorPlanPage() {
 
   useEffect(() => {
     if (!slug) return;
-    fetch(`/api/exhibitions/${slug}`)
+    fetch(`/api/exhibitions/${slug}?locale=${locale}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => setExpo(data.exhibition))
       .catch(() => setExpo(null));

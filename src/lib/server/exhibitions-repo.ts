@@ -2,6 +2,7 @@ import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
 import { toDateOnlyString, formatDateRange, safeParseArray, safeParseJson, slugLookupValues } from "@/lib/server/db-helpers";
 import type { CustomFormSchema } from "@/lib/custom-registration-form";
+import { translateString } from "@/lib/server/content-translations";
 
 export interface ExhibitionInput {
   slug: string;
@@ -48,14 +49,17 @@ export function mapExhibitionRow(row: RowDataPacket, locale?: string) {
   return {
     id: String(row.id),
     slug: row.slug,
-    title: row.title,
+    // Names, venues, cities and industries are entered once in English; the
+    // Russian/Chinese versions come from the content catalog (admin screens
+    // call this without a locale and always see the English originals).
+    title: translateString(row.title, locale),
     dates: formatDateRange(row.start_date, row.end_date),
     startDate: toDateOnlyString(row.start_date),
     endDate: toDateOnlyString(row.end_date),
-    venue: row.venue ?? "",
-    city: row.city ?? "",
-    country: row.country ?? "",
-    industry: row.industry ?? "",
+    venue: translateString(row.venue ?? "", locale),
+    city: translateString(row.city ?? "", locale),
+    country: translateString(row.country ?? "", locale),
+    industry: translateString(row.industry ?? "", locale),
     description: description ?? "",
     highlights,
     descriptionRu,

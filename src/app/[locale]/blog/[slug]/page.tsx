@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { translateContent } from "@/lib/server/content-translations";
 import { Link } from "@/i18n/navigation";
 import { renderMarkdown } from "@/lib/markdown";
 import { getPublishedPostBySlug } from "@/lib/server/blog-repo";
@@ -21,7 +22,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { slug, locale } = await params;
-  const post = await getPublishedPostBySlug(slug);
+  const post = translateContent(await getPublishedPostBySlug(slug), locale);
   if (!post) return { title: "Post not found" };
   const description = metaDescription(post.excerpt, post.title);
   const images = [{ url: post.coverImage || defaultOgImage(locale) }];
@@ -47,7 +48,7 @@ export default async function BlogPostPage({
   const { slug, locale } = await params;
   const t = await getTranslations("blogPostPage");
   const tb = await getTranslations("breadcrumbs");
-  const post = await getPublishedPostBySlug(slug);
+  const post = translateContent(await getPublishedPostBySlug(slug), locale);
   const aboutTagline = post && !post.authorName ? (await getAboutContent(locale)).tagline : "";
 
   if (!post) {

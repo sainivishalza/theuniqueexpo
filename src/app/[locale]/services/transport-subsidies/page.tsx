@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { subsidies, getOpenSubsidies } from "@/lib/subsidies";
+import { translateClientContent } from "@/lib/client-content-translations";
 import { errorMessage } from "@/lib/format";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
@@ -14,6 +15,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export default function SubsidiesPage() {
   const t = useTranslations("transportSubsidiesPage");
   const tv = useTranslations("formValidation");
+  const locale = useLocale();
+  const localizedSubsidies = translateClientContent(subsidies, locale);
   const openSubsidies = getOpenSubsidies();
   const [openFormId, setOpenFormId] = useState<string | null>(null);
   const [submittedIds, setSubmittedIds] = useState<string[]>([]);
@@ -71,7 +74,7 @@ export default function SubsidiesPage() {
       </section>
       <section className="py-16 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 space-y-8">
-          {subsidies.map((sub) => {
+          {localizedSubsidies.map((sub) => {
             const isOpen = sub.status !== "closed";
             const isSubmitted = submittedIds.includes(sub.id);
             const isFormOpen = openFormId === sub.id;

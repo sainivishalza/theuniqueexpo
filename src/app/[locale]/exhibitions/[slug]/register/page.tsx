@@ -1,6 +1,6 @@
 "use client";
 import { use, useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage, isAbortError } from "@/lib/format";
@@ -69,6 +69,7 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs = 6
 export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const t = useTranslations("expoRegisterPage");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const DOCUMENT_FIELDS = DOCUMENT_FIELD_KEYS.map((d) => ({ ...d, label: t(`documents.${d.labelKey}`) }));
   const { user, loading: authLoading, setUser } = useAuth();
@@ -88,7 +89,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
   const [customFileErrors, setCustomFileErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    fetch(`/api/exhibitions/${slug}`)
+    fetch(`/api/exhibitions/${slug}?locale=${locale}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => setExpo(data.exhibition))
       .catch(() => setExpo(null));

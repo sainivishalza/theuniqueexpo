@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
-import { mockExhibitorProfiles } from "@/lib/booths";
+import { useTranslations, useLocale } from "next-intl";
+import { mockExhibitorProfiles as mockExhibitorProfilesEnglish } from "@/lib/booths";
+import { translateClientContent } from "@/lib/client-content-translations";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 
@@ -25,6 +26,8 @@ const avatarColors = [
 
 export default function DirectoryPage() {
   const t = useTranslations("directoryPage");
+  const locale = useLocale();
+  const mockExhibitorProfiles = useMemo(() => translateClientContent(mockExhibitorProfilesEnglish, locale), [locale]);
   const [search, setSearch] = useState("");
   const [industry, setIndustry] = useState("");
   const [reviewSummaries, setReviewSummaries] = useState<Record<string, ReviewSummary>>({});

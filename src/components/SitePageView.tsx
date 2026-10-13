@@ -32,18 +32,18 @@ export default function SitePageView({ content }: { content: SitePageContent }) 
               {hasContactBlock && (
                 <div className={`grid gap-4 sm:grid-cols-2 ${bodyParagraphs.length > 0 ? "mt-6 pt-6 border-t border-gray-100" : ""}`}>
                   {content.contactEmail && (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
                       <div className="w-10 h-10 rounded-[var(--radius-icon-sm)] gradient-brand flex items-center justify-center text-white text-sm flex-shrink-0">✉</div>
-                      <div>
+                      <div className="min-w-0 [overflow-wrap:anywhere]">
                         <div className="text-xs text-gray-400">{t("email")}</div>
                         <a href={`mailto:${content.contactEmail}`} className="text-sm font-semibold text-gray-900 hover:text-emerald-600">{content.contactEmail}</a>
                       </div>
                     </div>
                   )}
                   {content.contactPhone && (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
                       <div className="w-10 h-10 rounded-[var(--radius-icon-sm)] gradient-brand flex items-center justify-center text-white text-sm flex-shrink-0">☎</div>
-                      <div>
+                      <div className="min-w-0 [overflow-wrap:anywhere]">
                         <div className="text-xs text-gray-400">{t("phone")}</div>
                         <a href={telHref(content.contactPhone)} className="text-sm font-semibold text-gray-900 hover:text-emerald-600">{content.contactPhone}</a>
                       </div>

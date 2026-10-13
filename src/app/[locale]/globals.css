@@ -228,3 +228,17 @@
     font-size: 16px;
   }
 }
+
+/* A <select> is as wide as its longest option, so a filter with long labels
+   (Russian industry/city names) pushed the whole page sideways on phones. */
+select {
+  max-width: 100%;
+}
+
+/* Long words in headings (Russian compounds such as "конфиденциальности") are
+   wider than a 320px phone at heading size: hyphenate them, and break them as a
+   last resort instead of pushing the page sideways. */
+h1, h2, h3, h4 {
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}

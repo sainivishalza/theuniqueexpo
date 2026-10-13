@@ -50,7 +50,7 @@ export const industryImages: Record<string, { hero: string; icon: string }> = {
     icon: "🏨",
   },
   Lighting: {
-    hero: "https://images.unsplash.com/photo-1507473885765-e6ed057ab6fe?w=1200&h=600&fit=crop&q=80",
+    hero: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=600&fit=crop&q=80",
     icon: "💡",
   },
   "Toys & Gifts": {
@@ -105,7 +105,7 @@ export const exhibitionHeroImages: Record<string, string> = {
   "taizhou-plastics-molding-2026":
     "https://images.unsplash.com/photo-1565043666747-69f6646db940?w=1400&h=700&fit=crop&q=80",
   "26th-china-anping-wire-mesh-fair-2026":
-    "https://images.unsplash.com/photo-1537462715315-f7b8d565af09?w=1400&h=700&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1565043666747-69f6646db940?w=1400&h=700&fit=crop&q=80",
   "31st-macao-mif-2026":
     "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1400&h=700&fit=crop&q=80",
   // December

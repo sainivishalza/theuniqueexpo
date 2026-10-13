@@ -72,17 +72,17 @@ export default function Footer({
             {t("brandBlurb")}
           </p>
           {(companyProfile.contactEmail || companyProfile.phone) && (
-            <ul className="mt-4 space-y-1.5 text-sm text-gray-400">
+            <ul className="mt-4 text-sm text-gray-400">
               {companyProfile.contactEmail && (
                 <li>
-                  <a href={`mailto:${companyProfile.contactEmail}`} className="hover:text-white transition-colors break-all">
+                  <a href={`mailto:${companyProfile.contactEmail}`} className="inline-block py-1.5 hover:text-white transition-colors break-all">
                     {companyProfile.contactEmail}
                   </a>
                 </li>
               )}
               {companyProfile.phone && telHref(companyProfile.phone) && (
                 <li>
-                  <a href={telHref(companyProfile.phone)} className="hover:text-white transition-colors">
+                  <a href={telHref(companyProfile.phone)} className="inline-block py-1.5 hover:text-white transition-colors">
                     {companyProfile.phone}
                   </a>
                 </li>
@@ -112,10 +112,10 @@ export default function Footer({
         {Object.entries(footerLinks).map(([title, links]) => (
           <div key={title}>
             <h4 className="text-sm font-bold text-white mb-4">{title}</h4>
-            <ul className="space-y-2.5">
+            <ul>
               {links.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
+                  <Link href={link.href} className="inline-block py-1.5 text-sm text-gray-400 hover:text-white transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -130,11 +130,11 @@ export default function Footer({
         <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-400">
           <span>{t("copyright", { year: new Date().getFullYear() })}</span>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
-            <Link href="/privacy" className="hover:text-white transition-colors">{t("privacyPolicy")}</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">{t("termsOfService")}</Link>
-            <Link href="/cookies" className="hover:text-white transition-colors">{t("cookiePolicy")}</Link>
+            <Link href="/privacy" className="inline-block py-1.5 hover:text-white transition-colors">{t("privacyPolicy")}</Link>
+            <Link href="/terms" className="inline-block py-1.5 hover:text-white transition-colors">{t("termsOfService")}</Link>
+            <Link href="/cookies" className="inline-block py-1.5 hover:text-white transition-colors">{t("cookiePolicy")}</Link>
             {analyticsEnabled && (
-              <button type="button" onClick={openCookieSettings} className="hover:text-white transition-colors">
+              <button type="button" onClick={openCookieSettings} className="py-1.5 hover:text-white transition-colors">
                 {t("cookieSettings")}
               </button>
             )}

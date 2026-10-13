@@ -66,7 +66,7 @@ export default function ExhibitorProfilePage() {
       {/* Profile header */}
       <section className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-5xl px-6 -mt-12 relative z-10">
-          <div className="flex items-end gap-4 sm:gap-6">
+          <div className="flex flex-col items-start gap-3 pb-4 sm:flex-row sm:items-end sm:gap-6 sm:pb-0">
             <div className={`w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-[var(--radius-icon-lg)] bg-gradient-to-br ${avatarColors[colorIndex]} flex items-center justify-center text-white text-3xl font-bold border-4 border-white`}>
               {profile.name[0]}
             </div>

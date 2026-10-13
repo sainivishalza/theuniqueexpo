@@ -145,15 +145,17 @@ export default function HomepageSlideshow({ photos }: { photos: SlideshowPhoto[]
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             </button>
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 z-20 flex">
               {photos.map((photo, i) => (
                 <button
                   key={photo.id}
                   type="button"
                   onClick={() => goTo(i, true)}
                   aria-label={t("goToSlide", { number: i + 1 })}
-                  className={`h-2 rounded-full transition-all ${i === index ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
-                />
+                  className="group flex h-6 items-center justify-center px-1"
+                >
+                  <span className={`block h-2 rounded-full transition-all ${i === index ? "w-6 bg-white" : "w-2 bg-white/50 group-hover:bg-white/80"}`} />
+                </button>
               ))}
             </div>
           </>

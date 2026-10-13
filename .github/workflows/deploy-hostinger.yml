@@ -2,6 +2,11 @@ name: Deploy to Hostinger
 
 # Manually triggered only — this never runs automatically on push,
 # so a deploy always requires someone to click "Run workflow".
+#
+# What it does: backs up the database and applies the SQL migrations on the
+# Hostinger server (scripts/hostinger-deploy-remote.sh). It does NOT build or
+# restart the website -- Hostinger builds and serves the site itself from the
+# `main` branch (hPanel -> Websites -> theuniqueexpo.com -> Node.js).
 on:
   workflow_dispatch:
     inputs:
@@ -35,15 +40,12 @@ jobs:
           DEPLOY_REF: ${{ github.event.inputs.ref }}
         run: |
           set -euo pipefail
-          # ServerAliveInterval/CountMax: the deploy step runs the whole
-          # remote script (including `next build`, which can go several
-          # minutes with zero output during webpack compilation) over one
-          # SSH session -- without a keepalive, an idle-connection timeout
-          # on the path to Hostinger can silently kill it mid-build
-          # ("Broken pipe", exit 255) even though the remote process is
-          # still running fine. A probe every 30s for up to 5 minutes of
-          # missed responses is generous enough to ride out that without
-          # masking an actually-dead connection.
+          # ServerAliveInterval/CountMax: keep the SSH session alive through
+          # quiet stretches (the database dump and slow migrations print
+          # nothing for a while) so an idle-connection timeout on the path
+          # to Hostinger can't silently kill the deploy ("Broken pipe",
+          # exit 255). A probe every 30s for up to 5 minutes of missed
+          # responses rides that out without masking a dead connection.
           SSH="sshpass -e ssh -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -p $SSH_PORT $SSH_USER@$SSH_HOST"
 
           echo "==> Locating the app directory on the server..."

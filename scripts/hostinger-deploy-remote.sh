@@ -5,6 +5,19 @@
 #
 # $1 = app directory on the server (e.g. /home/u428186913/theuniqueexpo)
 # $2 = git branch/ref to deploy
+#
+# WHAT THIS DOES -- AND DELIBERATELY DOES NOT DO
+# The live site is built and served by Hostinger itself from the `main`
+# branch (hPanel -> Websites -> theuniqueexpo.com -> Node.js -> Deployments).
+# This script used to ALSO run its own `npm install` + `next build` + a PM2
+# copy of the app on port 3000. That copy never served production (port 3000
+# was always already taken: EADDRINUSE), but the extra build competed with
+# Hostinger's own build for this shared account's CPU and process quota, it
+# `pkill`-ed any "next build" on the account (including Hostinger's own), and
+# on 2026-10-11 the live site stopped answering for ~25 minutes while both
+# were running. So now this job only does what Hostinger's build cannot:
+# back up the database and apply the SQL migrations in schema-migrations/.
+# Application code reaches production through Hostinger's own build.
 set -euo pipefail
 
 APP_DIR="$1"
@@ -12,252 +25,8 @@ DEPLOY_REF="$2"
 
 cd "$APP_DIR"
 
-# A non-interactive SSH command doesn't source .bashrc/.profile, so
-# nvm-installed node/npm/pm2 aren't on PATH by default. Sourcing nvm.sh
-# itself forks many subprocesses for its internal version-resolution
-# logic -- on this resource-constrained shared host, with the app stuck
-# in a PM2 crash-restart loop eating the account's process/fork quota,
-# even that sourcing started failing outright ("fork: retry: Resource
-# temporarily unavailable"), blocking several deploy attempts before
-# they could do anything at all. Skip nvm.sh's machinery entirely and
-# just put its bin directory straight on PATH -- one glob expansion and
-# a no-fork [ -x ] test, nothing else forked.
-for _nvm_bin_dir in "$HOME"/.nvm/versions/node/*/bin; do
-  if [ -x "$_nvm_bin_dir/node" ]; then
-    export PATH="$_nvm_bin_dir:$PATH"
-    break
-  fi
-done
-
-if ! command -v npm >/dev/null 2>&1; then
-  echo "npm still not found after searching \$HOME/.nvm/versions/node/*/bin. Is Node installed another way (not nvm)?" >&2
-  exit 1
-fi
-
-# If the app currently running under PM2 crash-looped (e.g. it failed to
-# start after the last deploy), PM2 forks a fresh Node process every time
-# it dies -- on this host that alone can exhaust the account's process
-# quota and starve every *other* command, including this script's own
-# migrations and build, of the forks they need. Stop it before anything
-# else so this deploy actually gets a chance to run.
-echo "--- stopping any existing app process before deploying (in case it's crash-looping) ---"
-pm2 stop theuniqueexpo 2>&1 || true
-
-# Several previous deploy attempts had their `next build` worker abort
-# (SIGABRT) or hit "fork: retry: Resource temporarily unavailable" --
-# confirmed NOT a real memory shortage (host has 500GB+ RAM, mostly free)
-# but the account's own process/fork quota. Leftover build-worker
-# processes from those aborted attempts don't always get reaped and sit
-# there still counting against that quota. Clean them up before trying
-# again.
-echo "--- cleaning up any stray build-worker processes from previous attempts ---"
-pkill -u "$(id -un)" -f "next build" 2>/dev/null || true
-pkill -u "$(id -un)" -f "jest-worker" 2>/dev/null || true
-
-# Diagnostics up front, before anything else touches the DB or rebuilds --
-# the last few deploys broke in different ways (runtime 500s after a clean
-# build, then the build itself aborting/core-dumping) even though the app
-# source was unchanged between some of those attempts, pointing at host
-# resource pressure rather than a code bug. Capture the currently-running
-# process's state and the currently-running app's own error log (from
-# whatever the *previous* deploy left running) before this run does
-# anything that could itself add more pressure.
-echo "--- host memory ---"
-free -h 2>&1 || true
 echo "--- disk space ---"
 df -h "$HOME" 2>&1 || true
-echo "--- account process/fork limits (ulimit) ---"
-ulimit -a 2>&1 || true
-echo "--- current process count for this account ---"
-ps -u "$(id -un)" --no-headers 2>/dev/null | wc -l || true
-echo "--- pm2 process list ---"
-pm2 list 2>&1 || true
-echo "--- currently-running app's pm2 error log tail ---"
-PM2_ERR_LOG=$(pm2 jlist 2>/dev/null | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const a=JSON.parse(d);const p=a.find(x=>x.name==='theuniqueexpo');console.log(p&&p.pm2_env&&p.pm2_env.pm_err_log_path||'');}catch(e){console.log('');}})" 2>/dev/null || true)
-if [ -n "$PM2_ERR_LOG" ] && [ -f "$PM2_ERR_LOG" ]; then
-  tail -n 100 "$PM2_ERR_LOG" 2>&1 || true
-else
-  echo "(could not resolve pm2 error log path; falling back to default location)"
-  tail -n 100 ~/.pm2/logs/theuniqueexpo-error.log 2>&1 || true
-fi
-
-# Hostinger's real production serving mechanism is Passenger/hbuilds, which
-# builds from `main` on its own (webhook-driven) independently of this
-# script's own SSH-driven build+PM2 restart below.
-#
-# hbuilds' checkout at hbuilds/source/repository has no persistent .git --
-# it's rebuilt from scratch on every build -- so it used to have no
-# .env.local either, and every prerender of a DB-backed page failed with
-# ER_ACCESS_DENIED_ERROR. This was previously "fixed" with a pm2-managed
-# loop that re-copied .env.local into hbuilds' checkout every 2 seconds,
-# which narrowed the race but could never close it (hbuilds could wipe the
-# directory at literally any instant, including mid-build).
-#
-# Properly fixed now: DB_HOST/DB_USER/DB_PASSWORD/DB_NAME/DB_SOCKET/
-# JWT_SECRET are set as persistent Node.js environment variables directly
-# in hPanel (Websites -> theuniqueexpo.com -> Node.js app -> Environment
-# variables), which survive every checkout wipe since they're not a file
-# under source/repository at all. Confirmed working (DB-backed pages and
-# login both succeed on the live site). The old refresher pm2 process is
-# stopped below as one-time cleanup -- this line is itself safe to remove
-# once it's run against every server that ever had it.
-pm2 delete hbuilds-env-refresh 2>/dev/null || true
-HBUILDS=~/domains/theuniqueexpo.com/hbuilds
-if [ -f "$APP_DIR/.env.local" ]; then
-  # hbuilds' actual serving workers (Passenger-managed next-server processes)
-  # can live for a long time across many rebuilds without a full restart --
-  # a build-time-only DB pool created once and never recycled can end up
-  # with stale/exhausted MySQL connections (or the env value it captured
-  # before an hPanel edit), causing exactly the kind of runtime-only 500 we
-  # saw on /api/exhibitions even though the process's env vars are present
-  # and correct. Ask Passenger for a graceful restart on every deploy via
-  # its own documented mechanism (touching tmp/restart.txt in the app root)
-  # so those workers always start fresh, rather than sending signals to
-  # processes directly.
-  # Diagnostics showed the actual serving process's cwd is
-  # hbuilds/current/nodejs (a subdirectory of the version root), not the
-  # version root itself. touch-ing tmp/restart.txt at both candidate app
-  # roots didn't actually cause a restart (production kept serving stale
-  # responses across several redeploys), so Passenger here doesn't seem to
-  # be watching that convention. Use its own CLI restart command instead --
-  # the same kind of sanctioned "restart this managed app" operation as the
-  # pm2 restart already used above, just for the Passenger-managed side.
-  # A live diagnostics probe just proved every restart attempt here has
-  # been silently no-op-ing: this deploy's own log showed
-  # "passenger-config not found on PATH" -- a non-interactive SSH shell's
-  # default PATH doesn't include wherever this host installed it (a login
-  # shell's profile, which would set it up, is never sourced here), so
-  # every previous "Requested a Passenger app restart" log line was a lie
-  # -- command -v was failing and the touch-restart.txt fallback (which
-  # its own comment already doubted) is all that ever ran, and that
-  # doesn't appear to be honored either. Search common install locations
-  # directly instead of trusting PATH.
-  PASSENGER_CONFIG_BIN=""
-  for _pc_candidate in \
-    passenger-config \
-    /usr/sbin/passenger-config \
-    /usr/bin/passenger-config \
-    /usr/local/bin/passenger-config \
-    /opt/passenger/bin/passenger-config \
-    /opt/cloudlinux/venv/bin/passenger-config \
-    /usr/local/rvm/gems/*/bin/passenger-config \
-    /usr/local/rvm/wrappers/*/passenger-config \
-    "$HOME"/.rvm/gems/*/bin/passenger-config \
-    "$HOME"/.gem/ruby/*/bin/passenger-config \
-    /opt/alt/ruby*/bin/passenger-config \
-    /usr/share/passenger/bin/passenger-config
-  do
-    if command -v "$_pc_candidate" >/dev/null 2>&1; then
-      PASSENGER_CONFIG_BIN=$(command -v "$_pc_candidate")
-      break
-    fi
-  done
-  if [ -z "$PASSENGER_CONFIG_BIN" ]; then
-    # Still not found -- a bounded search (home dir + the usual system
-    # install roots, not a full / scan) so the *next* deploy's log has the
-    # real answer instead of another guessed candidate list.
-    echo "--- passenger-config not found via PATH or known candidates; searching for it (bounded) ---"
-    echo "PATH=$PATH"
-    FOUND_PC=$(timeout 15 find "$HOME" /usr /opt -maxdepth 7 -iname 'passenger-config' -type f 2>/dev/null | head -1 || true)
-    if [ -n "$FOUND_PC" ]; then
-      echo "Found via search: $FOUND_PC"
-      PASSENGER_CONFIG_BIN="$FOUND_PC"
-    else
-      echo "Not found by bounded search either."
-    fi
-  fi
-
-  if [ -n "$PASSENGER_CONFIG_BIN" ]; then
-    echo "Using passenger-config at: $PASSENGER_CONFIG_BIN"
-    echo "--- passenger-config shebang ---"
-    head -3 "$PASSENGER_CONFIG_BIN" 2>&1 || true
-    # Two dead ends already ruled out: (1) PATH tricks -- the shebang is
-    # the hardcoded absolute path "#!/usr/bin/ruby", not "/usr/bin/env
-    # ruby", so PATH can't change which interpreter runs it; (2) inherited
-    # env vars -- confirmed none of RUBYLIB/RUBYOPT/GEM_HOME/GEM_PATH/
-    # GEM_ROOT are even set, yet /usr/bin/ruby still can't load its own
-    # bundled rubygems.rb, meaning that system ruby is genuinely broken at
-    # the filesystem level (relocated/partial stdlib), not an env problem.
-    # /opt/alt/ruby21/bin/ruby was already confirmed working with rubygems
-    # in an earlier deploy -- bypass the shebang entirely and run
-    # passenger-config's own script through that interpreter directly.
-    WORKING_RUBY=""
-    for _ruby_candidate in /opt/alt/ruby*/bin/ruby /usr/local/rvm/rubies/*/bin/ruby "$HOME"/.rbenv/versions/*/bin/ruby; do
-      [ -x "$_ruby_candidate" ] || continue
-      if "$_ruby_candidate" -rrubygems -e '' >/dev/null 2>&1; then
-        WORKING_RUBY="$_ruby_candidate"
-        echo "Bypassing passenger-config's broken #!/usr/bin/ruby shebang -- running it via $WORKING_RUBY instead."
-        break
-      fi
-    done
-    # The real serving process's cwd is hbuilds/versions/<uuid>/nodejs -- a
-    # fresh UUID-named directory on every deploy, not the "current" symlink
-    # path. Passenger registers an app by its exact resolved path, so
-    # restart-app against the symlink itself wouldn't match the running
-    # instance either -- resolve it to the real versioned path first.
-    echo "--- resolving hbuilds 'current' symlink to the real versioned app path ---"
-    ls -la "$HBUILDS" 2>&1 || true
-    REAL_HBUILDS_ROOT=$(readlink -f "$HBUILDS/current" 2>/dev/null || true)
-    echo "Resolved: $REAL_HBUILDS_ROOT"
-
-    # passenger-config now actually runs (no more Ruby LoadError) but its
-    # own restart-app calls fail with a different, legitimate Passenger
-    # error: it can't find the running instance's registry directory --
-    # this bare SSH shell has none of the environment a real Apache/Nginx-
-    # spawned Passenger watchdog process would normally provide. Find that
-    # watchdog process directly and read its actual registry dir off its
-    # own command line instead of guessing.
-    echo "--- locating the running Passenger watchdog process to find its real instance registry dir ---"
-    ps -eo pid,args 2>/dev/null | grep -i '[P]assengerWatchdog' || echo "(no PassengerWatchdog process found in ps output)"
-    PASSENGER_REGISTRY_DIR=$(ps -eo args 2>/dev/null | grep -i '[P]assengerWatchdog' | grep -oE -- '--instance-registry-dir[= ][^ ]+' | sed -E 's/--instance-registry-dir[= ]//' | head -1 || true)
-    if [ -z "$PASSENGER_REGISTRY_DIR" ]; then
-      # Not passed as an explicit flag -- Passenger defaults to a
-      # per-instance directory under the system temp dir named after the
-      # watchdog's own PID, which isn't guessable, but a bounded search
-      # for its passenger.* marker directories often finds it.
-      PASSENGER_REGISTRY_DIR=$(timeout 10 find /tmp /var/run /run -maxdepth 2 -iname 'passenger.*' -type d 2>/dev/null | head -1 || true)
-    fi
-    if [ -n "$PASSENGER_REGISTRY_DIR" ]; then
-      echo "Found Passenger instance registry dir: $PASSENGER_REGISTRY_DIR"
-      export PASSENGER_INSTANCE_REGISTRY_DIR="$PASSENGER_REGISTRY_DIR"
-    else
-      echo "Could not determine the Passenger instance registry dir."
-    fi
-
-    run_passenger_config() {
-      if [ -n "$WORKING_RUBY" ]; then
-        "$WORKING_RUBY" "$PASSENGER_CONFIG_BIN" "$@" 2>&1 || true
-      else
-        "$PASSENGER_CONFIG_BIN" "$@" 2>&1 || true
-      fi
-    }
-
-    if [ -n "$REAL_HBUILDS_ROOT" ]; then
-      run_passenger_config restart-app "$REAL_HBUILDS_ROOT/nodejs"
-      run_passenger_config restart-app "$REAL_HBUILDS_ROOT"
-    fi
-    run_passenger_config restart-app "$HBUILDS/current/nodejs"
-    run_passenger_config restart-app "$HBUILDS/current"
-    echo "--- passenger-config listing all known app instances (to confirm the actual registered path) ---"
-    run_passenger_config list-instances
-    echo "Requested a Passenger app restart via passenger-config for both the resolved real path and both candidate app roots."
-  else
-    echo "(passenger-config could not be located anywhere)"
-  fi
-
-  # Also always touch restart.txt regardless of whether passenger-config
-  # itself succeeded above -- it's Passenger's own standard, dependency-
-  # free "reload this app on next request" convention (supported the same
-  # way across every Passenger integration mode), cheap to do unconditionally,
-  # and a real independent chance at working even if the registry-dir
-  # lookup above still didn't find the right value.
-  echo "--- also touching restart.txt at every candidate app root (Passenger's own zero-dependency restart convention) ---"
-  for _restart_root in "$REAL_HBUILDS_ROOT/nodejs" "$REAL_HBUILDS_ROOT" "$HBUILDS/current/nodejs" "$HBUILDS/current"; do
-    [ -n "$_restart_root" ] || continue
-    mkdir -p "$_restart_root/tmp" 2>/dev/null || true
-    touch "$_restart_root/tmp/restart.txt" 2>/dev/null || true
-  done
-fi
 
 # DB_HOST / DB_USER / DB_PASSWORD / DB_NAME come from the server's own
 # .env.local — they never pass through GitHub Actions or its secrets.
@@ -358,66 +127,12 @@ run_mysql schema-migrations/046-china-travel-content.sql
 run_mysql schema-migrations/047-buyer-profile-phone-number.sql
 run_mysql schema-migrations/049-newsletter-subscribers.sql
 
-echo "Installing dependencies and building ..."
-npm install
-# Next's incremental type-checking cache under .next/dev/types is not fully
-# invalidated by a route restructure (e.g. moving pages under a new
-# directory segment) -- it can keep referencing page paths that no longer
-# exist, failing the build's typecheck step with false "Cannot find module"
-# errors even though `tsc --noEmit` passes cleanly against the real source.
-# A stale .next from a previous deploy is never valid to keep; always
-# rebuild it from scratch.
-rm -rf .next
-# The host can't load Next's native SWC binary (GLIBC mismatch), so it falls
-# back to a WASM build using Rust's rayon thread pool, which by default also
-# sizes itself off the host's (misreported) CPU count and can hit the same
-# process/thread resource limit as experimental.cpus did. Cap it too.
-RAYON_NUM_THREADS=2 npm run build
+echo
+echo "Database backup and migrations finished."
+echo "This job does not build or restart the site: Hostinger builds and serves it from main."
+echo "Check the build status in hPanel -> Websites -> theuniqueexpo.com -> Node.js -> Deployments."
 
-echo "Restarting via PM2 ..."
-pm2 restart theuniqueexpo || pm2 start npm --name theuniqueexpo --cwd "$APP_DIR" -- start
-pm2 save
-
-echo "Checking the app responds (it may take a few seconds to finish booting) ..."
-APP_UP=0
-for i in 1 2 3 4 5 6 7 8 9 10; do
-  CODE=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/ || true)
-  if [ -n "$CODE" ] && [ "$CODE" != "000" ]; then
-    echo "HTTP $CODE"
-    APP_UP=1
-    break
-  fi
-  echo "  not up yet (attempt $i/10), waiting 3s..."
-  sleep 3
-done
-if [ "$APP_UP" != "1" ]; then
-  # Not fatal: the live site is served by Hostinger's own Passenger/hbuilds
-  # build of main (see above), not by this PM2 copy on :3000, so nothing
-  # answering here does not by itself mean production is down. Say so
-  # loudly and show the real public site's status instead.
-  echo "WARNING: nothing answered on http://localhost:3000/ after 10 attempts -- this PM2 copy did not come up." >&2
-  tail -n 40 "$HOME/.pm2/logs/theuniqueexpo-error.log" 2>/dev/null >&2 || true
-fi
+# Informational only (never fails the job): what the public site answers
+# right now. A new build can take several minutes to go live after a merge.
 echo "Public site check: https://theuniqueexpo.com/en -> HTTP $(curl -s -o /dev/null -m 20 -w '%{http_code}' https://theuniqueexpo.com/en || true)"
-
-echo "Origin-level check of the new registration routes (bypasses any CDN cache in front of the public domain):"
-echo "  /exhibitions/global-ocean-city-food-expo-2026/register -> $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/exhibitions/global-ocean-city-food-expo-2026/register)"
-echo "  /api/expo-registrations/me -> $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/expo-registrations/me)"
-echo "  /api/exhibitions -> $(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/exhibitions)"
-echo "  --- direct DB check: exhibitions row count ---"
-$MYSQL -e "SELECT COUNT(*) AS exhibitions_count FROM exhibitions;" 2>&1
-
-echo "--- pm2 error log tail (diagnosing a 500 above, if any) ---"
-# `pm2 logs --nostream` still attaches to the log bus over a non-interactive
-# SSH session on this host and never returns, hanging the whole deploy step
-# until the workflow times it out. Read the underlying log file directly
-# instead -- pm2's default location, non-interactive-safe.
-PM2_ERR_LOG=$(pm2 jlist 2>/dev/null | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const a=JSON.parse(d);const p=a.find(x=>x.name==='theuniqueexpo');console.log(p&&p.pm2_env&&p.pm2_env.pm_err_log_path||'');}catch(e){console.log('');}})" 2>/dev/null || true)
-if [ -n "$PM2_ERR_LOG" ] && [ -f "$PM2_ERR_LOG" ]; then
-  tail -n 150 "$PM2_ERR_LOG"
-else
-  echo "(could not resolve pm2 error log path; falling back to default location)"
-  tail -n 150 ~/.pm2/logs/theuniqueexpo-error.log 2>&1 || true
-fi
-
 echo "Backup saved at: $BACKUP_FILE (keep this until you've confirmed everything works)"

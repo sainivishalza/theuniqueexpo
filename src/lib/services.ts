@@ -57,7 +57,7 @@ export const serviceCategories: ServiceCategory[] = [
     titleKey: "visaSetup.title",
     icon: "📋",
     descriptionKey: "visaSetup.description",
-    image: "https://images.unsplash.com/photo-1450101499163-c8848e968838?w=800&h=500&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=800&h=500&fit=crop&q=80",
     featureKeys: [
       "visaSetup.features.0",
       "visaSetup.features.1",

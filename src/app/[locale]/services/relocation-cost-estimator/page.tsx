@@ -103,7 +103,7 @@ export default function RelocationCostEstimatorPage() {
     <div>
       <section className="relative overflow-hidden bg-[var(--color-hero-bg)] py-20">
         <div className="absolute inset-0 opacity-15">
-          <Image src="https://images.unsplash.com/photo-1601599963565-b7f49deb2c8e?w=1600&h=600&fit=crop&q=80" alt="" fill priority sizes="100vw" className="object-cover" />
+          <Image src="https://images.unsplash.com/photo-1600518464441-9154a4dea21b?w=1600&h=600&fit=crop&q=80" alt="" fill priority sizes="100vw" className="object-cover" />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
           <p className="text-emerald-300 font-semibold mb-2">{t("ourServices")}</p>
@@ -153,12 +153,12 @@ export default function RelocationCostEstimatorPage() {
                     <input id="name" type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
                   </FormField>
                   <FormField label={t("email")} htmlFor="email" error={fieldErrors.email}>
-                    <input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                    <input id="email" type="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
                   </FormField>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <FormField label={t("phone")} htmlFor="phone">
-                    <input id="phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={fieldClasses()} />
+                    <input id="phone" type="tel" autoComplete="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={fieldClasses()} />
                   </FormField>
                   <FormField label={t("company")} htmlFor="company">
                     <input id="company" type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={fieldClasses()} />

@@ -12,7 +12,6 @@ const SITE_URL = "https://theuniqueexpo.com";
 const STATIC_ROUTES = [
   "",
   "/exhibitions",
-  "/directory",
   "/tours",
   "/marketplace",
   "/about",

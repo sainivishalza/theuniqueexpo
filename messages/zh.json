@@ -249,7 +249,8 @@
   "common": {
     "redirecting": "正在跳转…",
     "comingSoon": "即将推出",
-    "somethingWentWrong": "出了点问题"
+    "somethingWentWrong": "出了点问题",
+    "skipToContent": "跳到主要内容"
   },
   "buyerDashboard": {
     "title": "买家控制台",
@@ -1295,9 +1296,9 @@
     "registerToAttend": "报名参观",
     "registerToAttendHint": "买家和观众需分别报名参加本展会。",
     "registerAsBuyerVisitor": "以买家/观众身份报名",
-    "bookYourBooth": "预订展位",
-    "bookYourBoothHint": "抢占本顶级展会的展位空间,展位价格从 $2,500 起。",
-    "viewFloorPlanAndBook": "查看平面图并预订",
+    "bookYourBooth": "参展本届展会",
+    "bookYourBoothHint": "想在本届展会预订展位？请联系我们的团队了解可用展位和价格。",
+    "viewFloorPlanAndBook": "咨询展位",
     "exhibitionEnded": "本展会已结束",
     "hotelsNearby": "附近酒店",
     "partnerHotels": "12 家合作酒店",
@@ -1322,7 +1323,8 @@
     "exhibitionDetails": "展会详情",
     "addChinaTravelTitle": "让您的中国之行更精彩",
     "addChinaTravelText": "您的展会参观不必只是两天的展会行程。将商务与旅行结合，在同一次旅程中探索更多中国。",
-    "addChinaTravel": "添加中国旅行"
+    "addChinaTravel": "添加中国旅行",
+    "shareByEmail": "通过电子邮件分享"
   },
   "expoRegisterPage": {
     "loading": "加载中...",
@@ -3330,7 +3332,15 @@
       "title": "旅游线路",
       "description": "中国及其他地区的导游旅行线路 — 告诉我们谁出行、喜欢什么,我们将为您定制行程。"
     },
-    "siteTail": "The Unique Expo — 中国 B2B 展会、考察团与采购支持。"
+    "siteTail": "The Unique Expo — 中国 B2B 展会、考察团与采购支持。",
+    "partnerProgram": {
+      "title": "合作伙伴计划",
+      "description": "成为 The Unique Expo 推荐合作伙伴，或申请认证/战略级别，服务在华采购商与参展商。"
+    },
+    "postBuyRequest": {
+      "title": "发布采购需求",
+      "description": "描述您想采购的产品，获取来自中国认证制造商和供应商的报价。"
+    }
   },
   "whatsappButton": {
     "label": "通过 WhatsApp 联系我们",
@@ -3378,5 +3388,22 @@
     "backToServices": "← 返回签证与公司注册",
     "unknownService": "未找到该服务",
     "unknownServiceHint": "请在签证与公司注册页面选择服务。"
+  },
+  "notFoundPage": {
+    "title": "页面未找到",
+    "heading": "找不到该页面",
+    "body": "该页面可能已移动，或链接有误。请尝试以下选项。",
+    "home": "返回首页",
+    "exhibitions": "浏览展会",
+    "contact": "联系我们",
+    "code": "错误 404"
+  },
+  "errorPage": {
+    "title": "出错了",
+    "heading": "出错了",
+    "body": "无法加载此页面。请重试——如果问题持续，请联系我们。",
+    "retry": "重试",
+    "home": "返回首页",
+    "code": "错误"
   }
 }

@@ -71,22 +71,6 @@ export function generateBooths(exhibitionId: string): Booth[] {
     }
   }
 
-  // Pre-book some booths for realism
-  const prebooked = [
-    { row: "A", col: 3, name: "Shenzhen Tech Co." },
-    { row: "B", col: 5, name: "Guangzhou Imports Ltd." },
-    { row: "C", col: 2, name: "Beijing Manufacturing" },
-    { row: "D", col: 7, name: "Shanghai Trading Group" },
-  ];
-
-  for (const pb of prebooked) {
-    const booth = booths.find((b) => b.row === pb.row && b.col === pb.col);
-    if (booth) {
-      booth.status = "booked";
-      booth.exhibitorName = pb.name;
-    }
-  }
-
   return booths;
 }
 
@@ -132,49 +116,7 @@ export function getBookingsForExhibitor(exhibitorId: string): BoothBooking[] {
   return mockBookings.filter((b) => b.exhibitorId === exhibitorId);
 }
 
-export const mockExhibitorProfiles: ExhibitorProfile[] = [
-  {
-    id: "ex-1",
-    name: "Shenzhen Tech Co.",
-    slug: "shenzhen-tech-co",
-    industry: "Electronics",
-    country: "China",
-    description:
-      "Leading manufacturer of consumer electronics, smart home devices, and IoT solutions. Serving global markets since 2010.",
-    products: ["Smart Speakers", "IoT Sensors", "LED Displays", "USB-C Hubs"],
-    certifications: ["ISO 9001", "CE", "FCC", "RoHS"],
-  },
-  {
-    id: "ex-2",
-    name: "Guangzhou Imports Ltd.",
-    slug: "guangzhou-imports-ltd",
-    industry: "Trading",
-    country: "China",
-    description:
-      "Full-service import/export company specializing in home goods, kitchenware, and seasonal decorations for international retail.",
-    products: ["Kitchenware", "Home Decor", "Seasonal Items", "Gift Sets"],
-    certifications: ["ISO 14001", "BSCI", "SEDEX"],
-  },
-  {
-    id: "ex-3",
-    name: "Beijing Manufacturing",
-    slug: "beijing-manufacturing",
-    industry: "Industrial",
-    country: "China",
-    description:
-      "Precision CNC machining and metal fabrication for automotive, aerospace, and heavy industry applications.",
-    products: ["CNC Parts", "Metal Fabrication", "Industrial Valves", "Pipe Fittings"],
-    certifications: ["ISO 9001", "IATF 16949", "AS9100"],
-  },
-  {
-    id: "ex-4",
-    name: "Shanghai Trading Group",
-    slug: "shanghai-trading-group",
-    industry: "Consumer Goods",
-    country: "China",
-    description:
-      "One-stop sourcing partner for fashion accessories, personal care products, and packaging solutions.",
-    products: ["Fashion Accessories", "Personal Care", "Packaging", "Cosmetics"],
-    certifications: ["ISO 22716", "GMPC", "BRC"],
-  },
-];
+// The directory used to ship four made-up companies. Real exhibitor profiles
+// are not built yet, so the list is empty and the directory is hidden from the
+// site navigation until they are.
+export const mockExhibitorProfiles: ExhibitorProfile[] = [];

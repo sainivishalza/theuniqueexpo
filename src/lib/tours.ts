@@ -276,7 +276,7 @@ export const chinaToursData: LocalizedTourData[] = [
       lt("Personal expenses", "Личные расходы", "个人消费"),
       lt("Lunch", "Обед", "午餐"),
     ],
-    image: "https://images.unsplash.com/photo-1567449303078-57ad995bd329?w=800&h=500&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=500&fit=crop&q=80",
   },
 ];
 

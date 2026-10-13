@@ -97,10 +97,10 @@ export default function VisaApplyForm({ service }: { service: { id: string; type
                 <input id="name" type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
               </FormField>
               <FormField label={t("email")} htmlFor="email" error={fieldErrors.email}>
-                <input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                <input id="email" type="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
               </FormField>
               <FormField label={t("phone")} htmlFor="phone" error={fieldErrors.phone}>
-                <input id="phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} aria-invalid={!!fieldErrors.phone} className={fieldClasses(!!fieldErrors.phone)} />
+                <input id="phone" type="tel" autoComplete="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} aria-invalid={!!fieldErrors.phone} className={fieldClasses(!!fieldErrors.phone)} />
               </FormField>
               <FormField label={t("company")} htmlFor="company">
                 <input id="company" type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={fieldClasses()} />

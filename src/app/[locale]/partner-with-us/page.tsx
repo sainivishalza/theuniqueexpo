@@ -205,7 +205,7 @@ export default function PartnerWithUsPage() {
                     <input id="pw-name" className={fieldClasses(!!fieldErrors.name)} value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
                   </FormField>
                   <FormField label={t("fields.email")} htmlFor="pw-email" error={fieldErrors.email}>
-                    <input id="pw-email" type="email" className={fieldClasses(!!fieldErrors.email)} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
+                    <input id="pw-email" type="email" autoComplete="email" className={fieldClasses(!!fieldErrors.email)} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                   </FormField>
                   <FormField label={t("fields.whatsapp")} htmlFor="pw-whatsapp">
                     <input id="pw-whatsapp" className={fieldClasses()} value={form.whatsapp} onChange={(e) => setForm((f) => ({ ...f, whatsapp: e.target.value }))} />

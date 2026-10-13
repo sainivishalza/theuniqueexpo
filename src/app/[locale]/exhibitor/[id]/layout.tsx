@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { permanentRedirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { mockExhibitorProfiles } from "@/lib/booths";
 import { defaultOgImage, metaDescription } from "@/lib/seo";
 
@@ -39,8 +39,11 @@ export default async function ExhibitorProfileLayout({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const { locale, id } = await params;
-  const profile = mockExhibitorProfiles.find((p) => p.id === id);
-  if (profile && profile.slug && profile.slug !== id) {
+  const profile = mockExhibitorProfiles.find((p) => p.id === id || p.slug === id);
+  // No exhibitor profiles are published yet, so this is a real 404 (not a 200
+  // page that says "not found").
+  if (!profile) notFound();
+  if (profile.slug && profile.slug !== id) {
     permanentRedirect(`/${locale}/exhibitor/${profile.slug}`);
   }
   return children;

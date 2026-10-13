@@ -83,7 +83,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <FormField label={t("email")} htmlFor="email">
-              <input id="email" required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={fieldClasses()} placeholder="you@company.com" />
+              <input id="email" required type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={fieldClasses()} placeholder="you@company.com" />
             </FormField>
             <FormField label={t("password")} htmlFor="password">
               <input id="password" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={fieldClasses()} placeholder={t("passwordPlaceholder")} />

@@ -24,7 +24,6 @@ export async function GET() {
 
   lines.push("## Platform");
   lines.push(`- [Exhibitions](${SITE_URL}/en/exhibitions): Browse upcoming trade fairs and exhibitions across China.`);
-  lines.push(`- [Exhibitor Directory](${SITE_URL}/en/directory): Search registered exhibitors by industry.`);
   lines.push(`- [RFQ Marketplace](${SITE_URL}/en/marketplace): Post and respond to buyer/exhibitor requests for quotes.`);
   lines.push(`- [Business Tours](${SITE_URL}/en/services/business-tours): Guided business and factory tours tied to exhibitions.`);
   lines.push(`- [China Tours](${SITE_URL}/en/services/china-tours): City and cultural tours for exhibition visitors.`);

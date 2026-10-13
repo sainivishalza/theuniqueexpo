@@ -145,7 +145,7 @@ export default function PlanBusinessTripPage() {
                     <input id="pbt-company" className={fieldClasses()} value={form.company} onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))} />
                   </FormField>
                   <FormField label={t("fields.email")} htmlFor="pbt-email" error={fieldErrors.email}>
-                    <input id="pbt-email" type="email" className={fieldClasses(!!fieldErrors.email)} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
+                    <input id="pbt-email" type="email" autoComplete="email" className={fieldClasses(!!fieldErrors.email)} value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
                   </FormField>
                   <FormField label={t("fields.whatsapp")} htmlFor="pbt-whatsapp">
                     <input id="pbt-whatsapp" className={fieldClasses()} value={form.whatsapp} onChange={(e) => setForm((f) => ({ ...f, whatsapp: e.target.value }))} />

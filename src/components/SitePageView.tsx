@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import type { SitePageContent } from "@/lib/site-pages";
+import { telHref } from "@/lib/company-profile";
 
 export default function SitePageView({ content }: { content: SitePageContent }) {
   const t = useTranslations("sitePageView");
@@ -44,7 +45,7 @@ export default function SitePageView({ content }: { content: SitePageContent }) 
                       <div className="w-10 h-10 rounded-[var(--radius-icon-sm)] gradient-brand flex items-center justify-center text-white text-sm flex-shrink-0">☎</div>
                       <div>
                         <div className="text-xs text-gray-400">{t("phone")}</div>
-                        <span className="text-sm font-semibold text-gray-900">{content.contactPhone}</span>
+                        <a href={telHref(content.contactPhone)} className="text-sm font-semibold text-gray-900 hover:text-emerald-600">{content.contactPhone}</a>
                       </div>
                     </div>
                   )}

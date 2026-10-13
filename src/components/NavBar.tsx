@@ -190,7 +190,7 @@ export default function NavBar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div id="mobile-nav-menu" className="lg:hidden border-t border-gray-200 bg-white px-6 py-4 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <div id="mobile-nav-menu" className="min-[1400px]:hidden border-t border-gray-200 bg-white px-6 py-4 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="pb-3 mb-2 border-b border-gray-100 space-y-2">
             <Button href="/plan-business-trip" variant="secondaryOutline" size="blockSm" onClick={() => setMobileOpen(false)}>
               {t("planABusinessTrip")}

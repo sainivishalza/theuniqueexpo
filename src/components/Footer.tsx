@@ -2,7 +2,7 @@ import Logo from "@/components/Logo";
 import NewsletterForm from "@/components/NewsletterForm";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { companyProfileSocialLinks, type CompanyProfile } from "@/lib/company-profile";
+import { companyProfileSocialLinks, telHref, type CompanyProfile } from "@/lib/company-profile";
 import { openCookieSettings } from "@/lib/cookie-consent";
 import { SHOW_TEAM } from "@/lib/feature-flags";
 
@@ -71,6 +71,24 @@ export default function Footer({
           <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
             {t("brandBlurb")}
           </p>
+          {(companyProfile.contactEmail || companyProfile.phone) && (
+            <ul className="mt-4 space-y-1.5 text-sm text-gray-400">
+              {companyProfile.contactEmail && (
+                <li>
+                  <a href={`mailto:${companyProfile.contactEmail}`} className="hover:text-white transition-colors break-all">
+                    {companyProfile.contactEmail}
+                  </a>
+                </li>
+              )}
+              {companyProfile.phone && telHref(companyProfile.phone) && (
+                <li>
+                  <a href={telHref(companyProfile.phone)} className="hover:text-white transition-colors">
+                    {companyProfile.phone}
+                  </a>
+                </li>
+              )}
+            </ul>
+          )}
           {/* Social icons -- only rendered for links the admin has actually configured */}
           {socialLinks.length > 0 && (
             <div className="flex gap-3 mt-5">
@@ -111,7 +129,7 @@ export default function Footer({
       <div className="border-t border-[var(--color-footer-border)]">
         <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-400">
           <span>{t("copyright", { year: new Date().getFullYear() })}</span>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
             <Link href="/privacy" className="hover:text-white transition-colors">{t("privacyPolicy")}</Link>
             <Link href="/terms" className="hover:text-white transition-colors">{t("termsOfService")}</Link>
             <Link href="/cookies" className="hover:text-white transition-colors">{t("cookiePolicy")}</Link>

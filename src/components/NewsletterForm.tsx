@@ -30,7 +30,7 @@ export default function NewsletterForm() {
     <form className="w-full md:w-auto" onSubmit={onSubmit}>
       <div className="flex gap-2">
         <input
-          type="email"
+          type="email" autoComplete="email"
           required
           value={email}
           onChange={(e) => { setEmail(e.target.value); if (status !== "sending") setStatus("idle"); }}

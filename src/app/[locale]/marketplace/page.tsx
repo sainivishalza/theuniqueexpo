@@ -75,7 +75,7 @@ export default function MarketplacePage() {
 
       {/* Stats bar */}
       <section className="bg-white border-b border-gray-200">
-        <div className="mx-auto max-w-7xl px-6 py-4 flex gap-8">
+        <div className="mx-auto max-w-7xl px-6 py-4 flex flex-wrap gap-x-8 gap-y-2">
           {[
             { label: t("stats.openRfqs"), value: rfqs.filter(r => r.status === "open").length, color: "text-green-600" },
             { label: t("stats.totalRequests"), value: rfqs.length, color: "text-emerald-600" },

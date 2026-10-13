@@ -45,6 +45,12 @@ export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
   socialYoutube: "",
 };
 
+// "+86 138 0000 0000" -> "tel:+861380000000" so a tapped number dials.
+export function telHref(phone: string): string {
+  const cleaned = phone.trim().replace(/[^\d+]/g, "").replace(/(?!^)\+/g, "");
+  return cleaned ? `tel:${cleaned}` : "";
+}
+
 // The ID is interpolated into an inline <script>, so only this exact shape
 // is ever accepted.
 export const GA_MEASUREMENT_ID_RE = /^G-[A-Z0-9]{4,20}$/;

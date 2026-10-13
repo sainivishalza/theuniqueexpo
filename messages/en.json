@@ -249,7 +249,8 @@
   "common": {
     "redirecting": "Redirecting…",
     "comingSoon": "Coming soon",
-    "somethingWentWrong": "Something went wrong"
+    "somethingWentWrong": "Something went wrong",
+    "skipToContent": "Skip to main content"
   },
   "buyerDashboard": {
     "title": "Buyer Dashboard",
@@ -3330,7 +3331,15 @@
       "title": "Tours",
       "description": "Guided travel tours across China and beyond — tell us who's going and what you love, and we'll tailor the itinerary."
     },
-    "siteTail": "The Unique Expo — B2B exhibitions, tours and sourcing in China."
+    "siteTail": "The Unique Expo — B2B exhibitions, tours and sourcing in China.",
+    "partnerProgram": {
+      "title": "Partner Program",
+      "description": "Join The Unique Expo as a referral partner, or apply for a certified or strategic tier if you work with buyers and exhibitors in China."
+    },
+    "postBuyRequest": {
+      "title": "Post a Buy Request",
+      "description": "Describe the product you want to source and receive quotes from verified manufacturers and suppliers in China."
+    }
   },
   "whatsappButton": {
     "label": "Chat with us on WhatsApp",
@@ -3378,5 +3387,22 @@
     "backToServices": "← Back to visa and company setup",
     "unknownService": "Service not found",
     "unknownServiceHint": "Please pick a service from the visa and company setup page."
+  },
+  "notFoundPage": {
+    "title": "Page not found",
+    "heading": "We can’t find that page",
+    "body": "The page may have moved, or the link may be mistyped. Try one of these instead.",
+    "home": "Back to home",
+    "exhibitions": "Browse exhibitions",
+    "contact": "Contact us",
+    "code": "Error 404"
+  },
+  "errorPage": {
+    "title": "Something went wrong",
+    "heading": "Something went wrong",
+    "body": "We couldn’t load this page. Please try again — if it keeps happening, contact us.",
+    "retry": "Try again",
+    "home": "Back to home",
+    "code": "Error"
   }
 }

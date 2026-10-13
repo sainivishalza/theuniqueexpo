@@ -110,13 +110,13 @@ export default function PartnerProgramPage() {
                           <input id={`name-${tier.id}`} type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
                         </FormField>
                         <FormField label={t("email")} htmlFor={`email-${tier.id}`} error={fieldErrors.email}>
-                          <input id={`email-${tier.id}`} type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                          <input id={`email-${tier.id}`} type="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
                         </FormField>
                         <FormField label={t("company")} htmlFor={`company-${tier.id}`}>
                           <input id={`company-${tier.id}`} type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={fieldClasses()} />
                         </FormField>
                         <FormField label={t("phone")} htmlFor={`phone-${tier.id}`}>
-                          <input id={`phone-${tier.id}`} type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={fieldClasses()} />
+                          <input id={`phone-${tier.id}`} type="tel" autoComplete="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={fieldClasses()} />
                         </FormField>
                         <FormField label={t("messagePlaceholder")} htmlFor={`message-${tier.id}`}>
                           <textarea id={`message-${tier.id}`} rows={2} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className={fieldClasses(false, "resize-none")} />

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 // -- sharp theme-token corners, a navy focus ring, and a red variant that
 // only appears once a field has actually failed validation.
 const FIELD_BASE =
-  "w-full rounded-[var(--radius-button)] border bg-white px-4 py-3 text-sm text-gray-900 transition-colors placeholder:text-gray-400 focus:outline-none focus:ring-2 disabled:bg-gray-50 disabled:text-gray-400";
+  "w-full rounded-[var(--radius-button)] border bg-white px-4 py-3 text-base sm:text-sm text-gray-900 transition-colors placeholder:text-gray-400 focus:outline-none focus:ring-2 disabled:bg-gray-50 disabled:text-gray-400";
 // A firmer default border (not pale gray) reads more structured/
 // authoritative, matching the rest of the editorial system.
 const FIELD_OK = "border-gray-700 focus:border-emerald-900 focus:ring-emerald-900/10";

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -16,12 +17,19 @@ export default function ClientShell({
   companyProfile: CompanyProfile;
   analyticsId: string;
 }) {
+  const t = useTranslations("common");
   return (
     <CompanyProfileProvider profile={companyProfile}>
       <AuthProvider>
         <div className="flex min-h-screen flex-col">
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-[var(--radius-button)] focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-emerald-900 focus:shadow-lg"
+          >
+            {t("skipToContent")}
+          </a>
           <NavBar />
-          <main className="flex-1 pt-16">{children}</main>
+          <main id="main-content" tabIndex={-1} className="flex-1 pt-16 focus:outline-none">{children}</main>
           <Footer companyProfile={companyProfile} analyticsEnabled={GA_MEASUREMENT_ID_RE.test(analyticsId)} />
           <WhatsAppButton number={companyProfile.whatsapp} />
         </div>

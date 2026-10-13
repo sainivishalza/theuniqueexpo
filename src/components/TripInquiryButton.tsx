@@ -128,7 +128,7 @@ export default function TripInquiryButton({
                 <FormField label={t("email")} htmlFor="ti-email" error={fieldErrors.email}>
                   <input
                     id="ti-email"
-                    type="email"
+                    type="email" autoComplete="email"
                     className={fieldClasses(!!fieldErrors.email)}
                     value={form.email}
                     onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}

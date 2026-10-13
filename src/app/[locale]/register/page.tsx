@@ -100,7 +100,7 @@ export default function RegisterPage() {
               <input id="name" required type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={fieldClasses()} />
             </FormField>
             <FormField label={t("email")} htmlFor="email">
-              <input id="email" required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={fieldClasses()} placeholder="you@company.com" />
+              <input id="email" required type="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={fieldClasses()} placeholder="you@company.com" />
             </FormField>
             <FormField label={t("password")} htmlFor="password">
               <input id="password" required type="password" minLength={6} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={fieldClasses()} placeholder={t("passwordPlaceholder")} />

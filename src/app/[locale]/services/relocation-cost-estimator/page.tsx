@@ -153,12 +153,12 @@ export default function RelocationCostEstimatorPage() {
                     <input id="name" type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
                   </FormField>
                   <FormField label={t("email")} htmlFor="email" error={fieldErrors.email}>
-                    <input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                    <input id="email" type="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
                   </FormField>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <FormField label={t("phone")} htmlFor="phone">
-                    <input id="phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={fieldClasses()} />
+                    <input id="phone" type="tel" autoComplete="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={fieldClasses()} />
                   </FormField>
                   <FormField label={t("company")} htmlFor="company">
                     <input id="company" type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} className={fieldClasses()} />

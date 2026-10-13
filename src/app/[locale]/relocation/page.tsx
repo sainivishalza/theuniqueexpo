@@ -119,7 +119,7 @@ export default function RelocationPage() {
                     <input id="name" type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
                   </FormField>
                   <FormField label={t("email")} htmlFor="email" error={fieldErrors.email}>
-                    <input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                    <input id="email" type="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
                   </FormField>
                 </div>
                 <FormField label={t("topic")} htmlFor="topic">

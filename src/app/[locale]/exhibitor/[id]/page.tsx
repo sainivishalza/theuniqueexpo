@@ -66,13 +66,13 @@ export default function ExhibitorProfilePage() {
       {/* Profile header */}
       <section className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-5xl px-6 -mt-12 relative z-10">
-          <div className="flex items-end gap-6">
-            <div className={`w-24 h-24 rounded-[var(--radius-icon-lg)] bg-gradient-to-br ${avatarColors[colorIndex]} flex items-center justify-center text-white text-3xl font-bold border-4 border-white`}>
+          <div className="flex items-end gap-4 sm:gap-6">
+            <div className={`w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-[var(--radius-icon-lg)] bg-gradient-to-br ${avatarColors[colorIndex]} flex items-center justify-center text-white text-3xl font-bold border-4 border-white`}>
               {profile.name[0]}
             </div>
-            <div className="pb-2">
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-extrabold text-heading">{profile.name}</h1>
+            <div className="pb-2 min-w-0">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-heading [overflow-wrap:anywhere]">{profile.name}</h1>
                 <span className="rounded-[var(--radius-badge)] bg-green-100 px-3 py-1 text-xs font-bold text-green-700 border border-green-200">
                   {t("verifiedSupplier")}
                 </span>

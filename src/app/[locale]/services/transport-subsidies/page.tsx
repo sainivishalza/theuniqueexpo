@@ -130,7 +130,7 @@ export default function SubsidiesPage() {
                               <input id={`name-${sub.id}`} type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} aria-invalid={!!fieldErrors.name} className={fieldClasses(!!fieldErrors.name)} />
                             </FormField>
                             <FormField label={t("email")} htmlFor={`email-${sub.id}`} error={fieldErrors.email}>
-                              <input id={`email-${sub.id}`} type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
+                              <input id={`email-${sub.id}`} type="email" autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} aria-invalid={!!fieldErrors.email} className={fieldClasses(!!fieldErrors.email)} />
                             </FormField>
                           </div>
                           <FormField label={t("company")} htmlFor={`company-${sub.id}`}>

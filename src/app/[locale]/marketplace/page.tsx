@@ -79,7 +79,6 @@ export default function MarketplacePage() {
           {[
             { label: t("stats.openRfqs"), value: rfqs.filter(r => r.status === "open").length, color: "text-green-600" },
             { label: t("stats.totalRequests"), value: rfqs.length, color: "text-emerald-600" },
-            { label: t("stats.activeBuyers"), value: "120+", color: "text-gold-600" },
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-2">
               <span className={`text-2xl font-extrabold ${s.color}`}>{s.value}</span>

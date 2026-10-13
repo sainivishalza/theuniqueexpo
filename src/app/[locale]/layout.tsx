@@ -14,6 +14,7 @@ import CookieConsent from "@/components/CookieConsent";
 import OrganizationSchema from "@/components/OrganizationSchema";
 import { routing } from "@/i18n/routing";
 import { getCompanyProfile } from "@/lib/server/company-profile-repo";
+import { getNavSections } from "@/lib/server/nav-sections";
 import { getSiteTheme } from "@/lib/server/site-theme-repo";
 import { headingFontStack, bodyFontStack, scriptFontStack, cornerRadii, cardShadows } from "@/lib/site-theme";
 import { generateScale, deriveTints } from "@/lib/theme-colors";
@@ -129,10 +130,11 @@ export default async function RootLayout({
     notFound();
   }
 
-  const [rawMessages, companyProfile, siteTheme] = await Promise.all([
+  const [rawMessages, companyProfile, siteTheme, navSections] = await Promise.all([
     getMessages(),
     getCompanyProfile(),
     getSiteTheme(),
+    getNavSections(),
   ]);
   // Admin/dashboard-only namespaces (~38% of the whole bundle) are added
   // back by their own nested providers in admin/layout.tsx and
@@ -176,7 +178,7 @@ export default async function RootLayout({
         <OrganizationSchema profile={companyProfile} />
         <NextIntlClientProvider messages={messages}>
           <CookieConsent measurementId={analyticsId} />
-          <ClientShell companyProfile={companyProfile} analyticsId={analyticsId}>{children}</ClientShell>
+          <ClientShell companyProfile={companyProfile} analyticsId={analyticsId} navSections={navSections}>{children}</ClientShell>
         </NextIntlClientProvider>
       </body>
     </html>

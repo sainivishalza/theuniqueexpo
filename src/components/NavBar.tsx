@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
+import type { NavSections } from "@/lib/server/nav-sections";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 // Thin gold underline on hover/focus instead of a filled hover pill --
@@ -64,7 +65,7 @@ function MoreMenu({ label, items }: { label: string; items: { label: string; hre
   );
 }
 
-export default function NavBar() {
+export default function NavBar({ sections }: { sections: NavSections }) {
   const { user, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileGroupOpen, setMobileGroupOpen] = useState<string | null>(null);
@@ -83,10 +84,9 @@ export default function NavBar() {
   // Demoted secondary items -- still reachable, just not competing with the
   // primary Exhibitions/Business Tours/China Tours/Partner With Us items.
   const moreItems = [
-    { label: t("events"), href: "/events" },
+    ...(sections.events ? [{ label: t("events"), href: "/events" }] : []),
     { label: t("relocation"), href: "/relocation" },
     { label: t("blog"), href: "/blog" },
-    { label: t("directory"), href: "/directory" },
     { label: t("marketplace"), href: "/marketplace" },
   ];
 

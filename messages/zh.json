@@ -1296,9 +1296,9 @@
     "registerToAttend": "报名参观",
     "registerToAttendHint": "买家和观众需分别报名参加本展会。",
     "registerAsBuyerVisitor": "以买家/观众身份报名",
-    "bookYourBooth": "预订展位",
-    "bookYourBoothHint": "抢占本顶级展会的展位空间,展位价格从 $2,500 起。",
-    "viewFloorPlanAndBook": "查看平面图并预订",
+    "bookYourBooth": "参展本届展会",
+    "bookYourBoothHint": "想在本届展会预订展位？请联系我们的团队了解可用展位和价格。",
+    "viewFloorPlanAndBook": "咨询展位",
     "exhibitionEnded": "本展会已结束",
     "hotelsNearby": "附近酒店",
     "partnerHotels": "12 家合作酒店",
@@ -1323,7 +1323,8 @@
     "exhibitionDetails": "展会详情",
     "addChinaTravelTitle": "让您的中国之行更精彩",
     "addChinaTravelText": "您的展会参观不必只是两天的展会行程。将商务与旅行结合，在同一次旅程中探索更多中国。",
-    "addChinaTravel": "添加中国旅行"
+    "addChinaTravel": "添加中国旅行",
+    "shareByEmail": "通过电子邮件分享"
   },
   "expoRegisterPage": {
     "loading": "加载中...",

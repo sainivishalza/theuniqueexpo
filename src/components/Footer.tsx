@@ -1,3 +1,5 @@
+import { useSyncExternalStore } from "react";
+import type { NavSections } from "@/lib/server/nav-sections";
 import Logo from "@/components/Logo";
 import NewsletterForm from "@/components/NewsletterForm";
 import { Link } from "@/i18n/navigation";
@@ -6,15 +8,27 @@ import { companyProfileSocialLinks, telHref, type CompanyProfile } from "@/lib/c
 import { openCookieSettings } from "@/lib/cookie-consent";
 import { SHOW_TEAM } from "@/lib/feature-flags";
 
+// The pages are pre-built, so a plain new Date() here would freeze the year at
+// build time. The server snapshot is that build-time year (so hydration
+// matches); in the browser it switches to the visitor's current year.
+const BUILD_YEAR = new Date().getFullYear();
+const subscribeNoop = () => () => {};
+function useCurrentYear() {
+  return useSyncExternalStore(subscribeNoop, () => new Date().getFullYear(), () => BUILD_YEAR);
+}
+
 export default function Footer({
   companyProfile,
   analyticsEnabled,
+  sections,
 }: {
   companyProfile: CompanyProfile;
   analyticsEnabled: boolean;
+  sections: NavSections;
 }) {
   const t = useTranslations("footer");
   const socialLinks = companyProfileSocialLinks(companyProfile);
+  const year = useCurrentYear();
 
   const footerLinks = {
     [t("columns.platform")]: [
@@ -22,9 +36,8 @@ export default function Footer({
       { label: t("links.ourServices"), href: "/services" },
       { label: t("links.businessTours"), href: "/business-tours" },
       { label: t("links.chinaTours"), href: "/tours" },
-      { label: t("links.events"), href: "/events" },
+      ...(sections.events ? [{ label: t("links.events"), href: "/events" }] : []),
       { label: t("links.relocation"), href: "/relocation" },
-      { label: t("links.exhibitorDirectory"), href: "/directory" },
       { label: t("links.rfqMarketplace"), href: "/marketplace" },
       { label: t("links.partnerProgram"), href: "/partner-program" },
       { label: t("links.conferenceHosting"), href: "/services/conference-forum-hosting" },
@@ -35,8 +48,8 @@ export default function Footer({
       { label: t("links.contact"), href: "/contact" },
       { label: t("links.careers"), href: "/careers" },
       { label: t("links.blog"), href: "/blog" },
-      { label: t("links.magazine"), href: "/magazine" },
-      { label: t("links.videos"), href: "/videos" },
+      ...(sections.magazine ? [{ label: t("links.magazine"), href: "/magazine" }] : []),
+      ...(sections.videos ? [{ label: t("links.videos"), href: "/videos" }] : []),
       { label: t("links.cityPartnerships"), href: "/city-partnerships" },
     ],
     [t("columns.resources")]: [
@@ -128,7 +141,7 @@ export default function Footer({
       {/* Bottom bar */}
       <div className="border-t border-[var(--color-footer-border)]">
         <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-400">
-          <span>{t("copyright", { year: new Date().getFullYear() })}</span>
+          <span>{t("copyright", { year })}</span>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
             <Link href="/privacy" className="inline-block py-1.5 hover:text-white transition-colors">{t("privacyPolicy")}</Link>
             <Link href="/terms" className="inline-block py-1.5 hover:text-white transition-colors">{t("termsOfService")}</Link>

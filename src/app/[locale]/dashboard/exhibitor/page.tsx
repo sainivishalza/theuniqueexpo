@@ -55,13 +55,6 @@ export default function ExhibitorDashboard() {
                 <p className="text-sm text-gray-500 mt-1">{t("bookABoothDesc")}</p>
               </div>
             </Card>
-            <Card href="/exhibitor/shenzhen-tech-co" shadow="sm" className="p-6 flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-xl">🎨</div>
-              <div>
-                <h3 className="font-bold text-heading">{t("companyProfile")}</h3>
-                <p className="text-sm text-gray-500 mt-1">{t("companyProfileDesc")}</p>
-              </div>
-            </Card>
             <Card shadow="sm" className="p-6 flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-xl">📊</div>
               <div>

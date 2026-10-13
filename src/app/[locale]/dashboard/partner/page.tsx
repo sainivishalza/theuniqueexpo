@@ -17,6 +17,7 @@ interface Referral {
 
 export default function PartnerDashboard() {
   const t = useTranslations("partnerDashboard");
+  const tc = useTranslations("common");
   const { user } = useAuth();
   const [referrals, setReferrals] = useState<Referral[]>([]);
   const [stats, setStats] = useState({ totalReferrals: 0, totalCommission: 0, conversionRate: 0 });
@@ -142,8 +143,8 @@ export default function PartnerDashboard() {
                 { icon: "🖼️", label: t("materials.bannerPack") },
                 { icon: "📋", label: t("materials.brochure") },
               ].map((m) => (
-                <button key={m.label} className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-cream-50 hover:border-gray-300 transition-colors">
-                  {m.icon} {m.label}
+                <button key={m.label} type="button" disabled className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-400 cursor-not-allowed">
+                  {m.icon} {m.label} <span className="text-xs">({tc("comingSoon")})</span>
                 </button>
               ))}
             </div>

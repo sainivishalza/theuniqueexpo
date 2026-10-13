@@ -1296,9 +1296,9 @@
     "registerToAttend": "Register to Attend",
     "registerToAttendHint": "Buyers and visitors must register separately for this exhibition.",
     "registerAsBuyerVisitor": "Register as Buyer / Visitor",
-    "bookYourBooth": "Book Your Booth",
-    "bookYourBoothHint": "Secure your space at this premier exhibition. Booths start from $2,500.",
-    "viewFloorPlanAndBook": "View Floor Plan & Book",
+    "bookYourBooth": "Exhibit at This Show",
+    "bookYourBoothHint": "Want a booth at this exhibition? Contact our team for availability and pricing.",
+    "viewFloorPlanAndBook": "Enquire About a Booth",
     "exhibitionEnded": "This exhibition has ended",
     "hotelsNearby": "Hotels Nearby",
     "partnerHotels": "12 partner hotels",
@@ -1323,7 +1323,8 @@
     "exhibitionDetails": "Exhibition Details",
     "addChinaTravelTitle": "Make More of Your China Trip",
     "addChinaTravelText": "Your exhibition visit does not have to be only two days at the exhibition. Combine business with travel and discover more of China during the same trip.",
-    "addChinaTravel": "Add China Travel"
+    "addChinaTravel": "Add China Travel",
+    "shareByEmail": "Share by email"
   },
   "expoRegisterPage": {
     "loading": "Loading...",

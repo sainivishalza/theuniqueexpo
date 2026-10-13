@@ -1,5 +1,6 @@
 "use client";
 
+import ShareButtons from "@/components/ShareButtons";
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -274,7 +275,7 @@ export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null
                 <h3 className="text-lg font-bold text-heading mb-4">{t("bookYourBooth")}</h3>
                 <p className="text-sm text-gray-500 mb-5">{t("bookYourBoothHint")}</p>
                 {isUpcoming ? (
-                  <Button href={`/exhibitions/${expo.slug}/floor-plan`} variant="gradientCta" size="block">
+                  <Button href="/contact" variant="gradientCta" size="block">
                     {t("viewFloorPlanAndBook")}
                   </Button>
                 ) : (
@@ -311,16 +312,7 @@ export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null
               {/* Share */}
               <Card shadow="sm" className="p-6">
                 <h3 className="text-lg font-bold text-heading mb-3">{t("shareThisEvent")}</h3>
-                <div className="flex gap-2">
-                  {["𝕏", "in", "f", "✉"].map((icon, i) => (
-                    <button
-                      key={i}
-                      className="w-10 h-10 rounded-[var(--radius-icon-sm)] bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
-                    >
-                      {icon}
-                    </button>
-                  ))}
-                </div>
+                <ShareButtons title={expo.title} />
               </Card>
 
               {/* Organizer */}

@@ -6,16 +6,19 @@ import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { AuthProvider } from "@/lib/auth-context";
 import { CompanyProfileProvider } from "@/lib/company-profile-context";
+import type { NavSections } from "@/lib/server/nav-sections";
 import { GA_MEASUREMENT_ID_RE, type CompanyProfile } from "@/lib/company-profile";
 
 export default function ClientShell({
   children,
   companyProfile,
   analyticsId,
+  navSections,
 }: {
   children: React.ReactNode;
   companyProfile: CompanyProfile;
   analyticsId: string;
+  navSections: NavSections;
 }) {
   const t = useTranslations("common");
   return (
@@ -28,9 +31,9 @@ export default function ClientShell({
           >
             {t("skipToContent")}
           </a>
-          <NavBar />
+          <NavBar sections={navSections} />
           <main id="main-content" tabIndex={-1} className="flex-1 pt-16 focus:outline-none">{children}</main>
-          <Footer companyProfile={companyProfile} analyticsEnabled={GA_MEASUREMENT_ID_RE.test(analyticsId)} />
+          <Footer companyProfile={companyProfile} analyticsEnabled={GA_MEASUREMENT_ID_RE.test(analyticsId)} sections={navSections} />
           <WhatsAppButton number={companyProfile.whatsapp} />
         </div>
       </AuthProvider>

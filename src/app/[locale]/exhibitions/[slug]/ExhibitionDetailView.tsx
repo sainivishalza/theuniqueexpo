@@ -119,10 +119,12 @@ export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null
 
       {/* Quick stats bar */}
       <section className="bg-white border-b border-gray-200">
-        <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="mx-auto max-w-7xl px-6 py-6 grid grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-6">
           {[
-            { label: t("stats.exhibitors"), value: formatNumber(expo.exhibitors) + "+", icon: "🏢" },
-            { label: t("stats.visitors"), value: expo.visitors, icon: "👥" },
+            // Figures the organiser has not published stay empty and are left out
+            // instead of showing "0+".
+            ...(expo.exhibitors > 0 ? [{ label: t("stats.exhibitors"), value: formatNumber(expo.exhibitors) + "+", icon: "🏢" }] : []),
+            ...(expo.visitors ? [{ label: t("stats.visitors"), value: expo.visitors, icon: "👥" }] : []),
             { label: t("stats.venue"), value: expo.city, icon: "📍" },
             { label: t("stats.duration"), value: expo.dates, icon: "📅" },
           ].map((s) => (

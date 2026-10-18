@@ -128,6 +128,8 @@ run_mysql schema-migrations/047-buyer-profile-phone-number.sql
 run_mysql schema-migrations/049-newsletter-subscribers.sql
 run_mysql schema-migrations/050-remove-placeholder-site-content.sql
 run_mysql schema-migrations/051-buyer-expos.sql
+run_mysql schema-migrations/052-winb-exhibitions.sql
+run_mysql schema-migrations/053-expo-registration-lifecycle.sql
 
 echo
 echo "Database backup and migrations finished."

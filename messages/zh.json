@@ -309,6 +309,33 @@
         "title": "我的资料",
         "description": "公司信息、护照和证件资料"
       }
+    },
+    "registrations": {
+      "title": "我的报名",
+      "subtitle": "您报名的所有展会,以及接下来要做的事。",
+      "back": "← 返回会员中心",
+      "loading": "加载中...",
+      "loadFailed": "无法加载您的报名,请重试。",
+      "emptyTitle": "暂无报名",
+      "emptyHint": "选择一个展会并报名后,会显示在这里。",
+      "browse": "浏览展会",
+      "manage": "打开展会页面 →",
+      "statusLabels": {
+        "pending": "等待审核",
+        "approved": "已批准",
+        "confirmed": "已确认参加",
+        "attended": "已到场",
+        "rejected": "未通过",
+        "cancelled": "已取消",
+        "expired": "已过期",
+        "absent": "缺席"
+      },
+      "hints": {
+        "approved": "已批准,请确认您将出席。",
+        "confirmBy": "请在 {date} 前确认参加。",
+        "confirmed": "已确认参加。请在现场扫描二维码签到。",
+        "feedback": "请分享您对展会的反馈。"
+      }
     }
   },
   "exhibitorDashboard": {
@@ -1107,7 +1134,12 @@
     "statuses": {
       "pending": "待处理",
       "approved": "已批准",
-      "rejected": "已拒绝"
+      "rejected": "已拒绝",
+      "confirmed": "已确认",
+      "attended": "已到场",
+      "cancelled": "已取消",
+      "absent": "缺席",
+      "expired": "已过期"
     }
   },
   "adminTourRegistrations": {
@@ -1154,6 +1186,48 @@
       "visaPage": "签证页",
       "businessLicense": "营业执照",
       "orderList": "订单清单"
+    },
+    "filterByStatus": "按状态筛选",
+    "filterAll": "全部({count})",
+    "progress": "进度",
+    "changeStatus": "更改{name}的状态",
+    "progressLines": {
+      "confirmBy": "确认截止 {date}",
+      "confirmed": "已确认 {date}",
+      "arrival": "抵达 {date}",
+      "ticket": "已上传票据",
+      "checkedIn": "签到:{time}",
+      "checkedOut": "签退:{time}",
+      "feedback": "反馈:{rating}/5"
+    },
+    "approve": {
+      "title": "批准{name}",
+      "hint": "买家须在此日期前确认参加,否则名额将被释放。名额有限。",
+      "confirmBy": "确认参加截止日期",
+      "leaveBlank": "留空则使用展会开始前一天。",
+      "showOver": "该展会已结束,无需设置确认截止日期。",
+      "submit": "批准"
+    },
+    "checkInQr": {
+      "button": "签到二维码",
+      "title": "签到二维码",
+      "hint": "请在现场打印或展示此二维码。已确认参加的买家用手机扫描即可签到和签退。",
+      "alt": "{name}的签到二维码",
+      "download": "下载二维码",
+      "copyLink": "复制链接",
+      "copied": "已复制"
+    },
+    "lifecycle": {
+      "confirmBy": "确认截止",
+      "approvedAt": "批准时间",
+      "confirmedAt": "确认参加时间",
+      "arrivalDate": "抵达日期",
+      "arrivalNote": "行程信息",
+      "checkedIn": "签到",
+      "checkedOut": "签退",
+      "cancelledAt": "取消时间",
+      "feedback": "反馈",
+      "ticket": "行程票据"
     }
   },
   "adminToursCrud": {
@@ -1342,7 +1416,7 @@
     "registrationClosedHint": "<strong>{name}</strong> 目前尚未开放报名。",
     "backTo": "← 返回{name}",
     "registrationSubmitted": "报名已提交!",
-    "registrationSubmittedHint": "您对<strong>{name}</strong>的报名已收到,我们的团队将尽快审核。",
+    "registrationSubmittedHint": "您对<strong>{name}</strong>的报名已收到,我们的团队将尽快审核。您可在展会页面或会员中心的“我的报名”中查看进度。",
     "registerFor": "报名参加{name}",
     "datesLine": "{dates} • 每个展会需单独报名。",
     "yourAccount": "您的账户",
@@ -1398,7 +1472,13 @@
       "visaPage": "签证页",
       "businessLicense": "营业执照",
       "orderList": "订单清单(如有)"
-    }
+    },
+    "editRegistrationFor": "修改您在{name}的报名",
+    "saveChanges": "保存修改",
+    "registrationUpdated": "报名信息已更新!",
+    "registrationUpdatedHint": "您对<strong>{name}</strong>的修改已保存,我们的团队将审核您的报名。",
+    "yourRegistrationFor": "您在{name}的报名",
+    "alreadyRegisteredHint": "您已报名此展会,以下是当前进度。"
   },
   "floorPlanPage": {
     "loading": "加载中...",
@@ -3482,5 +3562,111 @@
     "hiddenTag": "隐藏",
     "noPeopleFound": "未找到人员，请检查此工作表",
     "downloadReview": "下载核对清单 (CSV)"
+  },
+  "expoRegistrationStatus": {
+    "title": "您的报名",
+    "statusLabels": {
+      "pending": "等待审核",
+      "approved": "已批准",
+      "confirmed": "已确认参加",
+      "attended": "已到场",
+      "rejected": "未通过",
+      "cancelled": "已取消",
+      "expired": "已过期",
+      "absent": "缺席"
+    },
+    "messages": {
+      "pending": "报名已提交,请等待主办方审核。审核前您仍可修改或取消报名。",
+      "approved": "恭喜!您的报名已获批准。名额有限,请确认您将出席。",
+      "confirmed": "您已确认参加。展会当天请在现场扫描签到二维码完成签到和签退。",
+      "attended": "您已在展会现场签到,感谢您的光临!",
+      "rejected": "抱歉,您的报名这次未获通过。",
+      "cancelled": "您已取消此次报名。",
+      "expired": "抱歉,由于未在 {date} 前确认参加,您的名额已过期。期待在下一场展会与您相见。",
+      "absent": "您已被标记为缺席此次展会。"
+    },
+    "confirmBy": "请在 {date} 前确认参加,否则名额可能被释放。",
+    "registeredOn": "报名时间:{date}",
+    "editRegistration": "修改报名",
+    "cancelRegistration": "取消报名",
+    "cancelAttendance": "取消参加",
+    "cancelAreYouSure": "确定取消此次报名?",
+    "cancelYes": "是,取消",
+    "cancelling": "取消中...",
+    "cancelKeep": "保留",
+    "registerAgain": "重新报名",
+    "actionFailed": "操作未成功,请重试。",
+    "feedbackFailed": "反馈未能发送,请重试。",
+    "confirm": {
+      "heading": "确认参加",
+      "arrivalDate": "抵达中国日期(选填)",
+      "arrivalNote": "行程信息(选填)",
+      "arrivalNotePlaceholder": "例如航班号或酒店",
+      "ticket": "行程票据(选填)",
+      "chooseFile": "选择文件",
+      "replaceFile": "更换文件",
+      "fileAttached": "已附文件",
+      "fileTooLarge": "文件过大,请选择 8MB 以下的文件。",
+      "couldNotReadFile": "无法读取该文件,请重试。",
+      "submit": "确认参加",
+      "submitting": "确认中..."
+    },
+    "details": {
+      "arrival": "抵达日期:{date}",
+      "note": "行程信息:{note}",
+      "ticketUploaded": "已上传行程票据",
+      "checkedIn": "签到时间:{time}",
+      "checkedOut": "签退时间:{time}"
+    },
+    "feedback": {
+      "heading": "您觉得这次展会怎么样?",
+      "rating": "您的评分",
+      "starsLabel": "{count} 星",
+      "comment": "留言(选填)",
+      "submit": "提交反馈",
+      "submitting": "提交中...",
+      "thanks": "感谢您的反馈。"
+    }
+  },
+  "expoCheckIn": {
+    "loading": "加载中...",
+    "loadFailed": "无法加载签到页面,请重试。",
+    "invalidTitle": "此二维码无法使用",
+    "invalidHint": "签到码缺失或不属于此展会。请扫描现场展示的二维码。",
+    "toExhibition": "前往展会页面",
+    "signInTitle": "登录后签到",
+    "signInHint": "请使用报名时的账号登录,登录后将直接返回此处。",
+    "signIn": "登录",
+    "notRegistered": "您尚未报名此展会。",
+    "registerNow": "立即报名",
+    "readyToCheckIn": "请点击按钮在现场签到。",
+    "checkIn": "签到",
+    "checkOut": "签退",
+    "working": "请稍候...",
+    "checkedInNow": "签到成功,欢迎光临!",
+    "alreadyCheckedIn": "您已签到。",
+    "checkedInAt": "签到时间:{time}",
+    "checkedOutNow": "签退成功,感谢您的光临!",
+    "alreadyCheckedOut": "您已签退。",
+    "checkedOutAt": "签退时间:{time}",
+    "leaveFeedback": "留下您的反馈 →",
+    "opensOnShowDates": "签到仅在展会期间开放({start} – {end})。",
+    "confirmFirst": "请先确认参加,然后在现场签到。",
+    "confirmAttendance": "确认参加",
+    "blocked": {
+      "pending": "您的报名仍在审核中,暂时无法签到。",
+      "rejected": "您的报名未获通过,无法签到。",
+      "cancelled": "您已取消此次报名,请重新报名后再签到。",
+      "expired": "由于未及时确认参加,您的名额已过期。",
+      "absent": "此报名已被标记为缺席。"
+    },
+    "errors": {
+      "generic": "操作未成功,请重试。",
+      "not_confirmed": "请先确认参加。",
+      "outside_dates": "仅在展会期间可以签到。",
+      "already_done": "此步骤已完成。",
+      "no_registration": "您尚未报名此展会。",
+      "invalid_key": "此二维码不能用于该展会。"
+    }
   }
 }

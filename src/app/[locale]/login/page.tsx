@@ -39,7 +39,10 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(email, password);
-      router.push("/dashboard");
+      // ?next= lets a page that asked for a sign-in (e.g. the venue check-in QR code)
+      // bring the visitor back. Only a path inside this site is followed.
+      const next = new URLSearchParams(window.location.search).get("next") || "";
+      router.push(/^\/(?![/\\])/.test(next) ? next : "/dashboard");
     } catch (err) {
       setError(errorMessage(err, t("loginFailed")));
     } finally {

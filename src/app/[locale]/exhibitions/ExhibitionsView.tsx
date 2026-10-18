@@ -179,8 +179,8 @@ export default function ExhibitionsView({
                     <p className="text-sm text-gray-400 line-clamp-2 mb-4">{expo.description}</p>
                     <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                       <div className="flex gap-4 text-xs text-gray-400">
-                        <span>🏢 {formatNumber(expo.exhibitors)}+</span>
-                        <span>👥 {expo.visitors}</span>
+                        {expo.exhibitors > 0 && <span>🏢 {formatNumber(expo.exhibitors)}+</span>}
+                        {expo.visitors && <span>👥 {expo.visitors}</span>}
                       </div>
                       <span className="inline-flex items-center gap-1 rounded-[var(--radius-button)] bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-800 group-hover:bg-emerald-100 transition-colors">
                         {t("viewDetails")}

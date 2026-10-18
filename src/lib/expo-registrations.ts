@@ -1,4 +1,5 @@
 import { isValidUploadedDocument } from "@/lib/server/validate-upload";
+import type { EffectiveStatus, RegistrationStatus } from "@/lib/registration-lifecycle";
 
 export type RegistrationType = "buyer" | "visitor";
 export type Gender = "male" | "female";
@@ -80,8 +81,23 @@ export interface ExpoRegistration extends Partial<ExpoRegistrationInput> {
   id: string;
   userId: string;
   exhibitionId: number;
-  status: "pending" | "approved" | "rejected";
+  status: RegistrationStatus;
+  // Same as `status`, except an approved registration whose confirm-by date has
+  // passed reads "expired".
+  effectiveStatus?: EffectiveStatus;
   createdAt: string;
+  approvedAt?: string | null;
+  confirmBy?: string | null;
+  confirmedAt?: string | null;
+  arrivalDate?: string | null;
+  arrivalNote?: string | null;
+  docTicket?: string | null;
+  checkedInAt?: string | null;
+  checkedOutAt?: string | null;
+  cancelledAt?: string | null;
+  feedbackRating?: number | null;
+  feedbackComment?: string | null;
+  feedbackAt?: string | null;
   customAnswers?: Record<string, unknown> | null;
   formSchemaSnapshot?: unknown | null;
 }

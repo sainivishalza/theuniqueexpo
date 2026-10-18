@@ -67,7 +67,7 @@ export function mapExhibitionRow(row: RowDataPacket, locale?: string) {
     highlightsRu,
     highlightsZh,
     exhibitors: row.exhibitors ?? 0,
-    visitors: row.visitors ?? "",
+    visitors: translateString(row.visitors ?? "", locale),
     organizer: row.organizer ?? "",
     website: row.website ?? "",
     color: row.color || "#075b4f",

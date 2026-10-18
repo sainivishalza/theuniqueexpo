@@ -1,0 +1,90 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { useAuth } from "@/lib/auth-context";
+import { formatDateOnly, STATUS_TONE } from "@/lib/client/registration-format";
+import type { MyRegistration } from "@/lib/registration-lifecycle";
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+
+// Every exhibition this buyer has registered for, with where each one stands and the
+// next step. The steps themselves (confirm, check in, feedback) are done on the
+// exhibition page, so each row links there.
+export default function BuyerRegistrationsPage() {
+  const t = useTranslations("buyerDashboard.registrations");
+  const locale = useLocale();
+  const { user, loading: authLoading } = useAuth();
+  const [items, setItems] = useState<MyRegistration[] | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    if (authLoading || !user) return;
+    fetch(`/api/expo-registrations/mine?locale=${locale}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data) => setItems(data.registrations || []))
+      .catch(() => setFailed(true));
+  }, [authLoading, user, locale]);
+
+  function nextStep(r: MyRegistration): string {
+    if (r.actions.confirm) return r.confirmBy ? t("hints.confirmBy", { date: formatDateOnly(r.confirmBy, locale) }) : t("hints.approved");
+    if (r.actions.feedback) return t("hints.feedback");
+    if (r.status === "confirmed") return t("hints.confirmed");
+    return "";
+  }
+
+  return (
+    <div>
+      <section className="gradient-hero py-10">
+        <div className="mx-auto max-w-4xl px-6">
+          <Link href="/dashboard/buyer" className="text-sm text-emerald-200 hover:text-white mb-3 inline-block">{t("back")}</Link>
+          <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
+          <p className="mt-1 text-emerald-200/80">{t("subtitle")}</p>
+        </div>
+      </section>
+
+      <section className="py-10 bg-cream-50 min-h-[40vh]">
+        <div className="mx-auto max-w-4xl px-6 space-y-4">
+          {failed && <p role="alert" className="text-center text-red-600">{t("loadFailed")}</p>}
+          {!failed && items === null && <p className="text-center text-gray-400">{t("loading")}</p>}
+          {items && items.length === 0 && (
+            <Card shadow="sm" bordered={false} className="p-10 text-center">
+              <div className="text-5xl mb-3" aria-hidden="true">🎫</div>
+              <h2 className="text-xl font-bold text-heading mb-1">{t("emptyTitle")}</h2>
+              <p className="text-gray-500 mb-6">{t("emptyHint")}</p>
+              <Button href="/exhibitions" variant="gradientCta" size="wide">{t("browse")}</Button>
+            </Card>
+          )}
+          {items?.map((r) => {
+            const hint = nextStep(r);
+            return (
+              <Card key={r.id} shadow="sm" bordered={false} className="p-5">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h2 className="font-bold text-heading [overflow-wrap:anywhere]">{r.exhibitionTitle}</h2>
+                    <p className="text-sm text-gray-500">
+                      {formatDateOnly(r.exhibitionStart, locale)}
+                      {r.exhibitionEnd && r.exhibitionEnd !== r.exhibitionStart ? ` – ${formatDateOnly(r.exhibitionEnd, locale)}` : ""}
+                    </p>
+                  </div>
+                  <Badge tone={STATUS_TONE[r.status] || "gray"} size="status">{t(`statusLabels.${r.status}`)}</Badge>
+                </div>
+                {hint && <p className="mt-3 text-sm font-semibold text-emerald-900">{hint}</p>}
+                <div className="mt-4">
+                  <Link
+                    href={`/exhibitions/${r.exhibitionSlug}`}
+                    className="text-sm font-semibold text-emerald-700 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
+                  >
+                    {t("manage")}
+                  </Link>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+    </div>
+  );
+}

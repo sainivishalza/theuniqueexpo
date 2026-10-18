@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getExhibitionBySlugOrId } from "@/lib/server/exhibitions-repo";
-import { listRegistrationsForExhibition } from "@/lib/server/expo-registrations-repo";
+import { defaultConfirmBy, listRegistrationsForExhibition } from "@/lib/server/expo-registrations-repo";
+import { checkInPath } from "@/lib/server/expo-checkin";
 
 export async function GET(request: Request) {
   const admin = await requireAdmin(request);
@@ -19,5 +20,11 @@ export async function GET(request: Request) {
   }
 
   const registrations = await listRegistrationsForExhibition(Number(exhibition.id));
-  return NextResponse.json({ exhibition, registrations });
+  return NextResponse.json({
+    exhibition,
+    registrations,
+    // Offered when approving, and the page the check-in QR code points at.
+    defaultConfirmBy: defaultConfirmBy(exhibition.startDate, exhibition.endDate),
+    checkInPath: checkInPath(exhibition.slug, Number(exhibition.id)),
+  });
 }

@@ -5,35 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Card from "@/components/ui/Card";
-
-const SECTION_KEYS = [
-  { key: "exhibitionManagement", href: "/admin/exhibitions", icon: "🎪", color: "from-emerald-500 to-emerald-600" },
-  { key: "tourManagement", href: "/admin/tours", icon: "🧳", color: "from-cyan-500 to-blue-600" },
-  { key: "eventManagement", href: "/admin/events", icon: "🎉", color: "from-pink-500 to-rose-600" },
-  { key: "blogManagement", href: "/admin/blog", icon: "📰", color: "from-indigo-500 to-purple-600" },
-  { key: "rfqReview", href: "/admin/rfqs", icon: "📋", color: "from-purple-500 to-purple-600" },
-  { key: "hotelBookings", href: "/admin/hotels", icon: "🏨", color: "from-amber-500 to-yellow-600" },
-  { key: "servicesManagement", href: "/admin/services", icon: "🛠️", color: "from-violet-500 to-purple-600" },
-  { key: "aboutUsPage", href: "/admin/about", icon: "📝", color: "from-blue-500 to-cyan-600" },
-  { key: "teamManagement", href: "/admin/team", icon: "🧑‍🤝‍🧑", color: "from-lime-500 to-emerald-600" },
-  { key: "partnerProgram", href: "/admin/partner-tiers", icon: "🤝", color: "from-indigo-500 to-blue-600" },
-  { key: "magazineManagement", href: "/admin/magazine", icon: "📰", color: "from-rose-500 to-pink-600" },
-  { key: "videoManagement", href: "/admin/videos", icon: "🎬", color: "from-red-500 to-rose-600" },
-  { key: "cityPartnershipInquiries", href: "/admin/city-partnership-inquiries", icon: "🏙️", color: "from-sky-500 to-cyan-600" },
-  { key: "businessTripInquiries", href: "/admin/business-trip-inquiries", icon: "🧳", color: "from-teal-500 to-cyan-700" },
-  { key: "newsletter", href: "/admin/newsletter", icon: "✉️", color: "from-gold-500 to-amber-600" },
-  { key: "partnerInquiries", href: "/admin/partner-inquiries", icon: "🤝", color: "from-indigo-500 to-violet-600" },
-  { key: "chinaTravel", href: "/admin/china-travel", icon: "🗺️", color: "from-amber-500 to-orange-600" },
-  { key: "photoOrganizer", href: "/admin/photo-organizer", icon: "🗂️", color: "from-slate-500 to-gray-600" },
-  { key: "websitePages", href: "/admin/pages", icon: "📄", color: "from-sky-500 to-indigo-600" },
-  { key: "companyProfile", href: "/admin/company-profile", icon: "🏢", color: "from-teal-500 to-emerald-600" },
-  { key: "faqManagement", href: "/admin/faq", icon: "❓", color: "from-rose-500 to-pink-600" },
-  { key: "siteTheme", href: "/admin/site-theme", icon: "🎨", color: "from-fuchsia-500 to-purple-600" },
-  { key: "userManagement", href: "/admin/users", icon: "👥", color: "from-orange-500 to-red-500" },
-  { key: "buyerProfiles", href: "/admin/buyer-profiles", icon: "🪪", color: "from-emerald-600 to-teal-700" },
-  { key: "buyerExpos", href: "/admin/buyer-expos", icon: "🏷️", color: "from-teal-600 to-emerald-700" },
-  { key: "homepageSlideshow", href: "/admin/slideshow", icon: "🖼️", color: "from-cyan-500 to-teal-600" },
-];
+import { ADMIN_SECTIONS } from "@/lib/admin-nav";
 
 export default function AdminPage() {
   const t = useTranslations("adminHome");
@@ -79,7 +51,7 @@ export default function AdminPage() {
     );
   }
 
-  const sections = SECTION_KEYS.map((s) => ({
+  const sections = ADMIN_SECTIONS.map((s) => ({
     ...s,
     title: t(`sections.${s.key}.title`),
     description: t(`sections.${s.key}.description`),

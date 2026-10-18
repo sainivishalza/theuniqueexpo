@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { ADMIN_NAMESPACES, pickMessages } from "@/lib/client-message-namespaces";
+import AdminShell from "./AdminShell";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -16,5 +17,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const messages = await getMessages();
   const adminMessages = pickMessages(messages, [...ADMIN_NAMESPACES, "common"]);
 
-  return <NextIntlClientProvider messages={adminMessages}>{children}</NextIntlClientProvider>;
+  return (
+    <NextIntlClientProvider messages={adminMessages}>
+      <AdminShell>{children}</AdminShell>
+    </NextIntlClientProvider>
+  );
 }

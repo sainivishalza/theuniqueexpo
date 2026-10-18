@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import UrlSearchSync from "@/components/UrlSearchSync";
 
 interface AdminUser {
   id: number;
@@ -149,6 +150,8 @@ export default function AdminUsersPage() {
         <div className="mx-auto max-w-6xl px-6 space-y-4">
           {error && <div className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</div>}
 
+          {/* The admin menu's search sends "?q=..." here to open the list already filtered. */}
+          <UrlSearchSync onChange={setSearch} />
           <input
             type="text"
             value={search}

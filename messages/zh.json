@@ -252,7 +252,40 @@
     "redirecting": "正在跳转…",
     "comingSoon": "即将推出",
     "somethingWentWrong": "出了点问题",
-    "skipToContent": "跳到主要内容"
+    "skipToContent": "跳到主要内容",
+    "shell": {
+      "openMenu": "打开菜单",
+      "closeMenu": "关闭菜单",
+      "searchSections": "搜索…",
+      "adminSearchPlaceholder": "搜索栏目、买家、用户…",
+      "searchResults": "搜索结果",
+      "noMatches": "没有与“{query}”匹配的内容",
+      "dashboard": "控制台",
+      "viewSite": "查看网站",
+      "logout": "退出登录",
+      "language": "语言",
+      "findBuyers": "查找买家:“{query}”",
+      "findUsers": "查找用户:“{query}”",
+      "areas": {
+        "admin": "管理后台",
+        "dashboard": "我的账户"
+      },
+      "roles": {
+        "admin": "管理员",
+        "buyer": "买家",
+        "exhibitor": "参展商",
+        "partner": "合作伙伴"
+      },
+      "groups": {
+        "events": "展会与行程",
+        "people": "买家与用户",
+        "requests": "咨询与合作",
+        "content": "网站内容",
+        "settings": "设置",
+        "account": "资料与报名",
+        "explore": "探索"
+      }
+    }
   },
   "buyerDashboard": {
     "title": "买家控制台",

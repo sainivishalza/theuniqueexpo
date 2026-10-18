@@ -252,7 +252,40 @@
     "redirecting": "Redirecting…",
     "comingSoon": "Coming soon",
     "somethingWentWrong": "Something went wrong",
-    "skipToContent": "Skip to main content"
+    "skipToContent": "Skip to main content",
+    "shell": {
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "searchSections": "Search…",
+      "adminSearchPlaceholder": "Search sections, buyers, users…",
+      "searchResults": "Search results",
+      "noMatches": "Nothing matches “{query}”",
+      "dashboard": "Dashboard",
+      "viewSite": "View site",
+      "logout": "Log out",
+      "language": "Language",
+      "findBuyers": "Find buyers matching “{query}”",
+      "findUsers": "Find users matching “{query}”",
+      "areas": {
+        "admin": "Admin panel",
+        "dashboard": "My account"
+      },
+      "roles": {
+        "admin": "Admin",
+        "buyer": "Buyer",
+        "exhibitor": "Exhibitor",
+        "partner": "Partner"
+      },
+      "groups": {
+        "events": "Exhibitions & travel",
+        "people": "Buyers & users",
+        "requests": "Requests & partners",
+        "content": "Website content",
+        "settings": "Settings",
+        "account": "Profile & registrations",
+        "explore": "Explore"
+      }
+    }
   },
   "buyerDashboard": {
     "title": "Buyer Dashboard",

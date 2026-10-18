@@ -9,6 +9,7 @@ import { extractBuyerNumbers, formatBuyerNumber, parseBuyerNumber } from "@/lib/
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
+import UrlSearchSync from "@/components/UrlSearchSync";
 
 type VerificationStatus = "not_started" | "pending_review" | "action_needed" | "verified";
 type DocReviewStatus = "pending" | "verified" | "rejected";
@@ -646,6 +647,8 @@ export default function AdminBuyerProfilesPage() {
         <div className="mx-auto max-w-6xl px-6 space-y-4">
           {error && <div className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</div>}
 
+          {/* The admin menu's search sends "?q=..." here to open the list already filtered. */}
+          <UrlSearchSync onChange={setSearch} />
           <div className="flex flex-wrap items-center gap-3">
             <input
               type="text"

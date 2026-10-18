@@ -204,7 +204,9 @@
     "loginFailed": "Login failed",
     "forgotPassword": "Forgot password?",
     "forgotPasswordTitle": "Forgot your password?",
-    "forgotPasswordBody": "There's no automatic reset yet -- contact us and we'll set a new one for you."
+    "forgotPasswordBody": "There's no automatic reset yet -- contact us and we'll set a new one for you.",
+    "identifier": "Email, phone number or passport number",
+    "identifierPlaceholder": "you@company.com or phone number"
   },
   "registerPage": {
     "roles": {
@@ -539,6 +541,10 @@
       "newsletter": {
         "title": "Newsletter Subscribers",
         "description": "See who signed up through the website footer and download the list."
+      },
+      "buyerExpos": {
+        "title": "Buyer Expos",
+        "description": "The list of expos you tag buyers with. Rename an expo here and every buyer profile updates."
       }
     }
   },
@@ -984,7 +990,9 @@
     "newPasswordTitle": "New password for {name}",
     "newPasswordHint": "Shown once -- copy it now and send it to them directly. It won't be shown again.",
     "copy": "Copy",
-    "done": "Done"
+    "done": "Done",
+    "importBuyers": "Import buyers from expo sheets",
+    "noEmail": "No email (signs in with phone / passport)"
   },
   "adminPartnerReferrals": {
     "title": "Partner Referrals",
@@ -2813,7 +2821,14 @@
       "cantonFairCard": "Canton Fair Card",
       "buyerPhoto": "Buyer Photo",
       "invoiceOrderList": "Invoice / Order List"
-    }
+    },
+    "expoPlaceholder": "Select expos...",
+    "noExpoOptions": "No expos yet -- add some in Buyer Expos",
+    "expoSelectedCount": "{count} expos selected",
+    "filterByExpo": "Filter by expo",
+    "allExpos": "All expos",
+    "manageExpos": "Edit expo list",
+    "noEmail": "No email (signs in with phone / passport)"
   },
   "homepageSlideshow": {
     "previous": "Previous photo",
@@ -3405,5 +3420,47 @@
     "retry": "Try again",
     "home": "Back to home",
     "code": "Error"
+  },
+  "adminBuyerExpos": {
+    "title": "Buyer Expos",
+    "subtitle": "The expos you tag buyers with. Rename one here and it changes on every buyer profile at once.",
+    "newPlaceholder": "New expo name",
+    "add": "Add expo",
+    "empty": "No expos yet. Add the first one above.",
+    "buyers": "{count, plural, one {# buyer} other {# buyers}}",
+    "rename": "Rename",
+    "deleteConfirm": "Delete \"{name}\"? It will be removed from {count} buyer(s). The buyers themselves are not deleted.",
+    "loadFailed": "Could not load the expo list",
+    "errors": {
+      "empty": "Please enter a name",
+      "too_long": "The name is too long (max 255 characters)",
+      "duplicate": "An expo with this name already exists",
+      "not_found": "That expo no longer exists"
+    }
+  },
+  "adminImportBuyers": {
+    "backToUsers": "← Back to Users",
+    "title": "Import buyers from expo sheets",
+    "subtitle": "Upload the prepared buyers file. Nobody is registered twice.",
+    "ruleExisting": "Someone already registered (same email or same passport number) is never created again and nothing about them is changed -- only the expo from the file is added to them.",
+    "ruleNoEmail": "People with no email sign in with their phone number or passport number.",
+    "rulePassword": "The password is their phone number (or WeChat ID if no phone). They can change it later.",
+    "fileLabel": "Buyers file (.json)",
+    "invalidFile": "That file is not a valid buyers file",
+    "fileLoaded": "Loaded {name}: {count} buyer(s)",
+    "start": "Import {count} buyer(s)",
+    "importing": "Importing {done} of {total}...",
+    "importFailed": "Import stopped",
+    "safeToRetry": "people already imported are kept, and running the same file again skips them",
+    "filterAll": "All ({count})",
+    "downloadCsv": "Download results (CSV)",
+    "loginColumn": "Login",
+    "passwordColumn": "Password",
+    "status": {
+      "created": "Created",
+      "expo_added": "Expo added",
+      "already_registered": "Already registered",
+      "failed": "Needs attention"
+    }
   }
 }

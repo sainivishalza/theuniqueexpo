@@ -31,6 +31,7 @@ const SECTION_KEYS = [
   { key: "siteTheme", href: "/admin/site-theme", icon: "🎨", color: "from-fuchsia-500 to-purple-600" },
   { key: "userManagement", href: "/admin/users", icon: "👥", color: "from-orange-500 to-red-500" },
   { key: "buyerProfiles", href: "/admin/buyer-profiles", icon: "🪪", color: "from-emerald-600 to-teal-700" },
+  { key: "buyerExpos", href: "/admin/buyer-expos", icon: "🏷️", color: "from-teal-600 to-emerald-700" },
   { key: "homepageSlideshow", href: "/admin/slideshow", icon: "🖼️", color: "from-cyan-500 to-teal-600" },
 ];
 

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getUserById } from "@/lib/server/users-repo";
 import { getBuyerProfileOrEmpty, upsertBuyerProfileFields } from "@/lib/server/buyer-profile-repo";
+import { setBuyerExpoIds } from "@/lib/server/buyer-expos-repo";
 
 export async function GET(request: Request, { params }: { params: Promise<{ userId: string }> }) {
   const admin = await requireAdmin(request);
@@ -39,7 +40,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
     "otherPurchaseIntention",
     "contactPerson",
     "registrationCode",
-    "sourceExhibitions",
     "departureCity",
     "attendanceDay",
     "meetingOrVisiting",
@@ -50,6 +50,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
     "companyField",
     "jobTitle",
     "contactEmail",
+    "phoneNumber",
     "dateOfBirth",
     "visaType",
     "visaExpireDate",
@@ -60,6 +61,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
   }
 
   await upsertBuyerProfileFields(targetId, update);
+  // Expos are picked from the Buyer Expos list (a multi-select), sent as ids.
+  if (Array.isArray(body.expoIds)) {
+    await setBuyerExpoIds(targetId, body.expoIds.map(Number));
+  }
   const profile = await getBuyerProfileOrEmpty(targetId);
   return NextResponse.json({ profile });
 }

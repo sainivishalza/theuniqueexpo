@@ -127,6 +127,7 @@ run_mysql schema-migrations/046-china-travel-content.sql
 run_mysql schema-migrations/047-buyer-profile-phone-number.sql
 run_mysql schema-migrations/049-newsletter-subscribers.sql
 run_mysql schema-migrations/050-remove-placeholder-site-content.sql
+run_mysql schema-migrations/051-buyer-expos.sql
 
 echo
 echo "Database backup and migrations finished."

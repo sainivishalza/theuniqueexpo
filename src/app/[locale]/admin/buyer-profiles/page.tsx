@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import { isPlaceholderEmail } from "@/lib/login-id";
+import { extractBuyerNumbers, formatBuyerNumber, parseBuyerNumber } from "@/lib/buyer-number";
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
@@ -14,6 +15,9 @@ type DocReviewStatus = "pending" | "verified" | "rejected";
 
 interface AdminBuyerProfileRow {
   userId: number;
+  // Registration number as shown (TUE0001) and as a plain number.
+  buyerNumber: string;
+  buyerNo: number | null;
   expoIds: number[];
   name: string;
   email: string;
@@ -50,7 +54,7 @@ interface AdminBuyerProfileRow {
 // `filtered` below.
 type StringRowKey = { [K in keyof AdminBuyerProfileRow]: AdminBuyerProfileRow[K] extends string ? K : never }[keyof AdminBuyerProfileRow];
 const SEARCHABLE_ROW_FIELDS: StringRowKey[] = [
-  "name", "email", "companyName", "nationality", "passportNumber", "passportName",
+  "buyerNumber", "name", "email", "companyName", "nationality", "passportNumber", "passportName",
   "gender", "wechatId", "departureCity", "attendanceDay", "meetingOrVisiting",
   "jobTitle", "companyField", "overseasCompanyAddress", "contactEmail", "phoneNumber",
   "registrationCode", "sourceExhibitions", "annualTurnover", "contactPerson", "dateOfBirth", "visaType",
@@ -381,6 +385,10 @@ export default function AdminBuyerProfilesPage() {
   const [exportFields, setExportFields] = useState<Set<string>>(new Set([...FIELDS.map((f) => f.key), "purchaseIntention", "otherPurchaseIntention", ...DOC_FIELDS]));
   const [exportPickerOpen, setExportPickerOpen] = useState(false);
   const [exporting, setExporting] = useState<"excel" | "zip" | null>(null);
+  // "Select by registration numbers": paste a list or a range, tick exactly those buyers.
+  const [numbersOpen, setNumbersOpen] = useState(false);
+  const [numbersText, setNumbersText] = useState("");
+  const [numbersResult, setNumbersResult] = useState<{ found: number; missing: string[] } | null>(null);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -550,12 +558,29 @@ export default function AdminBuyerProfilesPage() {
     }
   }
 
+  // Ticks exactly the buyers whose registration numbers were pasted (TUE0001, a
+  // list, or a range like TUE0010-TUE0025) and says which numbers matched nobody.
+  function selectByNumbers() {
+    const wanted = extractBuyerNumbers(numbersText);
+    const byNumber = new Map<number, number>();
+    for (const r of rows) if (r.buyerNo !== null) byNumber.set(r.buyerNo, r.userId);
+    const ids = new Set<number>();
+    const missing: string[] = [];
+    for (const n of wanted) {
+      const id = byNumber.get(n);
+      if (id !== undefined) ids.add(id);
+      else missing.push(formatBuyerNumber(n));
+    }
+    setSelected(ids);
+    setNumbersResult({ found: ids.size, missing });
+  }
+
   function runExportExcel() {
     const date = new Date().toISOString().slice(0, 10);
-    // Name and Account Email always ride along regardless of what's ticked
-    // -- an export with none of the identifying fields checked wouldn't
-    // even say whose row is whose.
-    const fields = Array.from(new Set(["name", "email", ...exportFields]));
+    // Registration number, name and account email always ride along regardless of
+    // what's ticked -- an export with none of the identifying fields checked
+    // wouldn't even say whose row is whose.
+    const fields = Array.from(new Set(["buyerNumber", "name", "email", ...exportFields]));
     downloadExport(
       "/api/admin/buyer-profiles/export/excel",
       { userIds: Array.from(selected), fields },
@@ -584,6 +609,10 @@ export default function AdminBuyerProfilesPage() {
     if (expoFilter && !r.expoIds.includes(Number(expoFilter))) return false;
     const q = search.trim().toLowerCase();
     if (!q) return true;
+    // "TUE12", "tue0012" and "12" all find buyer number 12 (plain text search below
+    // would only match the padded TUE0012).
+    const asNumber = /^(tue)?\s*\d+$/i.test(q) ? parseBuyerNumber(q) : null;
+    if (asNumber !== null && r.buyerNo === asNumber) return true;
     return SEARCHABLE_ROW_FIELDS.some((field) => r[field].toLowerCase().includes(q));
   });
 
@@ -649,6 +678,48 @@ export default function AdminBuyerProfilesPage() {
             )}
           </div>
 
+          <div>
+            <button
+              type="button"
+              onClick={() => setNumbersOpen((open) => !open)}
+              aria-expanded={numbersOpen}
+              className="text-sm font-semibold text-emerald-800 hover:text-emerald-900 underline"
+            >
+              {t("selectByNumbers.toggle")}
+            </button>
+            {numbersOpen && (
+              <div className="mt-3 rounded-xl border border-gray-200 bg-white p-4 max-w-2xl">
+                <label htmlFor="select-by-numbers" className="block text-sm text-gray-600 mb-2">{t("selectByNumbers.hint")}</label>
+                <textarea
+                  id="select-by-numbers"
+                  value={numbersText}
+                  onChange={(e) => setNumbersText(e.target.value)}
+                  rows={3}
+                  placeholder={t("selectByNumbers.placeholder")}
+                  className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  <Button type="button" onClick={selectByNumbers} disabled={!numbersText.trim()} variant="secondaryOutline" size="xs">
+                    {t("selectByNumbers.apply")}
+                  </Button>
+                  {numbersResult && (
+                    <span className="text-sm text-gray-700" role="status">
+                      {t("selectByNumbers.found", { count: numbersResult.found })}
+                      {numbersResult.missing.length > 0 && (
+                        <span className="text-red-700">
+                          {" "}
+                          {t("selectByNumbers.notFound", {
+                            list: numbersResult.missing.slice(0, 20).join(", ") + (numbersResult.missing.length > 20 ? ` +${numbersResult.missing.length - 20}` : ""),
+                          })}
+                        </span>
+                      )}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
           {loading ? (
             <p className="text-gray-500 text-center py-10">{ta("loading")}</p>
           ) : (
@@ -693,6 +764,7 @@ export default function AdminBuyerProfilesPage() {
                             aria-label={r.name}
                           />
                           <div>
+                            {r.buyerNumber && <div className="text-xs font-bold tracking-wide text-emerald-700">{r.buyerNumber}</div>}
                             <div className="font-semibold text-gray-900">{r.name}</div>
                             <div className="text-xs text-gray-400">{isPlaceholderEmail(r.email) ? t("noEmail") : r.email}</div>
                           </div>
@@ -754,7 +826,13 @@ export default function AdminBuyerProfilesPage() {
           <div className="absolute inset-0 bg-black/40" onClick={() => setOpenId(null)} />
           <div className="relative w-full max-w-xl bg-white h-full overflow-y-auto p-6 shadow-2xl">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-heading">{t("editProfile")}</h2>
+              <div>
+                <h2 className="text-xl font-bold text-heading">{t("editProfile")}</h2>
+                {(() => {
+                  const open = rows.find((r) => r.userId === openId);
+                  return open ? <p className="text-sm text-gray-500"><span className="font-bold text-emerald-700">{open.buyerNumber}</span>{open.buyerNumber ? " · " : ""}{open.name}</p> : null;
+                })()}
+              </div>
               <button onClick={() => setOpenId(null)} className="text-gray-400 hover:text-gray-600">✕</button>
             </div>
 
@@ -904,7 +982,8 @@ export default function AdminBuyerProfilesPage() {
               <h2 className="text-lg font-bold text-heading">{t("exportPickerTitle")}</h2>
               <button onClick={() => setExportPickerOpen(false)} className="text-gray-400 hover:text-gray-600">✕</button>
             </div>
-            <p className="text-sm text-gray-500 mb-4">{t("exportPickerHint", { count: selected.size })}</p>
+            <p className="text-sm text-gray-500 mb-1">{t("exportPickerHint", { count: selected.size })}</p>
+            <p className="text-xs text-gray-400 mb-4">{t("exportAlwaysIncluded")}</p>
 
             <div className="flex gap-4 mb-3">
               <button

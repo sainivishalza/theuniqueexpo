@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth-server";
+import { getBuyerNumber } from "@/lib/server/buyer-numbers";
 import { getBuyerProfileOrEmpty, upsertBuyerProfileFields } from "@/lib/server/buyer-profile-repo";
 
 export async function GET(request: Request) {
@@ -7,7 +8,8 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: "Login required" }, { status: 401 });
 
   const profile = await getBuyerProfileOrEmpty(user.id);
-  return NextResponse.json({ profile });
+  // The buyer's own registration number (TUE0001), to quote when contacting us.
+  return NextResponse.json({ profile, buyerNumber: await getBuyerNumber(user.id) });
 }
 
 export async function PATCH(request: Request) {

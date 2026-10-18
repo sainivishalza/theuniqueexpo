@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth-server";
+import { getBuyerNumber } from "@/lib/server/buyer-numbers";
 import { getExhibitionBySlugOrId } from "@/lib/server/exhibitions-repo";
 import { getMyRegistration, getRegistrationById, listMyRegistrations } from "@/lib/server/expo-registrations-repo";
 
@@ -16,8 +17,9 @@ export async function GET(request: Request) {
   const locale = LOCALES.includes(requestedLocale) ? requestedLocale : undefined;
   const slug = searchParams.get("exhibition");
 
+  const buyerNumber = await getBuyerNumber(user.id);
   if (!slug) {
-    return NextResponse.json({ registrations: await listMyRegistrations(user.id, locale) });
+    return NextResponse.json({ registrations: await listMyRegistrations(user.id, locale), buyerNumber });
   }
 
   const exhibition = await getExhibitionBySlugOrId(slug);
@@ -26,7 +28,7 @@ export async function GET(request: Request) {
   const registration = await getMyRegistration(Number(exhibition.id), user.id, locale);
   if (searchParams.get("full") === "1" && registration) {
     const form = await getRegistrationById(Number(registration.id));
-    return NextResponse.json({ registration, form });
+    return NextResponse.json({ registration, form, buyerNumber });
   }
-  return NextResponse.json({ registration });
+  return NextResponse.json({ registration, buyerNumber });
 }

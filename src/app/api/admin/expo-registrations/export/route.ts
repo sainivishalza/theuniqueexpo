@@ -4,7 +4,7 @@ import { getExhibitionBySlugOrId } from "@/lib/server/exhibitions-repo";
 import { listRegistrationsForExhibition } from "@/lib/server/expo-registrations-repo";
 
 const COLUMNS = [
-  "id", "registrationType", "fullName", "gender", "email", "phone", "nationality",
+  "id", "buyerNumber", "registrationType", "fullName", "gender", "email", "phone", "nationality",
   "companyName", "companyWebsite", "companyType", "companyScale", "purposeOfVisit",
   "exportingMarkets", "passportNumber",
 ] as const;
@@ -47,13 +47,14 @@ export async function GET(request: Request) {
   const schema = exhibition.registrationFormSchema;
   let lines: string[];
   if (schema && schema.length > 0) {
-    const headers = ["id", ...schema.map((f) => f.label), ...LIFECYCLE_COLUMNS];
+    const headers = ["id", "buyerNumber", ...schema.map((f) => f.label), ...LIFECYCLE_COLUMNS];
     lines = [
       headers.map(csvCell).join(","),
       ...registrations.map((r) => {
         const answers = (r.customAnswers || {}) as Record<string, unknown>;
         const cells = [
           r.id,
+          r.buyerNumber,
           ...schema.map((f) => (f.type === "file" ? (answers[f.id] ? "Uploaded" : "") : answers[f.id])),
           ...LIFECYCLE_COLUMNS.map((col) => (r as Record<string, unknown>)[col]),
         ];

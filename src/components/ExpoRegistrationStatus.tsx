@@ -31,6 +31,7 @@ export default function ExpoRegistrationStatus({ exhibitionSlug, fallback = null
   const locale = useLocale();
   const { user, loading: authLoading } = useAuth();
   const [registration, setRegistration] = useState<MyRegistration | null | undefined>(undefined);
+  const [buyerNumber, setBuyerNumber] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [askCancel, setAskCancel] = useState(false);
@@ -54,6 +55,7 @@ export default function ExpoRegistrationStatus({ exhibitionSlug, fallback = null
       .then((data) => {
         if (cancelled) return;
         setRegistration(data.registration || null);
+        setBuyerNumber(data.buyerNumber || "");
         onLoaded?.(data.registration || null);
       })
       .catch(() => {
@@ -125,6 +127,7 @@ export default function ExpoRegistrationStatus({ exhibitionSlug, fallback = null
         <p className="mt-2 text-sm font-semibold text-emerald-900">{t("confirmBy", { date: expiredOn })}</p>
       )}
       <p className="mt-2 text-xs text-gray-400">{t("registeredOn", { date: formatDateTime(registration.createdAt, locale) })}</p>
+      {buyerNumber && <p className="mt-1 text-xs text-gray-500">{t("registrationNumber")}: <span className="font-bold text-emerald-700">{buyerNumber}</span></p>}
 
       {/* Approved: confirm attendance */}
       {actions.confirm && (

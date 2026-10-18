@@ -1,6 +1,8 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
 import { expoIdsSql, expoNamesSql, parseExpoIds, setBuyerExpoNames } from "@/lib/server/buyer-expos-repo";
+import { formatBuyerNumber } from "@/lib/buyer-number";
+import { assignMissingBuyerNumbers } from "@/lib/server/buyer-numbers";
 
 export const DOCUMENT_FIELDS = [
   "businessLicense",
@@ -230,6 +232,9 @@ export type OverallVerificationStatus = "not_started" | "pending_review" | "acti
 // status/note.
 export interface AdminBuyerProfileRow {
   userId: number;
+  // The buyer's registration number as shown (TUE0001) and as a plain number.
+  buyerNumber: string;
+  buyerNo: number | null;
   expoIds: number[];
   name: string;
   email: string;
@@ -278,8 +283,9 @@ function overallVerificationStatus(docs: { uploaded: boolean; status: DocumentRe
 }
 
 export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[]> {
+  await assignMissingBuyerNumbers();
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT u.id AS user_id, u.name, u.email, u.status,
+    `SELECT u.id AS user_id, u.buyer_no, u.name, u.email, u.status,
             p.company_name, p.nationality, p.passport_number, p.passport_name, p.gender, p.wechat_id,
             p.departure_city, p.attendance_day, p.meeting_or_visiting, p.job_title, p.company_field,
             p.overseas_company_address, p.contact_email, p.phone_number, p.registration_code, p.annual_turnover, p.contact_person,
@@ -307,6 +313,8 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
     const docs = Object.values(documents);
     return {
       userId: row.user_id,
+      buyerNumber: formatBuyerNumber(row.buyer_no),
+      buyerNo: row.buyer_no ? Number(row.buyer_no) : null,
       expoIds: parseExpoIds(row.expo_ids),
       name: row.name,
       email: row.email,
@@ -343,6 +351,7 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
 
 export interface BuyerExportProfile extends BuyerProfileFields {
   userId: number;
+  buyerNumber: string;
   name: string;
   email: string;
   // Raw data URL per document (null if never uploaded) -- unlike mapRow's
@@ -359,14 +368,15 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
   const placeholders = userIds.map(() => "?").join(", ");
   const docColumns = DOCUMENT_FIELDS.map((f) => `p.${DOCUMENT_COLUMNS[f]}, p.${DOCUMENT_STATUS_COLUMNS[f]}`).join(", ");
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT u.id AS user_id, u.name, u.email,
+    `SELECT u.id AS user_id, u.buyer_no, u.name, u.email,
             p.company_name, p.nationality, p.passport_number, p.annual_turnover, p.purchase_intention, p.other_purchase_intention,
             p.contact_person, p.registration_code, ${expoNamesSql("u.id")} AS source_exhibitions, p.departure_city, p.attendance_day, p.meeting_or_visiting,
             p.passport_name, p.gender, p.wechat_id, p.overseas_company_address, p.company_field, p.job_title, p.contact_email, p.phone_number,
             p.date_of_birth, p.visa_type, p.visa_expire_date, ${docColumns}
      FROM users u
      LEFT JOIN buyer_profiles p ON p.user_id = u.id
-     WHERE u.id IN (${placeholders})`,
+     WHERE u.id IN (${placeholders})
+     ORDER BY u.buyer_no IS NULL, u.buyer_no, u.id`,
     userIds
   );
   return rows.map((row) => {
@@ -378,6 +388,7 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
     }
     return {
       userId: row.user_id,
+      buyerNumber: formatBuyerNumber(row.buyer_no),
       name: row.name,
       email: row.email,
       companyName: row.company_name || "",

@@ -7,6 +7,7 @@ import { DOCUMENT_FIELDS, type BuyerExportProfile, type DocumentField } from "./
 // hands off to someone else should read the same regardless of which
 // locale the admin currently has the site set to.
 export const FIELD_LABELS: Record<string, string> = {
+  buyerNumber: "Buyer Registration No.",
   name: "Name",
   email: "Account Email",
   companyName: "Company Name",
@@ -131,7 +132,9 @@ export async function buildBuyersDocumentsZip(rows: BuyerExportProfile[]): Promi
   const usedNames = new Map<string, number>();
 
   for (const row of rows) {
-    let folderName = sanitizeFolderName(row.passportName || row.name || `buyer-${row.userId}`);
+    // "TUE0012 - Name": the folder starts with the buyer's registration number, so a
+    // folder can always be matched back to the buyer, and sorts in number order.
+    let folderName = sanitizeFolderName(`${row.buyerNumber ? `${row.buyerNumber} - ` : ""}${row.passportName || row.name || `buyer-${row.userId}`}`);
     const count = usedNames.get(folderName) ?? 0;
     usedNames.set(folderName, count + 1);
     if (count > 0) folderName = `${folderName} (${count + 1})`;

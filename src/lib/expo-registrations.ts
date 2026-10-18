@@ -80,6 +80,8 @@ export interface ExpoRegistrationInput {
 export interface ExpoRegistration extends Partial<ExpoRegistrationInput> {
   id: string;
   userId: string;
+  // The buyer's registration number (TUE0001); empty when they have none.
+  buyerNumber?: string;
   exhibitionId: number;
   status: RegistrationStatus;
   // Same as `status`, except an approved registration whose confirm-by date has

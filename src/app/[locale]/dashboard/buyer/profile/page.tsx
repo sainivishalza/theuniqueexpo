@@ -98,12 +98,16 @@ export default function BuyerProfilePage() {
   const [saved, setSaved] = useState(false);
   const [uploadingField, setUploadingField] = useState<string | null>(null);
   const [docVersion, setDocVersion] = useState(0);
+  const [buyerNumber, setBuyerNumber] = useState("");
 
   useEffect(() => {
     if (!user) return;
     fetch("/api/buyer-profile")
       .then((r) => r.json())
-      .then((data) => setProfile(data.profile))
+      .then((data) => {
+        setProfile(data.profile);
+        setBuyerNumber(data.buyerNumber || "");
+      })
       .catch((err) => setError(errorMessage(err, ta("somethingWentWrong"))))
       .finally(() => setLoading(false));
   }, [user, ta]);
@@ -172,6 +176,13 @@ export default function BuyerProfilePage() {
           </Link>
           <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
           <p className="mt-1 text-emerald-200/80">{t("subtitle")}</p>
+          {buyerNumber && (
+            <p className="mt-4 inline-block rounded-xl bg-white/10 px-4 py-2 text-white">
+              <span className="text-sm text-emerald-100">{t("registrationNumber")}: </span>
+              <span className="text-lg font-extrabold tracking-wide">{buyerNumber}</span>
+              <span className="ml-2 text-xs text-emerald-200/80">{t("registrationNumberHint")}</span>
+            </p>
+          )}
         </div>
       </section>
 

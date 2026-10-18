@@ -4,6 +4,7 @@ import type { NextResponse } from "next/server";
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
 import { normalizeLoginPhone, normalizePassportNumber } from "@/lib/login-id";
+import { assignBuyerNumberQuietly } from "@/lib/server/buyer-numbers";
 
 const envSecret = process.env.JWT_SECRET;
 if (!envSecret) {
@@ -54,6 +55,8 @@ export async function createUserAccount(
     [name, email, passwordHash, role, country || ""]
   );
   const user: SessionUser = { id: result.insertId, name, email, role, country: country || "" };
+  // Every buyer gets a registration number (TUE0001, ...) the moment the account exists.
+  if (role === "buyer") await assignBuyerNumberQuietly(result.insertId);
   return { user, token: signSessionToken(user) };
 }
 

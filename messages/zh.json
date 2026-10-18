@@ -336,7 +336,9 @@
         "confirmed": "已确认参加。请在现场扫描二维码签到。",
         "feedback": "请分享您对展会的反馈。"
       }
-    }
+    },
+    "registrationNumber": "您的注册编号",
+    "registrationNumberHint": "联系我们时请提供此编号。"
   },
   "exhibitorDashboard": {
     "title": "展商控制台",
@@ -993,7 +995,7 @@
     "subtitle": "共有 {count} 位注册用户",
     "accessDenied": "拒绝访问",
     "backToAdmin": "返回管理后台",
-    "searchPlaceholder": "按姓名或邮箱搜索...",
+    "searchPlaceholder": "按姓名、邮箱或注册编号搜索...",
     "role": "角色",
     "statusColumn": "状态",
     "joined": "注册时间",
@@ -2812,7 +2814,9 @@
       "verified": "已通过",
       "rejected": "已驳回",
       "rejectedReason": "已驳回:{reason}"
-    }
+    },
+    "registrationNumber": "您的注册编号",
+    "registrationNumberHint": "联系我们时请提供此编号。"
   },
   "adminBuyerProfiles": {
     "backToAdmin": "← 返回管理后台",
@@ -2834,7 +2838,7 @@
     "deselectAllFields": "取消全选",
     "fileTooLarge": "文件过大(最大 8MB)",
     "accessDenied": "拒绝访问。需要管理员登录。",
-    "searchPlaceholder": "按任意字段搜索:姓名、邮箱、展会、国籍、护照号码、性别、微信号、出发城市...",
+    "searchPlaceholder": "按注册编号(TUE0012)或任意字段搜索:姓名、邮箱、展会、国籍、护照号码、微信号...",
     "company": "公司",
     "nationality": "国籍",
     "documentsColumn": "证件资料",
@@ -2908,7 +2912,16 @@
     "filterByExpo": "按展会筛选",
     "allExpos": "全部展会",
     "manageExpos": "编辑展会列表",
-    "noEmail": "无邮箱（用手机号/护照号登录）"
+    "noEmail": "无邮箱（用手机号/护照号登录）",
+    "selectByNumbers": {
+      "toggle": "按注册编号选择",
+      "hint": "粘贴注册编号:每行一个或用逗号分隔(TUE0001, TUE0004),也可以写范围,如 TUE0010-TUE0025。",
+      "placeholder": "TUE0001, TUE0004\nTUE0010-TUE0025",
+      "apply": "选择这些买家",
+      "found": "已选择 {count} 位买家。",
+      "notFound": "未找到买家:{list}"
+    },
+    "exportAlwaysIncluded": "注册编号、姓名和账号邮箱始终包含在内。"
   },
   "homepageSlideshow": {
     "previous": "上一张照片",
@@ -3561,7 +3574,8 @@
     "layoutCol": "读取方式",
     "hiddenTag": "隐藏",
     "noPeopleFound": "未找到人员，请检查此工作表",
-    "downloadReview": "下载核对清单 (CSV)"
+    "downloadReview": "下载核对清单 (CSV)",
+    "buyerNumberColumn": "注册编号"
   },
   "expoRegistrationStatus": {
     "title": "您的报名",
@@ -3626,7 +3640,8 @@
       "submit": "提交反馈",
       "submitting": "提交中...",
       "thanks": "感谢您的反馈。"
-    }
+    },
+    "registrationNumber": "注册编号"
   },
   "expoCheckIn": {
     "loading": "加载中...",

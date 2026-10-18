@@ -1,5 +1,6 @@
 "use client";
 import { isPlaceholderEmail } from "@/lib/login-id";
+import { parseBuyerNumber } from "@/lib/buyer-number";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -16,6 +17,8 @@ interface AdminUser {
   status: "active" | "suspended";
   country: string;
   createdAt: number;
+  // TUE0001 ... for buyers; empty for other roles.
+  buyerNumber: string;
 }
 
 const ROLES = ["buyer", "exhibitor", "partner", "admin"];
@@ -62,6 +65,8 @@ export default function AdminUsersPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || t("updateFailed"));
       setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, ...patch } : u)));
+      // Making someone a buyer gives them a registration number -- fetch it.
+      if (patch.role === "buyer") await loadUsers();
     } catch (err) {
       setError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
@@ -109,7 +114,10 @@ export default function AdminUsersPage() {
   const filtered = users.filter((u) => {
     const q = search.trim().toLowerCase();
     if (!q) return true;
-    return u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
+    // "TUE12", "tue0012" and "12" all find buyer number 12.
+    const asNumber = /^(tue)?\s*\d+$/i.test(q) ? parseBuyerNumber(q) : null;
+    if (asNumber !== null && parseBuyerNumber(u.buyerNumber) === asNumber) return true;
+    return u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.buyerNumber.toLowerCase().includes(q);
   });
 
   return (
@@ -170,6 +178,7 @@ export default function AdminUsersPage() {
                     return (
                       <tr key={u.id} className="hover:bg-cream-50">
                         <td className="px-6 py-4">
+                          {u.buyerNumber && <div className="text-xs font-bold tracking-wide text-emerald-700">{u.buyerNumber}</div>}
                           <div className="font-semibold text-gray-900">{u.name}</div>
                           <div className="text-xs text-gray-400">{isPlaceholderEmail(u.email) ? t("noEmail") : u.email}</div>
                         </td>

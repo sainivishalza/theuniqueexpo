@@ -10,6 +10,7 @@ type Status = "created" | "expo_added" | "already_registered" | "failed";
 interface ImportResult {
   row: number;
   name: string;
+  buyerNumber?: string;
   loginId: string;
   password: string | null;
   status: Status;
@@ -55,9 +56,9 @@ const STATUS_STYLES: Record<Status, string> = {
 };
 
 function downloadCsv(results: ImportResult[]) {
-  const header = "row,name,login,password,status,note";
+  const header = "row,buyer number,name,login,password,status,note";
   const lines = results.map((r) =>
-    [r.row, r.name, r.loginId, r.password ?? "", r.status, r.reason ?? ""].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")
+    [r.row, r.buyerNumber ?? "", r.name, r.loginId, r.password ?? "", r.status, r.reason ?? ""].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")
   );
   const blob = new Blob(["﻿" + [header, ...lines].join("\r\n")], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -298,6 +299,7 @@ export default function ImportBuyersPage() {
                   <thead className="bg-cream-50 border-b border-gray-100">
                     <tr>
                       <th className="text-left px-4 py-3 font-semibold text-gray-600">#</th>
+                      <th className="text-left px-4 py-3 font-semibold text-gray-600">{t("buyerNumberColumn")}</th>
                       <th className="text-left px-4 py-3 font-semibold text-gray-600">{ta("name")}</th>
                       <th className="text-left px-4 py-3 font-semibold text-gray-600">{t("loginColumn")}</th>
                       <th className="text-left px-4 py-3 font-semibold text-gray-600">{t("passwordColumn")}</th>
@@ -308,6 +310,7 @@ export default function ImportBuyersPage() {
                     {shown.map((r) => (
                       <tr key={r.row} className="hover:bg-cream-50">
                         <td className="px-4 py-2.5 text-gray-400">{r.row}</td>
+                        <td className="px-4 py-2.5 font-bold text-emerald-700 whitespace-nowrap">{r.buyerNumber || "—"}</td>
                         <td className="px-4 py-2.5">{r.name}</td>
                         <td className="px-4 py-2.5 text-gray-500 break-all">{r.loginId}</td>
                         <td className="px-4 py-2.5 font-mono text-xs">{r.password ?? "—"}</td>

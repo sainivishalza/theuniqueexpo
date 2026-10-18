@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { requireAdmin, createUserAccount } from "@/lib/auth-server";
+import { getBuyerNumber } from "@/lib/server/buyer-numbers";
 import { upsertBuyerProfileFields, type BuyerProfileFields } from "@/lib/server/buyer-profile-repo";
 import { addBuyerExpoIds, findOrCreateExpoIds } from "@/lib/server/buyer-expos-repo";
 import { normalizeLoginPhone, normalizePassportNumber, placeholderEmail } from "@/lib/login-id";
@@ -42,6 +43,8 @@ type ImportStatus = "created" | "expo_added" | "already_registered" | "failed";
 interface ImportResult {
   row: number;
   name: string;
+  // The buyer's registration number (TUE0001) -- new or existing account.
+  buyerNumber?: string;
   loginId: string;
   password: string | null;
   status: ImportStatus;
@@ -121,10 +124,11 @@ export async function POST(request: Request) {
       if (existing) {
         if (existing.role !== "buyer") { fail(`Already registered as a ${existing.role} account (#${existing.id}), not a buyer`); continue; }
         const added = await addBuyerExpoIds(existing.id, expoIds);
+        const buyerNumber = await getBuyerNumber(existing.id);
         results.push({
-          row, name, loginId, password: null,
+          row, name, buyerNumber, loginId, password: null,
           status: added > 0 ? "expo_added" : "already_registered",
-          reason: `Existing account #${existing.id}`,
+          reason: `Existing account ${buyerNumber || `#${existing.id}`}`,
         });
         continue;
       }
@@ -145,7 +149,7 @@ export async function POST(request: Request) {
       await upsertBuyerProfileFields(created.id, profile);
       await addBuyerExpoIds(created.id, expoIds);
 
-      results.push({ row, name, loginId, password, status: "created" });
+      results.push({ row, name, buyerNumber: await getBuyerNumber(created.id), loginId, password, status: "created" });
     } catch (err) {
       console.error(`Buyer import failed for row ${row}:`, err);
       fail("Could not create account");

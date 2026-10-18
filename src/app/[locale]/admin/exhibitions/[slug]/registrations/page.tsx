@@ -14,7 +14,7 @@ import Card from "@/components/ui/Card";
 interface Exhibition { id: string; slug: string; title: string; startDate: string; endDate: string; }
 type RegistrationSummary = Pick<
   ExpoRegistration,
-  "id" | "registrationType" | "fullName" | "gender" | "email" | "phone" | "nationality" |
+  "id" | "buyerNumber" | "registrationType" | "fullName" | "gender" | "email" | "phone" | "nationality" |
   "companyName" | "companyWebsite" | "companyType" | "companyScale" | "purposeOfVisit" |
   "exportingMarkets" | "createdAt" | "customAnswers" | "formSchemaSnapshot" |
   "approvedAt" | "confirmBy" | "confirmedAt" | "arrivalDate" | "arrivalNote" |
@@ -260,7 +260,10 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {visible.map((r) => (
                   <tr key={r.id} className="hover:bg-cream-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{displayName(r, tr("registrationNumber", { id: r.id }))}<br/><span className="text-xs text-gray-400">{r.nationality || "—"}</span></td>
+                    <td className="px-6 py-4 font-medium text-gray-900">
+                      {r.buyerNumber && <span className="block text-xs font-bold tracking-wide text-emerald-700">{r.buyerNumber}</span>}
+                      {displayName(r, tr("registrationNumber", { id: r.id }))}<br/><span className="text-xs text-gray-400">{r.nationality || "—"}</span>
+                    </td>
                     <td className="px-6 py-4 capitalize text-gray-700">{r.registrationType || (r.customAnswers ? t("customForm") : "—")}</td>
                     <td className="px-6 py-4 text-gray-500">{r.companyName || "—"}</td>
                     <td className="px-6 py-4 text-gray-500">{r.email || "—"}<br/><span className="text-xs text-gray-400">{r.phone || ""}</span></td>
@@ -370,7 +373,10 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
             ) : detail && (
               <>
                 <div className="flex items-start justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-heading">{displayName(detail, tr("registrationNumber", { id: detail.id }))}</h2>
+                  <div>
+                    {detail.buyerNumber && <p className="text-sm font-bold tracking-wide text-emerald-700">{detail.buyerNumber}</p>}
+                    <h2 className="text-2xl font-bold text-heading">{displayName(detail, tr("registrationNumber", { id: detail.id }))}</h2>
+                  </div>
                   <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600" aria-label={ta("close")}>✕</button>
                 </div>
 

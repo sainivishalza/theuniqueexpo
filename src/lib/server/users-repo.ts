@@ -1,5 +1,7 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
+import { formatBuyerNumber } from "@/lib/buyer-number";
+import { assignBuyerNumberQuietly, assignMissingBuyerNumbers } from "@/lib/server/buyer-numbers";
 
 export interface AdminUserView {
   id: number;
@@ -9,6 +11,8 @@ export interface AdminUserView {
   status: "active" | "suspended";
   country: string;
   createdAt: number;
+  // TUE0001 ... for buyers; empty for every other role.
+  buyerNumber: string;
 }
 
 function mapUserRow(row: RowDataPacket): AdminUserView {
@@ -20,19 +24,21 @@ function mapUserRow(row: RowDataPacket): AdminUserView {
     status: row.status,
     country: row.country,
     createdAt: Math.floor(new Date(row.created_at).getTime() / 1000),
+    buyerNumber: formatBuyerNumber(row.buyer_no),
   };
 }
 
 export async function listUsers(): Promise<AdminUserView[]> {
+  await assignMissingBuyerNumbers();
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT id, name, email, role, status, country, created_at FROM users ORDER BY created_at DESC"
+    "SELECT id, name, email, role, status, country, created_at, buyer_no FROM users ORDER BY created_at DESC"
   );
   return rows.map(mapUserRow);
 }
 
 export async function getUserById(id: number): Promise<AdminUserView | null> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT id, name, email, role, status, country, created_at FROM users WHERE id = ? LIMIT 1",
+    "SELECT id, name, email, role, status, country, created_at, buyer_no FROM users WHERE id = ? LIMIT 1",
     [id]
   );
   const row = rows[0];
@@ -63,6 +69,8 @@ export async function updateUser(id: number, input: { role?: string; status?: "a
   if (fields.length === 0) return;
   values.push(id);
   await pool.query<ResultSetHeader>(`UPDATE users SET ${fields.join(", ")} WHERE id = ?`, values);
+  // Someone made a buyer by an admin changing their role gets a number too.
+  if (input.role === "buyer") await assignBuyerNumberQuietly(id);
 }
 
 export async function deleteUser(id: number) {

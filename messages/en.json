@@ -336,7 +336,9 @@
         "confirmed": "Attendance confirmed. Scan the QR code at the venue to check in.",
         "feedback": "Share your feedback about the exhibition."
       }
-    }
+    },
+    "registrationNumber": "Your registration number",
+    "registrationNumberHint": "Quote it whenever you contact us."
   },
   "exhibitorDashboard": {
     "title": "Exhibitor Dashboard",
@@ -993,7 +995,7 @@
     "subtitle": "{count} registered users",
     "accessDenied": "Access denied",
     "backToAdmin": "Back to Admin",
-    "searchPlaceholder": "Search by name or email...",
+    "searchPlaceholder": "Search by name, email or registration number...",
     "role": "Role",
     "statusColumn": "Status",
     "joined": "Joined",
@@ -2812,7 +2814,9 @@
       "verified": "Verified",
       "rejected": "Rejected",
       "rejectedReason": "Rejected: {reason}"
-    }
+    },
+    "registrationNumber": "Your registration number",
+    "registrationNumberHint": "Quote it whenever you contact us."
   },
   "adminBuyerProfiles": {
     "backToAdmin": "← Back to Admin",
@@ -2834,7 +2838,7 @@
     "deselectAllFields": "Deselect all",
     "fileTooLarge": "File is too large (max 8MB)",
     "accessDenied": "Access denied. Admin login required.",
-    "searchPlaceholder": "Search by any field: name, email, exhibition, nationality, passport no., gender, WeChat ID, departure city...",
+    "searchPlaceholder": "Search by registration no. (TUE0012) or any field: name, email, exhibition, nationality, passport no., WeChat ID...",
     "company": "Company",
     "nationality": "Nationality",
     "documentsColumn": "Documents",
@@ -2908,7 +2912,16 @@
     "filterByExpo": "Filter by expo",
     "allExpos": "All expos",
     "manageExpos": "Edit expo list",
-    "noEmail": "No email (signs in with phone / passport)"
+    "noEmail": "No email (signs in with phone / passport)",
+    "selectByNumbers": {
+      "toggle": "Select by registration numbers",
+      "hint": "Paste registration numbers, one per line or separated by commas (TUE0001, TUE0004), or a range like TUE0010-TUE0025.",
+      "placeholder": "TUE0001, TUE0004\nTUE0010-TUE0025",
+      "apply": "Select these buyers",
+      "found": "{count, plural, one {# buyer selected.} other {# buyers selected.}}",
+      "notFound": "No buyer with: {list}"
+    },
+    "exportAlwaysIncluded": "The registration number, name and account email are always included."
   },
   "homepageSlideshow": {
     "previous": "Previous photo",
@@ -3561,7 +3574,8 @@
     "layoutCol": "How it was read",
     "hiddenTag": "hidden",
     "noPeopleFound": "no people found, check this sheet",
-    "downloadReview": "Download review list (CSV)"
+    "downloadReview": "Download review list (CSV)",
+    "buyerNumberColumn": "Reg. no."
   },
   "expoRegistrationStatus": {
     "title": "Your registration",
@@ -3626,7 +3640,8 @@
       "submit": "Send feedback",
       "submitting": "Sending...",
       "thanks": "Thank you for your feedback."
-    }
+    },
+    "registrationNumber": "Registration no."
   },
   "expoCheckIn": {
     "loading": "Loading...",

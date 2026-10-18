@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import Card from "@/components/ui/Card";
@@ -29,6 +30,15 @@ export default function BuyerDashboard() {
     description: t(`actions.${a.key}.description`),
   }));
   const { user } = useAuth();
+  // The buyer's registration number (TUE0001); stays hidden if it can't be loaded.
+  const [buyerNumber, setBuyerNumber] = useState("");
+  useEffect(() => {
+    if (!user) return;
+    fetch("/api/buyer-profile")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => setBuyerNumber(data?.buyerNumber || ""))
+      .catch(() => {});
+  }, [user]);
 
   return (
     <div>
@@ -42,6 +52,12 @@ export default function BuyerDashboard() {
               <p className="mt-1 text-emerald-200/80">
                 {t("welcome", { name: user?.name ? `, ${user.name}` : "" })}
               </p>
+              {buyerNumber && (
+                <p className="mt-2 text-sm text-emerald-100">
+                  {t("registrationNumber")}: <span className="text-base font-extrabold tracking-wide text-white">{buyerNumber}</span>
+                  <span className="ml-2 text-xs text-emerald-200/80">{t("registrationNumberHint")}</span>
+                </p>
+              )}
             </div>
           </div>
           {/* Stats */}

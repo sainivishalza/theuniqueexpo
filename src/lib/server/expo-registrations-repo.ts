@@ -2,6 +2,7 @@ import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
 import { safeParseArray, safeParseJson, stripFileAnswers } from "@/lib/server/db-helpers";
 import { translateString } from "@/lib/server/content-translations";
+import { formatBuyerNumber } from "@/lib/buyer-number";
 import type { ExpoRegistration, ExpoRegistrationInput } from "@/lib/expo-registrations";
 import {
   availableActions,
@@ -30,6 +31,7 @@ function mapRow(row: RowDataPacket): ExpoRegistration {
   return {
     id: String(row.id),
     userId: String(row.user_id),
+    buyerNumber: formatBuyerNumber(row.buyer_no),
     exhibitionId: row.exhibition_id,
     registrationType: row.registration_type,
     gender: row.gender,
@@ -79,6 +81,7 @@ function mapSummaryRow(row: RowDataPacket) {
   const formSchemaSnapshot = safeParseJson(row.form_schema_snapshot);
   return {
     id: String(row.id),
+    buyerNumber: formatBuyerNumber(row.buyer_no),
     exhibitionId: row.exhibition_id,
     registrationType: row.registration_type,
     gender: row.gender,
@@ -263,8 +266,8 @@ export async function getLatestRegistrationForUser(userId: number): Promise<Expo
 
 export async function listRegistrationsForExhibition(exhibitionId: number) {
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT r.*, ${EFFECTIVE_STATUS_SQL} AS effective_status, (r.doc_ticket IS NOT NULL AND r.doc_ticket <> '') AS has_ticket
-     FROM expo_registrations r WHERE r.exhibition_id = ? ORDER BY r.created_at DESC`,
+    `SELECT r.*, u.buyer_no, ${EFFECTIVE_STATUS_SQL} AS effective_status, (r.doc_ticket IS NOT NULL AND r.doc_ticket <> '') AS has_ticket
+     FROM expo_registrations r LEFT JOIN users u ON u.id = r.user_id WHERE r.exhibition_id = ? ORDER BY r.created_at DESC`,
     [exhibitionId]
   );
   return rows.map(mapSummaryRow);
@@ -272,7 +275,7 @@ export async function listRegistrationsForExhibition(exhibitionId: number) {
 
 export async function getRegistrationById(id: number): Promise<ExpoRegistration | null> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT r.*, ${EFFECTIVE_STATUS_SQL} AS effective_status FROM expo_registrations r WHERE r.id = ? LIMIT 1`,
+    `SELECT r.*, u.buyer_no, ${EFFECTIVE_STATUS_SQL} AS effective_status FROM expo_registrations r LEFT JOIN users u ON u.id = r.user_id WHERE r.id = ? LIMIT 1`,
     [id]
   );
   const row = rows[0];

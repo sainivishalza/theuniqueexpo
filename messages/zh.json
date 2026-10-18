@@ -3441,11 +3441,11 @@
   "adminImportBuyers": {
     "backToUsers": "← 返回用户",
     "title": "从展会表格导入采购商",
-    "subtitle": "上传准备好的采购商文件。不会重复注册任何人。",
+    "subtitle": "上传包含展会工作表的 Excel 文件。不会重复注册任何人。",
     "ruleExisting": "已注册的人（相同邮箱或护照号）不会被重复创建，其资料也不会被更改——只会为其添加文件中的展会。",
     "ruleNoEmail": "没有邮箱的人使用手机号或护照号登录。",
     "rulePassword": "密码为其手机号（没有手机号则为微信号）。之后可自行修改。",
-    "fileLabel": "采购商文件（文件名不限）",
+    "fileLabel": "或使用准备好的 JSON 文件（文件名不限）",
     "invalidFile": "该文件不是有效的采购商文件",
     "fileLoaded": "已加载 {name}：{count} 位采购商",
     "start": "导入 {count} 位采购商",
@@ -3466,6 +3466,21 @@
     "pastePlaceholder": "{\"buyers\": [ ... ]}",
     "pastedName": "粘贴的文本",
     "notJson": "无法按 JSON 读取（{size} 个字符，开头为：{start}）",
-    "noBuyersList": "未找到 \"buyers\" 列表（顶层键：{keys}）"
+    "noBuyersList": "未找到 \"buyers\" 列表（顶层键：{keys}）",
+    "excelLabel": "Excel 文件 (.xlsx)",
+    "excelHint": "上传包含展会工作表的 Excel 文件。同一个人出现在多个工作表中只会成为一位采购商；在您点击“导入”之前不会保存任何内容。",
+    "reading": "正在读取 Excel 文件...",
+    "readFailed": "无法读取该 Excel 文件",
+    "parsedSummary": "已读取 {rows} 行，共 {sheets} 个工作表。",
+    "readyCount": "{count} 人可导入（{email} 人用邮箱登录，{phone} 人用手机号，{passport} 人用护照号）",
+    "heldCount": "{count} 人需要人工核对（信息不一致）——不导入",
+    "skippedCount": "{count} 人没有邮箱、手机号或护照号——不导入",
+    "sheetCol": "工作表",
+    "expoCol": "展会",
+    "rowsCol": "行数",
+    "layoutCol": "读取方式",
+    "hiddenTag": "隐藏",
+    "noPeopleFound": "未找到人员，请检查此工作表",
+    "downloadReview": "下载核对清单 (CSV)"
   }
 }

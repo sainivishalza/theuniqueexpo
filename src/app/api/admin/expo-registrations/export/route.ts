@@ -6,7 +6,13 @@ import { listRegistrationsForExhibition } from "@/lib/server/expo-registrations-
 const COLUMNS = [
   "id", "registrationType", "fullName", "gender", "email", "phone", "nationality",
   "companyName", "companyWebsite", "companyType", "companyScale", "purposeOfVisit",
-  "exportingMarkets", "passportNumber", "status", "createdAt",
+  "exportingMarkets", "passportNumber",
+] as const;
+
+// What happened after the sign-up form, appended to both export layouts.
+const LIFECYCLE_COLUMNS = [
+  "effectiveStatus", "createdAt", "approvedAt", "confirmBy", "confirmedAt", "arrivalDate", "arrivalNote",
+  "checkedInAt", "checkedOutAt", "cancelledAt", "feedbackRating", "feedbackComment",
 ] as const;
 
 // CSV/formula injection: a registrant-controlled field (name, company,
@@ -41,7 +47,7 @@ export async function GET(request: Request) {
   const schema = exhibition.registrationFormSchema;
   let lines: string[];
   if (schema && schema.length > 0) {
-    const headers = ["id", ...schema.map((f) => f.label), "status", "createdAt"];
+    const headers = ["id", ...schema.map((f) => f.label), ...LIFECYCLE_COLUMNS];
     lines = [
       headers.map(csvCell).join(","),
       ...registrations.map((r) => {
@@ -49,16 +55,15 @@ export async function GET(request: Request) {
         const cells = [
           r.id,
           ...schema.map((f) => (f.type === "file" ? (answers[f.id] ? "Uploaded" : "") : answers[f.id])),
-          r.status,
-          r.createdAt,
+          ...LIFECYCLE_COLUMNS.map((col) => (r as Record<string, unknown>)[col]),
         ];
         return cells.map(csvCell).join(",");
       }),
     ];
   } else {
     lines = [
-      COLUMNS.join(","),
-      ...registrations.map((r) => COLUMNS.map((col) => csvCell((r as Record<string, unknown>)[col])).join(",")),
+      [...COLUMNS, ...LIFECYCLE_COLUMNS].join(","),
+      ...registrations.map((r) => [...COLUMNS, ...LIFECYCLE_COLUMNS].map((col) => csvCell((r as Record<string, unknown>)[col])).join(",")),
     ];
   }
   const csv = "﻿" + lines.join("\r\n");

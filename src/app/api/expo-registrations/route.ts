@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import type { RowDataPacket } from "mysql2/promise";
-import pool from "@/lib/db";
+import pool, { isDuplicateEntryError } from "@/lib/db";
 import { getSessionUser, createUserAccount, verifyUserPassword, setSessionCookie, type SessionUser } from "@/lib/auth-server";
 import { getExhibitionBySlugOrId } from "@/lib/server/exhibitions-repo";
 import {
   createExpoRegistration,
   createCustomExpoRegistration,
   findExistingRegistration,
+  rewriteRegistration,
 } from "@/lib/server/expo-registrations-repo";
-import { validateExpoRegistration, type ExpoRegistrationInput } from "@/lib/expo-registrations";
-import { validateCustomAnswers } from "@/lib/custom-registration-form";
+import type { ExpoRegistrationInput } from "@/lib/expo-registrations";
+import { parseFormSubmission } from "@/lib/server/expo-registration-form";
+import { canRegisterAgain } from "@/lib/registration-lifecycle";
 import { checkLoginRateLimit, resetLoginRateLimit } from "@/lib/server/rate-limit";
 import { upgradeReferralStatus } from "@/lib/server/partner-referrals-repo";
 
@@ -95,32 +97,39 @@ async function handlePost(request: Request): Promise<NextResponse> {
   }
 
   const existing = await findExistingRegistration(Number(exhibition.id), user.id);
-  if (existing) {
+  // A registration the buyer cancelled can be submitted again; every other
+  // existing one stays as it is.
+  if (existing && !canRegisterAgain(existing.status)) {
     return NextResponse.json({ error: "You've already registered for this expo" }, { status: 409 });
   }
 
-  const schema = exhibition.registrationFormSchema;
-  let response: NextResponse;
-
-  if (schema && schema.length > 0) {
-    const validationError = validateCustomAnswers(schema, customAnswers || {});
-    if (validationError) {
-      return NextResponse.json({ error: validationError }, { status: 400 });
-    }
-    const id = await createCustomExpoRegistration(user.id, Number(exhibition.id), customAnswers || {}, schema);
-    response = NextResponse.json({ id, user });
-  } else {
-    const fullInput = { ...input, email: email || "", fullName: fullName || "" };
-    const validationError = validateExpoRegistration(fullInput);
-    if (validationError) {
-      return NextResponse.json({ error: validationError }, { status: 400 });
-    }
-    const id = await createExpoRegistration(user.id, {
-      ...(fullInput as ExpoRegistrationInput),
-      exhibitionId: Number(exhibition.id),
-    });
-    response = NextResponse.json({ id, user });
+  const parsed = parseFormSubmission(exhibition, customAnswers, { ...input, email: email || "", fullName: fullName || "" });
+  if ("error" in parsed) {
+    return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
+  const { form } = parsed;
+
+  let id: number;
+  try {
+    if (existing) {
+      const rewritten = await rewriteRegistration(existing.id, user.id, "resubmit", form);
+      if (!rewritten) {
+        return NextResponse.json({ error: "You've already registered for this expo" }, { status: 409 });
+      }
+      id = existing.id;
+    } else if (form.kind === "custom") {
+      id = await createCustomExpoRegistration(user.id, Number(exhibition.id), form.answers, form.schema);
+    } else {
+      id = await createExpoRegistration(user.id, form.input);
+    }
+  } catch (err) {
+    // Two submits at the same moment: the second one hits the one-registration-per-expo rule.
+    if (isDuplicateEntryError(err)) {
+      return NextResponse.json({ error: "You've already registered for this expo" }, { status: 409 });
+    }
+    throw err;
+  }
+  const response = NextResponse.json({ id, user });
 
   if (newSessionToken) setSessionCookie(response, newSessionToken);
 

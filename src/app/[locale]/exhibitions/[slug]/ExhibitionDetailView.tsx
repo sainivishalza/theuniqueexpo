@@ -14,6 +14,7 @@ import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
 import RelatedVideos from "@/components/RelatedVideos";
 import NeedHelpAttending from "@/components/NeedHelpAttending";
+import ExpoRegistrationStatus from "@/components/ExpoRegistrationStatus";
 
 export interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -261,16 +262,23 @@ export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null
 
             {/* Right: sidebar */}
             <div className="space-y-6">
-              {/* Buyer/Visitor registration CTA */}
-              {expo.registrationEnabled && (
-                <Card shadow="sm" className="p-6">
-                  <h3 className="text-lg font-bold text-heading mb-2">{t("registerToAttend")}</h3>
-                  <p className="text-sm text-gray-500 mb-5">{t("registerToAttendHint")}</p>
-                  <Button href={`/exhibitions/${expo.slug}/register`} variant="gradientCta" size="block">
-                    {t("registerAsBuyerVisitor")}
-                  </Button>
-                </Card>
-              )}
+              {/* Buyer/Visitor registration: the call to action until the visitor
+                  has registered, then their own status and next step. */}
+              <ExpoRegistrationStatus
+                exhibitionSlug={expo.slug}
+                registrationEnabled={expo.registrationEnabled}
+                fallback={
+                  expo.registrationEnabled ? (
+                    <Card shadow="sm" className="p-6">
+                      <h3 className="text-lg font-bold text-heading mb-2">{t("registerToAttend")}</h3>
+                      <p className="text-sm text-gray-500 mb-5">{t("registerToAttendHint")}</p>
+                      <Button href={`/exhibitions/${expo.slug}/register`} variant="gradientCta" size="block">
+                        {t("registerAsBuyerVisitor")}
+                      </Button>
+                    </Card>
+                  ) : null
+                }
+              />
 
               {/* Booking CTA */}
               <Card shadow="sm" className="p-6">

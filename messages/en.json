@@ -309,6 +309,33 @@
         "title": "My Profile",
         "description": "Company info, passport, and documents"
       }
+    },
+    "registrations": {
+      "title": "My Registrations",
+      "subtitle": "Every exhibition you've registered for, and what to do next.",
+      "back": "← Back to dashboard",
+      "loading": "Loading...",
+      "loadFailed": "Couldn't load your registrations. Please try again.",
+      "emptyTitle": "No registrations yet",
+      "emptyHint": "Pick an exhibition and register, and it will show up here.",
+      "browse": "Browse exhibitions",
+      "manage": "Open exhibition page →",
+      "statusLabels": {
+        "pending": "Waiting for review",
+        "approved": "Approved",
+        "confirmed": "Attendance confirmed",
+        "attended": "Attended",
+        "rejected": "Not approved",
+        "cancelled": "Cancelled",
+        "expired": "Expired",
+        "absent": "Absent"
+      },
+      "hints": {
+        "approved": "Approved — please confirm your attendance.",
+        "confirmBy": "Please confirm attendance by {date}.",
+        "confirmed": "Attendance confirmed. Scan the QR code at the venue to check in.",
+        "feedback": "Share your feedback about the exhibition."
+      }
     }
   },
   "exhibitorDashboard": {
@@ -1107,7 +1134,12 @@
     "statuses": {
       "pending": "pending",
       "approved": "approved",
-      "rejected": "rejected"
+      "rejected": "rejected",
+      "confirmed": "confirmed",
+      "attended": "attended",
+      "cancelled": "cancelled",
+      "absent": "absent",
+      "expired": "expired"
     }
   },
   "adminTourRegistrations": {
@@ -1154,6 +1186,48 @@
       "visaPage": "Visa Page",
       "businessLicense": "Business License",
       "orderList": "Order List"
+    },
+    "filterByStatus": "Filter by status",
+    "filterAll": "All ({count})",
+    "progress": "Progress",
+    "changeStatus": "Change status for {name}",
+    "progressLines": {
+      "confirmBy": "Confirm by {date}",
+      "confirmed": "Confirmed {date}",
+      "arrival": "Arrives {date}",
+      "ticket": "Ticket uploaded",
+      "checkedIn": "In: {time}",
+      "checkedOut": "Out: {time}",
+      "feedback": "Feedback: {rating}/5"
+    },
+    "approve": {
+      "title": "Approve {name}",
+      "hint": "The buyer must confirm attendance by this date, otherwise the place is released. Seats are limited.",
+      "confirmBy": "Confirm attendance by",
+      "leaveBlank": "Leave blank to use the day before the exhibition starts.",
+      "showOver": "This exhibition is already over, so no confirm-by date is needed.",
+      "submit": "Approve"
+    },
+    "checkInQr": {
+      "button": "Check-in QR code",
+      "title": "Check-in QR code",
+      "hint": "Print or show this code at the venue. Confirmed buyers scan it with their phone to check in and out.",
+      "alt": "Check-in QR code for {name}",
+      "download": "Download QR code",
+      "copyLink": "Copy link",
+      "copied": "Copied"
+    },
+    "lifecycle": {
+      "confirmBy": "Confirm by",
+      "approvedAt": "Approved",
+      "confirmedAt": "Attendance confirmed",
+      "arrivalDate": "Arrival date",
+      "arrivalNote": "Travel details",
+      "checkedIn": "Checked in",
+      "checkedOut": "Checked out",
+      "cancelledAt": "Cancelled",
+      "feedback": "Feedback",
+      "ticket": "Travel ticket"
     }
   },
   "adminToursCrud": {
@@ -1342,7 +1416,7 @@
     "registrationClosedHint": "Registration for <strong>{name}</strong> is not currently open.",
     "backTo": "← Back to {name}",
     "registrationSubmitted": "Registration Submitted!",
-    "registrationSubmittedHint": "Your registration for <strong>{name}</strong> has been received. Our team will review it shortly.",
+    "registrationSubmittedHint": "Your registration for <strong>{name}</strong> has been received. Our team will review it shortly. You can follow its progress on the exhibition page or under My Registrations in your dashboard.",
     "registerFor": "Register for {name}",
     "datesLine": "{dates} • Registration is required separately for each exhibition.",
     "yourAccount": "Your Account",
@@ -1398,7 +1472,13 @@
       "visaPage": "Visa Page",
       "businessLicense": "Business License",
       "orderList": "Order List (if any)"
-    }
+    },
+    "editRegistrationFor": "Edit your registration for {name}",
+    "saveChanges": "Save changes",
+    "registrationUpdated": "Registration updated!",
+    "registrationUpdatedHint": "Your changes for <strong>{name}</strong> have been saved. Our team will review your registration.",
+    "yourRegistrationFor": "Your registration for {name}",
+    "alreadyRegisteredHint": "You have already registered for this exhibition. Here is where it stands."
   },
   "floorPlanPage": {
     "loading": "Loading...",
@@ -3482,5 +3562,111 @@
     "hiddenTag": "hidden",
     "noPeopleFound": "no people found, check this sheet",
     "downloadReview": "Download review list (CSV)"
+  },
+  "expoRegistrationStatus": {
+    "title": "Your registration",
+    "statusLabels": {
+      "pending": "Waiting for review",
+      "approved": "Approved",
+      "confirmed": "Attendance confirmed",
+      "attended": "Attended",
+      "rejected": "Not approved",
+      "cancelled": "Cancelled",
+      "expired": "Expired",
+      "absent": "Absent"
+    },
+    "messages": {
+      "pending": "Registration submitted. Please wait while the organiser reviews and approves it. Until then you can still edit or cancel it.",
+      "approved": "Congratulations! Your registration is approved. Seats are limited, so please confirm that you will attend.",
+      "confirmed": "You're confirmed. On the day, scan the check-in QR code at the venue to check in and out.",
+      "attended": "You've checked in at the exhibition. Thank you for coming!",
+      "rejected": "Sorry, your registration was not approved this time.",
+      "cancelled": "You cancelled this registration.",
+      "expired": "Sorry, your place expired on {date} because attendance was not confirmed in time. We hope to see you at the next exhibition.",
+      "absent": "You were marked as absent from this exhibition."
+    },
+    "confirmBy": "Please confirm by {date}, otherwise your place may be released.",
+    "registeredOn": "Registered {date}",
+    "editRegistration": "Edit registration",
+    "cancelRegistration": "Cancel registration",
+    "cancelAttendance": "Cancel attendance",
+    "cancelAreYouSure": "Cancel this registration?",
+    "cancelYes": "Yes, cancel",
+    "cancelling": "Cancelling...",
+    "cancelKeep": "Keep it",
+    "registerAgain": "Register again",
+    "actionFailed": "That didn't work. Please try again.",
+    "feedbackFailed": "Your feedback couldn't be sent. Please try again.",
+    "confirm": {
+      "heading": "Confirm your attendance",
+      "arrivalDate": "Arrival date in China (optional)",
+      "arrivalNote": "Travel details (optional)",
+      "arrivalNotePlaceholder": "e.g. flight number or hotel",
+      "ticket": "Travel ticket (optional)",
+      "chooseFile": "Choose file",
+      "replaceFile": "Replace file",
+      "fileAttached": "File attached",
+      "fileTooLarge": "File is too large. Please choose one under 8 MB.",
+      "couldNotReadFile": "Couldn't read that file. Please try again.",
+      "submit": "Confirm attendance",
+      "submitting": "Confirming..."
+    },
+    "details": {
+      "arrival": "Arrival: {date}",
+      "note": "Travel details: {note}",
+      "ticketUploaded": "Travel ticket uploaded",
+      "checkedIn": "Checked in: {time}",
+      "checkedOut": "Checked out: {time}"
+    },
+    "feedback": {
+      "heading": "How was the exhibition?",
+      "rating": "Your rating",
+      "starsLabel": "{count, plural, one {# star} other {# stars}}",
+      "comment": "Comments (optional)",
+      "submit": "Send feedback",
+      "submitting": "Sending...",
+      "thanks": "Thank you for your feedback."
+    }
+  },
+  "expoCheckIn": {
+    "loading": "Loading...",
+    "loadFailed": "Couldn't load check-in. Please try again.",
+    "invalidTitle": "This QR code can't be used",
+    "invalidHint": "The check-in code is missing or doesn't belong to this exhibition. Please scan the QR code shown at the venue.",
+    "toExhibition": "Go to the exhibition page",
+    "signInTitle": "Sign in to check in",
+    "signInHint": "Sign in with the account you registered with. You'll come straight back here.",
+    "signIn": "Sign in",
+    "notRegistered": "You haven't registered for this exhibition yet.",
+    "registerNow": "Register now",
+    "readyToCheckIn": "Press the button to check in at the venue.",
+    "checkIn": "Check in",
+    "checkOut": "Check out",
+    "working": "Please wait...",
+    "checkedInNow": "You're checked in. Welcome!",
+    "alreadyCheckedIn": "You're already checked in.",
+    "checkedInAt": "Checked in: {time}",
+    "checkedOutNow": "You're checked out. Thank you for coming!",
+    "alreadyCheckedOut": "You're already checked out.",
+    "checkedOutAt": "Checked out: {time}",
+    "leaveFeedback": "Leave your feedback →",
+    "opensOnShowDates": "Check-in opens on the exhibition days ({start} – {end}).",
+    "confirmFirst": "Please confirm your attendance first, then check in at the venue.",
+    "confirmAttendance": "Confirm attendance",
+    "blocked": {
+      "pending": "Your registration is still waiting for review, so you can't check in yet.",
+      "rejected": "Your registration was not approved, so you can't check in.",
+      "cancelled": "You cancelled this registration. Register again to check in.",
+      "expired": "Your place expired because attendance wasn't confirmed in time.",
+      "absent": "This registration was marked as absent."
+    },
+    "errors": {
+      "generic": "That didn't work. Please try again.",
+      "not_confirmed": "Please confirm your attendance first.",
+      "outside_dates": "Check-in is only open on the exhibition days.",
+      "already_done": "That step has already been done.",
+      "no_registration": "You haven't registered for this exhibition.",
+      "invalid_key": "This QR code can't be used for this exhibition."
+    }
   }
 }

@@ -10,6 +10,8 @@ import {
 } from "@/lib/expo-registrations";
 import { validateCustomAnswers, type CustomFormField, type CustomFormSchema } from "@/lib/custom-registration-form";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
+import type { MyRegistration } from "@/lib/registration-lifecycle";
+import ExpoRegistrationStatus from "@/components/ExpoRegistrationStatus";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import FormField, { fieldClasses } from "@/components/ui/FormField";
@@ -87,6 +89,10 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
   const [fileErrors, setFileErrors] = useState<Record<string, string>>({});
   const [customAnswers, setCustomAnswers] = useState<Record<string, unknown>>({});
   const [customFileErrors, setCustomFileErrors] = useState<Record<string, string>>({});
+  // The buyer's registration for this exhibition, if any: undefined until it has been looked up.
+  const [existing, setExisting] = useState<MyRegistration | null | undefined>(undefined);
+  // Set while the buyer is editing a registration that is still waiting for review.
+  const [editId, setEditId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`/api/exhibitions/${slug}?locale=${locale}`)
@@ -95,15 +101,53 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       .catch(() => setExpo(null));
   }, [slug]);
 
-  // Prefill from the customer's most recent registration (any expo) so
-  // they don't have to retype details or re-upload documents every time.
+  // Find out whether this customer has already registered for this expo. If so,
+  // show where it stands (or the edit form, while it is still waiting for review).
+  // Otherwise prefill from their most recent registration (any expo) so they don't
+  // have to retype details or re-upload documents every time.
   useEffect(() => {
-    if (!user) return;
-    fetch("/api/expo-registrations/me")
-      .then((res) => (res.ok ? res.json() : { registration: null }))
-      .then((data) => {
+    if (authLoading) return;
+    if (!user) {
+      setExisting(null);
+      return;
+    }
+    let stale = false;
+    const wantsEdit = new URLSearchParams(window.location.search).get("edit") === "1";
+    (async () => {
+      let mine: { registration: MyRegistration | null; form?: Record<string, unknown> | null } = { registration: null };
+      try {
+        const res = await fetch(`/api/expo-registrations/mine?exhibition=${encodeURIComponent(slug)}&locale=${locale}&full=1`);
+        if (res.ok) mine = await res.json();
+      } catch {}
+      if (stale) return;
+
+      const reg = mine.registration;
+      if (reg && wantsEdit && reg.actions.edit && mine.form) {
+        const stored = mine.form as Record<string, unknown> & { customAnswers?: Record<string, unknown> | null };
+        if (stored.customAnswers) {
+          setCustomAnswers(stored.customAnswers);
+        } else {
+          // Only the sign-up form's own fields, never the registration's id/status/etc.
+          const fields = Object.fromEntries(
+            (Object.keys(EMPTY_FORM) as (keyof typeof EMPTY_FORM)[]).map((k) => [k, stored[k] ?? EMPTY_FORM[k]])
+          ) as typeof EMPTY_FORM;
+          setForm({ ...fields, exportingMarkets: Array.isArray(fields.exportingMarkets) ? fields.exportingMarkets : [], docOrderList: fields.docOrderList || "" });
+        }
+        setEditId(reg.id);
+        setExisting(null);
+        return;
+      }
+      if (reg && reg.status !== "cancelled") {
+        setExisting(reg);
+        return;
+      }
+      setExisting(null);
+
+      try {
+        const res = await fetch("/api/expo-registrations/me");
+        const data = res.ok ? await res.json() : { registration: null };
         const prev = data.registration;
-        if (!prev) return;
+        if (!prev || stale) return;
         setForm((f) => ({
           ...f,
           gender: prev.gender,
@@ -126,9 +170,12 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
           docBusinessLicense: prev.docBusinessLicense,
           docOrderList: prev.docOrderList || "",
         }));
-      })
-      .catch(() => {});
-  }, [user]);
+      } catch {}
+    })();
+    return () => {
+      stale = true;
+    };
+  }, [authLoading, user, slug, locale]);
 
   async function handleFile(key: keyof typeof EMPTY_FORM, file: File | null) {
     setFileErrors((prev) => ({ ...prev, [key]: "" }));
@@ -181,14 +228,14 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
     }
     setSubmitting(true);
     try {
-      const res = await fetchWithTimeout("/api/expo-registrations", {
-        method: "POST",
+      const res = await fetchWithTimeout(editId ? `/api/expo-registrations/${editId}` : "/api/expo-registrations", {
+        method: editId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          exhibitionSlug: slug,
-          customAnswers,
-          ...(!user ? { email: accountEmail, fullName: accountName, password } : {}),
-        }),
+        body: JSON.stringify(
+          editId
+            ? { customAnswers }
+            : { exhibitionSlug: slug, customAnswers, ...(!user ? { email: accountEmail, fullName: accountName, password } : {}) }
+        ),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -219,10 +266,10 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
     setAccountExists(false);
     setSubmitting(true);
     try {
-      const res = await fetchWithTimeout("/api/expo-registrations", {
-        method: "POST",
+      const res = await fetchWithTimeout(editId ? `/api/expo-registrations/${editId}` : "/api/expo-registrations", {
+        method: editId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ exhibitionSlug: slug, ...form, ...(!user ? { password } : {}) }),
+        body: JSON.stringify(editId ? form : { exhibitionSlug: slug, ...form, ...(!user ? { password } : {}) }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -238,7 +285,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
     }
   }
 
-  if (expo === undefined || authLoading) {
+  if (expo === undefined || authLoading || (!submitted && user && existing === undefined)) {
     return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
   }
   if (!expo) {
@@ -252,25 +299,43 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       </div>
     );
   }
-  if (!expo.registrationEnabled) {
+  if (submitted) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
+          <div className="text-6xl mb-4">✅</div>
+          <h1 className="text-2xl font-bold text-heading mb-2">{editId ? t("registrationUpdated") : t("registrationSubmitted")}</h1>
+          <p className="text-gray-500 mb-6">
+            {editId
+              ? t.rich("registrationUpdatedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })
+              : t.rich("registrationSubmittedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })}
+          </p>
+          <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-[var(--radius-button)] gradient-brand px-6 py-3 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">{t("backTo", { name: expo.title })}</Link>
+        </Card>
+      </div>
+    );
+  }
+  // Already registered: show where it stands instead of a second form. This also
+  // applies when registration has since closed, so an approved buyer can still confirm.
+  if (existing) {
+    return (
+      <div className="py-12 bg-cream-50 min-h-screen">
+        <div className="mx-auto max-w-xl px-6">
+          <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">{t("backTo", { name: expo.title })}</Link>
+          <h1 className="text-3xl font-extrabold text-heading mb-2">{t("yourRegistrationFor", { name: expo.title })}</h1>
+          <p className="text-gray-500 mb-8">{t("alreadyRegisteredHint")}</p>
+          <ExpoRegistrationStatus exhibitionSlug={expo.slug} registrationEnabled={expo.registrationEnabled} />
+        </div>
+      </div>
+    );
+  }
+  if (!expo.registrationEnabled && !editId) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
           <div className="text-5xl mb-4">🚫</div>
           <h1 className="text-2xl font-bold text-heading mb-2">{t("registrationClosed")}</h1>
           <p className="text-gray-500 mb-6">{t.rich("registrationClosedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
-          <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-[var(--radius-button)] gradient-brand px-6 py-3 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">{t("backTo", { name: expo.title })}</Link>
-        </Card>
-      </div>
-    );
-  }
-  if (submitted) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
-          <div className="text-6xl mb-4">✅</div>
-          <h1 className="text-2xl font-bold text-heading mb-2">{t("registrationSubmitted")}</h1>
-          <p className="text-gray-500 mb-6">{t.rich("registrationSubmittedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
           <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-[var(--radius-button)] gradient-brand px-6 py-3 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">{t("backTo", { name: expo.title })}</Link>
         </Card>
       </div>
@@ -283,7 +348,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
       <div className="py-12 bg-cream-50 min-h-screen">
         <div className="mx-auto max-w-3xl px-6">
           <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">{t("backTo", { name: expo.title })}</Link>
-          <h1 className="text-3xl font-extrabold text-heading mb-2">{t("registerFor", { name: expo.title })}</h1>
+          <h1 className="text-3xl font-extrabold text-heading mb-2">{editId ? t("editRegistrationFor", { name: expo.title }) : t("registerFor", { name: expo.title })}</h1>
           <p className="text-gray-500 mb-8">{t("datesLine", { dates: expo.dates })}</p>
 
           <form onSubmit={(e) => handleCustomSubmit(e, customSchema)} className="space-y-6">
@@ -320,7 +385,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
               </div>
             )}
             <Button type="submit" disabled={submitting} variant="save" size="blockLg">
-              {submitting ? t("submitting") : t("submitRegistration")}
+              {submitting ? t("submitting") : editId ? t("saveChanges") : t("submitRegistration")}
             </Button>
           </form>
         </div>
@@ -332,7 +397,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
     <div className="py-12 bg-cream-50 min-h-screen">
       <div className="mx-auto max-w-3xl px-6">
         <Link href={`/exhibitions/${expo.slug}`} className="text-sm text-emerald-600 hover:text-emerald-700 mb-6 inline-block">{t("backTo", { name: expo.title })}</Link>
-        <h1 className="text-3xl font-extrabold text-heading mb-2">{t("registerFor", { name: expo.title })}</h1>
+        <h1 className="text-3xl font-extrabold text-heading mb-2">{editId ? t("editRegistrationFor", { name: expo.title }) : t("registerFor", { name: expo.title })}</h1>
         <p className="text-gray-500 mb-8">{t("datesLine", { dates: expo.dates })}</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -452,7 +517,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
             </div>
           )}
           <Button type="submit" disabled={submitting} variant="save" size="blockLg">
-            {submitting ? t("submitting") : t("submitRegistration")}
+            {submitting ? t("submitting") : editId ? t("saveChanges") : t("submitRegistration")}
           </Button>
         </form>
       </div>

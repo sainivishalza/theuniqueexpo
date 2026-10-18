@@ -1,5 +1,6 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
+import { expoIdsSql, expoNamesSql, parseExpoIds, setBuyerExpoNames } from "@/lib/server/buyer-expos-repo";
 
 export const DOCUMENT_FIELDS = [
   "businessLicense",
@@ -58,11 +59,10 @@ export interface BuyerProfileFields {
   // kept as free text rather than assumed. Admin-only, not shown to the
   // buyer themselves since they wouldn't know what it means either.
   registrationCode: string;
-  // Which exhibition(s) this buyer's data came from (e.g. a bulk import
-  // from that exhibition's own registration spreadsheet) -- free text,
-  // comma-separated, since one buyer can appear in several exhibitions
-  // over time. Admin-only, like registrationCode, and searchable so an
-  // admin can find "everyone from CPHI" or a future exhibition by name.
+  // Which expo(s) this buyer's data came from, as "A, B". Read-only: built
+  // from the admin-managed expo list (Admin -> Buyer Expos) so a renamed expo
+  // shows its new name everywhere. Change a buyer's expos with expoIds (admin
+  // edit) -- or pass names to upsertBuyerProfileFields, which sets them.
   sourceExhibitions: string;
   departureCity: string;
   attendanceDay: string;
@@ -90,6 +90,7 @@ export interface DocumentReview {
 
 export interface BuyerProfile extends BuyerProfileFields {
   userId: number;
+  expoIds: number[];
   hasDocument: Record<DocumentField, boolean>;
   documentReview: Record<DocumentField, DocumentReview>;
   updatedAt: number;
@@ -131,6 +132,7 @@ const EMPTY_FIELDS: BuyerProfileFields = {
 function mapRow(row: RowDataPacket): BuyerProfile {
   return {
     userId: row.user_id,
+    expoIds: parseExpoIds(row.expo_ids),
     companyName: row.company_name || "",
     nationality: row.nationality || "",
     passportNumber: row.passport_number || "",
@@ -177,7 +179,8 @@ function mapRow(row: RowDataPacket): BuyerProfile {
 }
 
 const SELECT_SUMMARY_COLUMNS =
-  "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, registration_code, source_exhibitions, " +
+  "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, registration_code, " +
+  `${expoNamesSql("buyer_profiles.user_id")} AS source_exhibitions, ${expoIdsSql("buyer_profiles.user_id")} AS expo_ids, ` +
   "departure_city, attendance_day, meeting_or_visiting, passport_name, gender, wechat_id, overseas_company_address, company_field, job_title, contact_email, phone_number, " +
   "date_of_birth, visa_type, visa_expire_date, " +
   "doc_business_license, doc_business_card, doc_passport_front, doc_visa_page, doc_canton_fair_card, doc_buyer_photo, doc_invoice_order_list, " +
@@ -203,6 +206,7 @@ export async function getBuyerProfileOrEmpty(userId: number): Promise<BuyerProfi
   if (existing) return existing;
   return {
     userId,
+    expoIds: [],
     ...EMPTY_FIELDS,
     hasDocument: {
       businessLicense: false,
@@ -226,6 +230,7 @@ export type OverallVerificationStatus = "not_started" | "pending_review" | "acti
 // status/note.
 export interface AdminBuyerProfileRow {
   userId: number;
+  expoIds: number[];
   name: string;
   email: string;
   status: "active" | "suspended";
@@ -277,7 +282,8 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
     `SELECT u.id AS user_id, u.name, u.email, u.status,
             p.company_name, p.nationality, p.passport_number, p.passport_name, p.gender, p.wechat_id,
             p.departure_city, p.attendance_day, p.meeting_or_visiting, p.job_title, p.company_field,
-            p.overseas_company_address, p.contact_email, p.phone_number, p.registration_code, p.source_exhibitions, p.annual_turnover, p.contact_person,
+            p.overseas_company_address, p.contact_email, p.phone_number, p.registration_code, p.annual_turnover, p.contact_person,
+            ${expoNamesSql("u.id")} AS source_exhibitions, ${expoIdsSql("u.id")} AS expo_ids,
             p.date_of_birth, p.visa_type, p.visa_expire_date, p.purchase_intention, p.other_purchase_intention,
             p.doc_business_license, p.doc_business_card, p.doc_passport_front,
             p.doc_visa_page, p.doc_canton_fair_card, p.doc_buyer_photo, p.doc_invoice_order_list,
@@ -301,6 +307,7 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
     const docs = Object.values(documents);
     return {
       userId: row.user_id,
+      expoIds: parseExpoIds(row.expo_ids),
       name: row.name,
       email: row.email,
       status: row.status,
@@ -354,7 +361,7 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
   const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT u.id AS user_id, u.name, u.email,
             p.company_name, p.nationality, p.passport_number, p.annual_turnover, p.purchase_intention, p.other_purchase_intention,
-            p.contact_person, p.registration_code, p.source_exhibitions, p.departure_city, p.attendance_day, p.meeting_or_visiting,
+            p.contact_person, p.registration_code, ${expoNamesSql("u.id")} AS source_exhibitions, p.departure_city, p.attendance_day, p.meeting_or_visiting,
             p.passport_name, p.gender, p.wechat_id, p.overseas_company_address, p.company_field, p.job_title, p.contact_email, p.phone_number,
             p.date_of_birth, p.visa_type, p.visa_expire_date, ${docColumns}
      FROM users u
@@ -402,7 +409,7 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
   });
 }
 
-const FIELD_COLUMNS: Record<keyof BuyerProfileFields, string> = {
+const FIELD_COLUMNS: Record<Exclude<keyof BuyerProfileFields, "sourceExhibitions">, string> = {
   companyName: "company_name",
   nationality: "nationality",
   passportNumber: "passport_number",
@@ -411,7 +418,6 @@ const FIELD_COLUMNS: Record<keyof BuyerProfileFields, string> = {
   otherPurchaseIntention: "other_purchase_intention",
   contactPerson: "contact_person",
   registrationCode: "registration_code",
-  sourceExhibitions: "source_exhibitions",
   departureCity: "departure_city",
   attendanceDay: "attendance_day",
   meetingOrVisiting: "meeting_or_visiting",
@@ -436,7 +442,14 @@ const FIELD_COLUMNS: Record<keyof BuyerProfileFields, string> = {
 // a fully-defaulted object here would silently blank out whatever an admin
 // had set there the next time that buyer saved their own profile.
 export async function upsertBuyerProfileFields(userId: number, fields: Partial<BuyerProfileFields>): Promise<void> {
-  const keys = Object.keys(fields) as (keyof BuyerProfileFields)[];
+  // sourceExhibitions is not a column any more -- it lists expo names. Given
+  // here (e.g. "CPHI, Propak"), it sets the buyer's expos to exactly those.
+  if (typeof fields.sourceExhibitions === "string") {
+    await setBuyerExpoNames(userId, fields.sourceExhibitions.split(","));
+  }
+  const keys = (Object.keys(fields) as (keyof BuyerProfileFields)[]).filter(
+    (k): k is Exclude<keyof BuyerProfileFields, "sourceExhibitions"> => k !== "sourceExhibitions"
+  );
   if (keys.length === 0) return;
 
   const columns = keys.map((k) => FIELD_COLUMNS[k]);

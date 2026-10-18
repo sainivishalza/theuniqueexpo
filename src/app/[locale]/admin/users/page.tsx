@@ -1,4 +1,5 @@
 "use client";
+import { isPlaceholderEmail } from "@/lib/login-id";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -124,9 +125,14 @@ export default function AdminUsersPage() {
               <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
               <p className="mt-1 text-gray-400 text-sm">{t("subtitle", { count: users.length })}</p>
             </div>
-            <Link href="/admin/users/bulk">
-              <Button variant="save" size="sm">{t("bulkAddUsers")}</Button>
-            </Link>
+            <div className="flex flex-wrap gap-2">
+              <Link href="/admin/users/import-buyers">
+                <Button variant="outline" size="sm">{t("importBuyers")}</Button>
+              </Link>
+              <Link href="/admin/users/bulk">
+                <Button variant="save" size="sm">{t("bulkAddUsers")}</Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -165,7 +171,7 @@ export default function AdminUsersPage() {
                       <tr key={u.id} className="hover:bg-cream-50">
                         <td className="px-6 py-4">
                           <div className="font-semibold text-gray-900">{u.name}</div>
-                          <div className="text-xs text-gray-400">{u.email}</div>
+                          <div className="text-xs text-gray-400">{isPlaceholderEmail(u.email) ? t("noEmail") : u.email}</div>
                         </td>
                         <td className="px-6 py-4">
                           <select

@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import type { NextResponse } from "next/server";
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
+import { normalizeLoginPhone, normalizePassportNumber } from "@/lib/login-id";
 
 const envSecret = process.env.JWT_SECRET;
 if (!envSecret) {
@@ -64,22 +65,48 @@ export async function createUserAccount(
 // between the two, not just the message).
 const DUMMY_HASH_FOR_TIMING = "$2a$12$C6UzMDM.H6dfI/f/IKcEeOa8jTiJfyGX0mF/HzL8XeDQmJgb0e7Uy";
 
-export async function verifyUserPassword(email: string, password: string): Promise<SessionUser | null> {
-  const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT id, name, email, role, country, status, password_hash FROM users WHERE email = ?",
-    [email]
-  );
-  const row = rows[0];
-  if (!row) {
+// `identifier` is an email, or (for buyers) the phone number or passport number
+// saved on their profile. Several accounts can share a phone number, so every
+// match is tried and the one whose password fits signs in.
+export async function verifyUserPassword(identifier: string, password: string): Promise<SessionUser | null> {
+  const id = (identifier || "").trim();
+  let candidates: RowDataPacket[] = [];
+
+  if (id.includes("@")) {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      "SELECT id, name, email, role, country, status, password_hash FROM users WHERE email = ?",
+      [id]
+    );
+    candidates = rows;
+  } else {
+    const phone = /^[\d\s()+\-]+$/.test(id) ? normalizeLoginPhone(id) : "";
+    const passport = normalizePassportNumber(id);
+    if (phone || passport) {
+      const cleanPhone = "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(p.phone_number, ' ', ''), '-', ''), '+', ''), '(', ''), ')', '')";
+      const cleanPassport = "UPPER(REPLACE(REPLACE(REPLACE(p.passport_number, ' ', ''), '-', ''), '.', ''))";
+      const [rows] = await pool.query<RowDataPacket[]>(
+        `SELECT u.id, u.name, u.email, u.role, u.country, u.status, u.password_hash
+         FROM users u JOIN buyer_profiles p ON p.user_id = u.id
+         WHERE (? <> '' AND ${cleanPhone} IN (?, ?)) OR (? <> '' AND ${cleanPassport} = ?)
+         LIMIT 5`,
+        [phone, phone, "86" + phone, passport, passport]
+      );
+      candidates = rows;
+    }
+  }
+
+  if (candidates.length === 0) {
     await bcrypt.compare(password, DUMMY_HASH_FOR_TIMING);
     return null;
   }
-  const valid = await bcrypt.compare(password, row.password_hash);
-  if (!valid) return null;
-  // A suspended admin can't log back in through this path -- confirmed
-  // password doesn't matter once an admin has suspended the account.
-  if (row.status === "suspended") return null;
-  return { id: row.id, name: row.name, email: row.email, role: row.role, country: row.country };
+  for (const row of candidates) {
+    if (!(await bcrypt.compare(password, row.password_hash))) continue;
+    // A suspended admin can't log back in through this path -- confirmed
+    // password doesn't matter once an admin has suspended the account.
+    if (row.status === "suspended") return null;
+    return { id: row.id, name: row.name, email: row.email, role: row.role, country: row.country };
+  }
+  return null;
 }
 
 export async function getSessionUser(request: Request): Promise<SessionUser | null> {

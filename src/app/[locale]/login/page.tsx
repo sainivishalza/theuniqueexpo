@@ -82,8 +82,8 @@ export default function LoginPage() {
           {error && <div className="mb-4 p-3 rounded-[var(--radius-button)] bg-red-50 border border-red-200 text-sm text-red-700">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <FormField label={t("email")} htmlFor="email">
-              <input id="email" required type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={fieldClasses()} placeholder="you@company.com" />
+            <FormField label={t("identifier")} htmlFor="email">
+              <input id="email" required type="text" autoComplete="username" autoCapitalize="none" spellCheck={false} value={email} onChange={(e) => setEmail(e.target.value)} className={fieldClasses()} placeholder={t("identifierPlaceholder")} />
             </FormField>
             <FormField label={t("password")} htmlFor="password">
               <input id="password" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={fieldClasses()} placeholder={t("passwordPlaceholder")} />

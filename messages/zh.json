@@ -204,7 +204,9 @@
     "loginFailed": "登录失败",
     "forgotPassword": "忘记密码?",
     "forgotPasswordTitle": "忘记密码了吗?",
-    "forgotPasswordBody": "目前还没有自动重置功能 -- 请联系我们,我们会为您设置新密码。"
+    "forgotPasswordBody": "目前还没有自动重置功能 -- 请联系我们,我们会为您设置新密码。",
+    "identifier": "邮箱、手机号或护照号",
+    "identifierPlaceholder": "you@company.com 或手机号"
   },
   "registerPage": {
     "roles": {
@@ -539,6 +541,10 @@
       "newsletter": {
         "title": "邮件订阅用户",
         "description": "查看通过网站页脚订阅的用户并下载名单。"
+      },
+      "buyerExpos": {
+        "title": "采购商展会",
+        "description": "用于标记采购商的展会列表。在此重命名展会，所有采购商资料会同步更新。"
       }
     }
   },
@@ -984,7 +990,9 @@
     "newPasswordTitle": "{name} 的新密码",
     "newPasswordHint": "仅显示一次 -- 请立即复制并直接发送给对方,之后将不再显示。",
     "copy": "复制",
-    "done": "完成"
+    "done": "完成",
+    "importBuyers": "从展会表格导入采购商",
+    "noEmail": "无邮箱（用手机号/护照号登录）"
   },
   "adminPartnerReferrals": {
     "title": "合作伙伴推荐记录",
@@ -2813,7 +2821,14 @@
       "cantonFairCard": "广交会证件",
       "buyerPhoto": "买家照片",
       "invoiceOrderList": "发票 / 订单清单"
-    }
+    },
+    "expoPlaceholder": "选择展会...",
+    "noExpoOptions": "暂无展会——请先在“采购商展会”中添加",
+    "expoSelectedCount": "已选择 {count} 个展会",
+    "filterByExpo": "按展会筛选",
+    "allExpos": "全部展会",
+    "manageExpos": "编辑展会列表",
+    "noEmail": "无邮箱（用手机号/护照号登录）"
   },
   "homepageSlideshow": {
     "previous": "上一张照片",
@@ -3405,5 +3420,47 @@
     "retry": "重试",
     "home": "返回首页",
     "code": "错误"
+  },
+  "adminBuyerExpos": {
+    "title": "采购商展会",
+    "subtitle": "用于标记采购商的展会。在此重命名后，所有采购商资料会同时更新。",
+    "newPlaceholder": "新展会名称",
+    "add": "添加展会",
+    "empty": "暂无展会，请在上方添加第一个。",
+    "buyers": "{count} 位采购商",
+    "rename": "重命名",
+    "deleteConfirm": "删除“{name}”？将从 {count} 位采购商中移除。采购商本身不会被删除。",
+    "loadFailed": "无法加载展会列表",
+    "errors": {
+      "empty": "请输入名称",
+      "too_long": "名称过长（最多 255 个字符）",
+      "duplicate": "已存在同名展会",
+      "not_found": "该展会已不存在"
+    }
+  },
+  "adminImportBuyers": {
+    "backToUsers": "← 返回用户",
+    "title": "从展会表格导入采购商",
+    "subtitle": "上传准备好的采购商文件。不会重复注册任何人。",
+    "ruleExisting": "已注册的人（相同邮箱或护照号）不会被重复创建，其资料也不会被更改——只会为其添加文件中的展会。",
+    "ruleNoEmail": "没有邮箱的人使用手机号或护照号登录。",
+    "rulePassword": "密码为其手机号（没有手机号则为微信号）。之后可自行修改。",
+    "fileLabel": "采购商文件（.json）",
+    "invalidFile": "该文件不是有效的采购商文件",
+    "fileLoaded": "已加载 {name}：{count} 位采购商",
+    "start": "导入 {count} 位采购商",
+    "importing": "正在导入 {done} / {total}...",
+    "importFailed": "导入已停止",
+    "safeToRetry": "已导入的人会保留，再次运行同一文件会跳过他们",
+    "filterAll": "全部（{count}）",
+    "downloadCsv": "下载结果 (CSV)",
+    "loginColumn": "登录名",
+    "passwordColumn": "密码",
+    "status": {
+      "created": "已创建",
+      "expo_added": "已添加展会",
+      "already_registered": "已注册",
+      "failed": "需要处理"
+    }
   }
 }

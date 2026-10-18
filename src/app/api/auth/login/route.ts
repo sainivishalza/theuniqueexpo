@@ -4,10 +4,13 @@ import { checkLoginRateLimit, resetLoginRateLimit } from "@/lib/server/rate-limi
 
 export async function POST(request: Request) {
   try {
-    const { email, password } = await request.json();
+    const body = await request.json();
+    // `email` still works; the field also takes a phone or passport number.
+    const email = String(body.identifier ?? body.email ?? "").trim();
+    const password = body.password;
 
     if (!email || !password) {
-      return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
+      return NextResponse.json({ error: "Login and password are required" }, { status: 400 });
     }
 
     const { allowed, retryAfterSeconds } = checkLoginRateLimit(request, email);
@@ -20,7 +23,7 @@ export async function POST(request: Request) {
 
     const user = await verifyUserPassword(email, password);
     if (!user) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+      return NextResponse.json({ error: "Incorrect login details or password" }, { status: 401 });
     }
     resetLoginRateLimit(request, email);
 

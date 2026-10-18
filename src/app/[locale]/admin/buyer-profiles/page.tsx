@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
+import { isPlaceholderEmail } from "@/lib/login-id";
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
@@ -13,6 +14,7 @@ type DocReviewStatus = "pending" | "verified" | "rejected";
 
 interface AdminBuyerProfileRow {
   userId: number;
+  expoIds: number[];
   name: string;
   email: string;
   status: "active" | "suspended";
@@ -61,6 +63,7 @@ interface DocReview {
 }
 
 interface BuyerProfileDetail {
+  expoIds: number[];
   companyName: string;
   nationality: string;
   passportNumber: string;
@@ -107,11 +110,11 @@ const DOC_BADGE_STYLES: Record<DocReviewStatus, string> = {
   rejected: "bg-red-50 text-red-700",
 };
 
-type DetailFieldKey = Exclude<keyof BuyerProfileDetail, "hasDocument" | "documentReview">;
+type DetailFieldKey = Exclude<keyof BuyerProfileDetail, "hasDocument" | "documentReview" | "expoIds">;
 
 interface FieldDef {
   key: DetailFieldKey;
-  kind: "text" | "email" | "date" | "combo" | "select";
+  kind: "text" | "email" | "date" | "combo" | "select" | "expos";
   options?: readonly string[];
   // "select" only: false when `options` are already human-readable and
   // shouldn't be looked up in fieldOptions.<key>.<opt> (visaType's list is
@@ -129,7 +132,7 @@ const FIELDS: FieldDef[] = [
   { key: "annualTurnover", kind: "text" },
   { key: "contactPerson", kind: "text" },
   { key: "registrationCode", kind: "text" },
-  { key: "sourceExhibitions", kind: "text" },
+  { key: "sourceExhibitions", kind: "expos" },
   { key: "departureCity", kind: "combo", options: DEPARTURE_CITIES },
   { key: "attendanceDay", kind: "text" },
   { key: "passportName", kind: "text" },
@@ -276,6 +279,85 @@ function DocumentLightbox({
   );
 }
 
+interface ExpoOption {
+  id: number;
+  name: string;
+}
+
+// A dropdown with a tick-box per expo, so a buyer can be tagged with several.
+// The list comes from Admin -> Buyer Expos.
+function ExpoMultiSelect({
+  options,
+  value,
+  onChange,
+  placeholder,
+  emptyText,
+  selectedText,
+}: {
+  options: ExpoOption[];
+  value: number[];
+  onChange: (ids: number[]) => void;
+  placeholder: string;
+  emptyText: string;
+  selectedText: (count: number) => string;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onDown(e: MouseEvent) {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const names = options.filter((o) => value.includes(o.id)).map((o) => o.name);
+  // An expo id no longer in the list (deleted elsewhere) is simply not shown.
+  const label = names.length === 0 ? placeholder : names.length <= 2 ? names.join(", ") : selectedText(names.length);
+
+  function toggle(id: number) {
+    onChange(value.includes(id) ? value.filter((v) => v !== id) : [...value, id]);
+  }
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-left text-sm focus:border-emerald-500 outline-none"
+      >
+        <span className={`truncate ${names.length === 0 ? "text-gray-400" : "text-gray-900"}`}>{label}</span>
+        <svg className="h-4 w-4 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+      </button>
+      {open && (
+        <div role="listbox" aria-multiselectable="true" className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+          {options.length === 0 ? (
+            <p className="px-3 py-2 text-sm text-gray-500">{emptyText}</p>
+          ) : (
+            options.map((o) => (
+              <label key={o.id} className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm hover:bg-cream-50">
+                <input type="checkbox" checked={value.includes(o.id)} onChange={() => toggle(o.id)} className="h-4 w-4 rounded border-gray-300" />
+                <span className="break-words">{o.name}</span>
+              </label>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminBuyerProfilesPage() {
   const t = useTranslations("adminBuyerProfiles");
   const ta = useTranslations("adminCommon");
@@ -283,6 +365,8 @@ export default function AdminBuyerProfilesPage() {
   const [rows, setRows] = useState<AdminBuyerProfileRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [expoFilter, setExpoFilter] = useState("");
+  const [expoOptions, setExpoOptions] = useState<ExpoOption[]>([]);
   const [error, setError] = useState("");
 
   const [openId, setOpenId] = useState<number | null>(null);
@@ -301,7 +385,18 @@ export default function AdminBuyerProfilesPage() {
   useEffect(() => {
     if (!user || user.role !== "admin") return;
     loadRows();
+    loadExpoOptions();
   }, [user]);
+
+  async function loadExpoOptions() {
+    try {
+      const res = await fetch("/api/admin/buyer-expos");
+      const data = await res.json();
+      if (res.ok) setExpoOptions(data.expos);
+    } catch {
+      // The dropdown just stays empty; the rest of the page still works.
+    }
+  }
 
   async function loadRows() {
     setLoading(true);
@@ -347,6 +442,7 @@ export default function AdminBuyerProfilesPage() {
       if (!res.ok) throw new Error(data.error || t("saveFailed"));
       setDetail(data.profile);
       await loadRows();
+      await loadExpoOptions();
     } catch (err) {
       setError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
@@ -485,6 +581,7 @@ export default function AdminBuyerProfilesPage() {
   }
 
   const filtered = rows.filter((r) => {
+    if (expoFilter && !r.expoIds.includes(Number(expoFilter))) return false;
     const q = search.trim().toLowerCase();
     if (!q) return true;
     return SEARCHABLE_ROW_FIELDS.some((field) => r[field].toLowerCase().includes(q));
@@ -528,6 +625,16 @@ export default function AdminBuyerProfilesPage() {
               placeholder={t("searchPlaceholder")}
               className="w-full max-w-md rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
+            <select
+              value={expoFilter}
+              onChange={(e) => setExpoFilter(e.target.value)}
+              aria-label={t("filterByExpo")}
+              className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="">{t("allExpos")}</option>
+              {expoOptions.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
+            </select>
+            <Link href="/admin/buyer-expos" className="text-sm font-semibold text-emerald-800 hover:text-emerald-900 underline">{t("manageExpos")}</Link>
             {selected.size > 0 && (
               <div className="flex flex-wrap items-center gap-2 rounded-xl bg-emerald-50 px-3 py-2">
                 <span className="text-sm font-semibold text-emerald-800">{t("selectedCount", { count: selected.size })}</span>
@@ -587,7 +694,7 @@ export default function AdminBuyerProfilesPage() {
                           />
                           <div>
                             <div className="font-semibold text-gray-900">{r.name}</div>
-                            <div className="text-xs text-gray-400">{r.email}</div>
+                            <div className="text-xs text-gray-400">{isPlaceholderEmail(r.email) ? t("noEmail") : r.email}</div>
                           </div>
                         </div>
                       </td>
@@ -657,15 +764,28 @@ export default function AdminBuyerProfilesPage() {
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   {FIELDS.map((field) => (
-                    <div key={field.key}>
+                    <div key={field.key} className={field.kind === "expos" ? "col-span-2" : undefined}>
                       <label className="block text-xs font-semibold text-gray-500 mb-1">{t(`fields.${field.key}`)}</label>
-                      {field.kind === "select" ? (
+                      {field.kind === "expos" ? (
+                        <ExpoMultiSelect
+                          options={expoOptions}
+                          value={detail.expoIds}
+                          onChange={(ids) => setDetail({ ...detail, expoIds: ids })}
+                          placeholder={t("expoPlaceholder")}
+                          emptyText={t("noExpoOptions")}
+                          selectedText={(count) => t("expoSelectedCount", { count })}
+                        />
+                      ) : field.kind === "select" ? (
                         <select
                           value={detail[field.key]}
                           onChange={(e) => setDetail({ ...detail, [field.key]: e.target.value })}
                           className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none"
                         >
                           <option value="">{t("selectPlaceholder")}</option>
+                          {/* A value saved before (e.g. imported "Work or Business Visa") that isn't in the list stays selectable instead of silently showing blank. */}
+                          {detail[field.key] && !field.options!.includes(detail[field.key] as string) && (
+                            <option value={detail[field.key] as string}>{detail[field.key] as string}</option>
+                          )}
                           {field.options!.map((opt) => (
                             <option key={opt} value={opt}>{field.translateOptions === false ? opt : t(`fieldOptions.${field.key}.${opt}`)}</option>
                           ))}

@@ -16,6 +16,36 @@ interface ImportResult {
   reason?: string;
 }
 
+interface SheetSummary { sheet: string; expo: string; hidden: boolean; rows: number; layout: string }
+interface HeldRow { group: number; person: string; sheet: string; expo: string; name: string; passport: string; email: string; phone: string; company: string }
+interface SkippedPerson { name: string; expos: string[]; sheets: string[]; passport: string; email: string; phone: string; why: string }
+interface NameOnlyMatch { name: string; sheet: string; expo: string; matchedPerson: string; passport: string }
+interface WorkbookResult {
+  buyers: Record<string, unknown>[];
+  held: HeldRow[];
+  heldPeople: number;
+  skipped: SkippedPerson[];
+  nameOnlyMatches: NameOnlyMatch[];
+  sheets: SheetSummary[];
+  totalRows: number;
+  loginBy: { email: number; phone: number; passport: number };
+}
+
+function downloadReview(r: WorkbookResult) {
+  const lines: (string | number)[][] = [["list", "group", "person", "sheet", "expo", "name in sheet", "passport", "email", "phone", "company / why"]];
+  for (const h of r.held) lines.push(["Check by hand (not imported)", h.group, h.person, h.sheet, h.expo, h.name, h.passport, h.email, h.phone, h.company]);
+  for (const k of r.skipped) lines.push(["Not imported", "", k.name, k.sheets.join(" + "), k.expos.join(" + "), k.name, k.passport, k.email, k.phone, k.why]);
+  for (const m of r.nameOnlyMatches) lines.push(["Name-only row attached to a person", "", m.matchedPerson, m.sheet, m.expo, m.name, m.passport, "", "", ""]);
+  const csv = lines.map((row) => row.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\r\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `buyer-import-review-${Date.now()}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 const CHUNK = 25;
 const STATUS_STYLES: Record<Status, string> = {
   created: "bg-green-100 text-green-700",
@@ -46,6 +76,8 @@ export default function ImportBuyersPage() {
   const [fileName, setFileName] = useState("");
   const [fileError, setFileError] = useState("");
   const [pasted, setPasted] = useState("");
+  const [reading, setReading] = useState(false);
+  const [workbook, setWorkbook] = useState<WorkbookResult | null>(null);
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(0);
   const [error, setError] = useState("");
@@ -61,24 +93,65 @@ export default function ImportBuyersPage() {
     setDone(0);
     setFileName("");
     if (!text.trim()) return;
+    // Say exactly what is wrong, so a wrong or damaged file can be told apart
+    // from a good one (only the first few characters are ever shown).
+    const start = text.trim().slice(0, 24).replace(/\s+/g, " ");
+    let parsed: unknown;
     try {
-      const parsed = JSON.parse(text);
-      const arr = Array.isArray(parsed) ? parsed : parsed?.buyers;
-      if (!Array.isArray(arr) || arr.length === 0) throw new Error();
-      setBuyers(arr.map((b: Record<string, unknown>, i: number) => ({ ...b, row: i + 1 })));
-      setFileName(name);
+      parsed = JSON.parse(text.replace(/^\uFEFF/, ""));
     } catch {
-      setFileError(t("invalidFile"));
+      setFileError(`${t("invalidFile")} — ${t("notJson", { size: text.length, start })}`);
+      return;
+    }
+    const obj = parsed as { buyers?: unknown } | null;
+    const arr = Array.isArray(parsed) ? parsed : obj?.buyers;
+    if (!Array.isArray(arr) || arr.length === 0) {
+      const keys = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? Object.keys(parsed).slice(0, 5).join(", ") : "";
+      setFileError(`${t("invalidFile")} — ${t("noBuyersList", { keys: keys || "—" })}`);
+      return;
+    }
+    setBuyers(arr.map((b: Record<string, unknown>, i: number) => ({ ...b, row: i + 1 })));
+    setFileName(name);
+  }
+
+  // The Excel file(s) are read on the server, which merges the same person
+  // across sheets and prepares the list to import.
+  async function handleExcel(files: FileList | null) {
+    setFileError("");
+    setWorkbook(null);
+    setBuyers(null);
+    setResults([]);
+    setDone(0);
+    setFileName("");
+    setPasted("");
+    if (!files || files.length === 0) return;
+    setReading(true);
+    try {
+      const form = new FormData();
+      for (const f of Array.from(files)) form.append("files", f);
+      const res = await fetch("/api/admin/buyers/parse-sheets", { method: "POST", body: form });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || t("readFailed"));
+      const wb = data as WorkbookResult;
+      setWorkbook(wb);
+      setBuyers(wb.buyers.map((b, i) => ({ ...b, row: i + 1 })));
+      setFileName(Array.from(files).map((f) => f.name).join(", "));
+    } catch (err) {
+      setFileError(err instanceof Error ? err.message : t("readFailed"));
+    } finally {
+      setReading(false);
     }
   }
 
   async function handleFile(file: File | null) {
+    setWorkbook(null);
     setPasted("");
     if (!file) return loadText("", "");
     loadText(await file.text(), file.name);
   }
 
   function handlePaste(text: string) {
+    setWorkbook(null);
     setPasted(text);
     loadText(text, t("pastedName"));
   }
@@ -142,6 +215,42 @@ export default function ImportBuyersPage() {
               <li>{t("rulePassword")}</li>
             </ul>
             <div>
+              <label htmlFor="import-excel" className="block text-sm font-medium text-gray-700 mb-1">{t("excelLabel")}</label>
+              <p className="text-xs text-gray-400 mb-2">{t("excelHint")}</p>
+              <input id="import-excel" type="file" multiple disabled={running || reading} onChange={(e) => handleExcel(e.target.files)} className="text-sm" />
+              {reading && <p className="mt-1.5 text-xs text-gray-500">{t("reading")}</p>}
+            </div>
+
+            {workbook && (
+              <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 space-y-3 text-sm">
+                <p className="font-semibold text-emerald-900">{t("parsedSummary", { rows: workbook.totalRows, sheets: workbook.sheets.length })}</p>
+                <ul className="space-y-1 text-gray-700">
+                  <li>✅ {t("readyCount", { count: workbook.buyers.length, email: workbook.loginBy.email, phone: workbook.loginBy.phone, passport: workbook.loginBy.passport })}</li>
+                  <li>⚠️ {t("heldCount", { count: workbook.heldPeople })}</li>
+                  <li>➖ {t("skippedCount", { count: workbook.skipped.length })}</li>
+                </ul>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead className="text-left text-gray-500">
+                      <tr><th className="pr-3 py-1">{t("sheetCol")}</th><th className="pr-3 py-1">{t("expoCol")}</th><th className="pr-3 py-1">{t("rowsCol")}</th><th className="py-1">{t("layoutCol")}</th></tr>
+                    </thead>
+                    <tbody>
+                      {workbook.sheets.map((s) => (
+                        <tr key={s.sheet} className={s.rows === 0 ? "text-amber-700" : "text-gray-700"}>
+                          <td className="pr-3 py-0.5">{s.sheet}{s.hidden ? ` (${t("hiddenTag")})` : ""}</td>
+                          <td className="pr-3 py-0.5">{s.expo}</td>
+                          <td className="pr-3 py-0.5">{s.rows}{s.rows === 0 ? ` — ${t("noPeopleFound")}` : ""}</td>
+                          <td className="py-0.5 text-gray-400">{s.layout}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <Button onClick={() => downloadReview(workbook)} variant="ghost" size="xs">{t("downloadReview")}</Button>
+              </div>
+            )}
+
+            <div className="border-t border-gray-100 pt-4">
               <label htmlFor="import-file" className="block text-sm font-medium text-gray-700 mb-1">{t("fileLabel")}</label>
               <input id="import-file" type="file" disabled={running} onChange={(e) => handleFile(e.target.files?.[0] || null)} className="text-sm" />
               <label htmlFor="import-paste" className="block text-sm font-medium text-gray-700 mt-4 mb-1">{t("pasteLabel")}</label>

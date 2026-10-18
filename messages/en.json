@@ -3441,11 +3441,11 @@
   "adminImportBuyers": {
     "backToUsers": "← Back to Users",
     "title": "Import buyers from expo sheets",
-    "subtitle": "Upload the prepared buyers file. Nobody is registered twice.",
+    "subtitle": "Upload your Excel file with the expo sheets. Nobody is registered twice.",
     "ruleExisting": "Someone already registered (same email or same passport number) is never created again and nothing about them is changed -- only the expo from the file is added to them.",
     "ruleNoEmail": "People with no email sign in with their phone number or passport number.",
     "rulePassword": "The password is their phone number (or WeChat ID if no phone). They can change it later.",
-    "fileLabel": "Buyers file (any file name)",
+    "fileLabel": "Or a prepared JSON file (any file name)",
     "invalidFile": "That file is not a valid buyers file",
     "fileLoaded": "Loaded {name}: {count} buyer(s)",
     "start": "Import {count} buyer(s)",
@@ -3464,6 +3464,23 @@
     },
     "pasteLabel": "Or paste the file contents here",
     "pastePlaceholder": "{\"buyers\": [ ... ]}",
-    "pastedName": "pasted text"
+    "pastedName": "pasted text",
+    "notJson": "it is not readable as JSON (size {size} characters, starts with: {start})",
+    "noBuyersList": "no \"buyers\" list found (top-level keys: {keys})",
+    "excelLabel": "Excel file(s) (.xlsx)",
+    "excelHint": "Upload your Excel file with the expo sheets. The same person in several sheets becomes one buyer, and nothing is saved until you press Import.",
+    "reading": "Reading the Excel file...",
+    "readFailed": "Could not read the Excel file",
+    "parsedSummary": "Read {rows} rows from {sheets} sheets.",
+    "readyCount": "{count} people ready to import ({email} sign in with email, {phone} with phone, {passport} with passport number)",
+    "heldCount": "{count} people need a check by hand (details disagree) -- not imported",
+    "skippedCount": "{count} people have no email, phone or passport number -- not imported",
+    "sheetCol": "Sheet",
+    "expoCol": "Expo",
+    "rowsCol": "Rows",
+    "layoutCol": "How it was read",
+    "hiddenTag": "hidden",
+    "noPeopleFound": "no people found, check this sheet",
+    "downloadReview": "Download review list (CSV)"
   }
 }

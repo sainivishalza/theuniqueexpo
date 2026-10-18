@@ -172,7 +172,7 @@ export default function AppShell({ areaLabel, badge, items, groups = [], homeHre
   );
 
   return (
-    <div className="min-h-screen bg-cream-50 lg:flex">
+    <div className="app-shell min-h-screen bg-cream-50 [--color-hero-bg:var(--color-emerald-800)] lg:flex">
       {/* Laptop: a list of features down the left side */}
       <aside className="hidden shrink-0 flex-col bg-[var(--color-hero-bg)] text-white lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-72 lg:self-start xl:w-80">
         <div className="px-5 pb-3 pt-6">
@@ -185,7 +185,7 @@ export default function AppShell({ areaLabel, badge, items, groups = [], homeHre
             <span className="text-lg font-bold text-white">The Unique Expo</span>
           </Link>
           <div className="mt-4 flex items-center justify-between gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-white/60">{areaLabel}</span>
+            <span className="text-sm font-medium text-white/70">{areaLabel}</span>
             {roleBadge}
           </div>
         </div>
@@ -194,7 +194,7 @@ export default function AppShell({ areaLabel, badge, items, groups = [], homeHre
           {resultLinks}
           {sections.map(({ group, items: list }) => (
             <div key={group?.key ?? "top"} className="mb-4">
-              {group && <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-white/45">{group.label}</p>}
+              {group && <p className="px-3 pb-1.5 text-xs font-medium text-white/55">{group.label}</p>}
               <ul className="space-y-0.5">
                 {list.map((item) => {
                   const active = isActive(pathname, item.href, homeHref);
@@ -239,7 +239,7 @@ export default function AppShell({ areaLabel, badge, items, groups = [], homeHre
               </svg>
             </button>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-medium uppercase leading-none tracking-wider text-white/60">{areaLabel}</p>
+              <p className="text-xs font-medium leading-none text-white/65">{areaLabel}</p>
               <p className="truncate pt-0.5 font-semibold leading-tight">{current?.label ?? t("shell.dashboard")}</p>
             </div>
             {roleBadge}
@@ -268,7 +268,7 @@ export default function AppShell({ areaLabel, badge, items, groups = [], homeHre
                 </svg>
               </button>
               <div className="min-w-0 flex-1">
-                <p className="text-[11px] font-medium uppercase leading-none tracking-wider text-white/60">{areaLabel}</p>
+                <p className="text-xs font-medium leading-none text-white/65">{areaLabel}</p>
                 <p className="truncate pt-0.5 font-semibold leading-tight">{t("shell.dashboard")}</p>
               </div>
               {roleBadge}
@@ -280,7 +280,7 @@ export default function AppShell({ areaLabel, badge, items, groups = [], homeHre
               {resultLinks}
               {sections.map(({ group, items: list }) => (
                 <div key={group?.key ?? "top"} className="mb-4">
-                  {group && <p className="pb-2 pt-1 text-[11px] font-semibold uppercase tracking-wider text-white/45">{group.label}</p>}
+                  {group && <p className="pb-2 pt-1 text-xs font-medium text-white/55">{group.label}</p>}
                   <ul className="grid grid-cols-2 gap-3">
                     {list.map((item) => {
                       const active = isActive(pathname, item.href, homeHref);

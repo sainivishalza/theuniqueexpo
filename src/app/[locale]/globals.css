@@ -242,3 +242,12 @@ h1, h2, h3, h4 {
   hyphens: auto;
   overflow-wrap: anywhere;
 }
+
+/* Inside the admin/dashboard frame (AppShell) everything is one green: the menu,
+   the flat page headers (they read --color-hero-bg, which the frame sets to the
+   brand's dark emerald) and the gradient headers, which start from that same green
+   instead of the near-black the public pages use, so a header runs straight on from
+   the menu without a seam. Content stays white. */
+.app-shell .gradient-hero {
+  background: linear-gradient(135deg, var(--color-emerald-800) 0%, var(--color-emerald-600) 55%, var(--color-emerald-500) 100%);
+}

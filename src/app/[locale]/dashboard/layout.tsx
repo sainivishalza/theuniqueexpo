@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { DASHBOARD_NAMESPACES, pickMessages } from "@/lib/client-message-namespaces";
+import DashboardShell from "./DashboardShell";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -14,5 +15,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const messages = await getMessages();
   const dashboardMessages = pickMessages(messages, [...DASHBOARD_NAMESPACES, "common"]);
 
-  return <NextIntlClientProvider messages={dashboardMessages}>{children}</NextIntlClientProvider>;
+  return (
+    <NextIntlClientProvider messages={dashboardMessages}>
+      <DashboardShell>{children}</DashboardShell>
+    </NextIntlClientProvider>
+  );
 }

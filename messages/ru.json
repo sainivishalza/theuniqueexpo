@@ -252,7 +252,40 @@
     "redirecting": "Перенаправление…",
     "comingSoon": "Скоро",
     "somethingWentWrong": "Что-то пошло не так",
-    "skipToContent": "Перейти к основному содержимому"
+    "skipToContent": "Перейти к основному содержимому",
+    "shell": {
+      "openMenu": "Открыть меню",
+      "closeMenu": "Закрыть меню",
+      "searchSections": "Поиск…",
+      "adminSearchPlaceholder": "Поиск разделов, покупателей, пользователей…",
+      "searchResults": "Результаты поиска",
+      "noMatches": "Ничего не найдено по запросу «{query}»",
+      "dashboard": "Панель",
+      "viewSite": "Открыть сайт",
+      "logout": "Выйти",
+      "language": "Язык",
+      "findBuyers": "Найти покупателей: «{query}»",
+      "findUsers": "Найти пользователей: «{query}»",
+      "areas": {
+        "admin": "Админ-панель",
+        "dashboard": "Мой кабинет"
+      },
+      "roles": {
+        "admin": "Админ",
+        "buyer": "Покупатель",
+        "exhibitor": "Экспонент",
+        "partner": "Партнёр"
+      },
+      "groups": {
+        "events": "Выставки и поездки",
+        "people": "Покупатели и пользователи",
+        "requests": "Заявки и партнёры",
+        "content": "Контент сайта",
+        "settings": "Настройки",
+        "account": "Профиль и регистрации",
+        "explore": "Обзор"
+      }
+    }
   },
   "buyerDashboard": {
     "title": "Кабинет покупателя",

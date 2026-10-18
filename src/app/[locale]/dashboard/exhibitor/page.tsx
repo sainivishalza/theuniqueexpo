@@ -36,7 +36,7 @@ export default function ExhibitorDashboard() {
               { label: t("stats.messages"), value: "0", icon: "💬" },
             ].map((s) => (
               <div key={s.label} className="rounded-xl bg-white/10 backdrop-blur-sm p-4 border border-white/10">
-                <div className="text-sm opacity-70 mb-1">{s.icon} {s.label}</div>
+                <div className="text-sm text-white/80 mb-1">{s.icon} {s.label}</div>
                 <div className="text-2xl font-extrabold text-white">{s.value}</div>
               </div>
             ))}

@@ -55,15 +55,15 @@ export default function PartnerDashboard() {
           </div>
           <div className="mt-8 grid grid-cols-3 gap-4">
             <div className="rounded-xl bg-white/10 backdrop-blur-sm p-4 border border-white/10">
-              <div className="text-sm opacity-70 mb-1">👥 {t("stats.referrals")}</div>
+              <div className="text-sm text-white/80 mb-1">👥 {t("stats.referrals")}</div>
               <div className="text-2xl font-extrabold text-white">{stats.totalReferrals}</div>
             </div>
             <div className="rounded-xl bg-white/10 backdrop-blur-sm p-4 border border-white/10">
-              <div className="text-sm opacity-70 mb-1">💰 {t("stats.commission")}</div>
+              <div className="text-sm text-white/80 mb-1">💰 {t("stats.commission")}</div>
               <div className="text-2xl font-extrabold text-white">${stats.totalCommission}</div>
             </div>
             <div className="rounded-xl bg-white/10 backdrop-blur-sm p-4 border border-white/10">
-              <div className="text-sm opacity-70 mb-1">📈 {t("stats.conversion")}</div>
+              <div className="text-sm text-white/80 mb-1">📈 {t("stats.conversion")}</div>
               <div className="text-2xl font-extrabold text-white">{stats.conversionRate}%</div>
             </div>
           </div>

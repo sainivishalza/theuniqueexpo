@@ -3464,6 +3464,8 @@
     },
     "pasteLabel": "或在此粘贴文件内容",
     "pastePlaceholder": "{\"buyers\": [ ... ]}",
-    "pastedName": "粘贴的文本"
+    "pastedName": "粘贴的文本",
+    "notJson": "无法按 JSON 读取（{size} 个字符，开头为：{start}）",
+    "noBuyersList": "未找到 \"buyers\" 列表（顶层键：{keys}）"
   }
 }

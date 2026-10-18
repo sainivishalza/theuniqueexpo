@@ -3464,6 +3464,8 @@
     },
     "pasteLabel": "Or paste the file contents here",
     "pastePlaceholder": "{\"buyers\": [ ... ]}",
-    "pastedName": "pasted text"
+    "pastedName": "pasted text",
+    "notJson": "it is not readable as JSON (size {size} characters, starts with: {start})",
+    "noBuyersList": "no \"buyers\" list found (top-level keys: {keys})"
   }
 }

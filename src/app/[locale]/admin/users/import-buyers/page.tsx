@@ -61,15 +61,25 @@ export default function ImportBuyersPage() {
     setDone(0);
     setFileName("");
     if (!text.trim()) return;
+    // Say exactly what is wrong, so a wrong or damaged file can be told apart
+    // from a good one (only the first few characters are ever shown).
+    const start = text.trim().slice(0, 24).replace(/\s+/g, " ");
+    let parsed: unknown;
     try {
-      const parsed = JSON.parse(text);
-      const arr = Array.isArray(parsed) ? parsed : parsed?.buyers;
-      if (!Array.isArray(arr) || arr.length === 0) throw new Error();
-      setBuyers(arr.map((b: Record<string, unknown>, i: number) => ({ ...b, row: i + 1 })));
-      setFileName(name);
+      parsed = JSON.parse(text.replace(/^\uFEFF/, ""));
     } catch {
-      setFileError(t("invalidFile"));
+      setFileError(`${t("invalidFile")} — ${t("notJson", { size: text.length, start })}`);
+      return;
     }
+    const obj = parsed as { buyers?: unknown } | null;
+    const arr = Array.isArray(parsed) ? parsed : obj?.buyers;
+    if (!Array.isArray(arr) || arr.length === 0) {
+      const keys = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? Object.keys(parsed).slice(0, 5).join(", ") : "";
+      setFileError(`${t("invalidFile")} — ${t("noBuyersList", { keys: keys || "—" })}`);
+      return;
+    }
+    setBuyers(arr.map((b: Record<string, unknown>, i: number) => ({ ...b, row: i + 1 })));
+    setFileName(name);
   }
 
   async function handleFile(file: File | null) {

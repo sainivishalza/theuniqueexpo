@@ -45,28 +45,42 @@ export default function ImportBuyersPage() {
   const [buyers, setBuyers] = useState<Record<string, unknown>[] | null>(null);
   const [fileName, setFileName] = useState("");
   const [fileError, setFileError] = useState("");
+  const [pasted, setPasted] = useState("");
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(0);
   const [error, setError] = useState("");
   const [results, setResults] = useState<ImportResult[]>([]);
   const [filter, setFilter] = useState<"all" | Status>("all");
 
-  async function handleFile(file: File | null) {
+  // The content decides, not the file name: a download saved as "…json.txt"
+  // or with no ending works the same as "….json".
+  function loadText(text: string, name: string) {
     setFileError("");
     setBuyers(null);
     setResults([]);
     setDone(0);
     setFileName("");
-    if (!file) return;
+    if (!text.trim()) return;
     try {
-      const parsed = JSON.parse(await file.text());
+      const parsed = JSON.parse(text);
       const arr = Array.isArray(parsed) ? parsed : parsed?.buyers;
       if (!Array.isArray(arr) || arr.length === 0) throw new Error();
       setBuyers(arr.map((b: Record<string, unknown>, i: number) => ({ ...b, row: i + 1 })));
-      setFileName(file.name);
+      setFileName(name);
     } catch {
       setFileError(t("invalidFile"));
     }
+  }
+
+  async function handleFile(file: File | null) {
+    setPasted("");
+    if (!file) return loadText("", "");
+    loadText(await file.text(), file.name);
+  }
+
+  function handlePaste(text: string) {
+    setPasted(text);
+    loadText(text, t("pastedName"));
   }
 
   async function handleImport() {
@@ -129,7 +143,17 @@ export default function ImportBuyersPage() {
             </ul>
             <div>
               <label htmlFor="import-file" className="block text-sm font-medium text-gray-700 mb-1">{t("fileLabel")}</label>
-              <input id="import-file" type="file" accept="application/json,.json" disabled={running} onChange={(e) => handleFile(e.target.files?.[0] || null)} className="text-sm" />
+              <input id="import-file" type="file" disabled={running} onChange={(e) => handleFile(e.target.files?.[0] || null)} className="text-sm" />
+              <label htmlFor="import-paste" className="block text-sm font-medium text-gray-700 mt-4 mb-1">{t("pasteLabel")}</label>
+              <textarea
+                id="import-paste"
+                value={pasted}
+                disabled={running}
+                onChange={(e) => handlePaste(e.target.value)}
+                rows={3}
+                placeholder={t("pastePlaceholder")}
+                className="w-full rounded-xl border border-gray-200 px-3 py-2 text-xs font-mono focus:border-emerald-500 outline-none"
+              />
               {fileError && <p className="mt-1.5 text-xs text-red-600">{fileError}</p>}
               {buyers && <p className="mt-1.5 text-xs text-emerald-700">{t("fileLoaded", { name: fileName, count: buyers.length })}</p>}
             </div>

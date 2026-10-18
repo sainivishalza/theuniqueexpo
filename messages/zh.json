@@ -3445,7 +3445,7 @@
     "ruleExisting": "已注册的人（相同邮箱或护照号）不会被重复创建，其资料也不会被更改——只会为其添加文件中的展会。",
     "ruleNoEmail": "没有邮箱的人使用手机号或护照号登录。",
     "rulePassword": "密码为其手机号（没有手机号则为微信号）。之后可自行修改。",
-    "fileLabel": "采购商文件（.json）",
+    "fileLabel": "采购商文件（文件名不限）",
     "invalidFile": "该文件不是有效的采购商文件",
     "fileLoaded": "已加载 {name}：{count} 位采购商",
     "start": "导入 {count} 位采购商",
@@ -3461,6 +3461,9 @@
       "expo_added": "已添加展会",
       "already_registered": "已注册",
       "failed": "需要处理"
-    }
+    },
+    "pasteLabel": "或在此粘贴文件内容",
+    "pastePlaceholder": "{\"buyers\": [ ... ]}",
+    "pastedName": "粘贴的文本"
   }
 }

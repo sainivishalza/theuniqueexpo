@@ -172,6 +172,7 @@ export default function AdminRFQsPage() {
               </div>
               <div className="flex items-center gap-2 flex-wrap sm:flex-shrink-0">
                 <select
+                  aria-label={`${ta("status")}: ${rfq.title}`}
                   value={rfq.status}
                   disabled={updatingId === rfq.id}
                   onChange={(e) => handleStatusChange(rfq.id, e.target.value)}
@@ -217,6 +218,7 @@ export default function AdminRFQsPage() {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <select
+                          aria-label={`${ta("status")}: ${q.exhibitorName}`}
                           value={q.status}
                           disabled={updatingQuoteId === q.id}
                           onChange={(e) => handleQuoteStatusChange(rfq.id, q.id, e.target.value)}

@@ -182,9 +182,9 @@ export default function AdminPhotoOrganizerPage() {
           {!batch && (
             <Card shadow="sm" className="p-8 text-center">
               <p className="text-gray-600 mb-4">{t("uploadPrompt")}</p>
-              <label className="inline-block cursor-pointer rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-sm font-semibold transition-colors">
+              <label className="relative inline-block cursor-pointer rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-sm font-semibold transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                 {t("chooseZip")}
-                <input type="file" accept=".zip" className="hidden" onChange={(e) => handleFile(e.target.files?.[0] || null)} />
+                <input type="file" accept=".zip" className="sr-only" onChange={(e) => handleFile(e.target.files?.[0] || null)} />
               </label>
               <p className="mt-3 text-xs text-gray-400">{t("sizeLimitNote")}</p>
             </Card>
@@ -244,6 +244,7 @@ export default function AdminPhotoOrganizerPage() {
                     <div className="flex-1 min-w-0">
                       <input
                         type="text"
+                        aria-label={t("customerName")}
                         value={names[g.id] || ""}
                         onChange={(e) => setNames((prev) => ({ ...prev, [g.id]: e.target.value }))}
                         className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-heading focus:outline-none focus:ring-2 focus:ring-emerald-500"

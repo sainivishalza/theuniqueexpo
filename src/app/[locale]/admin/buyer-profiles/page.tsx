@@ -296,6 +296,7 @@ interface ExpoOption {
 // A dropdown with a tick-box per expo, so a buyer can be tagged with several.
 // The list comes from Admin -> Buyer Expos.
 function ExpoMultiSelect({
+  id,
   options,
   value,
   onChange,
@@ -303,6 +304,8 @@ function ExpoMultiSelect({
   emptyText,
   selectedText,
 }: {
+  // Lets the field's <label htmlFor> point at the dropdown button.
+  id?: string;
   options: ExpoOption[];
   value: number[];
   onChange: (ids: number[]) => void;
@@ -340,6 +343,7 @@ function ExpoMultiSelect({
   return (
     <div ref={rootRef} className="relative">
       <button
+        id={id}
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
@@ -674,6 +678,7 @@ export default function AdminBuyerProfilesPage() {
           <div className="flex flex-wrap items-center gap-3">
             <input
               type="text"
+              aria-label={t("searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t("searchPlaceholder")}
@@ -882,9 +887,10 @@ export default function AdminBuyerProfilesPage() {
                 <div className="grid grid-cols-2 gap-4">
                   {FIELDS.map((field) => (
                     <div key={field.key} className={field.kind === "expos" ? "col-span-2" : undefined}>
-                      <label className="block text-xs font-semibold text-gray-500 mb-1">{t(`fields.${field.key}`)}</label>
+                      <label htmlFor={`ebp-${field.key}`} className="block text-xs font-semibold text-gray-500 mb-1">{t(`fields.${field.key}`)}</label>
                       {field.kind === "expos" ? (
                         <ExpoMultiSelect
+                          id={`ebp-${field.key}`}
                           options={expoOptions}
                           value={detail.expoIds}
                           onChange={(ids) => setDetail({ ...detail, expoIds: ids })}
@@ -894,6 +900,7 @@ export default function AdminBuyerProfilesPage() {
                         />
                       ) : field.kind === "select" ? (
                         <select
+                          id={`ebp-${field.key}`}
                           value={detail[field.key]}
                           onChange={(e) => setDetail({ ...detail, [field.key]: e.target.value })}
                           className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none"
@@ -910,6 +917,7 @@ export default function AdminBuyerProfilesPage() {
                       ) : (
                         <>
                           <input
+                            id={`ebp-${field.key}`}
                             type={field.kind === "email" || field.kind === "date" ? field.kind : "text"}
                             list={field.kind === "combo" ? `${field.key}-options` : undefined}
                             value={detail[field.key]}
@@ -927,8 +935,9 @@ export default function AdminBuyerProfilesPage() {
                   ))}
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("fields.purchaseIntention")}</label>
+                  <label htmlFor="ebp-purchaseIntention" className="block text-xs font-semibold text-gray-500 mb-1">{t("fields.purchaseIntention")}</label>
                   <textarea
+                    id="ebp-purchaseIntention"
                     value={detail.purchaseIntention}
                     onChange={(e) => setDetail({ ...detail, purchaseIntention: e.target.value })}
                     rows={2}
@@ -936,8 +945,9 @@ export default function AdminBuyerProfilesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("fields.otherPurchaseIntention")}</label>
+                  <label htmlFor="ebp-otherPurchaseIntention" className="block text-xs font-semibold text-gray-500 mb-1">{t("fields.otherPurchaseIntention")}</label>
                   <textarea
+                    id="ebp-otherPurchaseIntention"
                     value={detail.otherPurchaseIntention}
                     onChange={(e) => setDetail({ ...detail, otherPurchaseIntention: e.target.value })}
                     rows={2}
@@ -968,6 +978,7 @@ export default function AdminBuyerProfilesPage() {
                           )}
                           <input
                             type="file"
+                            aria-label={t(`docFields.${field}`)}
                             accept="image/*,application/pdf"
                             disabled={uploadingField === field}
                             onChange={(e) => handleDocUpload(field, e.target.files?.[0] || null)}
@@ -976,6 +987,7 @@ export default function AdminBuyerProfilesPage() {
                           {detail.hasDocument[field] && (
                             <>
                               <select
+                                aria-label={`${t(`docFields.${field}`)} — ${t("verificationColumn")}`}
                                 value={review.status}
                                 disabled={reviewingField === field}
                                 onChange={(e) => handleReviewChange(field, e.target.value as DocReviewStatus, review.note)}
@@ -988,6 +1000,7 @@ export default function AdminBuyerProfilesPage() {
                               {review.status === "rejected" && (
                                 <input
                                   type="text"
+                                  aria-label={t("docReview.notePlaceholder")}
                                   value={review.note}
                                   placeholder={t("docReview.notePlaceholder")}
                                   disabled={reviewingField === field}

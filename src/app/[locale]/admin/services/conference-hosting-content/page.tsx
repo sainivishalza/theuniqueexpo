@@ -96,16 +96,16 @@ export default function AdminConferenceHostingContentPage() {
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-heading">{t("header")}</h2>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("fields.title")}</label>
-                  <input type="text" value={content.title} onChange={(e) => update({ title: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" />
+                  <label htmlFor="ch-title" className="block text-xs font-semibold text-gray-500 mb-1">{t("fields.title")}</label>
+                  <input id="ch-title" type="text" value={content.title} onChange={(e) => update({ title: e.target.value })} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("fields.subtitle")}</label>
-                  <textarea value={content.subtitle} onChange={(e) => update({ subtitle: e.target.value })} rows={2} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-y" />
+                  <label htmlFor="ch-subtitle" className="block text-xs font-semibold text-gray-500 mb-1">{t("fields.subtitle")}</label>
+                  <textarea id="ch-subtitle" value={content.subtitle} onChange={(e) => update({ subtitle: e.target.value })} rows={2} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-y" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("fields.heroImage")}</label>
-                  <input type="text" value={content.heroImage} onChange={(e) => update({ heroImage: e.target.value })} placeholder="https://..." className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" />
+                  <label htmlFor="ch-hero-image" className="block text-xs font-semibold text-gray-500 mb-1">{t("fields.heroImage")}</label>
+                  <input id="ch-hero-image" type="text" value={content.heroImage} onChange={(e) => update({ heroImage: e.target.value })} placeholder="https://..." className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" />
                 </div>
               </Card>
 
@@ -120,12 +120,14 @@ export default function AdminConferenceHostingContentPage() {
                       <div className="flex gap-3 items-start">
                         <input
                           type="text"
+                          aria-label={`${t("fields.itemIcon")} ${i + 1}`}
                           value={item.icon}
                           onChange={(e) => updateItem(i, { icon: e.target.value })}
                           className="w-14 rounded-lg border border-gray-200 px-2 py-2 text-center text-lg"
                         />
                         <input
                           type="text"
+                          aria-label={`${t("fields.itemTitle")} ${i + 1}`}
                           value={item.title}
                           onChange={(e) => updateItem(i, { title: e.target.value })}
                           placeholder={t("fields.itemTitle")}
@@ -134,6 +136,7 @@ export default function AdminConferenceHostingContentPage() {
                         <Button onClick={() => removeItem(i)} variant="linkDanger" size="inline" className="whitespace-nowrap">{ta("delete")}</Button>
                       </div>
                       <textarea
+                        aria-label={`${t("fields.itemDesc")} ${i + 1}`}
                         value={item.desc}
                         onChange={(e) => updateItem(i, { desc: e.target.value })}
                         rows={2}

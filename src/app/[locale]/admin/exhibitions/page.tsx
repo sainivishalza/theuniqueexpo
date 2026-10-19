@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
@@ -312,7 +312,7 @@ export default function AdminExhibitionsPage() {
               <Field label={t("fields.accentColor")} type="color" value={form.color} onChange={(v) => setForm({ ...form, color: v })} />
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("heroImage")}</label>
+              <label htmlFor="exh-hero-image" className="block text-sm font-semibold text-gray-700 mb-1">{t("heroImage")}</label>
               <p className="text-xs text-gray-500 mb-2">{t("heroImageHint")}</p>
               <div className="flex gap-4 items-start">
                 <div className="relative w-32 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-gray-900 border border-gray-200">
@@ -325,6 +325,7 @@ export default function AdminExhibitionsPage() {
                 </div>
                 <div className="flex-1 space-y-2">
                   <input
+                    id="exh-hero-image"
                     type="text"
                     value={form.image.startsWith("data:") ? "" : form.image}
                     placeholder={form.image.startsWith("data:") ? t("uploadedImageSet") : "https://..."}
@@ -332,12 +333,12 @@ export default function AdminExhibitionsPage() {
                     className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                   <div className="flex items-center gap-3">
-                    <label className="cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors">
+                    <label className="relative cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                       {t("uploadPosterImage")}
                       <input
                         type="file"
                         accept="image/*"
-                        className="hidden"
+                        className="sr-only"
                         onChange={(e) => handleImageFile(e.target.files?.[0] || null)}
                       />
                     </label>
@@ -377,13 +378,13 @@ export default function AdminExhibitionsPage() {
                 </div>
               )}
               {form.galleryImages.length < MAX_GALLERY_IMAGES && (
-                <label className="cursor-pointer inline-block rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors">
+                <label className="relative cursor-pointer inline-block rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                   {galleryUploading ? t("uploading") : t("addPhotos")}
                   <input
                     type="file"
                     accept="image/*"
                     multiple
-                    className="hidden"
+                    className="sr-only"
                     disabled={galleryUploading}
                     onChange={(e) => {
                       void handleGalleryFiles(e.target.files);
@@ -395,8 +396,9 @@ export default function AdminExhibitionsPage() {
               {galleryError && <p className="mt-1 text-xs text-red-600">{galleryError}</p>}
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("description")}</label>
+              <label htmlFor="exh-description" className="block text-sm font-semibold text-gray-700 mb-1">{t("description")}</label>
               <textarea
+                id="exh-description"
                 className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={3}
                 value={form.description}
@@ -404,8 +406,9 @@ export default function AdminExhibitionsPage() {
               />
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("highlights")}</label>
+              <label htmlFor="exh-highlights" className="block text-sm font-semibold text-gray-700 mb-1">{t("highlights")}</label>
               <textarea
+                id="exh-highlights"
                 className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={4}
                 value={form.highlights}
@@ -416,8 +419,9 @@ export default function AdminExhibitionsPage() {
               <h3 className="text-xs font-bold uppercase tracking-wide text-gray-500 mb-3">{t("translationsOptional")}</h3>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("descriptionRu")}</label>
+                  <label htmlFor="exh-descriptionRu" className="block text-sm font-semibold text-gray-700 mb-1">{t("descriptionRu")}</label>
                   <textarea
+                    id="exh-descriptionRu"
                     className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     rows={3}
                     value={form.descriptionRu}
@@ -425,8 +429,9 @@ export default function AdminExhibitionsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("descriptionZh")}</label>
+                  <label htmlFor="exh-descriptionZh" className="block text-sm font-semibold text-gray-700 mb-1">{t("descriptionZh")}</label>
                   <textarea
+                    id="exh-descriptionZh"
                     className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     rows={3}
                     value={form.descriptionZh}
@@ -434,8 +439,9 @@ export default function AdminExhibitionsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("highlightsRu")}</label>
+                  <label htmlFor="exh-highlightsRu" className="block text-sm font-semibold text-gray-700 mb-1">{t("highlightsRu")}</label>
                   <textarea
+                    id="exh-highlightsRu"
                     className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     rows={4}
                     value={form.highlightsRu}
@@ -443,8 +449,9 @@ export default function AdminExhibitionsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("highlightsZh")}</label>
+                  <label htmlFor="exh-highlightsZh" className="block text-sm font-semibold text-gray-700 mb-1">{t("highlightsZh")}</label>
                   <textarea
+                    id="exh-highlightsZh"
                     className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     rows={4}
                     value={form.highlightsZh}
@@ -502,10 +509,12 @@ export default function AdminExhibitionsPage() {
 }
 
 function Field({ label, value, onChange, type = "text", placeholder }: { label: string; value: string; onChange: (v: string) => void; type?: string; placeholder?: string }) {
+  const id = useId();
   return (
     <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
+      <label htmlFor={id} className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
       <input
+        id={id}
         type={type}
         value={value}
         placeholder={placeholder}

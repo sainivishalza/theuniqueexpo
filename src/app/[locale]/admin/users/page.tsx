@@ -172,6 +172,7 @@ export default function AdminUsersPage() {
           <UrlSearchSync onChange={setSearch} />
           <input
             type="text"
+            aria-label={t("searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("searchPlaceholder")}
@@ -206,6 +207,7 @@ export default function AdminUsersPage() {
                           </td>
                           <td className="px-6 py-4">
                             <select
+                              aria-label={`${t("role")}: ${u.name}`}
                               value={u.role}
                               disabled={busy || isSelf}
                               onChange={(e) => handleUpdate(u.id, { role: e.target.value })}

@@ -183,8 +183,9 @@ export default function BulkCreateUsersPage() {
 
           <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t("roleLabel")}</label>
+              <label htmlFor="bulk-role" className="block text-sm font-medium text-gray-700 mb-2">{t("roleLabel")}</label>
               <select
+                id="bulk-role"
                 value={role}
                 onChange={(e) => setRole(e.target.value as (typeof ROLES)[number])}
                 className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold"
@@ -194,9 +195,10 @@ export default function BulkCreateUsersPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("dataLabel")}</label>
+              <label htmlFor="bulk-data" className="block text-sm font-medium text-gray-700 mb-1">{t("dataLabel")}</label>
               <p className="text-xs text-gray-400 mb-2">{t("dataHint")}</p>
               <textarea
+                id="bulk-data"
                 value={raw}
                 onChange={(e) => { setRaw(e.target.value); clearFile(); }}
                 rows={10}
@@ -210,9 +212,10 @@ export default function BulkCreateUsersPage() {
             </div>
 
             <div className="border-t border-gray-100 pt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("orUploadFile")}</label>
+              <label htmlFor="bulk-file" className="block text-sm font-medium text-gray-700 mb-1">{t("orUploadFile")}</label>
               <p className="text-xs text-gray-400 mb-2">{t("fileHint")}</p>
               <input
+                id="bulk-file"
                 type="file"
                 accept="application/json"
                 onChange={(e) => handleFilePicked(e.target.files?.[0] || null)}

@@ -137,6 +137,10 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
                   </p>
                 </div>
                 <button
+                  type="button"
+                  role="switch"
+                  aria-checked={enabled}
+                  aria-label={tb("registrationStatus")}
                   onClick={() => setEnabled((e) => !e)}
                   className={`relative w-14 h-8 rounded-full transition-colors ${enabled ? "bg-emerald-500" : "bg-gray-300"}`}
                 >
@@ -173,8 +177,9 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
                         <div className="flex items-start gap-3">
                           <div className="flex-1 grid gap-3 md:grid-cols-2">
                             <div>
-                              <label className="block text-xs font-semibold text-gray-500 mb-1">{tb("questionLabel")}</label>
+                              <label htmlFor={`rf-label-${field.id}`} className="block text-xs font-semibold text-gray-500 mb-1">{tb("questionLabel")}</label>
                               <input
+                                id={`rf-label-${field.id}`}
                                 type="text"
                                 value={field.label}
                                 onChange={(e) => updateField(field.id, { label: e.target.value })}
@@ -183,8 +188,9 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
                               />
                             </div>
                             <div>
-                              <label className="block text-xs font-semibold text-gray-500 mb-1">{tb("fieldType")}</label>
+                              <label htmlFor={`rf-type-${field.id}`} className="block text-xs font-semibold text-gray-500 mb-1">{tb("fieldType")}</label>
                               <select
+                                id={`rf-type-${field.id}`}
                                 value={field.type}
                                 onChange={(e) => {
                                   const type = e.target.value as CustomFieldType;
@@ -199,15 +205,16 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
                             </div>
                           </div>
                           <div className="flex flex-col gap-1 pt-5">
-                            <button onClick={() => moveField(index, -1)} disabled={index === 0} className="text-gray-400 hover:text-gray-700 disabled:opacity-30 text-xs">▲</button>
-                            <button onClick={() => moveField(index, 1)} disabled={index === fields.length - 1} className="text-gray-400 hover:text-gray-700 disabled:opacity-30 text-xs">▼</button>
+                            <button onClick={() => moveField(index, -1)} aria-label={tb("moveUp")} disabled={index === 0} className="text-gray-400 hover:text-gray-700 disabled:opacity-30 text-xs">▲</button>
+                            <button onClick={() => moveField(index, 1)} aria-label={tb("moveDown")} disabled={index === fields.length - 1} className="text-gray-400 hover:text-gray-700 disabled:opacity-30 text-xs">▼</button>
                           </div>
                         </div>
 
                         {isChoiceType(field.type) && (
                           <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1">{tb("optionsHint")}</label>
+                            <label htmlFor={`rf-options-${field.id}`} className="block text-xs font-semibold text-gray-500 mb-1">{tb("optionsHint")}</label>
                             <textarea
+                              id={`rf-options-${field.id}`}
                               value={(field.options || []).join("\n")}
                               onChange={(e) => updateField(field.id, { options: e.target.value.split("\n") })}
                               rows={3}

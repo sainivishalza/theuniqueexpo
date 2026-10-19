@@ -90,6 +90,7 @@ export default function AdminFaqPage() {
                     <div className="flex items-start gap-2">
                       <input
                         type="text"
+                        aria-label={`${t("questionPlaceholder")} ${i + 1}`}
                         value={item.question}
                         onChange={(e) => updateItem(i, { question: e.target.value })}
                         placeholder={t("questionPlaceholder")}
@@ -98,6 +99,7 @@ export default function AdminFaqPage() {
                       <Button onClick={() => removeItem(i)} variant="linkDanger" size="inline" className="whitespace-nowrap py-2">{ta("delete")}</Button>
                     </div>
                     <textarea
+                      aria-label={`${t("answerPlaceholder")} ${i + 1}`}
                       value={item.answer}
                       onChange={(e) => updateItem(i, { answer: e.target.value })}
                       placeholder={t("answerPlaceholder")}

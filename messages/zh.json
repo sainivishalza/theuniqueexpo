@@ -100,6 +100,8 @@
     "filter": "筛选:",
     "allIndustries": "所有行业",
     "allCities": "所有城市",
+    "filterIndustry": "按行业筛选",
+    "filterCity": "按城市筛选",
     "allDates": "所有日期",
     "upcoming": "即将举行",
     "past": "已结束",
@@ -175,6 +177,7 @@
     "subtitle": "在所有展会中搜索经过认证的供应商和展商。",
     "searchPlaceholder": "按名称、产品或国家搜索...",
     "allIndustries": "所有行业",
+    "filterIndustry": "按行业筛选",
     "count": "{count, plural, other {共 # 家展商}}",
     "noResultsTitle": "未找到相关展商",
     "noResultsSubtitle": "请尝试更换搜索词或筛选条件。",
@@ -790,7 +793,8 @@
       "subtitle": "副标题",
       "heroImage": "封面图片链接",
       "itemTitle": "项目标题",
-      "itemDesc": "项目描述"
+      "itemDesc": "项目描述",
+      "itemIcon": "项目图标"
     }
   },
   "adminCityPartnershipsContent": {
@@ -808,7 +812,8 @@
       "subtitle": "副标题",
       "heroImage": "封面图片链接",
       "itemTitle": "项目标题",
-      "itemDesc": "项目描述"
+      "itemDesc": "项目描述",
+      "itemIcon": "项目图标"
     }
   },
   "adminMagazine": {
@@ -1016,6 +1021,7 @@
     "fileCount": "{count} 个文件",
     "passportThumbnailAlt": "护照照片",
     "noPassportFound": "未找到护照照片",
+    "customerName": "客户姓名",
     "detectionDetected": "已从护照读取",
     "detectionLowConfidence": "置信度较低",
     "detectionNotFound": "未识别",
@@ -1089,6 +1095,8 @@
     "vision": "愿景",
     "stats": "数据统计",
     "addStat": "+ 添加统计项",
+    "statValue": "统计值",
+    "statLabel": "统计项名称",
     "saved": "已保存。",
     "saveButton": "保存关于我们页面",
     "statLabelPlaceholder": "例如：支持的展会",
@@ -1133,6 +1141,8 @@
     "optionsHint": "选项(每行一个)",
     "required": "必填",
     "removeField": "删除字段",
+    "moveUp": "上移问题",
+    "moveDown": "下移问题",
     "addField": "+ 添加字段",
     "saved": "已保存。",
     "saveRegistrationForm": "保存报名表单"
@@ -3376,10 +3386,13 @@
     "destinationNamePlaceholder": "目的地名称",
     "destinationTaglinePlaceholder": "简短标语",
     "destinationHighlightsPlaceholder": "亮点，用逗号分隔",
+    "destinationIcon": "目的地图标",
+    "destinationImage": "目的地图片链接",
     "addDestination": "+ 添加目的地",
     "routes": "路线",
     "routesHint": "预设的商务+旅行组合，例如「广交会 + 广州 + 阳朔」。",
     "routeTitlePlaceholder": "路线标题",
+    "routeDuration": "路线时长",
     "routeDescriptionPlaceholder": "简短描述",
     "addRoute": "+ 添加路线",
     "saveFailed": "保存失败",

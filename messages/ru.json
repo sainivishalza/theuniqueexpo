@@ -100,6 +100,8 @@
     "filter": "Фильтр:",
     "allIndustries": "Все отрасли",
     "allCities": "Все города",
+    "filterIndustry": "Фильтр по отрасли",
+    "filterCity": "Фильтр по городу",
     "allDates": "Все даты",
     "upcoming": "Предстоящие",
     "past": "Прошедшие",
@@ -175,6 +177,7 @@
     "subtitle": "Ищите проверенных поставщиков и экспонентов среди всех выставок.",
     "searchPlaceholder": "Поиск по названию, товару или стране...",
     "allIndustries": "Все отрасли",
+    "filterIndustry": "Фильтр по отрасли",
     "count": "{count, plural, one {# экспонент} few {# экспонента} many {# экспонентов} other {# экспонента}}",
     "noResultsTitle": "Экспоненты не найдены",
     "noResultsSubtitle": "Попробуйте изменить запрос или фильтр.",
@@ -790,7 +793,8 @@
       "subtitle": "Подзаголовок",
       "heroImage": "URL изображения-обложки",
       "itemTitle": "Название пункта",
-      "itemDesc": "Описание пункта"
+      "itemDesc": "Описание пункта",
+      "itemIcon": "Значок пункта"
     }
   },
   "adminCityPartnershipsContent": {
@@ -808,7 +812,8 @@
       "subtitle": "Подзаголовок",
       "heroImage": "URL изображения-обложки",
       "itemTitle": "Название пункта",
-      "itemDesc": "Описание пункта"
+      "itemDesc": "Описание пункта",
+      "itemIcon": "Значок пункта"
     }
   },
   "adminMagazine": {
@@ -1016,6 +1021,7 @@
     "fileCount": "Файлов: {count}",
     "passportThumbnailAlt": "Фото паспорта",
     "noPassportFound": "Фото паспорта не найдено",
+    "customerName": "Имя клиента",
     "detectionDetected": "Прочитано с паспорта",
     "detectionLowConfidence": "Низкая точность",
     "detectionNotFound": "Не распознано",
@@ -1089,6 +1095,8 @@
     "vision": "Видение",
     "stats": "Статистика",
     "addStat": "+ Добавить показатель",
+    "statValue": "Значение показателя",
+    "statLabel": "Название показателя",
     "saved": "Сохранено.",
     "saveButton": "Сохранить страницу «О нас»",
     "statLabelPlaceholder": "напр. Поддерживаемые выставки",
@@ -1133,6 +1141,8 @@
     "optionsHint": "Варианты (по одному на строку)",
     "required": "Обязательное",
     "removeField": "Удалить поле",
+    "moveUp": "Переместить вопрос вверх",
+    "moveDown": "Переместить вопрос вниз",
     "addField": "+ Добавить поле",
     "saved": "Сохранено.",
     "saveRegistrationForm": "Сохранить форму регистрации"
@@ -3376,10 +3386,13 @@
     "destinationNamePlaceholder": "Название направления",
     "destinationTaglinePlaceholder": "Короткое описание",
     "destinationHighlightsPlaceholder": "Особенности через запятую",
+    "destinationIcon": "Значок направления",
+    "destinationImage": "URL изображения направления",
     "addDestination": "+ Добавить направление",
     "routes": "Маршруты",
     "routesHint": "Готовые комбинации бизнеса и путешествий, например «Кантонская ярмарка + Гуанчжоу + Яншо».",
     "routeTitlePlaceholder": "Название маршрута",
+    "routeDuration": "Длительность маршрута",
     "routeDescriptionPlaceholder": "Короткое описание",
     "addRoute": "+ Добавить маршрут",
     "saveFailed": "Не удалось сохранить",

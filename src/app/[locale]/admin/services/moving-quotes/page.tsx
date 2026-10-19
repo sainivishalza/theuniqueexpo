@@ -81,6 +81,7 @@ export default function AdminMovingQuotesPage() {
                     <td className="px-6 py-4 text-gray-500">{q.movingType}</td>
                     <td className="px-6 py-4">
                       <select
+                        aria-label={`${ta("status")}: ${q.name}`}
                         value={q.status}
                         disabled={updatingId === q.id}
                         onChange={(e) => updateStatus(q.id, e.target.value)}

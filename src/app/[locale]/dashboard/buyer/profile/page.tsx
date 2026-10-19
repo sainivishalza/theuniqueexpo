@@ -196,9 +196,10 @@ export default function BuyerProfilePage() {
             <div className="grid sm:grid-cols-2 gap-4">
               {FIELDS.map((field) => (
                 <div key={field.key}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t(`fields.${field.key}`)}</label>
+                  <label htmlFor={`bp-${field.key}`} className="block text-sm font-medium text-gray-700 mb-1">{t(`fields.${field.key}`)}</label>
                   {field.kind === "select" ? (
                     <select
+                      id={`bp-${field.key}`}
                       value={profile[field.key]}
                       onChange={(e) => setProfile({ ...profile, [field.key]: e.target.value })}
                       className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-emerald-500 outline-none bg-white"
@@ -211,6 +212,7 @@ export default function BuyerProfilePage() {
                   ) : (
                     <>
                       <input
+                        id={`bp-${field.key}`}
                         type={field.kind === "email" || field.kind === "date" ? field.kind : "text"}
                         list={field.kind === "combo" ? `${field.key}-options` : undefined}
                         value={profile[field.key]}
@@ -228,8 +230,9 @@ export default function BuyerProfilePage() {
               ))}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.purchaseIntention")}</label>
+              <label htmlFor="bp-purchaseIntention" className="block text-sm font-medium text-gray-700 mb-1">{t("fields.purchaseIntention")}</label>
               <textarea
+                id="bp-purchaseIntention"
                 value={profile.purchaseIntention}
                 onChange={(e) => setProfile({ ...profile, purchaseIntention: e.target.value })}
                 rows={2}
@@ -237,8 +240,9 @@ export default function BuyerProfilePage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t("fields.otherPurchaseIntention")}</label>
+              <label htmlFor="bp-otherPurchaseIntention" className="block text-sm font-medium text-gray-700 mb-1">{t("fields.otherPurchaseIntention")}</label>
               <textarea
+                id="bp-otherPurchaseIntention"
                 value={profile.otherPurchaseIntention}
                 onChange={(e) => setProfile({ ...profile, otherPurchaseIntention: e.target.value })}
                 rows={2}
@@ -280,6 +284,7 @@ export default function BuyerProfilePage() {
                   )}
                   <input
                     type="file"
+                    aria-label={t(`docFields.${field}`)}
                     accept="image/*,application/pdf"
                     disabled={uploadingField === field}
                     onChange={(e) => handleDocUpload(field, e.target.files?.[0] || null)}

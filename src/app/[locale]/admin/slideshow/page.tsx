@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
@@ -226,13 +226,13 @@ export default function AdminSlideshowPage() {
           <div className="flex items-center justify-between flex-wrap gap-3">
             <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
             <div className="flex items-center gap-2">
-              <label className="cursor-pointer rounded-full px-5 py-2.5 text-sm border-2 border-white/30 text-white backdrop-blur-sm hover:bg-white/10 transition-colors">
+              <label className="relative cursor-pointer rounded-full px-5 py-2.5 text-sm border-2 border-white/30 text-white backdrop-blur-sm hover:bg-white/10 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-white focus-within:outline-offset-2">
                 {t("bulkUpload")}
                 <input
                   type="file"
                   accept="image/*"
                   multiple
-                  className="hidden"
+                  className="sr-only"
                   disabled={bulkProgress !== null}
                   onChange={(e) => {
                     void handleBulkUpload(e.target.files);
@@ -266,12 +266,12 @@ export default function AdminSlideshowPage() {
                   {form.image && <img src={form.image} alt={ta("preview")} className="absolute inset-0 w-full h-full object-cover" />}
                 </div>
                 <div className="flex items-center gap-3">
-                  <label className="cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors">
+                  <label className="relative cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                     {t("uploadPhoto")}
                     <input
                       type="file"
                       accept="image/*"
-                      className="hidden"
+                      className="sr-only"
                       onChange={(e) => handlePhotoFile(e.target.files?.[0] || null)}
                     />
                   </label>
@@ -341,10 +341,12 @@ export default function AdminSlideshowPage() {
 }
 
 function Field({ label, value, onChange, type = "text" }: { label: string; value: string; onChange: (v: string) => void; type?: string }) {
+  const id = useId();
   return (
     <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
+      <label htmlFor={id} className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
       <input
+        id={id}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}

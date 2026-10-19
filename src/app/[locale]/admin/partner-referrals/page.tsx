@@ -98,6 +98,7 @@ export default function AdminPartnerReferralsPage() {
                     <td className="px-6 py-4 text-gray-500">{r.referredUserName}<br/><span className="text-xs text-gray-400">{r.referredUserEmail}</span></td>
                     <td className="px-6 py-4">
                       <select
+                        aria-label={`${ta("status")}: ${r.referredUserName}`}
                         value={r.conversionStatus}
                         disabled={updatingId === r.id}
                         onChange={(e) => updateReferral(r.id, { conversionStatus: e.target.value })}
@@ -110,6 +111,7 @@ export default function AdminPartnerReferralsPage() {
                       <div className="flex items-center gap-2">
                         <input
                           type="number"
+                          aria-label={`${t("commission")}: ${r.referredUserName}`}
                           min="0"
                           step="0.01"
                           value={commissionDrafts[r.id] ?? String(r.commission)}

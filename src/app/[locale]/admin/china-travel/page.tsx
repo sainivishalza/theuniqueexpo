@@ -140,6 +140,7 @@ export default function AdminChinaTravelPage() {
                     <div className="flex gap-2">
                       <input
                         type="text"
+                        aria-label={`${t("destinationIcon")} ${i + 1}`}
                         value={dest.icon}
                         onChange={(e) => updateDestination(i, { icon: e.target.value })}
                         placeholder="🏙️"
@@ -147,6 +148,7 @@ export default function AdminChinaTravelPage() {
                       />
                       <input
                         type="text"
+                        aria-label={`${t("destinationNamePlaceholder")} ${i + 1}`}
                         value={dest.name}
                         onChange={(e) => updateDestination(i, { name: e.target.value })}
                         placeholder={t("destinationNamePlaceholder")}
@@ -156,6 +158,7 @@ export default function AdminChinaTravelPage() {
                     </div>
                     <input
                       type="text"
+                      aria-label={`${t("destinationTaglinePlaceholder")} ${i + 1}`}
                       value={dest.tagline}
                       onChange={(e) => updateDestination(i, { tagline: e.target.value })}
                       placeholder={t("destinationTaglinePlaceholder")}
@@ -163,6 +166,7 @@ export default function AdminChinaTravelPage() {
                     />
                     <input
                       type="text"
+                      aria-label={`${t("destinationHighlightsPlaceholder")} ${i + 1}`}
                       value={dest.highlights.join(", ")}
                       onChange={(e) => updateDestination(i, { highlights: e.target.value.split(",").map((h) => h.trim()).filter(Boolean) })}
                       placeholder={t("destinationHighlightsPlaceholder")}
@@ -179,18 +183,19 @@ export default function AdminChinaTravelPage() {
                       <div className="flex-1 space-y-1.5">
                         <input
                           type="text"
+                          aria-label={`${t("destinationImage")} ${i + 1}`}
                           value={dest.image?.startsWith("data:") ? "" : dest.image || ""}
                           placeholder={dest.image?.startsWith("data:") ? t("uploadedImageSet") : "https://..."}
                           onChange={(e) => updateDestination(i, { image: e.target.value })}
                           className="w-full rounded-lg border border-gray-200 px-3 py-1.5 text-xs"
                         />
                         <div className="flex items-center gap-3">
-                          <label className="cursor-pointer rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors">
+                          <label className="relative cursor-pointer rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                             {t("uploadPhoto")}
                             <input
                               type="file"
                               accept="image/*"
-                              className="hidden"
+                              className="sr-only"
                               onChange={(e) => handleDestinationImageFile(i, e.target.files?.[0] || null)}
                             />
                           </label>
@@ -218,6 +223,7 @@ export default function AdminChinaTravelPage() {
                     <div className="flex gap-2">
                       <input
                         type="text"
+                        aria-label={`${t("routeTitlePlaceholder")} ${i + 1}`}
                         value={route.title}
                         onChange={(e) => updateRoute(i, { title: e.target.value })}
                         placeholder={t("routeTitlePlaceholder")}
@@ -225,6 +231,7 @@ export default function AdminChinaTravelPage() {
                       />
                       <input
                         type="text"
+                        aria-label={`${t("routeDuration")} ${i + 1}`}
                         value={route.duration}
                         onChange={(e) => updateRoute(i, { duration: e.target.value })}
                         placeholder="5-7 days"
@@ -234,6 +241,7 @@ export default function AdminChinaTravelPage() {
                     </div>
                     <input
                       type="text"
+                      aria-label={`${t("routeDescriptionPlaceholder")} ${i + 1}`}
                       value={route.description}
                       onChange={(e) => updateRoute(i, { description: e.target.value })}
                       placeholder={t("routeDescriptionPlaceholder")}

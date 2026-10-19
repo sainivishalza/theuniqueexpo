@@ -91,6 +91,7 @@ export default function DirectoryPage() {
             </svg>
             <input
               type="text"
+              aria-label={t("searchPlaceholder")}
               placeholder={t("searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -98,6 +99,7 @@ export default function DirectoryPage() {
             />
           </div>
           <select
+            aria-label={t("filterIndustry")}
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
             className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-4 py-3 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none"

@@ -135,6 +135,7 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
                     <td className="px-6 py-4 font-medium text-gray-900">{displayName(r, tr("registrationNumber", { id: r.id }))}</td>
                     <td className="px-6 py-4">
                       <select
+                        aria-label={`${ta("status")}: ${displayName(r, tr("registrationNumber", { id: r.id }))}`}
                         value={r.status}
                         disabled={updatingId === r.id}
                         onChange={(e) => updateStatus(r.id, e.target.value)}

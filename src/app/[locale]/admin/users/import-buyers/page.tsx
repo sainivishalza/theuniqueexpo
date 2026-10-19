@@ -285,6 +285,7 @@ export default function ImportBuyersPage() {
                     <button
                       key={s}
                       type="button"
+                      aria-pressed={filter === s}
                       onClick={() => setFilter(s)}
                       className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${filter === s ? "bg-emerald-900 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
                     >

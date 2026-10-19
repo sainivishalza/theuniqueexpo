@@ -8,6 +8,7 @@ import { isPlaceholderEmail } from "@/lib/login-id";
 import { extractBuyerNumbers, formatBuyerNumber, parseBuyerNumber } from "@/lib/buyer-number";
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
+import { TEXT_COLUMN_ORDER } from "@/lib/buyer-profile-columns";
 import Button from "@/components/ui/Button";
 import UrlSearchSync from "@/components/UrlSearchSync";
 
@@ -153,17 +154,13 @@ const FIELDS: FieldDef[] = [
   { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];
-// The columns of the list, in the order admins read them: who (name, passport, nationality, phone),
-// then the company, e-mail, WeChat and turnover, then everything else. (The edit form keeps the order of FIELDS above.)
-const TABLE_FIRST: DetailFieldKey[] = ["passportNumber", "nationality", "phoneNumber", "companyName", "contactEmail", "wechatId", "annualTurnover"];
-const TABLE_FIELDS: FieldDef[] = [
-  ...TABLE_FIRST.map((key) => FIELDS.find((f) => f.key === key)!),
-  ...FIELDS.filter((f) => !TABLE_FIRST.includes(f.key)),
-];
+// The columns of the list: the order is shared with the Excel download (src/lib/buyer-profile-columns.ts).
+// (The edit form keeps the order of FIELDS above.)
+const TABLE_FIELDS: FieldDef[] = TEXT_COLUMN_ORDER.flatMap((key) => FIELDS.filter((f) => f.key === key));
 // Same order as the Excel and ZIP exports (DOCUMENT_FIELDS on the server).
 const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList"] as const;
 // Column order of the Excel download and its tick-list: the same as the table on screen.
-const TEXT_EXPORT_ORDER: string[] = [...TABLE_FIELDS.map((f) => f.key), "purchaseIntention", "otherPurchaseIntention"];
+const TEXT_EXPORT_ORDER: string[] = [...TEXT_COLUMN_ORDER];
 const EXPORT_ORDER: string[] = [...TEXT_EXPORT_ORDER, ...DOC_FIELDS];
 
 const ZOOM_MIN = 1;

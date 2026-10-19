@@ -13,6 +13,7 @@ import {
   type WithdrawalInput,
 } from "@/lib/wallet";
 import { formatBuyerNumber } from "@/lib/buyer-number";
+import { attendanceRewardFor } from "@/lib/server/wallet-tiers";
 
 // Rewards wallet. 1 point = 1 RMB, whole points only.
 //
@@ -413,13 +414,14 @@ export async function transferPoints(input: {
 // it). Safe to call any number of times: a registration pays out once.
 export async function awardAttendance(registrationId: number): Promise<number> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT r.user_id, r.exhibition_id, e.attendance_points, e.title
+    `SELECT r.user_id, r.exhibition_id, e.title
      FROM expo_registrations r JOIN exhibitions e ON e.id = r.exhibition_id
      WHERE r.id = ? AND r.status = 'attended'`,
     [registrationId]
   );
   const r = rows[0];
-  const points = r ? Number(r.attendance_points) : 0;
+  // The rate for this buyer's region (or the exhibition's single rate).
+  const points = r ? (await attendanceRewardFor(r.exhibition_id, r.user_id)).points : 0;
   if (!r || points < 1 || points > MAX_POINTS) return 0;
   await ensureWallet(r.user_id);
   return withTx(async (conn) => {

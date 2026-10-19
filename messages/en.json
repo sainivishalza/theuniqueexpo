@@ -3953,6 +3953,13 @@
       "afterBuying": "After you pay, our team contacts you to complete your booking. If something goes wrong we can give the points back.",
       "history": "Your purchases",
       "historyEmpty": "No purchases yet."
+    },
+    "rewards": {
+      "title": "Points you can earn by attending",
+      "basedOn": "Based on your departure city: {city}.",
+      "noCity": "Add your departure city to your profile so we use the right rate for your region.",
+      "editProfile": "Edit profile",
+      "howEarned": "Points are added to your wallet when you check in at the exhibition."
     }
   },
   "adminWallet": {
@@ -4109,12 +4116,22 @@
     },
     "pointsSetup": {
       "exhibitionsTitle": "Points for attending an exhibition",
-      "exhibitionsHint": "A buyer gets these points once, when they check in by QR code or you mark them as attended. 0 = no reward.",
+      "exhibitionsHint": "A buyer gets these points once, when they check in by QR code or you mark them as attended. 0 = no reward. If you add regions below, they are used first and this number is only the fallback.",
       "reward": "Points",
       "toursTitle": "Package prices in points",
       "toursHint": "Buyers can pay for a tour with points when it has a price here. 0 = cannot be bought with points.",
       "price": "Price in points",
-      "listPrice": "list price {price}"
+      "listPrice": "list price {price}",
+      "regions": "Points by region",
+      "regionsHint": "Some exhibitions pay different points depending on where the buyer comes from. Each region lists words (cities, provinces, in English or Chinese) that are looked for in the buyer's departure city. Regions are checked from the top; the first match wins. The last row catches everyone else.",
+      "regionsNone": "No regions: everyone gets the single number above.",
+      "regionName": "Region",
+      "defaultRegion": "Everywhere else",
+      "keywords": "Cities / provinces (separated by commas)",
+      "addRegion": "Add a region",
+      "addDefault": "Add “everywhere else”",
+      "otherRegions": "Other regions",
+      "moveUp": "Move up"
     },
     "settings": {
       "limits": "Limits and switches",

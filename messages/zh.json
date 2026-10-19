@@ -3953,6 +3953,13 @@
       "afterBuying": "支付后，我们的团队会联系您完成预订。如有问题，我们可以退还积分。",
       "history": "我的购买记录",
       "historyEmpty": "暂无购买记录。"
+    },
+    "rewards": {
+      "title": "参加展会可获得的积分",
+      "basedOn": "根据您的出发城市：{city}。",
+      "noCity": "请在资料中填写出发城市，以便按您所在地区的标准计算。",
+      "editProfile": "编辑资料",
+      "howEarned": "您在展会签到后，积分会进入您的钱包。"
     }
   },
   "adminWallet": {
@@ -4109,12 +4116,22 @@
     },
     "pointsSetup": {
       "exhibitionsTitle": "参加展会的奖励积分",
-      "exhibitionsHint": "买家扫码签到或由您标记为已参加时，只奖励一次。0 = 无奖励。",
+      "exhibitionsHint": "买家扫码签到或由您标记为已参加时，只奖励一次。0 = 无奖励。如果添加了地区，则优先按地区计算，这里的数字仅作备用。",
       "reward": "积分",
       "toursTitle": "套餐的积分价格",
       "toursHint": "设置了价格的旅游套餐可以用积分支付。0 = 不支持积分购买。",
       "price": "积分价格",
-      "listPrice": "标价 {price}"
+      "listPrice": "标价 {price}",
+      "regions": "按地区设置积分",
+      "regionsHint": "有些展会会根据买家所在地区发放不同的积分。请为每个地区填写关键词（城市、省份，中英文均可），系统会在买家的出发城市中查找。地区从上到下依次匹配，先匹配到的生效；最后一行适用于其他所有人。",
+      "regionsNone": "未设置地区：所有人获得上面的统一积分。",
+      "regionName": "地区",
+      "defaultRegion": "其他所有地区",
+      "keywords": "城市 / 省份（用逗号分隔）",
+      "addRegion": "添加地区",
+      "addDefault": "添加“其他所有地区”",
+      "otherRegions": "其他地区",
+      "moveUp": "上移"
     },
     "settings": {
       "limits": "限额与开关",

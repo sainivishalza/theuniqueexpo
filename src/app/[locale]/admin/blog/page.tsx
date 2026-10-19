@@ -11,6 +11,7 @@ import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 import { useFormScroll } from "@/lib/client/use-form-scroll";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Post {
   id: string;
@@ -38,6 +39,7 @@ export default function AdminBlogPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
+  const search = useListSearch(posts);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -293,7 +295,9 @@ export default function AdminBlogPage() {
         <div className="mx-auto max-w-7xl px-6 space-y-4">
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingPosts")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
-          {!loading && !error && posts.map((post) => (
+          {!loading && !error && posts.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />}
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+          {!loading && !error && search.results.map((post) => (
             <Card key={post.id} shadow="sm" hoverable className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">

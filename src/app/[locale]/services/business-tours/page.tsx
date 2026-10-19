@@ -1,15 +1,18 @@
 "use client";
+import { useMemo } from "react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { businessToursData, localizeTour } from "@/lib/tours";
 import { formatNumber } from "@/lib/format";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 export default function BusinessToursPage() {
   const t = useTranslations("businessToursPage");
   const locale = useLocale();
-  const businessTours = businessToursData.map((tour) => localizeTour(tour, locale));
+  const businessTours = useMemo(() => businessToursData.map((tour) => localizeTour(tour, locale)), [locale]);
+  const search = useListSearch(businessTours);
   return (
     <div>
       <section className="relative overflow-hidden bg-[var(--color-hero-bg)] py-20">
@@ -31,8 +34,10 @@ export default function BusinessToursPage() {
       </section>
       <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
+          <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} className="max-w-xl" />
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {businessTours.map((tour) => (
+            {search.results.map((tour) => (
               <Card key={tour.id} href={"/services/business-tours/" + tour.slug} bordered={false}>
                 <div className="relative h-52 overflow-hidden">
                   <Image

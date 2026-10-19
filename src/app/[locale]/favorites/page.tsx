@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import FavoriteButton from "@/components/FavoriteButton";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Exhibition {
   id: string;
@@ -26,6 +27,7 @@ export default function FavoritesPage() {
   const locale = useLocale();
   const { user, loading: authLoading } = useAuth();
   const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
+  const search = useListSearch(exhibitions);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -65,8 +67,10 @@ export default function FavoritesPage() {
         </div>
       )}
 
+      {!loading && exhibitions.length > 0 && <div className="mt-6"><SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} className="max-w-xl" /></div>}
+      {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
       <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {exhibitions.map((expo) => (
+        {search.results.map((expo) => (
           <Card key={expo.id} href={`/exhibitions/${expo.slug}`} bordered={false}>
             <div className="relative h-40 overflow-hidden bg-gray-900">
               {expo.image && (

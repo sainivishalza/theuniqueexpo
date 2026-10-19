@@ -10,6 +10,7 @@ import { REGISTRATION_STATUSES, type EffectiveStatus, type RegistrationStatus } 
 import { formatDateOnly, formatDateTime } from "@/lib/client/registration-format";
 import { isValidUploadedDocument } from "@/lib/server/validate-upload";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Exhibition { id: string; slug: string; title: string; startDate: string; endDate: string; }
 type RegistrationSummary = Pick<
@@ -181,7 +182,8 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
     for (const r of registrations) c[r.effectiveStatus] = (c[r.effectiveStatus] || 0) + 1;
     return c;
   }, [registrations]);
-  const visible = filter === "all" ? registrations : registrations.filter((r) => r.effectiveStatus === filter);
+  const visible = useMemo(() => (filter === "all" ? registrations : registrations.filter((r) => r.effectiveStatus === filter)), [filter, registrations]);
+  const search = useListSearch(visible);
   const filterKeys = [...REGISTRATION_STATUSES.slice(0, 4), "expired", ...REGISTRATION_STATUSES.slice(4)] as string[];
 
   if (authLoading) return null;
@@ -240,6 +242,9 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
             </div>
           )}
 
+          {!loading && !error && registrations.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />}
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+
           {!loading && !error && registrations.length === 0 ? (
             <Card shadow="sm" bordered={false} className="text-center py-20">
               <div className="text-5xl mb-4">📝</div>
@@ -247,7 +252,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
               <p className="text-gray-500">{t("noResultsSubtitle")}</p>
             </Card>
           ) : !error && (
-            <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
+            <div className={`bg-white rounded-2xl shadow-sm overflow-x-auto ${search.active && search.shown === 0 ? "hidden" : ""}`}>
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("type")}</th>
@@ -258,7 +263,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600"></th>
               </tr></thead><tbody className="divide-y divide-gray-100">
-                {visible.map((r) => (
+                {search.results.map((r) => (
                   <tr key={r.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">
                       {r.buyerNumber && <span className="block text-xs font-bold tracking-wide text-emerald-700">{r.buyerNumber}</span>}

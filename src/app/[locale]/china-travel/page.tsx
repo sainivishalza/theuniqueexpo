@@ -5,6 +5,7 @@ import { translateContent } from "@/lib/server/content-translations";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import IconBadge from "@/components/ui/IconBadge";
+import SearchableGrid from "@/components/search/SearchableGrid";
 
 export const revalidate = 60;
 
@@ -35,9 +36,13 @@ export default async function ChinaTravelPage({
               <h2 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl font-bold text-heading">{t("destinationsTitle")}</h2>
               <p className="mt-3 text-gray-500 max-w-xl mx-auto">{t("destinationsSubtitle")}</p>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {content.destinations.map((dest) => (
-                <Card key={dest.name} shadow="sm" bordered={false}>
+            <SearchableGrid
+              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+              entries={content.destinations.map((dest) => ({
+                key: dest.name,
+                text: [dest.name, dest.tagline, ...dest.highlights].filter(Boolean).join(" "),
+                node: (
+                <Card shadow="sm" bordered={false}>
                   <div className="relative h-44 overflow-hidden bg-gray-900">
                     {dest.image ? (
                       <Image
@@ -72,8 +77,9 @@ export default async function ChinaTravelPage({
                     )}
                   </div>
                 </Card>
-              ))}
-            </div>
+                ),
+              }))}
+            />
           </div>
         </section>
       )}
@@ -86,9 +92,13 @@ export default async function ChinaTravelPage({
               <h2 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl font-bold text-heading">{t("routesTitle")}</h2>
               <p className="mt-3 text-gray-500 max-w-xl mx-auto">{t("routesSubtitle")}</p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2">
-              {content.routes.map((route) => (
-                <Card key={route.title} shadow="sm" bordered={false} className="p-6 flex flex-col">
+            <SearchableGrid
+              className="grid gap-6 md:grid-cols-2"
+              entries={content.routes.map((route) => ({
+                key: route.title,
+                text: [route.title, route.description, route.duration].filter(Boolean).join(" "),
+                node: (
+                <Card shadow="sm" bordered={false} className="p-6 flex flex-col">
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="text-lg font-bold text-heading">{route.title}</h3>
                     <span className="shrink-0 rounded-[var(--radius-badge)] bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">{route.duration}</span>
@@ -100,8 +110,9 @@ export default async function ChinaTravelPage({
                     </Button>
                   </div>
                 </Card>
-              ))}
-            </div>
+                ),
+              }))}
+            />
           </div>
         </section>
       )}

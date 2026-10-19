@@ -4,11 +4,13 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { SITE_PAGES } from "@/lib/site-pages";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 export default function AdminSitePagesIndex() {
   const t = useTranslations("adminPagesIndex");
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
+  const search = useListSearch(SITE_PAGES);
 
   if (authLoading) return null;
   if (!user || user.role !== "admin") {
@@ -26,8 +28,12 @@ export default function AdminSitePagesIndex() {
       </section>
 
       <section className="py-10 bg-cream-50">
+        <div className="mx-auto max-w-4xl px-6">
+          <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+        </div>
         <div className="mx-auto max-w-4xl px-6 grid gap-4 sm:grid-cols-2">
-          {SITE_PAGES.map((p) => (
+          {search.results.map((p) => (
             <Card key={p.slug} href={`/admin/pages/${p.slug}`} shadow="sm" className="p-5 flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-heading">{p.navLabel}</h3>

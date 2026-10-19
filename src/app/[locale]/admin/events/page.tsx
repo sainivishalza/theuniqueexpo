@@ -9,6 +9,7 @@ import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { useFormScroll } from "@/lib/client/use-form-scroll";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Event {
   id: string;
@@ -39,6 +40,7 @@ export default function AdminEventsPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
+  const search = useListSearch(events);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -232,7 +234,9 @@ export default function AdminEventsPage() {
         <div className="mx-auto max-w-7xl px-6 space-y-4">
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingEvents")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
-          {!loading && !error && events.map((event) => (
+          {!loading && !error && events.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />}
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+          {!loading && !error && search.results.map((event) => (
             <Card key={event.id} shadow="sm" hoverable className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1 min-w-0">
                 <h2 className="font-bold text-heading truncate">{event.title}</h2>

@@ -3,11 +3,16 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { businessToursData as businessTours, chinaToursData as chinaTours } from "@/lib/tours";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 export default function AdminToursPage() {
   const t = useTranslations("adminServiceTours");
   const ta = useTranslations("adminCommon");
   const { user } = useAuth();
+  const bSearch = useListSearch(businessTours);
+  const cSearch = useListSearch(chinaTours);
+  const query = bSearch.query;
+  const setQuery = (v: string) => { bSearch.setQuery(v); cSearch.setQuery(v); };
   if (!user || user.role !== "admin") return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{ta("accessRequired")}</p></div>;
 
   return (
@@ -21,7 +26,9 @@ export default function AdminToursPage() {
       </section>
       <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 space-y-8">
-          <div>
+          <SearchBox value={query} onChange={setQuery} shown={bSearch.shown + cSearch.shown} total={bSearch.total + cSearch.total} className="!mb-0" />
+          {bSearch.active && bSearch.shown + cSearch.shown === 0 && <SearchEmpty query={query} onClear={() => setQuery("")} />}
+          <div className={bSearch.active && bSearch.shown === 0 ? "hidden" : ""}>
             <h2 className="text-xl font-bold text-heading mb-4">{t("businessTours")}</h2>
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
@@ -31,7 +38,7 @@ export default function AdminToursPage() {
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.price")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("actions")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
-                {businessTours.map((t2) => (
+                {bSearch.results.map((t2) => (
                   <tr key={t2.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{t2.title.en}</td>
                     <td className="px-6 py-4 text-gray-500">{t2.city}</td>
@@ -43,7 +50,7 @@ export default function AdminToursPage() {
               </tbody></table>
             </div>
           </div>
-          <div>
+          <div className={cSearch.active && cSearch.shown === 0 ? "hidden" : ""}>
             <h2 className="text-xl font-bold text-heading mb-4">{t("chinaTours")}</h2>
             <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
@@ -53,7 +60,7 @@ export default function AdminToursPage() {
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.price")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("actions")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
-                {chinaTours.map((t2) => (
+                {cSearch.results.map((t2) => (
                   <tr key={t2.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{t2.title.en}</td>
                     <td className="px-6 py-4 text-gray-500">{t2.city}</td>

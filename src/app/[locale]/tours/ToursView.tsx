@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 export interface Tour {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -22,6 +23,7 @@ export default function ToursView({ tours }: { tours: Tour[] }) {
   const t = useTranslations("toursPage");
   const locale = useLocale();
   const [recentReviews, setRecentReviews] = useState<RecentReview[]>([]);
+  const search = useListSearch(tours);
 
   useEffect(() => {
     fetch("/api/tours/reviews/recent")
@@ -68,8 +70,10 @@ export default function ToursView({ tours }: { tours: Tour[] }) {
       {/* Tours Grid */}
       <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
+          <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} className="max-w-xl" />
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {tours.map((tour) => (
+            {search.results.map((tour) => (
               <Card key={tour.id} href={`/tours/${tour.slug}`} bordered={false}>
                 <div className="relative h-52 overflow-hidden bg-gray-900">
                   {tour.image && (

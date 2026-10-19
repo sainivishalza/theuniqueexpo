@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Subscriber { id: string; email: string; locale: string; createdAt: string }
 
@@ -12,6 +13,7 @@ export default function AdminNewsletterPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  const search = useListSearch(subscribers);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -59,13 +61,16 @@ export default function AdminNewsletterPage() {
               <p className="text-gray-500">{t("noResultsSubtitle")}</p>
             </Card>
           ) : (
-            <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
+            <>
+              <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />
+              {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+              <div className={`bg-white rounded-2xl shadow-sm overflow-x-auto ${search.active && search.shown === 0 ? "hidden" : ""}`}>
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("email")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("language")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
-                {subscribers.map((s) => (
+                {search.results.map((s) => (
                   <tr key={s.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{s.email}</td>
                     <td className="px-6 py-4 text-gray-500 uppercase">{s.locale}</td>
@@ -73,7 +78,7 @@ export default function AdminNewsletterPage() {
                   </tr>
                 ))}
               </tbody></table>
-            </div>
+            </div></>
           )}
         </div>
       </section>

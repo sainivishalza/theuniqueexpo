@@ -4,11 +4,13 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { subsidies } from "@/lib/subsidies";
 import Badge from "@/components/ui/Badge";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 export default function AdminSubsidiesPage() {
   const t = useTranslations("adminSubsidies");
   const ta = useTranslations("adminCommon");
   const { user } = useAuth();
+  const search = useListSearch(subsidies);
   if (!user || user.role !== "admin") return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{ta("accessRequired")}</p></div>;
 
   return (
@@ -22,7 +24,9 @@ export default function AdminSubsidiesPage() {
       </section>
       <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
+          <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+          <div className={`bg-white rounded-2xl shadow-sm overflow-x-auto ${search.active && search.shown === 0 ? "hidden" : ""}`}>
             <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
               <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.subsidy")}</th>
               <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.exhibition")}</th>
@@ -30,7 +34,7 @@ export default function AdminSubsidiesPage() {
               <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("columns.deadline")}</th>
               <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
             </tr></thead><tbody className="divide-y divide-gray-100">
-              {subsidies.map((s) => (
+              {search.results.map((s) => (
                 <tr key={s.id} className="hover:bg-cream-50">
                   <td className="px-6 py-4 font-medium text-gray-900">{s.title}</td>
                   <td className="px-6 py-4 text-gray-500">{s.exhibitionTitle}</td>

@@ -5,6 +5,7 @@ import VideoEmbed from "@/components/VideoEmbed";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import { metaDescription } from "@/lib/seo";
+import SearchableGrid from "@/components/search/SearchableGrid";
 
 export const revalidate = 60;
 
@@ -32,9 +33,13 @@ export default async function VideosPage() {
           {videos.length === 0 ? (
             <p className="text-center text-gray-500 py-16">{t("noVideosYet")}</p>
           ) : (
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {videos.map((video) => (
-                <Card key={video.id} shadow="sm" bordered={false} className="overflow-hidden">
+            <SearchableGrid
+              className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+              entries={videos.map((video) => ({
+                key: video.id,
+                text: [video.title, video.description, video.category].filter(Boolean).join(" "),
+                node: (
+                <Card shadow="sm" bordered={false} className="overflow-hidden">
                   <VideoEmbed title={video.title} embedUrl={video.embedUrl} />
                   <div className="p-5">
                     {video.category && <Badge tone="emerald" size="tag" className="mb-2">{video.category}</Badge>}
@@ -42,8 +47,9 @@ export default async function VideosPage() {
                     {video.description && <p className="text-sm text-gray-500 mt-1 line-clamp-2">{video.description}</p>}
                   </div>
                 </Card>
-              ))}
-            </div>
+                ),
+              }))}
+            />
           )}
         </div>
       </section>

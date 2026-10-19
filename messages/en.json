@@ -41,7 +41,8 @@
     "chinaTours": "China Tours",
     "partnerWithUs": "Partner With Us",
     "more": "More",
-    "planABusinessTrip": "Plan a Trip"
+    "planABusinessTrip": "Plan a Trip",
+    "search": "Search the site"
   },
   "footer": {
     "newsletterTitle": "Stay Updated",
@@ -113,7 +114,9 @@
     "planMyTrip": "Plan My Trip",
     "register": "Register",
     "pastArchiveTitle": "Past exhibitions",
-    "pastArchiveSubtitle": "Browse exhibitions that have already taken place."
+    "pastArchiveSubtitle": "Browse exhibitions that have already taken place.",
+    "searchPlaceholder": "Search exhibitions, cities, industries…",
+    "searchLabel": "Search exhibitions"
   },
   "toursPage": {
     "title": "Tours",
@@ -288,6 +291,14 @@
         "account": "Profile & registrations",
         "explore": "Explore"
       }
+    },
+    "search": {
+      "label": "Search",
+      "placeholder": "Search this list…",
+      "clear": "Clear search",
+      "showing": "Showing {shown} of {total}",
+      "noResults": "Nothing matches “{query}”",
+      "noResultsHint": "Check the spelling, try fewer words, or clear the search."
     }
   },
   "buyerDashboard": {
@@ -4148,6 +4159,27 @@
       "alipayQr": "Our Alipay QR code",
       "wechatQr": "Our WeChat Pay QR code",
       "saved": "Saved."
+    }
+  },
+  "searchPage": {
+    "title": "Search",
+    "subtitle": "Find exhibitions, tours, events, articles, magazine issues and videos.",
+    "label": "Your search",
+    "placeholder": "Search for an exhibition, city, industry, tour…",
+    "hint": "Type at least two letters to search.",
+    "searching": "Searching…",
+    "resultCount": "{count, plural, one {# result} other {# results}}",
+    "noResults": "Nothing found for “{query}”",
+    "noResultsHint": "Check the spelling, try fewer or different words, or browse the menu.",
+    "failed": "Search is not available right now. Please try again.",
+    "moreResults": "{count} more — type more words to narrow them down.",
+    "kinds": {
+      "exhibition": "Exhibitions",
+      "tour": "Tours",
+      "event": "Events",
+      "article": "Articles",
+      "magazine": "Magazine",
+      "video": "Videos"
     }
   }
 }

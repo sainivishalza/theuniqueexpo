@@ -9,6 +9,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import VideoEmbed from "@/components/VideoEmbed";
 import { useFormScroll } from "@/lib/client/use-form-scroll";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Video {
   id: string;
@@ -28,6 +29,7 @@ export default function AdminVideosPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [videos, setVideos] = useState<Video[]>([]);
+  const search = useListSearch(videos);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -207,7 +209,9 @@ export default function AdminVideosPage() {
         <div className="mx-auto max-w-4xl px-6 space-y-4">
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingVideos")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
-          {!loading && !error && videos.map((video) => (
+          {!loading && !error && videos.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />}
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+          {!loading && !error && search.results.map((video) => (
             <Card key={video.id} shadow="sm" hoverable className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1 min-w-0">
                 <h2 className="font-bold text-heading truncate">{video.title}</h2>

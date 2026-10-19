@@ -129,6 +129,9 @@ export default function NavBar({ sections }: { sections: NavSections }) {
             {t("contact")}
           </Link>
           <MoreMenu label={t("more")} items={moreItems} />
+          <Link href="/search" aria-label={t("search")} title={t("search")} className="shrink-0 rounded-full p-2 text-gray-600 hover:bg-gray-100 hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" /></svg>
+          </Link>
           <Button href="/plan-business-trip" variant="secondaryOutline" size="xs">
             {t("planABusinessTrip")}
           </Button>
@@ -168,9 +171,13 @@ export default function NavBar({ sections }: { sections: NavSections }) {
           <LanguageSwitcher />
         </div>
 
-        {/* Mobile hamburger */}
+        {/* Mobile search + hamburger */}
+        <div className="min-[1400px]:hidden flex items-center gap-1">
+        <Link href="/search" aria-label={t("search")} className="p-2 text-gray-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" /></svg>
+        </Link>
         <button
-          className="min-[1400px]:hidden p-2 text-gray-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
+          className="p-2 text-gray-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
           aria-expanded={mobileOpen}
@@ -186,6 +193,7 @@ export default function NavBar({ sections }: { sections: NavSections }) {
             </svg>
           )}
         </button>
+        </div>
       </div>
 
       {/* Mobile menu */}

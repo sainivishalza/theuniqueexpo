@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { formatNumber } from "@/lib/format";
@@ -10,6 +10,8 @@ import Card from "@/components/ui/Card";
 import { Link } from "@/i18n/navigation";
 import HowAreYouAttending from "@/components/HowAreYouAttending";
 import Button from "@/components/ui/Button";
+import SearchBox from "@/components/search/ListSearch";
+import { filterByQuery } from "@/lib/search";
 
 export interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -38,7 +40,14 @@ export default function ExhibitionsView({
   const industries = useMemo(() => [...new Set(exhibitions.map((e) => e.industry))].sort(), [exhibitions]);
   const cities = useMemo(() => [...new Set(exhibitions.map((e) => e.city))].sort(), [exhibitions]);
 
-  const filtered = exhibitions.filter((e) => {
+  const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
+  const searching = deferredQuery.trim() !== "";
+  // Words typed in the search box must appear somewhere in the exhibition (name, city, venue,
+  // industry, organiser, highlights, ...), on top of whatever filters are chosen.
+  const searched = useMemo(() => filterByQuery(exhibitions, deferredQuery), [exhibitions, deferredQuery]);
+
+  const filtered = searched.filter((e) => {
     if (industry !== "All" && e.industry !== industry) return false;
     if (city !== "All" && e.city !== city) return false;
     if (dateFilter === "upcoming" && new Date(e.endDate) < new Date()) return false;
@@ -49,7 +58,8 @@ export default function ExhibitionsView({
   // Past exhibitions are hidden by the default "upcoming" filter, which left
   // their pages with no link from anywhere. List them as plain links below the
   // grid so visitors (and search engines) can still reach every exhibition.
-  const pastExhibitions = exhibitions.filter((e) => new Date(e.endDate) < new Date());
+  // While searching, the archive lists only the past exhibitions that match the words typed.
+  const pastExhibitions = searched.filter((e) => new Date(e.endDate) < new Date());
 
   return (
     <div>
@@ -76,6 +86,7 @@ export default function ExhibitionsView({
       {/* Filters */}
       <section className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-4 flex flex-wrap gap-3 items-center">
+          <SearchBox value={query} onChange={setQuery} compact placeholder={t("searchPlaceholder")} label={t("searchLabel")} className="w-full sm:w-72" />
           <span className="text-sm font-semibold text-gray-500 mr-2">{t("filter")}</span>
           <select
             value={industry}
@@ -224,7 +235,7 @@ export default function ExhibitionsView({
             </nav>
           )}
 
-          {filtered.length === 0 && (
+          {filtered.length === 0 && !(searching && pastExhibitions.length > 0 && dateFilter === "upcoming") && (
             <div className="text-center py-20">
               <div className="text-5xl mb-4">🔍</div>
               <h3 className="text-xl font-bold text-heading mb-2">{t("noResultsTitle")}</h3>

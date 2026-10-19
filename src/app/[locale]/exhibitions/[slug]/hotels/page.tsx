@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import FormField, { fieldClasses } from "@/components/ui/FormField";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Exhibition {
   id: string; slug: string; title: string; city: string;
@@ -37,6 +38,7 @@ export default function HotelsPage() {
   const { user } = useAuth();
   const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
   const [hotels, setHotels] = useState<Hotel[]>([]);
+  const search = useListSearch(hotels);
   const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -131,8 +133,11 @@ export default function HotelsPage() {
               <h3 className="text-xl font-bold text-heading">{t("noHotels")}</h3>
             </div>
           ) : (
+            <>
+            <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} className="max-w-xl" />
+            {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {hotels.map((hotel, idx) => (
+              {search.results.map((hotel, idx) => (
                 <div
                   key={hotel.id}
                   className={`rounded-[var(--radius-card)] bg-white shadow-sm border-2 overflow-hidden card-hover transition-all ${
@@ -178,6 +183,7 @@ export default function HotelsPage() {
                 </div>
               ))}
             </div>
+            </>
           )}
 
           {/* Booking form */}

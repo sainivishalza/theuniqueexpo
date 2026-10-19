@@ -9,6 +9,7 @@ import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { useFormScroll } from "@/lib/client/use-form-scroll";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface TeamMember {
   id: string;
@@ -25,6 +26,7 @@ export default function AdminTeamPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [members, setMembers] = useState<TeamMember[]>([]);
+  const search = useListSearch(members);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -247,7 +249,9 @@ export default function AdminTeamPage() {
         <div className="mx-auto max-w-5xl px-6 space-y-4">
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingMembers")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
-          {!loading && !error && members.map((member) => (
+          {!loading && !error && members.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />}
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+          {!loading && !error && search.results.map((member) => (
             <Card key={member.id} shadow="sm" hoverable className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center gap-4 min-w-0 flex-1">
                 <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">

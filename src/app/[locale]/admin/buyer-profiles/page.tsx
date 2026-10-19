@@ -153,6 +153,13 @@ const FIELDS: FieldDef[] = [
   { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];
+// The columns of the list, in the order admins read them: who (name, passport, nationality, phone),
+// then the company, then everything else. (The edit form keeps the order of FIELDS above.)
+const TABLE_FIRST: DetailFieldKey[] = ["passportNumber", "nationality", "phoneNumber", "companyName"];
+const TABLE_FIELDS: FieldDef[] = [
+  ...TABLE_FIRST.map((key) => FIELDS.find((f) => f.key === key)!),
+  ...FIELDS.filter((f) => !TABLE_FIRST.includes(f.key)),
+];
 const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto", "invoiceOrderList"] as const;
 
 const ZOOM_MIN = 1;
@@ -754,11 +761,13 @@ export default function AdminBuyerProfilesPage() {
             <p className="text-gray-500 text-center py-10">{ta("loading")}</p>
           ) : (
             <div className="bg-white rounded-2xl shadow-sm">
-              <div className="overflow-x-auto rounded-2xl">
+              {/* The list scrolls inside its own frame, so the column headings stay in view while going
+                  down and the sideways scroll bar is always at the bottom of the screen, not 100 rows away. */}
+              <div className="max-h-[calc(100vh-6rem)] overflow-auto rounded-2xl">
                 <table className="w-full text-sm">
-                  <thead className="bg-cream-50 border-b border-gray-100">
+                  <thead className="border-b border-gray-100">
                     <tr>
-                      <th className="sticky left-0 z-10 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">
+                      <th className="sticky left-0 top-0 z-30 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">
                         <div className="flex items-center gap-3">
                           <input
                             type="checkbox"
@@ -770,16 +779,16 @@ export default function AdminBuyerProfilesPage() {
                           {ta("name")}
                         </div>
                       </th>
-                      {FIELDS.map((field) => (
-                        <th key={field.key} className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t(`fields.${field.key}`)}</th>
+                      {TABLE_FIELDS.map((field) => (
+                        <th key={field.key} className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{t(`fields.${field.key}`)}</th>
                       ))}
-                      <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("fields.purchaseIntention")}</th>
-                      <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("fields.otherPurchaseIntention")}</th>
+                      <th className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{t("fields.purchaseIntention")}</th>
+                      <th className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{t("fields.otherPurchaseIntention")}</th>
                       {DOC_FIELDS.map((field) => (
-                        <th key={field} className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t(`docFields.${field}`)}</th>
+                        <th key={field} className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{t(`docFields.${field}`)}</th>
                       ))}
-                      <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("verificationColumn")}</th>
-                      <th className="text-right px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{ta("actions")}</th>
+                      <th className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{t("verificationColumn")}</th>
+                      <th className="sticky top-0 z-20 bg-cream-50 text-right px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{ta("actions")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -801,7 +810,7 @@ export default function AdminBuyerProfilesPage() {
                             </div>
                           </div>
                         </td>
-                        {FIELDS.map((field) => (
+                        {TABLE_FIELDS.map((field) => (
                           <td key={field.key} className="px-6 py-4 text-gray-700 whitespace-nowrap">{fieldDisplayValue(r, field)}</td>
                         ))}
                         <td className="px-6 py-4 text-gray-700 max-w-[220px] truncate" title={r.purchaseIntention}>{r.purchaseIntention || "—"}</td>

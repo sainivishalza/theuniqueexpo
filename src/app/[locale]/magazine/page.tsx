@@ -6,6 +6,7 @@ import { listPublishedIssues } from "@/lib/server/magazine-repo";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import { metaDescription } from "@/lib/seo";
+import SearchableGrid from "@/components/search/SearchableGrid";
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
@@ -36,9 +37,13 @@ export default async function MagazinePage() {
           {issues.length === 0 ? (
             <p className="text-center text-gray-500 py-16">{t("noIssuesYet")}</p>
           ) : (
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {issues.map((issue) => (
-                <Card key={issue.id} href={`/magazine/${issue.issueNumber}`} shadow="md" bordered={false} hoverable className="overflow-hidden flex flex-col">
+            <SearchableGrid
+              className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+              entries={issues.map((issue) => ({
+                key: issue.id,
+                text: [issue.title, issue.intro, t("issueLabel", { number: issue.issueNumber }), String(issue.issueNumber)].filter(Boolean).join(" "),
+                node: (
+                <Card href={`/magazine/${issue.issueNumber}`} shadow="md" bordered={false} hoverable className="overflow-hidden flex flex-col">
                   <div className="relative aspect-[4/3] bg-gray-900">
                     {issue.coverImage && (
                       <Image src={issue.coverImage} alt={issue.title} fill sizes="(max-width: 768px) 100vw, 400px" className="object-cover" />
@@ -51,8 +56,9 @@ export default async function MagazinePage() {
                     <span className="mt-4 text-sm font-semibold text-emerald-600">{t("readIssue")} &rarr;</span>
                   </div>
                 </Card>
-              ))}
-            </div>
+                ),
+              }))}
+            />
           )}
         </div>
       </section>

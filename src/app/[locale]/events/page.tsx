@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Event {
   id: string; slug: string; title: string; category: string; city: string; venue: string;
@@ -24,6 +25,8 @@ export default function EventsPage() {
   const searchParams = useSearchParams();
   const view = searchParams.get("view") === "past" ? "past" : "upcoming";
   const [events, setEvents] = useState<Event[]>([]);
+  // The translated category name is searchable too ("conference", "Конференция", ...).
+  const search = useListSearch(events, (e) => t(`categories.${e.category}`));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -68,8 +71,11 @@ export default function EventsPage() {
 
           {loading && <p className="text-center py-20 text-gray-500">{t("loading")}</p>}
 
+          {!loading && events.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} className="max-w-xl" />}
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {events.map((event) => (
+            {search.results.map((event) => (
               <Card key={event.id} href={`/events/${event.slug}`} bordered={false}>
                 <div className="relative h-44 overflow-hidden bg-gray-900">
                   {event.image ? (

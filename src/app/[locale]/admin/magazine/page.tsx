@@ -10,6 +10,7 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import { useFormScroll } from "@/lib/client/use-form-scroll";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface MagazineIssue {
   id: string;
@@ -35,6 +36,7 @@ export default function AdminMagazinePage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [issues, setIssues] = useState<MagazineIssue[]>([]);
+  const search = useListSearch(issues);
   const [posts, setPosts] = useState<BlogPostOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -267,7 +269,9 @@ export default function AdminMagazinePage() {
         <div className="mx-auto max-w-4xl px-6 space-y-4">
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingIssues")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
-          {!loading && !error && issues.map((issue) => (
+          {!loading && !error && issues.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />}
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+          {!loading && !error && search.results.map((issue) => (
             <Card key={issue.id} shadow="sm" hoverable className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center gap-4 min-w-0 flex-1">
                 <div className="w-20 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">

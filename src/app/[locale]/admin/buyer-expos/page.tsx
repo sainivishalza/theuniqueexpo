@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Button from "@/components/ui/Button";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Expo {
   id: number;
@@ -16,6 +17,7 @@ export default function AdminBuyerExposPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [expos, setExpos] = useState<Expo[]>([]);
+  const search = useListSearch(expos);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [newName, setNewName] = useState("");
@@ -140,6 +142,12 @@ export default function AdminBuyerExposPage() {
             </Button>
           </form>
 
+          {!loading && expos.length > 0 && (
+            <>
+              <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />
+              {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+            </>
+          )}
           <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
             {loading ? (
               <p className="p-6 text-sm text-gray-500">{ta("loading")}</p>
@@ -147,7 +155,7 @@ export default function AdminBuyerExposPage() {
               <p className="p-6 text-sm text-gray-500">{t("empty")}</p>
             ) : (
               <ul className="divide-y divide-gray-100">
-                {expos.map((expo) => (
+                {search.results.map((expo) => (
                   <li key={expo.id} className="flex flex-col sm:flex-row sm:items-center gap-3 px-5 py-3">
                     {editingId === expo.id ? (
                       <>

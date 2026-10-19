@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface AdminReferral {
   id: number;
@@ -24,6 +25,7 @@ export default function AdminPartnerReferralsPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [referrals, setReferrals] = useState<AdminReferral[]>([]);
+  const search = useListSearch(referrals);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [commissionDrafts, setCommissionDrafts] = useState<Record<number, string>>({});
@@ -84,7 +86,10 @@ export default function AdminPartnerReferralsPage() {
               <p className="text-gray-500">{t("noResultsSubtitle")}</p>
             </Card>
           ) : (
-            <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
+            <>
+              <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />
+              {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+              <div className={`bg-white rounded-2xl shadow-sm overflow-x-auto ${search.active && search.shown === 0 ? "hidden" : ""}`}>
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("partner")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("referredUser")}</th>
@@ -92,7 +97,7 @@ export default function AdminPartnerReferralsPage() {
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("commission")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
-                {referrals.map((r) => (
+                {search.results.map((r) => (
                   <tr key={r.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{r.partnerName}<br/><span className="text-xs text-gray-500">{r.partnerEmail}</span></td>
                     <td className="px-6 py-4 text-gray-500">{r.referredUserName}<br/><span className="text-xs text-gray-500">{r.referredUserEmail}</span></td>
@@ -131,7 +136,7 @@ export default function AdminPartnerReferralsPage() {
                   </tr>
                 ))}
               </tbody></table>
-            </div>
+            </div></>
           )}
         </div>
       </section>

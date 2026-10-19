@@ -9,6 +9,7 @@ import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 import { useFormScroll } from "@/lib/client/use-form-scroll";
 
 interface Tour {
@@ -49,6 +50,7 @@ export default function AdminToursPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [tours, setTours] = useState<Tour[]>([]);
+  const search = useListSearch(tours);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -465,7 +467,9 @@ export default function AdminToursPage() {
         <div className="mx-auto max-w-7xl px-6 space-y-4">
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingTours")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
-          {!loading && !error && tours.map((tour) => (
+          {!loading && !error && tours.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />}
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+          {!loading && !error && search.results.map((tour) => (
             <Card key={tour.id} shadow="sm" hoverable className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center gap-4 min-w-0 flex-1">
                 <div className="w-20 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">

@@ -41,7 +41,8 @@
     "chinaTours": "中国旅游",
     "partnerWithUs": "合作伙伴",
     "more": "更多",
-    "planABusinessTrip": "规划行程"
+    "planABusinessTrip": "规划行程",
+    "search": "站内搜索"
   },
   "footer": {
     "newsletterTitle": "获取最新资讯",
@@ -113,7 +114,9 @@
     "planMyTrip": "规划我的行程",
     "register": "报名",
     "pastArchiveTitle": "往期展会",
-    "pastArchiveSubtitle": "浏览已经举办过的展会。"
+    "pastArchiveSubtitle": "浏览已经举办过的展会。",
+    "searchPlaceholder": "搜索展会、城市、行业…",
+    "searchLabel": "搜索展会"
   },
   "toursPage": {
     "title": "旅游",
@@ -288,6 +291,14 @@
         "account": "资料与报名",
         "explore": "探索"
       }
+    },
+    "search": {
+      "label": "搜索",
+      "placeholder": "在列表中搜索…",
+      "clear": "清除搜索",
+      "showing": "显示 {shown} / {total}",
+      "noResults": "没有与“{query}”匹配的内容",
+      "noResultsHint": "请检查拼写，尝试更少的关键词，或清除搜索。"
     }
   },
   "buyerDashboard": {
@@ -4148,6 +4159,27 @@
       "alipayQr": "我们的支付宝收款码",
       "wechatQr": "我们的微信收款码",
       "saved": "已保存。"
+    }
+  },
+  "searchPage": {
+    "title": "搜索",
+    "subtitle": "查找展会、旅游、活动、文章、杂志期刊和视频。",
+    "label": "搜索内容",
+    "placeholder": "搜索展会、城市、行业、旅游…",
+    "hint": "请至少输入两个字母。",
+    "searching": "搜索中…",
+    "resultCount": "共 {count} 条结果",
+    "noResults": "未找到与“{query}”相关的内容",
+    "noResultsHint": "请检查拼写，尝试其他关键词，或使用导航菜单。",
+    "failed": "搜索暂时不可用，请重试。",
+    "moreResults": "还有 {count} 条——请输入更多关键词缩小范围。",
+    "kinds": {
+      "exhibition": "展会",
+      "tour": "旅游",
+      "event": "活动",
+      "article": "文章",
+      "magazine": "杂志",
+      "video": "视频"
     }
   }
 }

@@ -41,7 +41,8 @@
     "chinaTours": "Туры по Китаю",
     "partnerWithUs": "Партнёрство",
     "more": "Ещё",
-    "planABusinessTrip": "Поездка"
+    "planABusinessTrip": "Поездка",
+    "search": "Поиск по сайту"
   },
   "footer": {
     "newsletterTitle": "Будьте в курсе",
@@ -113,7 +114,9 @@
     "planMyTrip": "Спланировать поездку",
     "register": "Регистрация",
     "pastArchiveTitle": "Прошедшие выставки",
-    "pastArchiveSubtitle": "Выставки, которые уже состоялись."
+    "pastArchiveSubtitle": "Выставки, которые уже состоялись.",
+    "searchPlaceholder": "Поиск выставок, городов, отраслей…",
+    "searchLabel": "Поиск выставок"
   },
   "toursPage": {
     "title": "Туры",
@@ -288,6 +291,14 @@
         "account": "Профиль и регистрации",
         "explore": "Обзор"
       }
+    },
+    "search": {
+      "label": "Поиск",
+      "placeholder": "Поиск по списку…",
+      "clear": "Очистить поиск",
+      "showing": "Показано {shown} из {total}",
+      "noResults": "Ничего не найдено по запросу «{query}»",
+      "noResultsHint": "Проверьте написание, попробуйте меньше слов или очистите поиск."
     }
   },
   "buyerDashboard": {
@@ -4148,6 +4159,27 @@
       "alipayQr": "Наш QR-код Alipay",
       "wechatQr": "Наш QR-код WeChat Pay",
       "saved": "Сохранено."
+    }
+  },
+  "searchPage": {
+    "title": "Поиск",
+    "subtitle": "Найдите выставки, туры, мероприятия, статьи, выпуски журнала и видео.",
+    "label": "Ваш запрос",
+    "placeholder": "Найти выставку, город, отрасль, тур…",
+    "hint": "Введите не менее двух букв.",
+    "searching": "Поиск…",
+    "resultCount": "{count, plural, one {# результат} few {# результата} many {# результатов} other {# результата}}",
+    "noResults": "Ничего не найдено по запросу «{query}»",
+    "noResultsHint": "Проверьте написание, попробуйте другие слова или воспользуйтесь меню.",
+    "failed": "Поиск сейчас недоступен. Попробуйте ещё раз.",
+    "moreResults": "Ещё {count} — добавьте слов, чтобы сузить поиск.",
+    "kinds": {
+      "exhibition": "Выставки",
+      "tour": "Туры",
+      "event": "Мероприятия",
+      "article": "Статьи",
+      "magazine": "Журнал",
+      "video": "Видео"
     }
   }
 }

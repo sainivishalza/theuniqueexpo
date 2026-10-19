@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Consultation {
   id: string; name: string; email: string; topic: string; status: string; createdAt: string;
@@ -17,6 +18,7 @@ export default function AdminConsultationsPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState<Consultation[]>([]);
+  const search = useListSearch(bookings);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
@@ -66,14 +68,17 @@ export default function AdminConsultationsPage() {
               <p className="text-gray-500">{t("noResultsSubtitle")}</p>
             </Card>
           ) : (
-            <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
+            <>
+              <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />
+              {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+              <div className={`bg-white rounded-2xl shadow-sm overflow-x-auto ${search.active && search.shown === 0 ? "hidden" : ""}`}>
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("topic")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
               </tr></thead><tbody className="divide-y divide-gray-100">
-                {bookings.map((b) => (
+                {search.results.map((b) => (
                   <tr key={b.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{b.name}<br/><span className="text-xs text-gray-500">{b.email}</span></td>
                     <td className="px-6 py-4 text-gray-500">{b.topic}</td>
@@ -92,7 +97,7 @@ export default function AdminConsultationsPage() {
                   </tr>
                 ))}
               </tbody></table>
-            </div>
+            </div></>
           )}
         </div>
       </section>

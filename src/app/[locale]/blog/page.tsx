@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { listPublishedPosts, type BlogCategory } from "@/lib/server/blog-repo";
 import Card from "@/components/ui/Card";
 import { metaDescription } from "@/lib/seo";
+import SearchableGrid from "@/components/search/SearchableGrid";
 
 // Content only changes via the admin panel -- cache the rendered page and
 // revalidate in the background instead of hitting the DB on every request.
@@ -60,33 +61,40 @@ export default async function BlogPage({
             ))}
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
-              <Card key={post.id} href={`/blog/${post.slug}`} bordered={false}>
-                <div className="relative h-44 overflow-hidden bg-gray-900 flex items-center justify-center">
-                  {post.coverImage ? (
-                    <Image
-                      src={post.coverImage}
-                      alt={post.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  ) : (
-                    <span className="text-5xl">📝</span>
-                  )}
-                </div>
-                <div className="p-6">
-                  <span className="text-xs font-bold text-emerald-800 uppercase tracking-[0.08em]">{t(`categories.${post.category}`)}</span>
-                  <h3 className="text-lg font-bold text-heading mt-1 mb-2 line-clamp-2">{post.title}</h3>
-                  <p className="text-sm text-gray-500 line-clamp-3">{post.excerpt}</p>
-                  {post.publishedAt && (
-                    <p className="text-xs tracking-[0.08em] text-gray-500 mt-3">{formatInstantDate(post.publishedAt, locale)}</p>
-                  )}
-                </div>
-              </Card>
-            ))}
-          </div>
+          {posts.length > 0 && (
+            <SearchableGrid
+              className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+              entries={posts.map((post) => ({
+                key: post.id,
+                text: [post.title, post.excerpt, t(`categories.${post.category}`), post.authorName].filter(Boolean).join(" "),
+                node: (
+                  <Card href={`/blog/${post.slug}`} bordered={false}>
+                    <div className="relative h-44 overflow-hidden bg-gray-900 flex items-center justify-center">
+                      {post.coverImage ? (
+                        <Image
+                          src={post.coverImage}
+                          alt={post.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <span className="text-5xl">📝</span>
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <span className="text-xs font-bold text-emerald-800 uppercase tracking-[0.08em]">{t(`categories.${post.category}`)}</span>
+                      <h3 className="text-lg font-bold text-heading mt-1 mb-2 line-clamp-2">{post.title}</h3>
+                      <p className="text-sm text-gray-500 line-clamp-3">{post.excerpt}</p>
+                      {post.publishedAt && (
+                        <p className="text-xs tracking-[0.08em] text-gray-500 mt-3">{formatInstantDate(post.publishedAt, locale)}</p>
+                      )}
+                    </div>
+                  </Card>
+                ),
+              }))}
+            />
+          )}
 
           {posts.length === 0 && (
             <div className="text-center py-20">

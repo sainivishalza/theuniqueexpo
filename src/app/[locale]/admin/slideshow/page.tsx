@@ -9,6 +9,7 @@ import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { useFormScroll } from "@/lib/client/use-form-scroll";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface SlideshowPhoto {
   id: string;
@@ -24,6 +25,7 @@ export default function AdminSlideshowPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [photos, setPhotos] = useState<SlideshowPhoto[]>([]);
+  const search = useListSearch(photos);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -312,7 +314,9 @@ export default function AdminSlideshowPage() {
           <p className="text-sm text-gray-500">{t("orderHint")}</p>
           {loading && <p className="text-gray-500 text-center py-10">{t("loadingPhotos")}</p>}
           {error && <p className="text-red-600 text-center py-10">{error}</p>}
-          {!loading && !error && photos.map((photo) => (
+          {!loading && !error && photos.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />}
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+          {!loading && !error && search.results.map((photo) => (
             <Card key={photo.id} shadow="sm" hoverable className="p-5 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center gap-4 min-w-0 flex-1">
                 <div className="w-28 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">

@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { localizeDay } from "@/lib/date-format";
 import { useAuth } from "@/lib/auth-context";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 import Badge, { type BadgeTone } from "@/components/ui/Badge";
 
 interface RFQ {
@@ -34,6 +35,7 @@ export default function MarketplacePage() {
     closed: t("status.closed"),
   };
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
+  const search = useListSearch(rfqs);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
@@ -103,6 +105,8 @@ export default function MarketplacePage() {
             </Link>
           </div>
 
+          {!loading && rfqs.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} className="max-w-xl" />}
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
           <div className="space-y-4">
             {loading ? (
               <div className="text-center py-20 text-gray-500">{t("loadingBuyRequests")}</div>
@@ -119,7 +123,7 @@ export default function MarketplacePage() {
                 </Link>
               </Card>
             ) : (
-              rfqs.map((rfq) => (
+              search.results.map((rfq) => (
                 <Card key={rfq.id} href={`/marketplace/${rfq.id}`} shadow="sm" className="p-6">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">

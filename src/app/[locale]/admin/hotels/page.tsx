@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { errorMessage } from "@/lib/format";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Booking {
   id: string;
@@ -23,6 +24,7 @@ export default function AdminHotelsPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const search = useListSearch(bookings);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -86,7 +88,9 @@ export default function AdminHotelsPage() {
         </div>
       ) : (
         <div className="mt-6 space-y-3">
-          {bookings.map((bk) => (
+          <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />
+          {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+          {search.results.map((bk) => (
             <Card key={bk.id} shadow="sm" hoverable className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="min-w-0">
                 <h2 className="font-semibold">{bk.hotelName}</h2>

@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface RFQ {
   id: string;
@@ -38,6 +39,7 @@ export default function AdminRFQsPage() {
   const ta = useTranslations("adminCommon");
   const { user, loading: authLoading } = useAuth();
   const [rfqs, setRfqs] = useState<RFQ[]>([]);
+  const search = useListSearch(rfqs);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -161,7 +163,9 @@ export default function AdminRFQsPage() {
       {error && <p className="mt-10 text-center text-red-600">{error}</p>}
 
       <div className="mt-6 space-y-4">
-        {rfqs.map((rfq) => (
+        {!loading && !error && rfqs.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />}
+        {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+        {search.results.map((rfq) => (
           <Card key={rfq.id} shadow="sm" hoverable className="p-5">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
               <div className="min-w-0">

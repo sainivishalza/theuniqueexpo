@@ -7,6 +7,7 @@ import { errorMessage } from "@/lib/format";
 import type { CustomFormField } from "@/lib/custom-registration-form";
 import { isValidUploadedDocument } from "@/lib/server/validate-upload";
 import Card from "@/components/ui/Card";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Tour { id: string; slug: string; title: string; }
 interface RegistrationSummary {
@@ -48,6 +49,7 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
   const { user, loading: authLoading } = useAuth();
   const [tour, setTour] = useState<Tour | null>(null);
   const [registrations, setRegistrations] = useState<RegistrationSummary[]>([]);
+  const search = useListSearch(registrations);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -123,14 +125,17 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
               <p className="text-gray-500">{t("noResultsSubtitle")}</p>
             </Card>
           ) : !error && (
-            <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
+            <>
+              <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />
+              {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+              <div className={`bg-white rounded-2xl shadow-sm overflow-x-auto ${search.active && search.shown === 0 ? "hidden" : ""}`}>
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("traveler")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600"></th>
               </tr></thead><tbody className="divide-y divide-gray-100">
-                {registrations.map((r) => (
+                {search.results.map((r) => (
                   <tr key={r.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{displayName(r, tr("registrationNumber", { id: r.id }))}</td>
                     <td className="px-6 py-4">
@@ -151,7 +156,7 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
                   </tr>
                 ))}
               </tbody></table>
-            </div>
+            </div></>
           )}
         </div>
       </section>

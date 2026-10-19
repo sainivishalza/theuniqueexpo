@@ -8,6 +8,7 @@ import { errorMessage } from "@/lib/format";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Batch {
   id: number;
@@ -38,6 +39,8 @@ export default function AdminPhotoOrganizerPage() {
   const [batch, setBatch] = useState<Batch | null>(null);
   const [groups, setGroups] = useState<Group[]>([]);
   const [names, setNames] = useState<Record<number, string>>({});
+  // Typed-in names are searchable too, not just the detected ones.
+  const search = useListSearch(groups, (g) => names[g.id] || "");
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [finalizing, setFinalizing] = useState(false);
@@ -226,7 +229,9 @@ export default function AdminPhotoOrganizerPage() {
               </div>
 
               <div className="space-y-3">
-                {groups.map((g) => (
+                <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />
+                {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
+                {search.results.map((g) => (
                   <Card key={g.id} shadow="sm" className="p-4 flex flex-col sm:flex-row gap-4 sm:items-center">
                     <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
                       {g.passportFilename ? (

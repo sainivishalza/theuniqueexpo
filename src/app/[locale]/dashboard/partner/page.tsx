@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatInstantDate } from "@/lib/date-format";
 import { useAuth } from "@/lib/auth-context";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -17,6 +18,7 @@ interface Referral {
 
 export default function PartnerDashboard() {
   const t = useTranslations("partnerDashboard");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const { user } = useAuth();
   const [referrals, setReferrals] = useState<Referral[]>([]);
@@ -118,7 +120,7 @@ export default function PartnerDashboard() {
                       <tr key={ref.id} className="hover:bg-cream-50 transition-colors">
                         <td className="px-6 py-4 font-semibold text-gray-900">{ref.referredUserName}</td>
                         <td className="px-6 py-4 text-gray-500">{ref.referredUserEmail}</td>
-                        <td className="px-6 py-4 text-gray-500">{new Date(ref.createdAt * 1000).toLocaleDateString()}</td>
+                        <td className="px-6 py-4 text-gray-500">{formatInstantDate(ref.createdAt * 1000, locale)}</td>
                         <td className="px-6 py-4">
                           <span className={`rounded-lg px-2.5 py-1 text-xs font-bold ${status.color}`}>{status.label}</span>
                         </td>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
+import { formatInstantDate } from "@/lib/date-format";
 import { translateContent } from "@/lib/server/content-translations";
 import { Link } from "@/i18n/navigation";
 import { listPublishedPosts, type BlogCategory } from "@/lib/server/blog-repo";
@@ -27,7 +28,8 @@ export default async function BlogPage({
   const t = await getTranslations("blogPage");
   const { category: categoryParam } = await searchParams;
   const category = CATEGORIES.includes(categoryParam as BlogCategory) ? (categoryParam as BlogCategory) : undefined;
-  const posts = translateContent(await listPublishedPosts(category), await getLocale());
+  const locale = await getLocale();
+  const posts = translateContent(await listPublishedPosts(category), locale);
 
   return (
     <div>
@@ -79,7 +81,7 @@ export default async function BlogPage({
                   <h3 className="text-lg font-bold text-heading mt-1 mb-2 line-clamp-2">{post.title}</h3>
                   <p className="text-sm text-gray-500 line-clamp-3">{post.excerpt}</p>
                   {post.publishedAt && (
-                    <p className="text-xs uppercase tracking-[0.08em] text-gray-400 mt-3">{new Date(post.publishedAt).toLocaleDateString()}</p>
+                    <p className="text-xs tracking-[0.08em] text-gray-400 mt-3">{formatInstantDate(post.publishedAt, locale)}</p>
                   )}
                 </div>
               </Card>

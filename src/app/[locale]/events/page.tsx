@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localizeDay } from "@/lib/date-format";
 import { useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import Badge from "@/components/ui/Badge";
@@ -19,6 +20,7 @@ const CATEGORY_ICONS: Record<string, string> = {
 
 export default function EventsPage() {
   const t = useTranslations("eventsPage");
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const view = searchParams.get("view") === "past" ? "past" : "upcoming";
   const [events, setEvents] = useState<Event[]>([]);
@@ -95,7 +97,7 @@ export default function EventsPage() {
                     <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    {event.eventDate}{event.startTime ? ` · ${event.startTime}` : ""}
+                    {localizeDay(event.eventDate, locale)}{event.startTime ? ` · ${event.startTime}` : ""}
                   </div>
                   {event.city && (
                     <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-3">

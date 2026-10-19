@@ -1,6 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatInstantDate } from "@/lib/date-format";
 import { useAuth } from "@/lib/auth-context";
 import { getBookingsForExhibitor } from "@/lib/booths";
 import { formatCurrency } from "@/lib/format";
@@ -10,6 +11,7 @@ import Card from "@/components/ui/Card";
 
 export default function ExhibitorDashboard() {
   const t = useTranslations("exhibitorDashboard");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const { user } = useAuth();
   const bookings = user ? getBookingsForExhibitor(String(user.id)) : [];
@@ -86,7 +88,7 @@ export default function ExhibitorDashboard() {
                     </div>
                     <div>
                       <p className="font-bold text-gray-900">{t("boothLabel", { id: bk.boothId.split("-").pop() || "" })}</p>
-                      <p className="text-sm text-gray-500">{t("bookedOn", { date: new Date(bk.createdAt).toLocaleDateString() })}</p>
+                      <p className="text-sm text-gray-500">{t("bookedOn", { date: formatInstantDate(bk.createdAt, locale) })}</p>
                     </div>
                   </div>
                   <div className="text-right">

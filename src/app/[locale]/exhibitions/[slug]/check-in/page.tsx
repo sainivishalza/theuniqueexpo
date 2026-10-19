@@ -36,7 +36,7 @@ export default function ExpoCheckInPage({ params }: { params: Promise<{ slug: st
   useEffect(() => {
     if (authLoading || !userId || key === null) return;
     let stale = false;
-    fetch(`/api/expo-registrations/check-in?exhibition=${encodeURIComponent(slug)}&k=${encodeURIComponent(key)}`)
+    fetch(`/api/expo-registrations/check-in?exhibition=${encodeURIComponent(slug)}&k=${encodeURIComponent(key)}&locale=${locale}`)
       .then(async (res) => {
         const data = await res.json().catch(() => ({}));
         if (stale) return;
@@ -50,7 +50,7 @@ export default function ExpoCheckInPage({ params }: { params: Promise<{ slug: st
     return () => {
       stale = true;
     };
-  }, [authLoading, userId, slug, key, t]);
+  }, [authLoading, userId, slug, key, locale, t]);
 
   async function press(action: "check_in" | "check_out") {
     setBusy(true);

@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localizeDay } from "@/lib/date-format";
 import { useAuth } from "@/lib/auth-context";
 import Card from "@/components/ui/Card";
 import Badge, { type BadgeTone } from "@/components/ui/Badge";
@@ -25,6 +26,7 @@ const STATUS_TONES: Record<string, BadgeTone> = {
 
 export default function MarketplacePage() {
   const t = useTranslations("marketplacePage");
+  const locale = useLocale();
   const statusLabels: Record<string, string> = {
     open: t("status.open"),
     quotes_received: t("status.quotesReceived"),
@@ -139,7 +141,7 @@ export default function MarketplacePage() {
                     {[
                       { icon: "📦", text: t("qty", { value: rfq.quantity }) },
                       { icon: "💰", text: t("target", { value: rfq.targetPrice }) },
-                      { icon: "📅", text: t("deadline", { value: rfq.deadline }) },
+                      { icon: "📅", text: t("deadline", { value: localizeDay(rfq.deadline, locale) }) },
                     ].map((item) => (
                       <span key={item.text} className="flex items-center gap-1.5 text-xs text-gray-400">
                         <span>{item.icon}</span> {item.text}

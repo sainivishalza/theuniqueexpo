@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatInstantDate } from "@/lib/date-format";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 
@@ -20,6 +21,7 @@ interface Thread {
 
 export default function MessagesInboxPage() {
   const tr = useTranslations("messagesPage");
+  const locale = useLocale();
   const { user, loading: authLoading } = useAuth();
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
@@ -78,7 +80,7 @@ export default function MessagesInboxPage() {
                 </div>
                 {t.lastMessageAt && (
                   <span className="text-xs text-gray-400 flex-shrink-0">
-                    {new Date(t.lastMessageAt).toLocaleDateString()}
+                    {formatInstantDate(t.lastMessageAt, locale)}
                   </span>
                 )}
               </div>

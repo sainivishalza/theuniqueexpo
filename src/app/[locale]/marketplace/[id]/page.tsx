@@ -3,7 +3,8 @@
 import { useParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localizeDay } from "@/lib/date-format";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import Card from "@/components/ui/Card";
@@ -34,6 +35,7 @@ const STATUS_TONES: Record<string, BadgeTone> = {
 export default function RFQDetailPage() {
   const t = useTranslations("rfqDetailPage");
   const tc = useTranslations("common");
+  const locale = useLocale();
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "";
   const { user } = useAuth();
@@ -150,7 +152,7 @@ export default function RFQDetailPage() {
                   {[
                     { label: t("quantity"), value: rfq.quantity, icon: "📦" },
                     { label: t("targetPrice"), value: rfq.targetPrice || t("flexible"), icon: "💰" },
-                    { label: t("deadline"), value: rfq.deadline || t("flexible"), icon: "📅" },
+                    { label: t("deadline"), value: localizeDay(rfq.deadline, locale) || t("flexible"), icon: "📅" },
                   ].map((s) => (
                     <div key={s.label} className="p-4 rounded-[var(--radius-card)] bg-cream-50 border border-gray-100 text-center">
                       <div className="text-xl mb-1">{s.icon}</div>
@@ -225,7 +227,7 @@ export default function RFQDetailPage() {
                         <div className="flex items-start justify-between mb-3">
                           <div>
                             <h3 className="font-bold text-heading">{q.exhibitorName}</h3>
-                            <p className="text-xs text-gray-400">{t("submittedOn", { date: q.createdAt })}</p>
+                            <p className="text-xs text-gray-400">{t("submittedOn", { date: localizeDay(q.createdAt, locale) })}</p>
                           </div>
                           <Badge tone="emerald" size="tag">{STATUS_LABELS[q.status] || q.status}</Badge>
                         </div>

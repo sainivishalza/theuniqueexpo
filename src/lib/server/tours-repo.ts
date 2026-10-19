@@ -1,6 +1,7 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
-import { toDateOnlyString, formatDateRange, safeParseArray, safeParseJson, slugLookupValues } from "@/lib/server/db-helpers";
+import { toDateOnlyString, safeParseArray, safeParseJson, slugLookupValues } from "@/lib/server/db-helpers";
+import { formatDateRange } from "@/lib/date-format";
 import { DEFAULT_TOUR_REGISTRATION_FIELDS } from "@/lib/default-tour-registration-form";
 import type { CustomFormSchema } from "@/lib/custom-registration-form";
 import { translateString } from "@/lib/server/content-translations";
@@ -49,7 +50,7 @@ export function mapTourRow(row: RowDataPacket, locale?: string) {
     id: String(row.id),
     slug: row.slug,
     title: translateString(row.title, locale),
-    dates: formatDateRange(row.start_date, row.end_date),
+    dates: formatDateRange(row.start_date, row.end_date, locale),
     startDate: toDateOnlyString(row.start_date),
     endDate: toDateOnlyString(row.end_date),
     duration: translateString(row.duration ?? "", locale),

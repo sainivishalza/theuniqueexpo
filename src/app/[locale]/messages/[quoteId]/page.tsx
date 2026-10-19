@@ -1,7 +1,8 @@
 "use client";
 
 import { use, useEffect, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatInstantDateTime } from "@/lib/date-format";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
@@ -30,6 +31,7 @@ interface ThreadContext {
 export default function MessageThreadPage({ params }: { params: Promise<{ quoteId: string }> }) {
   const { quoteId } = use(params);
   const t = useTranslations("messageThreadPage");
+  const locale = useLocale();
   const tc = useTranslations("common");
   const { user, loading: authLoading } = useAuth();
   const [thread, setThread] = useState<ThreadContext | null | undefined>(undefined);
@@ -134,7 +136,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
                   {!mine && <p className="text-xs font-semibold mb-0.5 opacity-70">{m.senderName}</p>}
                   <p className="whitespace-pre-line">{m.body}</p>
                   <p className={`text-[10px] mt-1 ${mine ? "text-emerald-100" : "text-gray-400"}`}>
-                    {new Date(m.createdAt).toLocaleString()}
+                    {formatInstantDateTime(m.createdAt, locale)}
                   </p>
                 </div>
               </div>

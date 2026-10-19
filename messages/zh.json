@@ -3397,6 +3397,8 @@
     "defaultDescription": "共同发现独特之处 — 全球领先的B2B展会、贸易博览会与采购平台,连接全球采购商与参展商。",
     "exhibitionNotFound": "未找到展会",
     "tourNotFound": "未找到旅游线路",
+    "exhibitionSummary": "{title} — {dates},{venue},{city},{country}。",
+    "tourSummary": "{title} — {dates},{departureCity}至{destination}。",
     "businessTours": {
       "title": "中国商务考察团",
       "description": "您的中国商务之行全程安排 — 从抵达到离开:展会参观、酒店、接送、翻译、供应商会面及工厂参观。"

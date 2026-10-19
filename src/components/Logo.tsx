@@ -8,7 +8,9 @@ const SIZES = {
   large: { box: "w-12 h-12", brand: "text-3xl", imgH: 44 },
 };
 
-export default function Logo({ size = "default" }: { size?: "small" | "default" | "large" }) {
+// tone="onDark" is for placing the logo on a dark background (the footer, the dark
+// panel beside the login and sign-up forms): the default dark wordmark disappears there.
+export default function Logo({ size = "default", tone = "default" }: { size?: "small" | "default" | "large"; tone?: "default" | "onDark" }) {
   const profile = useCompanyProfile();
   const s = SIZES[size];
 
@@ -38,8 +40,8 @@ export default function Logo({ size = "default" }: { size?: "small" | "default" 
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
-      <div className={`${s.brand} font-extrabold tracking-tight text-heading leading-none whitespace-nowrap`}>
-        <span className="text-emerald-600">The Unique</span> Expo
+      <div className={`${s.brand} font-extrabold tracking-tight ${tone === "onDark" ? "text-white" : "text-heading"} leading-none whitespace-nowrap`}>
+        <span className={tone === "onDark" ? "text-emerald-300" : "text-emerald-600"}>The Unique</span> Expo
       </div>
     </div>
   );

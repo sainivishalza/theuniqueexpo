@@ -1,7 +1,7 @@
 "use client";
 import { isPlaceholderEmail } from "@/lib/login-id";
 import { parseBuyerNumber } from "@/lib/buyer-number";
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -24,6 +24,10 @@ interface AdminUser {
 
 const ROLES = ["buyer", "exhibitor", "partner", "admin"];
 
+// The list draws this many people at a time (then "Show more"): with a couple of
+// thousand accounts a single table of every row made typing in the search box lag.
+const PAGE_SIZE = 100;
+
 export default function AdminUsersPage() {
   const t = useTranslations("adminUsers");
   const ta = useTranslations("adminCommon");
@@ -34,6 +38,29 @@ export default function AdminUsersPage() {
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [resetResult, setResetResult] = useState<{ name: string; password: string } | null>(null);
+
+  // The search box stays responsive while the (deferred) list catches up.
+  const deferredSearch = useDeferredValue(search);
+  const filtered = useMemo(() => {
+    const q = deferredSearch.trim().toLowerCase();
+    if (!q) return users;
+    // "TUE12", "tue0012" and "12" all find buyer number 12.
+    const asNumber = /^(tue)?\s*\d+$/i.test(q) ? parseBuyerNumber(q) : null;
+    const matches = users.filter((u) => {
+      if (asNumber !== null && parseBuyerNumber(u.buyerNumber) === asNumber) return true;
+      return u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.buyerNumber.toLowerCase().includes(q);
+    });
+    // Searching "TUE12" also matches TUE1200-TUE1299: keep the exact number on the first page.
+    const exact = asNumber === null ? -1 : matches.findIndex((u) => parseBuyerNumber(u.buyerNumber) === asNumber);
+    if (exact > 0) matches.unshift(...matches.splice(exact, 1));
+    return matches;
+  }, [users, deferredSearch]);
+  // How many pages of the list are showing. A new search starts again from the first
+  // page (state adjusted while rendering, the pattern React documents for "reset state
+  // when an input changes").
+  const [pageState, setPageState] = useState({ key: deferredSearch, pages: 1 });
+  if (pageState.key !== deferredSearch) setPageState({ key: deferredSearch, pages: 1 });
+  const visible = filtered.slice(0, pageState.pages * PAGE_SIZE);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -112,15 +139,6 @@ export default function AdminUsersPage() {
     return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{t("accessDenied")}</p></div>;
   }
 
-  const filtered = users.filter((u) => {
-    const q = search.trim().toLowerCase();
-    if (!q) return true;
-    // "TUE12", "tue0012" and "12" all find buyer number 12.
-    const asNumber = /^(tue)?\s*\d+$/i.test(q) ? parseBuyerNumber(q) : null;
-    if (asNumber !== null && parseBuyerNumber(u.buyerNumber) === asNumber) return true;
-    return u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.buyerNumber.toLowerCase().includes(q);
-  });
-
   return (
     <div>
       <section className="bg-[var(--color-hero-bg)] py-8">
@@ -163,74 +181,88 @@ export default function AdminUsersPage() {
           {loading ? (
             <p className="text-gray-500 text-center py-10">{ta("loading")}</p>
           ) : (
-            <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-cream-50 border-b border-gray-100">
-                  <tr>
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("role")}</th>
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("statusColumn")}</th>
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("joined")}</th>
-                    <th className="text-right px-6 py-3 font-semibold text-gray-600">{ta("actions")}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {filtered.map((u) => {
-                    const isSelf = u.id === user.id;
-                    const busy = updatingId === u.id;
-                    return (
-                      <tr key={u.id} className="hover:bg-cream-50">
-                        <td className="px-6 py-4">
-                          {u.buyerNumber && <div className="text-xs font-bold tracking-wide text-emerald-700">{u.buyerNumber}</div>}
-                          <div className="font-semibold text-gray-900">{u.name}</div>
-                          <div className="text-xs text-gray-400">{isPlaceholderEmail(u.email) ? t("noEmail") : u.email}</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <select
-                            value={u.role}
-                            disabled={busy || isSelf}
-                            onChange={(e) => handleUpdate(u.id, { role: e.target.value })}
-                            className="rounded-lg border border-gray-200 px-2 py-1 text-xs font-semibold disabled:opacity-50"
-                          >
-                            {ROLES.map((r) => <option key={r} value={r}>{t(`roles.${r}`)}</option>)}
-                          </select>
-                        </td>
-                        <td className="px-6 py-4">
-                          <button
-                            disabled={busy || isSelf}
-                            onClick={() => handleUpdate(u.id, { status: u.status === "active" ? "suspended" : "active" })}
-                            className={`rounded-lg px-2.5 py-1 text-xs font-bold disabled:opacity-50 ${u.status === "active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
-                          >
-                            {u.status === "active" ? t("statusActive") : t("statusSuspended")}
-                          </button>
-                        </td>
-                        <td className="px-6 py-4 text-gray-400 text-xs">{new Date(u.createdAt * 1000).toLocaleDateString()}</td>
-                        <td className="px-6 py-4 text-right space-x-2">
-                          <Button
-                            onClick={() => handleResetPassword(u.id, u.name)}
-                            disabled={busy}
-                            variant="ghost"
-                            size="xs"
-                          >
-                            {t("resetPassword")}
-                          </Button>
-                          <Button
-                            onClick={() => handleDelete(u.id, u.name)}
-                            disabled={busy || isSelf}
-                            variant="ghostDanger"
-                            size="xs"
-                          >
-                            {ta("delete")}
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {filtered.length === 0 && (
-                    <tr><td colSpan={5} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
-                  )}
-                </tbody>
-              </table>
+            <div className="bg-white rounded-2xl shadow-sm">
+              <div className="overflow-x-auto rounded-2xl">
+                <table className="w-full text-sm">
+                  <thead className="bg-cream-50 border-b border-gray-100">
+                    <tr>
+                      <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
+                      <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("role")}</th>
+                      <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("statusColumn")}</th>
+                      <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("joined")}</th>
+                      <th className="text-right px-6 py-3 font-semibold text-gray-600">{ta("actions")}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {visible.map((u) => {
+                      const isSelf = u.id === user.id;
+                      const busy = updatingId === u.id;
+                      return (
+                        <tr key={u.id} className="hover:bg-cream-50">
+                          <td className="px-6 py-4">
+                            {u.buyerNumber && <div className="text-xs font-bold tracking-wide text-emerald-700">{u.buyerNumber}</div>}
+                            <div className="font-semibold text-gray-900">{u.name}</div>
+                            <div className="text-xs text-gray-400">{isPlaceholderEmail(u.email) ? t("noEmail") : u.email}</div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <select
+                              value={u.role}
+                              disabled={busy || isSelf}
+                              onChange={(e) => handleUpdate(u.id, { role: e.target.value })}
+                              className="rounded-lg border border-gray-200 px-2 py-1 text-xs font-semibold disabled:opacity-50"
+                            >
+                              {ROLES.map((r) => <option key={r} value={r}>{t(`roles.${r}`)}</option>)}
+                            </select>
+                          </td>
+                          <td className="px-6 py-4">
+                            <button
+                              disabled={busy || isSelf}
+                              onClick={() => handleUpdate(u.id, { status: u.status === "active" ? "suspended" : "active" })}
+                              className={`rounded-lg px-2.5 py-1 text-xs font-bold disabled:opacity-50 ${u.status === "active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                            >
+                              {u.status === "active" ? t("statusActive") : t("statusSuspended")}
+                            </button>
+                          </td>
+                          <td className="px-6 py-4 text-gray-400 text-xs">{new Date(u.createdAt * 1000).toLocaleDateString()}</td>
+                          <td className="px-6 py-4 text-right space-x-2">
+                            <Button
+                              onClick={() => handleResetPassword(u.id, u.name)}
+                              disabled={busy}
+                              variant="ghost"
+                              size="xs"
+                            >
+                              {t("resetPassword")}
+                            </Button>
+                            <Button
+                              onClick={() => handleDelete(u.id, u.name)}
+                              disabled={busy || isSelf}
+                              variant="ghostDanger"
+                              size="xs"
+                            >
+                              {ta("delete")}
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {filtered.length === 0 && (
+                      <tr><td colSpan={5} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              {filtered.length > visible.length && (
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 px-6 py-4">
+                  <span role="status" className="text-sm text-gray-600">{t("showingOf", { shown: visible.length, total: filtered.length })}</span>
+                  <Button
+                    onClick={() => setPageState({ key: deferredSearch, pages: pageState.pages + 1 })}
+                    variant="secondaryOutline"
+                    size="xs"
+                  >
+                    {t("showMore", { count: Math.min(PAGE_SIZE, filtered.length - visible.length) })}
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </div>

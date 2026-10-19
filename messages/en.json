@@ -1039,6 +1039,8 @@
     "deleteFailed": "Failed to delete user",
     "confirmDelete": "Delete {name}'s account? This cannot be undone.",
     "noResults": "No users found.",
+    "showingOf": "Showing {shown} of {total}",
+    "showMore": "Show {count} more",
     "roles": {
       "buyer": "Buyer",
       "exhibitor": "Exhibitor",
@@ -2890,6 +2892,8 @@
       "notePlaceholder": "Reason for rejection (shown to buyer)"
     },
     "noResults": "No buyer profiles found",
+    "showingOf": "Showing {shown} of {total}",
+    "showMore": "Show {count} more",
     "editProfile": "Edit Buyer Profile",
     "documents": "Documents",
     "noFile": "No file",

@@ -131,6 +131,19 @@ run_mysql schema-migrations/051-buyer-expos.sql
 run_mysql schema-migrations/052-winb-exhibitions.sql
 run_mysql schema-migrations/053-expo-registration-lifecycle.sql
 run_mysql schema-migrations/054-buyer-numbers.sql
+run_mysql schema-migrations/055-buyer-document-flags.sql
+
+# Every deploy saves a full copy of the database (uploaded documents included) and
+# nothing ever removed them, so they would slowly fill this account's disk. Keep the
+# newest few, delete the rest. This sits after the migrations on purpose: if a
+# migration fails, set -e has already stopped the job and every backup is still here.
+# Never fails the job (a cleanup problem must not look like a failed deploy).
+KEEP_BACKUPS=5
+ls -1t ~/theuniqueexpo-backup-*.sql 2>/dev/null | tail -n +$((KEEP_BACKUPS + 1)) | while read -r old_backup; do
+  rm -f -- "$old_backup" && echo "Removed old backup: $old_backup"
+done || true
+echo "Backups kept (newest $KEEP_BACKUPS):"
+ls -lh ~/theuniqueexpo-backup-*.sql 2>/dev/null || true
 
 echo
 echo "Database backup and migrations finished."

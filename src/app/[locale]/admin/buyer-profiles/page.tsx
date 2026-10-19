@@ -154,8 +154,8 @@ const FIELDS: FieldDef[] = [
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];
 // The columns of the list, in the order admins read them: who (name, passport, nationality, phone),
-// then the company, then everything else. (The edit form keeps the order of FIELDS above.)
-const TABLE_FIRST: DetailFieldKey[] = ["passportNumber", "nationality", "phoneNumber", "companyName"];
+// then the company, e-mail, WeChat and turnover, then everything else. (The edit form keeps the order of FIELDS above.)
+const TABLE_FIRST: DetailFieldKey[] = ["passportNumber", "nationality", "phoneNumber", "companyName", "contactEmail", "wechatId", "annualTurnover"];
 const TABLE_FIELDS: FieldDef[] = [
   ...TABLE_FIRST.map((key) => FIELDS.find((f) => f.key === key)!),
   ...FIELDS.filter((f) => !TABLE_FIRST.includes(f.key)),

@@ -310,6 +310,14 @@
       "meetingsBooked": "Назначено встреч",
       "ordersPlaced": "Размещено заказов"
     },
+    "documents": {
+      "title": "Ваши документы",
+      "hint": "Загрузите все документы, чтобы мы могли подтвердить ваш аккаунт.",
+      "missing": "Не загружен",
+      "upload": "Загрузить документы",
+      "allDone": "Все документы загружены и проверены. Спасибо.",
+      "count": "Загружено {done} из {total}"
+    },
     "quickActions": "Быстрые действия",
     "actions": {
       "browseExhibitions": {
@@ -2977,6 +2985,15 @@
     "expoSelectedCount": "Выбрано выставок: {count}",
     "filterByExpo": "Фильтр по выставке",
     "allExpos": "Все выставки",
+    "filterByDocuments": "Фильтр по документам",
+    "docFilter": {
+      "all": "Все документы",
+      "missingAny": "Не хватает документа",
+      "complete": "Все 7 загружены",
+      "missingOne": "Нет: {name}",
+      "pendingReview": "Ожидают проверки",
+      "actionNeeded": "Нужна повторная загрузка"
+    },
     "manageExpos": "Изменить список выставок",
     "noEmail": "Нет email (вход по телефону / паспорту)",
     "selectByNumbers": {

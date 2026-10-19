@@ -1,5 +1,6 @@
 import ExcelJS from "exceljs";
 import { ZipFile } from "yazl";
+import { TEXT_COLUMN_ORDER } from "../buyer-profile-columns";
 import { DOCUMENT_FIELDS, type BuyerExportProfile, type DocumentField } from "./buyer-profile-repo";
 
 // English-only labels for the exported file itself (not the live admin
@@ -74,7 +75,16 @@ const EXCEL_IMAGE_TYPES = new Set(["jpeg", "png", "gif"]);
 // PDF document can't be embedded as an image, so it's left as a text note
 // in that cell instead.
 export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: string[]): Promise<Buffer> {
-  const textKeys = fieldKeys.filter((k) => k in FIELD_LABELS);
+  // Number, name and account email first, then the same order as the table on screen -- whatever
+  // order the browser sent the fields in.
+  const LEAD = ["buyerNumber", "name", "email"];
+  const rank = (k: string) => {
+    const lead = LEAD.indexOf(k);
+    if (lead >= 0) return lead;
+    const i = (TEXT_COLUMN_ORDER as readonly string[]).indexOf(k);
+    return LEAD.length + (i >= 0 ? i : TEXT_COLUMN_ORDER.length);
+  };
+  const textKeys = fieldKeys.filter((k) => k in FIELD_LABELS).sort((a, b) => rank(a) - rank(b));
   // Document columns always follow the fixed order (passport, visa, ...), whatever order they were ticked in.
   const docKeys = DOCUMENT_FIELDS.filter((k) => fieldKeys.includes(k));
 

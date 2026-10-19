@@ -8,6 +8,7 @@ import { isPlaceholderEmail } from "@/lib/login-id";
 import { extractBuyerNumbers, formatBuyerNumber, parseBuyerNumber } from "@/lib/buyer-number";
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
+import { TEXT_COLUMN_ORDER } from "@/lib/buyer-profile-columns";
 import Button from "@/components/ui/Button";
 import UrlSearchSync from "@/components/UrlSearchSync";
 
@@ -153,18 +154,25 @@ const FIELDS: FieldDef[] = [
   { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];
-// The columns of the list, in the order admins read them: who (name, passport, nationality, phone),
-// then the company, e-mail, WeChat and turnover, then everything else. (The edit form keeps the order of FIELDS above.)
-const TABLE_FIRST: DetailFieldKey[] = ["passportNumber", "nationality", "phoneNumber", "companyName", "contactEmail", "wechatId", "annualTurnover"];
-const TABLE_FIELDS: FieldDef[] = [
-  ...TABLE_FIRST.map((key) => FIELDS.find((f) => f.key === key)!),
-  ...FIELDS.filter((f) => !TABLE_FIRST.includes(f.key)),
-];
+// The columns of the list: the order is shared with the Excel download (src/lib/buyer-profile-columns.ts).
+// (The edit form keeps the order of FIELDS above.)
+const TABLE_FIELDS: FieldDef[] = TEXT_COLUMN_ORDER.flatMap((key) => FIELDS.filter((f) => f.key === key));
 // Same order as the Excel and ZIP exports (DOCUMENT_FIELDS on the server).
 const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList"] as const;
 // Column order of the Excel download and its tick-list: the same as the table on screen.
-const TEXT_EXPORT_ORDER: string[] = [...TABLE_FIELDS.map((f) => f.key), "purchaseIntention", "otherPurchaseIntention"];
+const TEXT_EXPORT_ORDER: string[] = [...TEXT_COLUMN_ORDER];
 const EXPORT_ORDER: string[] = [...TEXT_EXPORT_ORDER, ...DOC_FIELDS];
+const EXPORT_FIELDS_STORAGE_KEY = "buyer-profiles-export-fields";
+
+// The "Filter by documents" choices: which buyers still owe a document, or are waiting on review.
+function matchesDocFilter(row: AdminBuyerProfileRow, filter: string): boolean {
+  const uploaded = DOC_FIELDS.filter((f) => row.documents[f].uploaded).length;
+  if (filter === "missing_any") return uploaded < DOC_FIELDS.length;
+  if (filter === "complete") return uploaded === DOC_FIELDS.length;
+  if (filter === "pending_review" || filter === "action_needed") return row.verificationStatus === filter;
+  if (filter.startsWith("missing:")) return !row.documents[filter.slice(8) as (typeof DOC_FIELDS)[number]]?.uploaded;
+  return true;
+}
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 5;
@@ -390,6 +398,7 @@ export default function AdminBuyerProfilesPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [expoFilter, setExpoFilter] = useState("");
+  const [docFilter, setDocFilter] = useState("");
   const [expoOptions, setExpoOptions] = useState<ExpoOption[]>([]);
   const [error, setError] = useState("");
 
@@ -404,6 +413,25 @@ export default function AdminBuyerProfilesPage() {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [exportFields, setExportFields] = useState<Set<string>>(new Set(EXPORT_ORDER));
   const [exportPickerOpen, setExportPickerOpen] = useState(false);
+  // The ticked export columns are remembered in this browser, so they are not ticked again each time.
+  const [exportFieldsLoaded, setExportFieldsLoaded] = useState(false);
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(EXPORT_FIELDS_STORAGE_KEY) ?? "null");
+      if (Array.isArray(saved)) setExportFields(new Set(saved.filter((key): key is string => typeof key === "string" && EXPORT_ORDER.includes(key))));
+    } catch {
+      // storage blocked or unreadable: keep the default (everything ticked)
+    }
+    setExportFieldsLoaded(true);
+  }, []);
+  useEffect(() => {
+    if (!exportFieldsLoaded) return;
+    try {
+      localStorage.setItem(EXPORT_FIELDS_STORAGE_KEY, JSON.stringify(Array.from(exportFields)));
+    } catch {
+      // ignore: remembering is a convenience only
+    }
+  }, [exportFields, exportFieldsLoaded]);
   const [exporting, setExporting] = useState<"excel" | "zip" | null>(null);
   // "Select by registration numbers": paste a list or a range, tick exactly those buyers.
   const [numbersOpen, setNumbersOpen] = useState(false);
@@ -422,6 +450,7 @@ export default function AdminBuyerProfilesPage() {
     const asNumber = q && /^(tue)?\s*\d+$/i.test(q) ? parseBuyerNumber(q) : null;
     const matches = rows.filter((r, i) => {
       if (expoId !== null && !r.expoIds.includes(expoId)) return false;
+      if (docFilter && !matchesDocFilter(r, docFilter)) return false;
       if (!q) return true;
       if (asNumber !== null && r.buyerNo === asNumber) return true;
       return searchable[i].some((value) => value.includes(q));
@@ -430,11 +459,11 @@ export default function AdminBuyerProfilesPage() {
     const exact = asNumber === null ? -1 : matches.findIndex((r) => r.buyerNo === asNumber);
     if (exact > 0) matches.unshift(...matches.splice(exact, 1));
     return matches;
-  }, [rows, searchable, expoFilter, deferredSearch]);
+  }, [rows, searchable, expoFilter, docFilter, deferredSearch]);
   // How many pages of the list are showing. Changing the search or the expo filter
   // starts again from the first page (state adjusted while rendering, the pattern React
   // documents for "reset state when an input changes").
-  const filterKey = `${expoFilter}\n${deferredSearch}`;
+  const filterKey = `${expoFilter}\n${docFilter}\n${deferredSearch}`;
   const [pageState, setPageState] = useState({ key: filterKey, pages: 1 });
   if (pageState.key !== filterKey) setPageState({ key: filterKey, pages: 1 });
   const visible = filtered.slice(0, pageState.pages * PAGE_SIZE);
@@ -704,6 +733,21 @@ export default function AdminBuyerProfilesPage() {
             >
               <option value="">{t("allExpos")}</option>
               {expoOptions.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
+            </select>
+            <select
+              value={docFilter}
+              onChange={(e) => setDocFilter(e.target.value)}
+              aria-label={t("filterByDocuments")}
+              className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="">{t("docFilter.all")}</option>
+              <option value="missing_any">{t("docFilter.missingAny")}</option>
+              <option value="complete">{t("docFilter.complete")}</option>
+              <option value="pending_review">{t("docFilter.pendingReview")}</option>
+              <option value="action_needed">{t("docFilter.actionNeeded")}</option>
+              {DOC_FIELDS.map((field) => (
+                <option key={field} value={`missing:${field}`}>{t("docFilter.missingOne", { name: t(`docFields.${field}`) })}</option>
+              ))}
             </select>
             <Link href="/admin/buyer-expos" className="text-sm font-semibold text-emerald-800 hover:text-emerald-900 underline">{t("manageExpos")}</Link>
             {selected.size > 0 && (

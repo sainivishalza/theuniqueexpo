@@ -3,6 +3,7 @@ import pool from "@/lib/db";
 import { safeParseArray, safeParseJson, stripFileAnswers } from "@/lib/server/db-helpers";
 import { translateString } from "@/lib/server/content-translations";
 import { formatBuyerNumber } from "@/lib/buyer-number";
+import { awardAttendanceQuietly } from "@/lib/server/wallet-repo";
 import type { ExpoRegistration, ExpoRegistrationInput } from "@/lib/expo-registrations";
 import {
   availableActions,
@@ -363,7 +364,11 @@ export async function checkInOrOut(exhibitionId: number, userId: number, action:
          AND UTC_DATE() BETWEEN DATE_SUB(e.start_date, INTERVAL 1 DAY) AND DATE_ADD(e.end_date, INTERVAL 1 DAY)`,
       [existing.id, userId]
     );
-    if (result.affectedRows > 0) return "checked_in";
+    if (result.affectedRows > 0) {
+      // Attending earns the exhibition's reward points (once per registration).
+      await awardAttendanceQuietly(existing.id);
+      return "checked_in";
+    }
     if (existing.status === "attended") return "already_done";
     if (existing.status === "confirmed") return "outside_dates";
     return "not_confirmed";
@@ -417,5 +422,7 @@ export async function setRegistrationStatus(id: number, status: RegistrationStat
       sets = "cancelled_at = NULL";
   }
   const [result] = await pool.query<ResultSetHeader>(`UPDATE expo_registrations SET status = ?, ${sets} WHERE id = ?`, [...values, id]);
-  return result.affectedRows > 0;
+  if (result.affectedRows === 0) return false;
+  if (status === "attended") await awardAttendanceQuietly(id);
+  return true;
 }

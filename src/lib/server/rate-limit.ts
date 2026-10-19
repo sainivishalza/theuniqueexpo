@@ -46,6 +46,15 @@ export function checkRateLimit(key: string, limit: number, windowMs: number): Ra
   return { allowed: true, retryAfterSeconds: 0 };
 }
 
+// Looks at a bucket without counting an attempt: "is this key already over its limit?"
+// For checks where only the failures should count (a wrong password), not every try.
+export function peekRateLimit(key: string, limit: number): RateLimitResult {
+  const now = Date.now();
+  const bucket = buckets.get(key);
+  if (!bucket || bucket.resetAt <= now || bucket.count < limit) return { allowed: true, retryAfterSeconds: 0 };
+  return { allowed: false, retryAfterSeconds: Math.ceil((bucket.resetAt - now) / 1000) };
+}
+
 // Called after a successful attempt so a legitimate user who mistyped
 // their password a few times isn't left counting down a stale window.
 export function resetRateLimit(key: string): void {

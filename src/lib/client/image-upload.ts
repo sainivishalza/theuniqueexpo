@@ -56,3 +56,38 @@ export async function readDocumentAsDataUrl(file: File): Promise<string> {
   }
   return readFileAsDataUrl(file);
 }
+
+// Same shrinking as compressImage(), but the picture is read through a data URL rather
+// than a blob: URL. The site's Content-Security-Policy allows data: images and not
+// blob: ones, so compressImage() fails in the browser and its callers fall back to the
+// untouched file. Used by the rewards wallet, where a payment proof or QR code from a
+// phone camera can be several MB.
+export async function compressImageViaDataUrl(file: File, maxDimension = 1800, quality = 0.8): Promise<string> {
+  const source = await readFileAsDataUrl(file);
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxDimension || height > maxDimension) {
+        const scale = maxDimension / Math.max(width, height);
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        reject(new Error("Canvas not supported"));
+        return;
+      }
+      // JPEG has no transparency: paint white first so a transparent PNG does not turn black.
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = () => reject(new Error("Couldn't load image"));
+    img.src = source;
+  });
+}

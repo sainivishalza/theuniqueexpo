@@ -71,6 +71,13 @@ export function isValidUploadedDocument(value: unknown, maxBytes = MAX_UPLOAD_BY
   return isSizedDataUrl(value, DOCUMENT_DATA_URL_RE, maxBytes);
 }
 
+// A picture the person uploaded themselves (a payment QR code): an image file only,
+// never a PDF and never a pasted link.
+export function isValidUploadedImage(value: unknown, maxBytes = MAX_UPLOAD_BYTES): boolean {
+  if (typeof value !== "string" || value === "") return false;
+  return isSizedDataUrl(value, IMAGE_DATA_URL_RE, maxBytes);
+}
+
 // Defense-in-depth for the image/gallery/photo-serving routes: even though
 // isValidImageField() now blocks a non-image data: URL from ever being
 // saved, these routes still echo whatever MIME type is embedded in a

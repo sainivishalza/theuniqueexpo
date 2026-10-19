@@ -79,7 +79,7 @@ export default function Footer({
         {/* Brand */}
         <div className="lg:col-span-2">
           <div className="mb-4">
-            <Logo size="default" />
+            <Logo size="default" tone="onDark" />
           </div>
           <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
             {t("brandBlurb")}

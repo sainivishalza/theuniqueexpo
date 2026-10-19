@@ -282,33 +282,55 @@ function overallVerificationStatus(docs: { uploaded: boolean; status: DocumentRe
   return "pending_review";
 }
 
-export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[]> {
-  await assignMissingBuyerNumbers();
-  const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT u.id AS user_id, u.buyer_no, u.name, u.email, u.status,
+// Whether each document has been uploaded, WITHOUT reading the document: the images are
+// base64 text in MEDIUMTEXT columns (hundreds of KB each), and the admin list covers
+// every buyer, so selecting them just to tick "uploaded" pulled gigabytes into the
+// server once a couple of thousand buyers had documents. Migration 055 adds a stored
+// has_doc_* flag column per document that the database keeps in step by itself.
+function documentPresenceSql(useFlagColumns: boolean): string {
+  return DOCUMENT_FIELDS.map((f) => {
+    const column = DOCUMENT_COLUMNS[f];
+    // Until the migration has run on a server, ask the database for the length instead
+    // (the image still never reaches the app).
+    return useFlagColumns ? `p.has_${column}` : `(LENGTH(p.${column}) > 0) AS has_${column}`;
+  }).join(", ");
+}
+
+function adminListQuery(useFlagColumns: boolean): string {
+  return `SELECT u.id AS user_id, u.buyer_no, u.name, u.email, u.status,
             p.company_name, p.nationality, p.passport_number, p.passport_name, p.gender, p.wechat_id,
             p.departure_city, p.attendance_day, p.meeting_or_visiting, p.job_title, p.company_field,
             p.overseas_company_address, p.contact_email, p.phone_number, p.registration_code, p.annual_turnover, p.contact_person,
             ${expoNamesSql("u.id")} AS source_exhibitions, ${expoIdsSql("u.id")} AS expo_ids,
             p.date_of_birth, p.visa_type, p.visa_expire_date, p.purchase_intention, p.other_purchase_intention,
-            p.doc_business_license, p.doc_business_card, p.doc_passport_front,
-            p.doc_visa_page, p.doc_canton_fair_card, p.doc_buyer_photo, p.doc_invoice_order_list,
+            ${documentPresenceSql(useFlagColumns)},
             p.doc_business_license_status, p.doc_business_card_status, p.doc_passport_front_status,
             p.doc_visa_page_status, p.doc_canton_fair_card_status, p.doc_buyer_photo_status, p.doc_invoice_order_list_status
      FROM users u
      LEFT JOIN buyer_profiles p ON p.user_id = u.id
      WHERE u.role = 'buyer'
-     ORDER BY u.created_at DESC`
-  );
+     ORDER BY u.created_at DESC`;
+}
+
+export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[]> {
+  await assignMissingBuyerNumbers();
+  let rows: RowDataPacket[];
+  try {
+    [rows] = await pool.query<RowDataPacket[]>(adminListQuery(true));
+  } catch (err) {
+    // The code can go live a few minutes before the deploy job has applied migration 055.
+    if ((err as { code?: string }).code !== "ER_BAD_FIELD_ERROR") throw err;
+    [rows] = await pool.query<RowDataPacket[]>(adminListQuery(false));
+  }
   return rows.map((row) => {
     const documents: Record<DocumentField, { uploaded: boolean; status: DocumentReviewStatus }> = {
-      businessLicense: { uploaded: !!row.doc_business_license, status: (row.doc_business_license_status || "pending") as DocumentReviewStatus },
-      businessCard: { uploaded: !!row.doc_business_card, status: (row.doc_business_card_status || "pending") as DocumentReviewStatus },
-      passportFront: { uploaded: !!row.doc_passport_front, status: (row.doc_passport_front_status || "pending") as DocumentReviewStatus },
-      visaPage: { uploaded: !!row.doc_visa_page, status: (row.doc_visa_page_status || "pending") as DocumentReviewStatus },
-      cantonFairCard: { uploaded: !!row.doc_canton_fair_card, status: (row.doc_canton_fair_card_status || "pending") as DocumentReviewStatus },
-      buyerPhoto: { uploaded: !!row.doc_buyer_photo, status: (row.doc_buyer_photo_status || "pending") as DocumentReviewStatus },
-      invoiceOrderList: { uploaded: !!row.doc_invoice_order_list, status: (row.doc_invoice_order_list_status || "pending") as DocumentReviewStatus },
+      businessLicense: { uploaded: !!row.has_doc_business_license, status: (row.doc_business_license_status || "pending") as DocumentReviewStatus },
+      businessCard: { uploaded: !!row.has_doc_business_card, status: (row.doc_business_card_status || "pending") as DocumentReviewStatus },
+      passportFront: { uploaded: !!row.has_doc_passport_front, status: (row.doc_passport_front_status || "pending") as DocumentReviewStatus },
+      visaPage: { uploaded: !!row.has_doc_visa_page, status: (row.doc_visa_page_status || "pending") as DocumentReviewStatus },
+      cantonFairCard: { uploaded: !!row.has_doc_canton_fair_card, status: (row.doc_canton_fair_card_status || "pending") as DocumentReviewStatus },
+      buyerPhoto: { uploaded: !!row.has_doc_buyer_photo, status: (row.doc_buyer_photo_status || "pending") as DocumentReviewStatus },
+      invoiceOrderList: { uploaded: !!row.has_doc_invoice_order_list, status: (row.doc_invoice_order_list_status || "pending") as DocumentReviewStatus },
     };
     const docs = Object.values(documents);
     return {

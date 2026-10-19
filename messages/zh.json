@@ -1039,6 +1039,8 @@
     "deleteFailed": "删除用户失败",
     "confirmDelete": "确定要删除 {name} 的账户吗?此操作无法撤销。",
     "noResults": "未找到用户。",
+    "showingOf": "已显示 {shown} / {total}",
+    "showMore": "再显示 {count} 项",
     "roles": {
       "buyer": "买家",
       "exhibitor": "参展商",
@@ -2890,6 +2892,8 @@
       "notePlaceholder": "驳回原因(买家可见)"
     },
     "noResults": "未找到买家资料",
+    "showingOf": "已显示 {shown} / {total}",
+    "showMore": "再显示 {count} 项",
     "editProfile": "编辑买家资料",
     "documents": "证件资料",
     "noFile": "无文件",

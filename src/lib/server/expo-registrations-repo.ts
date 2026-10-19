@@ -264,9 +264,17 @@ export async function getLatestRegistrationForUser(userId: number): Promise<Expo
   return row ? mapRow(row) : null;
 }
 
+// The columns mapSummaryRow reads. Deliberately not `r.*`: that would also pull every
+// registration's uploaded documents (base64 images) into the server just to throw them away.
+const SUMMARY_COLUMNS = `r.id, r.exhibition_id, r.registration_type, r.gender, r.full_name, r.nationality, r.passport_number,
+         r.company_name, r.company_website, r.phone, r.email, r.company_type, r.company_type_other, r.company_scale,
+         r.purpose_of_visit, r.exporting_markets, r.status, r.created_at, r.approved_at, r.confirm_by, r.confirmed_at,
+         r.arrival_date, r.arrival_note, r.checked_in_at, r.checked_out_at, r.cancelled_at,
+         r.feedback_rating, r.feedback_comment, r.feedback_at, r.custom_answers, r.form_schema_snapshot`;
+
 export async function listRegistrationsForExhibition(exhibitionId: number) {
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT r.*, u.buyer_no, ${EFFECTIVE_STATUS_SQL} AS effective_status, (r.doc_ticket IS NOT NULL AND r.doc_ticket <> '') AS has_ticket
+    `SELECT ${SUMMARY_COLUMNS}, u.buyer_no, ${EFFECTIVE_STATUS_SQL} AS effective_status, (r.doc_ticket IS NOT NULL AND r.doc_ticket <> '') AS has_ticket
      FROM expo_registrations r LEFT JOIN users u ON u.id = r.user_id WHERE r.exhibition_id = ? ORDER BY r.created_at DESC`,
     [exhibitionId]
   );

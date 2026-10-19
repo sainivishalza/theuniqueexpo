@@ -64,7 +64,7 @@ export default function LoginPage() {
           />
         </div>
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
-          <Logo size="large" />
+          <Logo size="large" tone="onDark" />
           <h1 className="text-4xl font-extrabold mt-8 mb-4 leading-tight">{t("heroTitleLine1")}<br/>{t("heroTitleLine2")}<br/>{t("heroTitleLine3")}</h1>
           <p className="text-emerald-100 text-lg max-w-md">{t("heroSubtitle")}</p>
           <div className="mt-10 grid grid-cols-3 gap-6">

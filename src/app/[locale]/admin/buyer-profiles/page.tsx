@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -157,6 +157,10 @@ const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPag
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 5;
+
+// The list draws this many buyers at a time (then "Show more"): with a couple of
+// thousand buyers a single table of every row made typing in the search box lag.
+const PAGE_SIZE = 100;
 
 // A minimal pan/zoom image viewer -- wheel or pinch to zoom, drag or
 // single-finger swipe to pan once zoomed in, double-click/double-tap to
@@ -391,6 +395,35 @@ export default function AdminBuyerProfilesPage() {
   const [numbersText, setNumbersText] = useState("");
   const [numbersResult, setNumbersResult] = useState<{ found: number; missing: string[] } | null>(null);
 
+  // The search box stays responsive while the (deferred) list catches up.
+  const deferredSearch = useDeferredValue(search);
+  // Every searchable field of every buyer, lower-cased once per load instead of on every keystroke.
+  const searchable = useMemo(() => rows.map((r) => SEARCHABLE_ROW_FIELDS.map((field) => r[field].toLowerCase())), [rows]);
+  const filtered = useMemo(() => {
+    const q = deferredSearch.trim().toLowerCase();
+    const expoId = expoFilter ? Number(expoFilter) : null;
+    // "TUE12", "tue0012" and "12" all find buyer number 12 (plain text search below
+    // would only match the padded TUE0012).
+    const asNumber = q && /^(tue)?\s*\d+$/i.test(q) ? parseBuyerNumber(q) : null;
+    const matches = rows.filter((r, i) => {
+      if (expoId !== null && !r.expoIds.includes(expoId)) return false;
+      if (!q) return true;
+      if (asNumber !== null && r.buyerNo === asNumber) return true;
+      return searchable[i].some((value) => value.includes(q));
+    });
+    // Searching "TUE12" also matches TUE1200-TUE1299: keep the exact number on the first page.
+    const exact = asNumber === null ? -1 : matches.findIndex((r) => r.buyerNo === asNumber);
+    if (exact > 0) matches.unshift(...matches.splice(exact, 1));
+    return matches;
+  }, [rows, searchable, expoFilter, deferredSearch]);
+  // How many pages of the list are showing. Changing the search or the expo filter
+  // starts again from the first page (state adjusted while rendering, the pattern React
+  // documents for "reset state when an input changes").
+  const filterKey = `${expoFilter}\n${deferredSearch}`;
+  const [pageState, setPageState] = useState({ key: filterKey, pages: 1 });
+  if (pageState.key !== filterKey) setPageState({ key: filterKey, pages: 1 });
+  const visible = filtered.slice(0, pageState.pages * PAGE_SIZE);
+
   useEffect(() => {
     if (!user || user.role !== "admin") return;
     loadRows();
@@ -606,17 +639,6 @@ export default function AdminBuyerProfilesPage() {
     return <div className="min-h-[60vh] flex items-center justify-center"><p className="text-gray-500">{t("accessDenied")}</p></div>;
   }
 
-  const filtered = rows.filter((r) => {
-    if (expoFilter && !r.expoIds.includes(Number(expoFilter))) return false;
-    const q = search.trim().toLowerCase();
-    if (!q) return true;
-    // "TUE12", "tue0012" and "12" all find buyer number 12 (plain text search below
-    // would only match the padded TUE0012).
-    const asNumber = /^(tue)?\s*\d+$/i.test(q) ? parseBuyerNumber(q) : null;
-    if (asNumber !== null && r.buyerNo === asNumber) return true;
-    return SEARCHABLE_ROW_FIELDS.some((field) => r[field].toLowerCase().includes(q));
-  });
-
   // Renders a FIELDS-driven column's value the same way the Edit panel
   // would show it (translated option label for a "select" field that needs
   // translation, raw text otherwise) so the list table and the edit form
@@ -726,99 +748,113 @@ export default function AdminBuyerProfilesPage() {
           {loading ? (
             <p className="text-gray-500 text-center py-10">{ta("loading")}</p>
           ) : (
-            <div className="bg-white rounded-2xl shadow-sm overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-cream-50 border-b border-gray-100">
-                  <tr>
-                    <th className="sticky left-0 z-10 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="checkbox"
-                          checked={filtered.length > 0 && filtered.every((r) => selected.has(r.userId))}
-                          onChange={toggleSelectAllFiltered}
-                          className="h-4 w-4 rounded border-gray-300"
-                          aria-label={t("selectAll")}
-                        />
-                        {ta("name")}
-                      </div>
-                    </th>
-                    {FIELDS.map((field) => (
-                      <th key={field.key} className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t(`fields.${field.key}`)}</th>
-                    ))}
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("fields.purchaseIntention")}</th>
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("fields.otherPurchaseIntention")}</th>
-                    {DOC_FIELDS.map((field) => (
-                      <th key={field} className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t(`docFields.${field}`)}</th>
-                    ))}
-                    <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("verificationColumn")}</th>
-                    <th className="text-right px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{ta("actions")}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {filtered.map((r) => (
-                    <tr key={r.userId} className="hover:bg-cream-50">
-                      <td className="sticky left-0 z-10 bg-white px-6 py-4 whitespace-nowrap">
+            <div className="bg-white rounded-2xl shadow-sm">
+              <div className="overflow-x-auto rounded-2xl">
+                <table className="w-full text-sm">
+                  <thead className="bg-cream-50 border-b border-gray-100">
+                    <tr>
+                      <th className="sticky left-0 z-10 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           <input
                             type="checkbox"
-                            checked={selected.has(r.userId)}
-                            onChange={() => toggleSelected(r.userId)}
+                            checked={filtered.length > 0 && filtered.every((r) => selected.has(r.userId))}
+                            onChange={toggleSelectAllFiltered}
                             className="h-4 w-4 rounded border-gray-300"
-                            aria-label={r.name}
+                            aria-label={t("selectAll")}
                           />
-                          <div>
-                            {r.buyerNumber && <div className="text-xs font-bold tracking-wide text-emerald-700">{r.buyerNumber}</div>}
-                            <div className="font-semibold text-gray-900">{r.name}</div>
-                            <div className="text-xs text-gray-400">{isPlaceholderEmail(r.email) ? t("noEmail") : r.email}</div>
-                          </div>
+                          {ta("name")}
                         </div>
-                      </td>
+                      </th>
                       {FIELDS.map((field) => (
-                        <td key={field.key} className="px-6 py-4 text-gray-700 whitespace-nowrap">{fieldDisplayValue(r, field)}</td>
+                        <th key={field.key} className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t(`fields.${field.key}`)}</th>
                       ))}
-                      <td className="px-6 py-4 text-gray-700 max-w-[220px] truncate" title={r.purchaseIntention}>{r.purchaseIntention || "—"}</td>
-                      <td className="px-6 py-4 text-gray-700 max-w-[220px] truncate" title={r.otherPurchaseIntention}>{r.otherPurchaseIntention || "—"}</td>
-                      {DOC_FIELDS.map((field) => {
-                        const doc = r.documents[field];
-                        return (
-                          <td key={field} className="px-6 py-4 whitespace-nowrap">
-                            {doc?.uploaded ? (
-                              <button
-                                type="button"
-                                onClick={() => setLightbox({ userId: r.userId, field, buyerName: r.name })}
-                                className="block"
-                              >
-                                <img
-                                  src={`/api/admin/buyer-profiles/${r.userId}/documents/${field}`}
-                                  alt={t(`docFields.${field}`)}
-                                  loading="lazy"
-                                  className="h-12 w-16 object-cover rounded-lg border border-gray-200 hover:border-emerald-400 transition-colors mb-1"
-                                />
-                                <span className={`rounded-lg px-2 py-0.5 text-[11px] font-semibold ${DOC_BADGE_STYLES[doc.status]}`}>
-                                  {t(`docReview.${doc.status}`)}
-                                </span>
-                              </button>
-                            ) : (
-                              <span className="text-gray-300">—</span>
-                            )}
-                          </td>
-                        );
-                      })}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${STATUS_BADGE_STYLES[r.verificationStatus]}`}>
-                          {t(`verificationStatus.${r.verificationStatus}`)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right whitespace-nowrap">
-                        <Button onClick={() => openDetail(r.userId)} variant="ghost" size="xs">{ta("edit")}</Button>
-                      </td>
+                      <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("fields.purchaseIntention")}</th>
+                      <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("fields.otherPurchaseIntention")}</th>
+                      {DOC_FIELDS.map((field) => (
+                        <th key={field} className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t(`docFields.${field}`)}</th>
+                      ))}
+                      <th className="text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{t("verificationColumn")}</th>
+                      <th className="text-right px-6 py-3 font-semibold text-gray-600 whitespace-nowrap">{ta("actions")}</th>
                     </tr>
-                  ))}
-                  {filtered.length === 0 && (
-                    <tr><td colSpan={FIELDS.length + DOC_FIELDS.length + 5} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {visible.map((r) => (
+                      <tr key={r.userId} className="hover:bg-cream-50">
+                        <td className="sticky left-0 z-10 bg-white px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="checkbox"
+                              checked={selected.has(r.userId)}
+                              onChange={() => toggleSelected(r.userId)}
+                              className="h-4 w-4 rounded border-gray-300"
+                              aria-label={r.name}
+                            />
+                            <div>
+                              {r.buyerNumber && <div className="text-xs font-bold tracking-wide text-emerald-700">{r.buyerNumber}</div>}
+                              <div className="font-semibold text-gray-900">{r.name}</div>
+                              <div className="text-xs text-gray-400">{isPlaceholderEmail(r.email) ? t("noEmail") : r.email}</div>
+                            </div>
+                          </div>
+                        </td>
+                        {FIELDS.map((field) => (
+                          <td key={field.key} className="px-6 py-4 text-gray-700 whitespace-nowrap">{fieldDisplayValue(r, field)}</td>
+                        ))}
+                        <td className="px-6 py-4 text-gray-700 max-w-[220px] truncate" title={r.purchaseIntention}>{r.purchaseIntention || "—"}</td>
+                        <td className="px-6 py-4 text-gray-700 max-w-[220px] truncate" title={r.otherPurchaseIntention}>{r.otherPurchaseIntention || "—"}</td>
+                        {DOC_FIELDS.map((field) => {
+                          const doc = r.documents[field];
+                          return (
+                            <td key={field} className="px-6 py-4 whitespace-nowrap">
+                              {doc?.uploaded ? (
+                                <button
+                                  type="button"
+                                  onClick={() => setLightbox({ userId: r.userId, field, buyerName: r.name })}
+                                  className="block"
+                                >
+                                  <img
+                                    src={`/api/admin/buyer-profiles/${r.userId}/documents/${field}`}
+                                    alt={t(`docFields.${field}`)}
+                                    loading="lazy"
+                                    className="h-12 w-16 object-cover rounded-lg border border-gray-200 hover:border-emerald-400 transition-colors mb-1"
+                                  />
+                                  <span className={`rounded-lg px-2 py-0.5 text-[11px] font-semibold ${DOC_BADGE_STYLES[doc.status]}`}>
+                                    {t(`docReview.${doc.status}`)}
+                                  </span>
+                                </button>
+                              ) : (
+                                <span className="text-gray-300">—</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${STATUS_BADGE_STYLES[r.verificationStatus]}`}>
+                            {t(`verificationStatus.${r.verificationStatus}`)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right whitespace-nowrap">
+                          <Button onClick={() => openDetail(r.userId)} variant="ghost" size="xs">{ta("edit")}</Button>
+                        </td>
+                      </tr>
+                    ))}
+                    {filtered.length === 0 && (
+                      <tr><td colSpan={FIELDS.length + DOC_FIELDS.length + 5} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              {filtered.length > visible.length && (
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 px-6 py-4">
+                  <span role="status" className="text-sm text-gray-600">{t("showingOf", { shown: visible.length, total: filtered.length })}</span>
+                  <Button
+                    onClick={() => setPageState({ key: filterKey, pages: pageState.pages + 1 })}
+                    variant="secondaryOutline"
+                    size="xs"
+                  >
+                    {t("showMore", { count: Math.min(PAGE_SIZE, filtered.length - visible.length) })}
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -77,11 +77,11 @@ export default function AdminHotelsPage() {
         {t("subtitle")}
       </p>
 
-      {loading && <p className="mt-12 text-center text-gray-400">{t("loading")}</p>}
+      {loading && <p className="mt-12 text-center text-gray-500">{t("loading")}</p>}
       {error && <p className="mt-12 text-center text-red-600">{error}</p>}
 
       {!loading && !error && bookings.length === 0 ? (
-        <div className="mt-12 py-16 text-center text-gray-400">
+        <div className="mt-12 py-16 text-center text-gray-500">
           {t("noResults")}
         </div>
       ) : (

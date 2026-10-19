@@ -61,7 +61,7 @@ export default function HotelsPage() {
   }, [expo]);
 
   if (expo === undefined) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-500">{t("loading")}</div>;
   }
 
   if (!expo) {
@@ -158,7 +158,7 @@ export default function HotelsPage() {
                       <div className="text-amber-400 text-xs">{"★".repeat(hotel.stars)}</div>
                     </div>
                     <p className="text-sm text-gray-500">{hotel.address}</p>
-                    <p className="text-xs text-gray-400 mt-1">📍 {hotel.distanceToVenue}</p>
+                    <p className="text-xs text-gray-500 mt-1">📍 {hotel.distanceToVenue}</p>
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {hotel.amenities.slice(0, 4).map((a) => (
                         <span key={a} className="rounded-[var(--radius-badge)] bg-gray-100 px-2 py-0.5 text-xs text-gray-600">{a}</span>

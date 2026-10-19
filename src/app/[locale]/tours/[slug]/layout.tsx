@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTourBySlugOrId } from "@/lib/server/tours-repo";
 import { getTranslations } from "next-intl/server";
-import { metaDescription } from "@/lib/seo";
+import { fitTitle, metaDescription } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -25,7 +25,7 @@ export async function generateMetadata({
   const images = imageUrl ? [{ url: imageUrl }] : undefined;
 
   return {
-    title: tour.title,
+    title: fitTitle(tour.title, " | The Unique Expo"),
     description,
     openGraph: { title: tour.title, description, images },
     twitter: { title: tour.title, description, images },

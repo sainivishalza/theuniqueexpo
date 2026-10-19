@@ -62,7 +62,7 @@ export default function ExhibitorDashboard() {
               <div>
                 <h3 className="font-bold text-heading">{t("leadsCrm")}</h3>
                 <p className="text-sm text-gray-500 mt-1">{t("leadsCrmDesc")}</p>
-                <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-400">{tc("comingSoon")}</span>
+                <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">{tc("comingSoon")}</span>
               </div>
             </Card>
           </div>

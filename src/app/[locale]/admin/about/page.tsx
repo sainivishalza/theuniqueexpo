@@ -167,7 +167,7 @@ export default function AdminAboutPage() {
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-3">
                 <h2 className="font-bold text-heading">{t("ourStory")}</h2>
-                <p className="text-xs text-gray-400">{t("storyHint")}</p>
+                <p className="text-xs text-gray-500">{t("storyHint")}</p>
                 <textarea
                   aria-label={t("ourStory")}
                   value={current.story}

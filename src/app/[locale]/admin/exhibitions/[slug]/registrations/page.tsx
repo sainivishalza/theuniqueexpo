@@ -262,11 +262,11 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                   <tr key={r.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">
                       {r.buyerNumber && <span className="block text-xs font-bold tracking-wide text-emerald-700">{r.buyerNumber}</span>}
-                      {displayName(r, tr("registrationNumber", { id: r.id }))}<br/><span className="text-xs text-gray-400">{r.nationality || "—"}</span>
+                      {displayName(r, tr("registrationNumber", { id: r.id }))}<br/><span className="text-xs text-gray-500">{r.nationality || "—"}</span>
                     </td>
                     <td className="px-6 py-4 capitalize text-gray-700">{r.registrationType || (r.customAnswers ? t("customForm") : "—")}</td>
                     <td className="px-6 py-4 text-gray-500">{r.companyName || "—"}</td>
-                    <td className="px-6 py-4 text-gray-500">{r.email || "—"}<br/><span className="text-xs text-gray-400">{r.phone || ""}</span></td>
+                    <td className="px-6 py-4 text-gray-500">{r.email || "—"}<br/><span className="text-xs text-gray-500">{r.phone || ""}</span></td>
                     <td className="px-6 py-4">
                       <select
                         value={r.status}
@@ -290,7 +290,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                       {r.checkedOutAt && <div>{t("progressLines.checkedOut", { time: formatDateTime(r.checkedOutAt, locale) })}</div>}
                       {r.feedbackRating && <div>{t("progressLines.feedback", { rating: r.feedbackRating })}</div>}
                     </td>
-                    <td className="px-6 py-4 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-gray-500 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4">
                       <button onClick={() => viewDetail(r.id)} className="text-xs font-semibold text-emerald-600 hover:underline">{tr("view")}</button>
                     </td>
@@ -316,7 +316,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
               onChange={(e) => setConfirmByInput(e.target.value)}
               className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
             />
-            <p className="mt-2 text-xs text-gray-400">{defaultConfirmBy ? t("approve.leaveBlank") : t("approve.showOver")}</p>
+            <p className="mt-2 text-xs text-gray-500">{defaultConfirmBy ? t("approve.leaveBlank") : t("approve.showOver")}</p>
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" onClick={() => setApproving(null)} className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-cream-50">{ta("cancel")}</button>
               <button
@@ -344,9 +344,9 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
               // eslint-disable-next-line @next/next/no-img-element
               <img src={qrImage} alt={t("checkInQr.alt", { name: exhibition?.title || "" })} className="mx-auto w-64 h-64" />
             ) : (
-              <p className="py-24 text-gray-400">{ta("loading")}</p>
+              <p className="py-24 text-gray-500">{ta("loading")}</p>
             )}
-            <p className="mt-4 text-xs text-gray-400 break-all">{checkInUrl}</p>
+            <p className="mt-4 text-xs text-gray-500 break-all">{checkInUrl}</p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               <a
                 href={qrImage || undefined}
@@ -377,7 +377,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                     {detail.buyerNumber && <p className="text-sm font-bold tracking-wide text-emerald-700">{detail.buyerNumber}</p>}
                     <h2 className="text-2xl font-bold text-heading">{displayName(detail, tr("registrationNumber", { id: detail.id }))}</h2>
                   </div>
-                  <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600" aria-label={ta("close")}>✕</button>
+                  <button onClick={() => setDetail(null)} className="text-gray-500 hover:text-gray-600" aria-label={ta("close")}>✕</button>
                 </div>
 
                 {/* What happened after the sign-up form */}
@@ -395,7 +395,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                 </div>
                 {detail.docTicket && (
                   <div className="mb-6">
-                    <p className="text-xs font-semibold text-gray-400 uppercase mb-2">{t("lifecycle.ticket")}</p>
+                    <p className="text-xs font-semibold text-gray-500 uppercase mb-2">{t("lifecycle.ticket")}</p>
                     {isValidUploadedDocument(detail.docTicket) ? (
                       <a href={detail.docTicket} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-gray-200 p-2 hover:border-emerald-400 max-w-xs">
                         {detail.docTicket.startsWith("data:image") ? (
@@ -417,7 +417,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                       const value = detail.customAnswers ? (detail.customAnswers as Record<string, unknown>)[field.id] : undefined;
                       return (
                         <div key={field.id}>
-                          <p className="text-xs font-semibold text-gray-400 uppercase mb-1">{field.label}</p>
+                          <p className="text-xs font-semibold text-gray-500 uppercase mb-1">{field.label}</p>
                           {field.type === "file" && typeof value === "string" && value ? (
                             isValidUploadedDocument(value) ? (
                               <a href={value} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-gray-200 p-2 hover:border-emerald-400 max-w-xs">
@@ -457,11 +457,11 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                     </div>
                     {detail.companyIntro && (
                       <div className="mb-6">
-                        <p className="text-xs font-semibold text-gray-400 uppercase mb-1">{t("fields.companyIntro")}</p>
+                        <p className="text-xs font-semibold text-gray-500 uppercase mb-1">{t("fields.companyIntro")}</p>
                         <p className="text-sm text-gray-700">{detail.companyIntro}</p>
                       </div>
                     )}
-                    <p className="text-xs font-semibold text-gray-400 uppercase mb-2">{t("documents")}</p>
+                    <p className="text-xs font-semibold text-gray-500 uppercase mb-2">{t("documents")}</p>
                     <div className="grid grid-cols-2 gap-4">
                       {[
                         { label: t("docs.passportFront"), src: detail.docPassportFront },
@@ -501,7 +501,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
 function Detail({ label, value, capitalize }: { label: string; value: string; capitalize?: boolean }) {
   return (
     <div className="min-w-0">
-      <p className="text-xs font-semibold text-gray-400 uppercase">{label}</p>
+      <p className="text-xs font-semibold text-gray-500 uppercase">{label}</p>
       <p className={`text-gray-900 [overflow-wrap:anywhere] ${capitalize ? "capitalize" : ""}`}>{value}</p>
     </div>
   );

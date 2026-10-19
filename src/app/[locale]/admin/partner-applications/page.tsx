@@ -85,7 +85,7 @@ export default function AdminPartnerApplicationsPage() {
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {applications.map((a) => (
                   <tr key={a.id} className="hover:bg-cream-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{a.name}<br/><span className="text-xs text-gray-400">{a.email}</span></td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{a.name}<br/><span className="text-xs text-gray-500">{a.email}</span></td>
                     <td className="px-6 py-4 text-gray-500">{a.company || "—"}</td>
                     <td className="px-6 py-4 text-gray-500">{a.tierName}</td>
                     <td className="px-6 py-4">
@@ -99,7 +99,7 @@ export default function AdminPartnerApplicationsPage() {
                         {STATUSES.map((s) => <option key={s} value={s}>{t(`statuses.${s}`)}</option>)}
                       </select>
                     </td>
-                    <td className="px-6 py-4 text-gray-400 text-xs">{new Date(a.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-gray-500 text-xs">{new Date(a.createdAt).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody></table>

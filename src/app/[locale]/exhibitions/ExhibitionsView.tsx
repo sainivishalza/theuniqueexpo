@@ -114,7 +114,7 @@ export default function ExhibitionsView({
               </button>
             ))}
           </div>
-          <span className="ml-auto text-sm text-gray-400">
+          <span className="ml-auto text-sm text-gray-500">
             {t("count", { count: filtered.length })}
           </span>
         </div>
@@ -166,21 +166,21 @@ export default function ExhibitionsView({
                   {/* Content */}
                   <div className="p-5">
                     <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-3">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                       {expo.dates}
                     </div>
                     <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-4">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                       {expo.venue}, {expo.city}
                     </div>
-                    <p className="text-sm text-gray-400 line-clamp-2 mb-4">{expo.description}</p>
+                    <p className="text-sm text-gray-500 line-clamp-2 mb-4">{expo.description}</p>
                     <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                      <div className="flex gap-4 text-xs text-gray-400">
+                      <div className="flex gap-4 text-xs text-gray-500">
                         {expo.exhibitors > 0 && <span>🏢 {formatNumber(expo.exhibitors)}+</span>}
                         {expo.visitors && <span>👥 {expo.visitors}</span>}
                       </div>

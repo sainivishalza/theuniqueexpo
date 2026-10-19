@@ -81,7 +81,7 @@ export default function AdminSiteThemePage() {
   const colorField = (key: "primaryColor" | "goldColor" | "backgroundColor" | "footerColor" | "heroColor" | "headingColor", label: string, hint: string) => (
     <div>
       <label htmlFor={`theme-${key}`} className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
-      <p className="text-xs text-gray-400 mb-2">{hint}</p>
+      <p className="text-xs text-gray-500 mb-2">{hint}</p>
       <div className="flex items-center gap-3">
         <input
           type="color"
@@ -121,7 +121,7 @@ export default function AdminSiteThemePage() {
               <Card shadow="sm" bordered={false} className="p-6 space-y-6">
                 <div>
                   <h2 className="font-bold text-heading">{t("colors")}</h2>
-                  <p className="text-xs text-gray-400">{t("colorsHint")}</p>
+                  <p className="text-xs text-gray-500">{t("colorsHint")}</p>
                 </div>
                 <div className="grid gap-6 sm:grid-cols-2">
                   {colorField("primaryColor", t("primaryColor"), t("primaryColorHint"))}
@@ -136,7 +136,7 @@ export default function AdminSiteThemePage() {
               <Card shadow="sm" bordered={false} className="p-6 space-y-6">
                 <div>
                   <h2 className="font-bold text-heading">{t("fonts")}</h2>
-                  <p className="text-xs text-gray-400">{t("fontsHint")}</p>
+                  <p className="text-xs text-gray-500">{t("fontsHint")}</p>
                 </div>
                 <div className="grid gap-5 sm:grid-cols-3">
                   <div>
@@ -178,7 +178,7 @@ export default function AdminSiteThemePage() {
               <Card shadow="sm" bordered={false} className="p-6 space-y-6">
                 <div>
                   <h2 className="font-bold text-heading">{t("cornerStyle")}</h2>
-                  <p className="text-xs text-gray-400">{t("cornerStyleHint")}</p>
+                  <p className="text-xs text-gray-500">{t("cornerStyleHint")}</p>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   {CORNER_STYLE_OPTIONS.map((o) => {
@@ -207,7 +207,7 @@ export default function AdminSiteThemePage() {
               <Card shadow="sm" bordered={false} className="p-6 space-y-6">
                 <div>
                   <h2 className="font-bold text-heading">{t("cardShadowStyle")}</h2>
-                  <p className="text-xs text-gray-400">{t("cardShadowStyleHint")}</p>
+                  <p className="text-xs text-gray-500">{t("cardShadowStyleHint")}</p>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   {CARD_SHADOW_OPTIONS.map((o) => {
@@ -246,7 +246,7 @@ export default function AdminSiteThemePage() {
                     <span className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white" style={{ backgroundColor: theme.primaryColor, borderRadius: cornerRadii(theme.cornerStyle)["--radius-button"] }}>
                       {t("previewButton")}
                     </span>
-                    <span className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white" style={{ backgroundColor: theme.goldColor, borderRadius: cornerRadii(theme.cornerStyle)["--radius-button"] }}>
+                    <span className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-gray-900" style={{ backgroundColor: theme.goldColor, borderRadius: cornerRadii(theme.cornerStyle)["--radius-button"] }}>
                       {t("previewAccent")}
                     </span>
                     <span className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white" style={{ backgroundColor: theme.footerColor, borderRadius: cornerRadii(theme.cornerStyle)["--radius-button"] }}>
@@ -292,7 +292,7 @@ export default function AdminSiteThemePage() {
                   </Button>
                 </div>
               </div>
-              <p className="text-xs text-gray-400">{t("resetHint")}</p>
+              <p className="text-xs text-gray-500">{t("resetHint")}</p>
             </>
           )}
         </div>

@@ -157,7 +157,7 @@ export default function AdminRFQsPage() {
         {t("subtitle")}
       </p>
 
-      {loading && <p className="mt-10 text-center text-gray-400">{t("loading")}</p>}
+      {loading && <p className="mt-10 text-center text-gray-500">{t("loading")}</p>}
       {error && <p className="mt-10 text-center text-red-600">{error}</p>}
 
       <div className="mt-6 space-y-4">
@@ -188,7 +188,7 @@ export default function AdminRFQsPage() {
               </div>
             </div>
 
-            <div className="mt-3 flex items-center gap-4 text-xs text-gray-400">
+            <div className="mt-3 flex items-center gap-4 text-xs text-gray-500">
               <span>{t("qty", { value: rfq.quantity })}</span>
               <span>{t("target", { value: rfq.targetPrice })}</span>
               <button
@@ -202,9 +202,9 @@ export default function AdminRFQsPage() {
 
             {expandedId === rfq.id && (
               <div className="mt-4 border-t border-gray-100 pt-4 space-y-3">
-                {quotesLoading === rfq.id && <p className="text-xs text-gray-400">{t("loadingQuotes")}</p>}
+                {quotesLoading === rfq.id && <p className="text-xs text-gray-500">{t("loadingQuotes")}</p>}
                 {quotesLoading !== rfq.id && quotesByRfq[rfq.id]?.length === 0 && (
-                  <p className="text-xs text-gray-400">{t("noQuotes")}</p>
+                  <p className="text-xs text-gray-500">{t("noQuotes")}</p>
                 )}
                 {quotesByRfq[rfq.id]?.map((q) => (
                   <div key={q.id} className="rounded-lg bg-cream-50 border border-gray-100 p-4">
@@ -240,7 +240,7 @@ export default function AdminRFQsPage() {
           </Card>
         ))}
         {!loading && !error && rfqs.length === 0 && (
-          <p className="text-center text-gray-400 py-10">{t("noRfqs")}</p>
+          <p className="text-center text-gray-500 py-10">{t("noRfqs")}</p>
         )}
       </div>
     </main>

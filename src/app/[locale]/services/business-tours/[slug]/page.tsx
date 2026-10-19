@@ -62,9 +62,9 @@ export default async function TourDetailPage({ params }: { params: Promise<{ loc
               <h2 className="text-2xl font-bold text-heading mb-4">{t("aboutThisTour")}</h2>
               <p className="text-gray-600 leading-relaxed">{tour.description}</p>
               <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-cream-50 rounded-[var(--radius-card)]"><div className="text-2xl font-extrabold text-emerald-600">${formatNumber(tour.price)}</div><div className="text-xs text-gray-400 mt-1">{t("perPerson")}</div></div>
-                <div className="text-center p-4 bg-cream-50 rounded-[var(--radius-card)]"><div className="text-2xl font-extrabold text-gray-900">{tour.groupSize}</div><div className="text-xs text-gray-400 mt-1">{t("groupSize")}</div></div>
-                <div className="text-center p-4 bg-cream-50 rounded-[var(--radius-card)]"><div className="text-2xl font-extrabold text-green-600">{tour.duration}</div><div className="text-xs text-gray-400 mt-1">{t("duration")}</div></div>
+                <div className="text-center p-4 bg-cream-50 rounded-[var(--radius-card)]"><div className="text-2xl font-extrabold text-emerald-600">${formatNumber(tour.price)}</div><div className="text-xs text-gray-500 mt-1">{t("perPerson")}</div></div>
+                <div className="text-center p-4 bg-cream-50 rounded-[var(--radius-card)]"><div className="text-2xl font-extrabold text-gray-900">{tour.groupSize}</div><div className="text-xs text-gray-500 mt-1">{t("groupSize")}</div></div>
+                <div className="text-center p-4 bg-cream-50 rounded-[var(--radius-card)]"><div className="text-2xl font-extrabold text-green-600">{tour.duration}</div><div className="text-xs text-gray-500 mt-1">{t("duration")}</div></div>
               </div>
             </Card>
             <Card shadow="sm" bordered={false} className="p-8">
@@ -98,13 +98,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ loc
           <div className="space-y-6">
             <Card shadow="sm" bordered={false} className="p-6 sticky top-24">
               <h3 className="font-bold text-heading mb-4">{t("bookThisTour")}</h3>
-              <div className="text-3xl font-extrabold text-gray-900 mb-1">${formatNumber(tour.price)} <span className="text-base font-normal text-gray-400">{t("usdPerPerson")}</span></div>
-              <p className="text-sm text-gray-400 mb-6">{tour.groupSize}</p>
+              <div className="text-3xl font-extrabold text-gray-900 mb-1">${formatNumber(tour.price)} <span className="text-base font-normal text-gray-500">{t("usdPerPerson")}</span></div>
+              <p className="text-sm text-gray-500 mb-6">{tour.groupSize}</p>
               <Button href={"/services/business-tours/" + tour.slug + "/apply"} variant="primary" size="block">{t("applyNow")}</Button>
               <div className="mt-6">
                 <h4 className="text-sm font-bold text-heading mb-3">{t("included")}</h4>
                 <ul className="space-y-2">
-                  {tour.included.map((item) => (<li key={item} className="flex items-start gap-2 text-sm text-gray-600"><span className="text-green-500">✓</span>{item}</li>))}
+                  {tour.included.map((item) => (<li key={item} className="flex items-start gap-2 text-sm text-gray-600"><span className="text-green-700">✓</span>{item}</li>))}
                 </ul>
               </div>
               <div className="mt-4">

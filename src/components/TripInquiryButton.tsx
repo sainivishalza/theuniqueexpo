@@ -100,7 +100,7 @@ export default function TripInquiryButton({
                 type="button"
                 onClick={close}
                 aria-label={t("close")}
-                className="shrink-0 text-gray-400 hover:text-gray-700 text-xl leading-none p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
+                className="shrink-0 text-gray-500 hover:text-gray-700 text-xl leading-none p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
               >
                 ×
               </button>

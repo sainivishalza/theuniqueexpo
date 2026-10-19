@@ -53,11 +53,11 @@ export default function MessagesInboxPage() {
       <h1 className="text-2xl font-bold text-heading">{tr("title")}</h1>
       <p className="mt-1 text-sm text-gray-500">{tr("subtitle")}</p>
 
-      {loading && <p className="mt-10 text-center text-gray-400">{tr("loading")}</p>}
+      {loading && <p className="mt-10 text-center text-gray-500">{tr("loading")}</p>}
 
       <div className="mt-6 space-y-3">
         {!loading && threads.length === 0 && (
-          <p className="text-center text-gray-400 py-16">{tr("noConversations")}</p>
+          <p className="text-center text-gray-500 py-16">{tr("noConversations")}</p>
         )}
         {threads.map((t) => {
           const isBuyer = t.buyerId === String(user.id);
@@ -79,7 +79,7 @@ export default function MessagesInboxPage() {
                   )}
                 </div>
                 {t.lastMessageAt && (
-                  <span className="text-xs text-gray-400 flex-shrink-0">
+                  <span className="text-xs text-gray-500 flex-shrink-0">
                     {formatInstantDate(t.lastMessageAt, locale)}
                   </span>
                 )}

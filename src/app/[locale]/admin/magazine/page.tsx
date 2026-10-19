@@ -247,10 +247,10 @@ export default function AdminMagazinePage() {
                   <label key={post.id} className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-cream-50 cursor-pointer">
                     <input type="checkbox" checked={form.blogPostIds.includes(Number(post.id))} onChange={() => toggleArticle(Number(post.id))} className="rounded border-gray-300" />
                     <span className="flex-1">{post.title}</span>
-                    <span className="text-xs text-gray-400">{post.category}</span>
+                    <span className="text-xs text-gray-500">{post.category}</span>
                   </label>
                 ))}
-                {posts.length === 0 && <p className="px-4 py-3 text-sm text-gray-400">{t("noPostsYet")}</p>}
+                {posts.length === 0 && <p className="px-4 py-3 text-sm text-gray-500">{t("noPostsYet")}</p>}
               </div>
             </div>
             <div className="mt-5 flex gap-3">

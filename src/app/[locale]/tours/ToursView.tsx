@@ -104,22 +104,22 @@ export default function ToursView({ tours }: { tours: Tour[] }) {
 
                 <div className="p-5">
                   <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-2">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     {tour.dates}
                   </div>
                   <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-4">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     {tour.departureCity} → {tour.destination}
                   </div>
-                  <p className="text-sm text-gray-400 line-clamp-2 mb-4">{tour.description}</p>
+                  <p className="text-sm text-gray-500 line-clamp-2 mb-4">{tour.description}</p>
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                     <div className="text-sm font-bold text-gray-900">
-                      {tour.currency}{tour.price} <span className="font-normal text-gray-400">{t("perPerson")}</span>
+                      {tour.currency}{tour.price} <span className="font-normal text-gray-500">{t("perPerson")}</span>
                     </div>
                     <span className="inline-flex items-center gap-1 rounded-[var(--radius-button)] bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-800 group-hover:bg-emerald-100 transition-colors">
                       {t("viewDetails")}

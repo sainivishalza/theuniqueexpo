@@ -186,7 +186,7 @@ export default function AdminPhotoOrganizerPage() {
                 {t("chooseZip")}
                 <input type="file" accept=".zip" className="sr-only" onChange={(e) => handleFile(e.target.files?.[0] || null)} />
               </label>
-              <p className="mt-3 text-xs text-gray-400">{t("sizeLimitNote")}</p>
+              <p className="mt-3 text-xs text-gray-500">{t("sizeLimitNote")}</p>
             </Card>
           )}
 
@@ -202,7 +202,7 @@ export default function AdminPhotoOrganizerPage() {
           {batch && (batch.status === "processing" || batch.status === "uploading") && (
             <Card shadow="sm" className="p-8 text-center">
               <p className="text-gray-600">{t("processing")}</p>
-              <p className="text-xs text-gray-400 mt-1">{t("processingNote")}</p>
+              <p className="text-xs text-gray-500 mt-1">{t("processingNote")}</p>
             </Card>
           )}
 
@@ -236,7 +236,7 @@ export default function AdminPhotoOrganizerPage() {
                           className="img-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-400 text-center px-1">
+                        <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-500 text-center px-1">
                           {t("noPassportFound")}
                         </div>
                       )}
@@ -249,7 +249,7 @@ export default function AdminPhotoOrganizerPage() {
                         onChange={(e) => setNames((prev) => ({ ...prev, [g.id]: e.target.value }))}
                         className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-heading focus:outline-none focus:ring-2 focus:ring-emerald-500"
                       />
-                      <p className="mt-1 text-xs text-gray-400">
+                      <p className="mt-1 text-xs text-gray-500">
                         {t("fileCount", { count: g.fileList.length })} &middot; {g.groupKey}
                       </p>
                     </div>

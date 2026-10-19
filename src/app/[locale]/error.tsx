@@ -9,7 +9,7 @@ export default function ErrorPage({ reset }: { error: Error & { digest?: string 
   const t = useTranslations("errorPage");
   return (
     <section role="alert" className="mx-auto flex max-w-2xl flex-col items-center px-6 py-24 text-center">
-      <p className="text-sm font-semibold uppercase tracking-[0.12em] text-gold-600">{t("code")}</p>
+      <p className="text-sm font-semibold uppercase tracking-[0.12em] text-gold-800">{t("code")}</p>
       <h1 className="mt-3 text-3xl font-extrabold text-heading md:text-4xl">{t("heading")}</h1>
       <p className="mt-4 text-gray-600">{t("body")}</p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">

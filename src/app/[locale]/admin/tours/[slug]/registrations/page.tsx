@@ -144,7 +144,7 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
                         {STATUSES.map((s) => <option key={s} value={s}>{tr(`statuses.${s}`)}</option>)}
                       </select>
                     </td>
-                    <td className="px-6 py-4 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-gray-500 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4">
                       <button onClick={() => viewDetail(r.id)} className="text-xs font-semibold text-emerald-600 hover:underline">{tr("view")}</button>
                     </td>
@@ -165,14 +165,14 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
               <>
                 <div className="flex items-start justify-between mb-6">
                   <h2 className="text-2xl font-bold text-heading">{displayName(detail, tr("registrationNumber", { id: detail.id }))}</h2>
-                  <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600">✕</button>
+                  <button onClick={() => setDetail(null)} className="text-gray-500 hover:text-gray-600">✕</button>
                 </div>
                 <div className="space-y-4">
                   {schemaOf(detail).map((field) => {
                     const value = detail.customAnswers ? detail.customAnswers[field.id] : undefined;
                     return (
                       <div key={field.id}>
-                        <p className="text-xs font-semibold text-gray-400 uppercase mb-1">{field.label}</p>
+                        <p className="text-xs font-semibold text-gray-500 uppercase mb-1">{field.label}</p>
                         {field.type === "file" && typeof value === "string" && value ? (
                           isValidUploadedDocument(value) ? (
                             <a href={value} target="_blank" rel="noopener noreferrer" className="block rounded-xl border border-gray-200 p-2 hover:border-emerald-400 max-w-xs">

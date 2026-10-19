@@ -134,7 +134,7 @@ export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: str
 
       <div className="grid gap-4 sm:grid-cols-2">
         {!loading && reviews.length === 0 && (
-          <p className="sm:col-span-2 text-sm text-gray-400 text-center py-6">{t("noReviewsYet")}</p>
+          <p className="sm:col-span-2 text-sm text-gray-500 text-center py-6">{t("noReviewsYet")}</p>
         )}
         {reviews.map((r) => (
           <div key={r.id} className="rounded-[var(--radius-card)] border border-gray-200 p-4">
@@ -143,7 +143,7 @@ export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: str
               <Stars value={r.rating} />
             </div>
             {r.comment && <p className="text-sm text-gray-600 mt-1.5">{r.comment}</p>}
-            <p className="text-xs text-gray-400 mt-2">{formatInstantDate(r.createdAt, locale)}</p>
+            <p className="text-xs text-gray-500 mt-2">{formatInstantDate(r.createdAt, locale)}</p>
           </div>
         ))}
       </div>

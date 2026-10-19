@@ -102,7 +102,7 @@ export default function ConsultationPage() {
                     <div className="text-xs uppercase tracking-[0.08em] text-gray-500">{tier.label}</div>
                     <div className={`mt-1 font-[family-name:var(--font-heading)] text-xl font-bold ${tier.highlight ? "text-emerald-700" : "text-heading"}`}>
                       {tier.price}
-                      {!tier.highlight && <span className="ml-1 text-xs font-normal text-gray-400">USD</span>}
+                      {!tier.highlight && <span className="ml-1 text-xs font-normal text-gray-500">USD</span>}
                     </div>
                   </Card>
                 ))}

@@ -212,7 +212,7 @@ export default function AdminVideosPage() {
               <div className="flex-1 min-w-0">
                 <h2 className="font-bold text-heading truncate">{video.title}</h2>
                 <p className="text-sm text-gray-500 truncate">{video.embedUrl}</p>
-                {video.relatedType && <p className="text-xs text-gray-400 mt-1">{t("linkedTo", { type: video.relatedType, id: video.relatedId })}</p>}
+                {video.relatedType && <p className="text-xs text-gray-500 mt-1">{t("linkedTo", { type: video.relatedType, id: video.relatedId })}</p>}
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button onClick={() => openEdit(video)} variant="ghost" size="xs">{t("editButton")}</Button>

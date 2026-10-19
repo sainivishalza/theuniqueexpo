@@ -60,7 +60,7 @@ export default async function MagazineIssuePage({ params }: { params: Promise<{ 
                   <div className="min-w-0">
                     <h3 className="font-bold text-heading">{article.title}</h3>
                     <p className="text-sm text-gray-500 mt-1 line-clamp-2">{article.excerpt}</p>
-                    {article.authorName && <p className="text-xs text-gray-400 mt-2">{article.authorName}</p>}
+                    {article.authorName && <p className="text-xs text-gray-500 mt-2">{article.authorName}</p>}
                   </div>
                 </Card>
               ))}

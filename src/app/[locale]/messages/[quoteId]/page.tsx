@@ -92,7 +92,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
   }
 
   if (thread === undefined) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-500">{t("loading")}</div>;
   }
 
   if (!thread) {
@@ -126,7 +126,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
 
         <div className="p-5 space-y-3 max-h-[50vh] overflow-y-auto">
           {messages.length === 0 && (
-            <p className="text-center text-sm text-gray-400 py-8">{t("noMessages")}</p>
+            <p className="text-center text-sm text-gray-500 py-8">{t("noMessages")}</p>
           )}
           {messages.map((m) => {
             const mine = m.senderId === String(user.id);
@@ -135,7 +135,7 @@ export default function MessageThreadPage({ params }: { params: Promise<{ quoteI
                 <div className={`max-w-[75%] rounded-[var(--radius-card)] px-4 py-2.5 text-sm ${mine ? "bg-emerald-600 text-white" : "bg-gray-100 text-gray-800"}`}>
                   {!mine && <p className="text-xs font-semibold mb-0.5 opacity-70">{m.senderName}</p>}
                   <p className="whitespace-pre-line">{m.body}</p>
-                  <p className={`text-[10px] mt-1 ${mine ? "text-emerald-100" : "text-gray-400"}`}>
+                  <p className={`text-[10px] mt-1 ${mine ? "text-emerald-100" : "text-gray-500"}`}>
                     {formatInstantDateTime(m.createdAt, locale)}
                   </p>
                 </div>

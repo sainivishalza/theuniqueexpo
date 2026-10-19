@@ -447,7 +447,7 @@ export default function AdminToursPage() {
                   />
                 </div>
               </div>
-              <p className="mt-2 text-xs text-gray-400">{t("translationsHint")}</p>
+              <p className="mt-2 text-xs text-gray-500">{t("translationsHint")}</p>
             </div>
             <div className="mt-5 flex gap-3">
               <Button onClick={handleSave} disabled={saving} variant="gradientFlat" size="compact">

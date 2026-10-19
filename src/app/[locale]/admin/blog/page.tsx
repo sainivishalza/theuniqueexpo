@@ -226,7 +226,7 @@ export default function AdminBlogPage() {
             </div>
             <div className="mt-4">
               <label htmlFor="blog-content" className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.content")}</label>
-              <p className="text-xs text-gray-400 mb-1">{t("fields.contentHint")}</p>
+              <p className="text-xs text-gray-500 mb-1">{t("fields.contentHint")}</p>
               <textarea
                 id="blog-content"
                 className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -237,7 +237,7 @@ export default function AdminBlogPage() {
             </div>
             <div className="mt-4">
               <label className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.faqItems")}</label>
-              <p className="text-xs text-gray-400 mb-2">{t("fields.faqItemsHint")}</p>
+              <p className="text-xs text-gray-500 mb-2">{t("fields.faqItemsHint")}</p>
               <div className="space-y-2">
                 {form.faqItems.map((item, i) => (
                   <div key={i} className="rounded-xl border border-gray-200 p-3 space-y-2">

@@ -143,7 +143,7 @@ export default function RelocationCostEstimatorPage() {
               <p className="text-sm font-semibold opacity-90 mb-1">{t("estimatedRange")}</p>
               <p className="text-3xl font-extrabold">{formatUsd(range[0])} &ndash; {formatUsd(range[1])}</p>
             </div>
-            <p className="text-xs text-gray-400 text-center mb-10">{t("disclaimer")}</p>
+            <p className="text-xs text-gray-500 text-center mb-10">{t("disclaimer")}</p>
 
             <div className="border-t border-gray-100 pt-8">
               <h2 className="text-xl font-bold text-heading mb-6">{t("requestExactQuote")}</h2>

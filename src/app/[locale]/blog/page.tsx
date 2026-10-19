@@ -81,7 +81,7 @@ export default async function BlogPage({
                   <h3 className="text-lg font-bold text-heading mt-1 mb-2 line-clamp-2">{post.title}</h3>
                   <p className="text-sm text-gray-500 line-clamp-3">{post.excerpt}</p>
                   {post.publishedAt && (
-                    <p className="text-xs tracking-[0.08em] text-gray-400 mt-3">{formatInstantDate(post.publishedAt, locale)}</p>
+                    <p className="text-xs tracking-[0.08em] text-gray-500 mt-3">{formatInstantDate(post.publishedAt, locale)}</p>
                   )}
                 </div>
               </Card>

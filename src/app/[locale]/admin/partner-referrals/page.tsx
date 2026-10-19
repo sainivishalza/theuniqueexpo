@@ -94,8 +94,8 @@ export default function AdminPartnerReferralsPage() {
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {referrals.map((r) => (
                   <tr key={r.id} className="hover:bg-cream-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{r.partnerName}<br/><span className="text-xs text-gray-400">{r.partnerEmail}</span></td>
-                    <td className="px-6 py-4 text-gray-500">{r.referredUserName}<br/><span className="text-xs text-gray-400">{r.referredUserEmail}</span></td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{r.partnerName}<br/><span className="text-xs text-gray-500">{r.partnerEmail}</span></td>
+                    <td className="px-6 py-4 text-gray-500">{r.referredUserName}<br/><span className="text-xs text-gray-500">{r.referredUserEmail}</span></td>
                     <td className="px-6 py-4">
                       <select
                         aria-label={`${ta("status")}: ${r.referredUserName}`}
@@ -127,7 +127,7 @@ export default function AdminPartnerReferralsPage() {
                         </button>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-400 text-xs">{new Date(r.createdAt * 1000).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-gray-500 text-xs">{new Date(r.createdAt * 1000).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody></table>

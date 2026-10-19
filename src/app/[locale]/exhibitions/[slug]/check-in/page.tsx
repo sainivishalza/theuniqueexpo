@@ -81,7 +81,7 @@ export default function ExpoCheckInPage({ params }: { params: Promise<{ slug: st
   );
 
   if (authLoading || key === null || (user && !invalidKey && !error && registration === undefined)) {
-    return shell(<p className="text-gray-400">{t("loading")}</p>);
+    return shell(<p className="text-gray-500">{t("loading")}</p>);
   }
 
   if (!key || invalidKey) {
@@ -171,7 +171,7 @@ export default function ExpoCheckInPage({ params }: { params: Promise<{ slug: st
   return shell(
     <>
       <h1 className="text-xl font-bold text-heading">{title}</h1>
-      {expo?.dates && <p className="text-xs text-gray-400 mb-6">{expo.dates}</p>}
+      {expo?.dates && <p className="text-xs text-gray-500 mb-6">{expo.dates}</p>}
       {content}
       {error && <p role="alert" className="mt-4 rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
     </>

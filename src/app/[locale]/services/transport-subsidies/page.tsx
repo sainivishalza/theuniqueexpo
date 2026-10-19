@@ -87,13 +87,13 @@ export default function SubsidiesPage() {
                         <Badge tone={sub.status === "open" ? "success" : sub.status === "closing-soon" ? "warning" : "gray"} size="tag">
                           {sub.status === "open" ? t("statusOpen") : sub.status === "closing-soon" ? t("statusClosingSoon") : t("statusClosed")}
                         </Badge>
-                        <span className="text-sm text-gray-400">{sub.exhibitionTitle}</span>
+                        <span className="text-sm text-gray-500">{sub.exhibitionTitle}</span>
                       </div>
                       <h2 className="text-2xl font-bold text-heading">{sub.title}</h2>
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-extrabold text-emerald-600">{sub.amount}</div>
-                      <div className="text-sm text-gray-400">{t("deadline", { date: sub.deadline })}</div>
+                      <div className="text-sm text-gray-500">{t("deadline", { date: sub.deadline })}</div>
                     </div>
                   </div>
                   <p className="text-gray-600 mb-6">{sub.description}</p>
@@ -113,7 +113,7 @@ export default function SubsidiesPage() {
                     <div>
                       <h3 className="text-sm font-bold text-heading mb-3">{t("howToApply")}</h3>
                       <ol className="space-y-2">
-                        {sub.howToApply.map((h, i) => (<li key={i} className="flex items-start gap-2 text-sm text-gray-600"><span className="text-green-500 font-bold">{i + 1}.</span>{h}</li>))}
+                        {sub.howToApply.map((h, i) => (<li key={i} className="flex items-start gap-2 text-sm text-gray-600"><span className="text-green-700 font-bold">{i + 1}.</span>{h}</li>))}
                       </ol>
                     </div>
                   </div>

@@ -213,7 +213,7 @@ export default function NavBar({ sections }: { sections: NavSections }) {
                 <button
                   aria-label={group.label}
                   onClick={() => setMobileGroupOpen((k) => (k === group.key ? null : group.key))}
-                  className="p-2.5 text-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
+                  className="p-2.5 text-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
                 >
                   <svg
                     className={`w-4 h-4 transition-transform ${mobileGroupOpen === group.key ? "rotate-180" : ""}`}
@@ -245,7 +245,7 @@ export default function NavBar({ sections }: { sections: NavSections }) {
           <Link href="/contact" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("contact")}</Link>
 
           <div className="pt-2 mt-2 border-t border-gray-100">
-            <p className="px-0 py-1.5 text-xs font-semibold uppercase tracking-[0.08em] text-gray-400">{t("more")}</p>
+            <p className="px-0 py-1.5 text-xs font-semibold uppercase tracking-[0.08em] text-gray-500">{t("more")}</p>
             {moreItems.map((item) => (
               <Link key={item.href} href={item.href} className="block py-2 text-sm text-gray-500 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>
                 {item.label}

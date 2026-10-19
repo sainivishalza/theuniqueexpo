@@ -53,9 +53,9 @@ export default function BusinessToursPage() {
                 </div>
                 <div className="p-5">
                   <p className="text-sm text-gray-500 mb-2">{tour.dates}</p>
-                  <p className="text-sm text-gray-400 line-clamp-2 mb-4">{tour.description}</p>
+                  <p className="text-sm text-gray-500 line-clamp-2 mb-4">{tour.description}</p>
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                    <div className="text-xl font-extrabold text-gray-900">${formatNumber(tour.price)} <span className="text-sm font-normal text-gray-400">USD</span></div>
+                    <div className="text-xl font-extrabold text-gray-900">${formatNumber(tour.price)} <span className="text-sm font-normal text-gray-500">USD</span></div>
                     <span className="inline-flex items-center gap-1 rounded-[var(--radius-button)] bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-800 group-hover:bg-emerald-100 transition-colors">{t("viewDetails")}</span>
                   </div>
                 </div>

@@ -171,7 +171,7 @@ export default function AdminBuyerExposPage() {
                       <>
                         <div className="flex-1 min-w-0">
                           <p className="font-semibold text-gray-900 break-words">{expo.name}</p>
-                          <p className="text-xs text-gray-400">{t("buyers", { count: expo.buyerCount })}</p>
+                          <p className="text-xs text-gray-500">{t("buyers", { count: expo.buyerCount })}</p>
                         </div>
                         <div className="flex gap-2">
                           <Button onClick={() => { setEditingId(expo.id); setEditName(expo.name); }} variant="ghost" size="compact" disabled={busyId === expo.id}>

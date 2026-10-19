@@ -217,7 +217,7 @@ export default function ImportBuyersPage() {
             </ul>
             <div>
               <label htmlFor="import-excel" className="block text-sm font-medium text-gray-700 mb-1">{t("excelLabel")}</label>
-              <p className="text-xs text-gray-400 mb-2">{t("excelHint")}</p>
+              <p className="text-xs text-gray-500 mb-2">{t("excelHint")}</p>
               <input id="import-excel" type="file" multiple disabled={running || reading} onChange={(e) => handleExcel(e.target.files)} className="text-sm" />
               {reading && <p className="mt-1.5 text-xs text-gray-500">{t("reading")}</p>}
             </div>
@@ -241,7 +241,7 @@ export default function ImportBuyersPage() {
                           <td className="pr-3 py-0.5">{s.sheet}{s.hidden ? ` (${t("hiddenTag")})` : ""}</td>
                           <td className="pr-3 py-0.5">{s.expo}</td>
                           <td className="pr-3 py-0.5">{s.rows}{s.rows === 0 ? ` — ${t("noPeopleFound")}` : ""}</td>
-                          <td className="py-0.5 text-gray-400">{s.layout}</td>
+                          <td className="py-0.5 text-gray-500">{s.layout}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -310,14 +310,14 @@ export default function ImportBuyersPage() {
                   <tbody className="divide-y divide-gray-100">
                     {shown.map((r) => (
                       <tr key={r.row} className="hover:bg-cream-50">
-                        <td className="px-4 py-2.5 text-gray-400">{r.row}</td>
+                        <td className="px-4 py-2.5 text-gray-500">{r.row}</td>
                         <td className="px-4 py-2.5 font-bold text-emerald-700 whitespace-nowrap">{r.buyerNumber || "—"}</td>
                         <td className="px-4 py-2.5">{r.name}</td>
                         <td className="px-4 py-2.5 text-gray-500 break-all">{r.loginId}</td>
                         <td className="px-4 py-2.5 font-mono text-xs">{r.password ?? "—"}</td>
                         <td className="px-4 py-2.5">
                           <span className={`rounded-lg px-2.5 py-1 text-xs font-bold ${STATUS_STYLES[r.status]}`}>{t(`status.${r.status}`)}</span>
-                          {r.reason && <span className="ml-2 text-xs text-gray-400">{r.reason}</span>}
+                          {r.reason && <span className="ml-2 text-xs text-gray-500">{r.reason}</span>}
                         </td>
                       </tr>
                     ))}

@@ -131,7 +131,7 @@ export default async function Home() {
               <div key={stat.label} className="border-t border-white/20 pt-4">
                 <div className="text-3xl md:text-5xl font-extrabold font-[family-name:var(--font-heading)] text-cream-50">{stat.value}</div>
                 <span className="mt-3 block h-0.5 w-8 bg-gold-500" />
-                <div className="mt-2 text-xs uppercase tracking-[0.1em] text-gray-400">{stat.label}</div>
+                <div className="mt-2 text-xs uppercase tracking-[0.1em] text-gray-500">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -163,7 +163,7 @@ export default async function Home() {
                   {evt.image && (
                     <div className="relative h-44 overflow-hidden border-b border-gray-100">
                       <FavoriteButton exhibitionId={evt.id} className="absolute top-3 right-3 z-10 w-9 h-9 text-lg shadow-sm" />
-                      <span className="absolute top-3 left-3 z-10 bg-gold-500 text-white text-xs font-bold uppercase tracking-[0.08em] px-2.5 py-1">
+                      <span className="absolute top-3 left-3 z-10 bg-gold-500 text-gray-900 text-xs font-bold uppercase tracking-[0.08em] px-2.5 py-1">
                         {evt.datesShort}
                       </span>
                       <Image
@@ -282,7 +282,7 @@ export default async function Home() {
               { step: "03", key: "connect" as const },
             ].map((item) => (
               <div key={item.step} className="relative rounded-[var(--radius-card)] bg-white p-8 border border-gray-200">
-                <div className="font-[family-name:var(--font-heading)] text-6xl font-bold text-gray-200 leading-none mb-4">{item.step}</div>
+                <div className="font-[family-name:var(--font-heading)] text-6xl font-bold text-gray-500 leading-none mb-4">{item.step}</div>
                 <h3 className="text-xl font-bold text-heading mb-3">{t(`steps.${item.key}.title`)}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{t(`steps.${item.key}.desc`)}</p>
               </div>
@@ -313,7 +313,7 @@ export default async function Home() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-3xl font-bold text-gray-400">{initials(member.name)}</span>
+                      <span className="text-3xl font-bold text-gray-500">{initials(member.name)}</span>
                     )}
                   </div>
                   <h3 className="mt-4 font-[family-name:var(--font-heading)] font-bold text-heading">{member.name}</h3>

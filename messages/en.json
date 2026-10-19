@@ -3397,6 +3397,8 @@
     "defaultDescription": "Discover Something Unique Together — The world's leading B2B exhibition, trade-fair & sourcing platform connecting buyers with exhibitors worldwide.",
     "exhibitionNotFound": "Exhibition not found",
     "tourNotFound": "Tour not found",
+    "exhibitionSummary": "{title} — {dates} at {venue}, {city}, {country}.",
+    "tourSummary": "{title} — {dates}, {departureCity} to {destination}.",
     "businessTours": {
       "title": "Business Tours in China",
       "description": "Your business trip to China, organized from arrival to departure — exhibition visits, hotels, transfers, interpreters, supplier meetings, and factory visits."

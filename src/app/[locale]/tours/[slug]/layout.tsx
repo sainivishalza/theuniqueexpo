@@ -10,14 +10,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug, locale } = await params;
   const tour = await getTourBySlugOrId(slug, locale);
+  const t = await getTranslations({ locale, namespace: "meta" });
   if (!tour) {
-    const t = await getTranslations({ locale, namespace: "meta" });
     return { title: t("tourNotFound") };
   }
 
   const description = metaDescription(
     tour.description,
-    `${tour.title} — ${tour.dates}, ${tour.departureCity} to ${tour.destination}.`
+    t("tourSummary", { title: tour.title, dates: tour.dates, departureCity: tour.departureCity, destination: tour.destination })
   );
   const imageUrl = tour.image?.startsWith("data:")
     ? `/api/tours/${tour.slug}/image`

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatInstantDate } from "@/lib/date-format";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Button from "@/components/ui/Button";
@@ -38,6 +39,7 @@ function Stars({ value, onSelect }: { value: number; onSelect?: (n: number) => v
 // UI, pointed at whichever entity's /reviews API the caller passes in.
 export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: string; kind: "supplier" | "tour" }) {
   const t = useTranslations("reviews");
+  const locale = useLocale();
   const { user } = useAuth();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [summary, setSummary] = useState({ average: 0, count: 0 });
@@ -140,7 +142,7 @@ export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: str
               <Stars value={r.rating} />
             </div>
             {r.comment && <p className="text-sm text-gray-600 mt-1.5">{r.comment}</p>}
-            <p className="text-xs text-gray-400 mt-2">{new Date(r.createdAt).toLocaleDateString()}</p>
+            <p className="text-xs text-gray-400 mt-2">{formatInstantDate(r.createdAt, locale)}</p>
           </div>
         ))}
       </div>

@@ -2,7 +2,8 @@
 
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localizeDay } from "@/lib/date-format";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
@@ -22,6 +23,7 @@ const CATEGORY_ICONS: Record<string, string> = {
 
 export default function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const t = useTranslations("eventDetailPage");
+  const locale = useLocale();
   const { slug } = use(params);
   const { user } = useAuth();
   const [event, setEvent] = useState<Event | null | undefined>(undefined);
@@ -114,7 +116,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
                 <div>
                   <div className="text-xs text-gray-400">{t("dateAndTime")}</div>
                   <div className="text-sm font-semibold text-gray-900">
-                    {event.eventDate}{event.startTime ? ` · ${event.startTime}${event.endTime ? `–${event.endTime}` : ""}` : ""}
+                    {localizeDay(event.eventDate, locale)}{event.startTime ? ` · ${event.startTime}${event.endTime ? `–${event.endTime}` : ""}` : ""}
                   </div>
                 </div>
               </div>

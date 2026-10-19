@@ -8,11 +8,12 @@ import { checkRateLimit } from "@/lib/server/rate-limit";
 // Scanning the QR code at the venue. The key in the QR code proves the person is
 // at (or was given the code for) this exhibition; the registration proves who they are.
 
-async function resolve(request: Request, slug: unknown, key: unknown) {
+// `locale` only changes how the exhibition's title and dates are written for the page.
+async function resolve(request: Request, slug: unknown, key: unknown, locale?: string) {
   const user = await getSessionUser(request);
   if (!user) return { error: NextResponse.json({ error: "Please sign in" }, { status: 401 }) } as const;
   if (typeof slug !== "string" || !slug) return { error: NextResponse.json({ error: "Missing exhibition" }, { status: 400 }) } as const;
-  const exhibition = await getExhibitionBySlugOrId(slug);
+  const exhibition = await getExhibitionBySlugOrId(slug, locale);
   if (!exhibition) return { error: NextResponse.json({ error: "Exhibition not found" }, { status: 404 }) } as const;
   if (!isValidCheckInKey(Number(exhibition.id), key)) {
     return { error: NextResponse.json({ error: "This QR code isn't valid for this exhibition", outcome: "invalid_key" }, { status: 403 }) } as const;
@@ -23,7 +24,7 @@ async function resolve(request: Request, slug: unknown, key: unknown) {
 // Read-only: what the check-in page shows before anything is pressed.
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const resolved = await resolve(request, searchParams.get("exhibition"), searchParams.get("k"));
+  const resolved = await resolve(request, searchParams.get("exhibition"), searchParams.get("k"), searchParams.get("locale") || undefined);
   if ("error" in resolved) return resolved.error;
   const { user, exhibition } = resolved;
   const registration = await getMyRegistration(Number(exhibition.id), user.id);

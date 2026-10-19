@@ -1,3 +1,5 @@
+import { formatDateRange } from "@/lib/date-format";
+
 export interface LocalizedText {
   en: string;
   ru: string;
@@ -41,7 +43,9 @@ function pick(text: LocalizedText, locale: string): string {
 export function localizeTour(tour: LocalizedTourData, locale: string): Tour {
   return {
     id: tour.id, slug: tour.slug, type: tour.type, city: tour.city,
-    dates: tour.dates, startDate: tour.startDate, endDate: tour.endDate, duration: tour.duration,
+    // English keeps the hand-written dates; Russian and Chinese are written from the start/end days.
+    dates: locale === "ru" || locale === "zh" ? formatDateRange(tour.startDate, tour.endDate, locale) : tour.dates,
+    startDate: tour.startDate, endDate: tour.endDate, duration: tour.duration,
     title: pick(tour.title, locale),
     description: pick(tour.description, locale),
     highlights: tour.highlights.map((h) => pick(h, locale)),

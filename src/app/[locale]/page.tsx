@@ -164,7 +164,7 @@ export default async function Home() {
                     <div className="relative h-44 overflow-hidden border-b border-gray-100">
                       <FavoriteButton exhibitionId={evt.id} className="absolute top-3 right-3 z-10 w-9 h-9 text-lg shadow-sm" />
                       <span className="absolute top-3 left-3 z-10 bg-gold-500 text-white text-xs font-bold uppercase tracking-[0.08em] px-2.5 py-1">
-                        {evt.dates.split(",")[0]}
+                        {evt.datesShort}
                       </span>
                       <Image
                         src={evt.image}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { formatInstantDate } from "@/lib/date-format";
 import { translateContent } from "@/lib/server/content-translations";
 import { Link } from "@/i18n/navigation";
 import { renderMarkdown } from "@/lib/markdown";
@@ -107,7 +108,7 @@ export default async function BlogPostPage({
           </Link>
           <h1 className="mt-3 text-3xl md:text-4xl font-extrabold leading-tight">{post.title}</h1>
           {post.publishedAt && (
-            <p className="mt-3 text-sm uppercase tracking-wide text-gray-400">{new Date(post.publishedAt).toLocaleDateString()}</p>
+            <p className="mt-3 text-sm tracking-wide text-gray-400">{formatInstantDate(post.publishedAt, locale)}</p>
           )}
         </div>
       </section>

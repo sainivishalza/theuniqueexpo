@@ -1,6 +1,7 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
-import { toDateOnlyString, formatDateRange, safeParseArray, safeParseJson, slugLookupValues } from "@/lib/server/db-helpers";
+import { toDateOnlyString, safeParseArray, safeParseJson, slugLookupValues } from "@/lib/server/db-helpers";
+import { formatDateRange, formatDateRangeShort } from "@/lib/date-format";
 import type { CustomFormSchema } from "@/lib/custom-registration-form";
 import { translateString } from "@/lib/server/content-translations";
 
@@ -53,7 +54,10 @@ export function mapExhibitionRow(row: RowDataPacket, locale?: string) {
     // Russian/Chinese versions come from the content catalog (admin screens
     // call this without a locale and always see the English originals).
     title: translateString(row.title, locale),
-    dates: formatDateRange(row.start_date, row.end_date),
+    // Written for the page's language ("29–31 марта 2026 г."); admin screens pass no locale and get English.
+    dates: formatDateRange(row.start_date, row.end_date, locale),
+    // The same without the year, for the small date tag on cards.
+    datesShort: formatDateRangeShort(row.start_date, row.end_date, locale),
     startDate: toDateOnlyString(row.start_date),
     endDate: toDateOnlyString(row.end_date),
     venue: translateString(row.venue ?? "", locale),

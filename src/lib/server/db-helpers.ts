@@ -16,16 +16,6 @@ export function toIsoTimestamp(value: string | Date | null | undefined): string 
   return date.toISOString();
 }
 
-export function formatDateRange(start: string | Date, end: string | Date): string {
-  const s = new Date(start);
-  const e = new Date(end);
-  const opts: Intl.DateTimeFormatOptions = { month: "long", day: "numeric" };
-  if (s.getMonth() === e.getMonth()) {
-    return `${s.toLocaleDateString("en-US", opts)}–${e.getDate()}, ${e.getFullYear()}`;
-  }
-  return `${s.toLocaleDateString("en-US", opts)} – ${e.toLocaleDateString("en-US", opts)}, ${e.getFullYear()}`;
-}
-
 // Dynamic route params can arrive percent-encoded -- sometimes twice, when a
 // client component re-encodes a param it got from the router -- for slugs with
 // non-ASCII letters, spaces or "&" (e.g. a Chinese-titled exhibition), so a

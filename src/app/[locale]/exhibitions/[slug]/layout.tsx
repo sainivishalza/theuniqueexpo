@@ -10,14 +10,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug, locale } = await params;
   const expo = await getExhibitionBySlugOrId(slug, locale);
+  const t = await getTranslations({ locale, namespace: "meta" });
   if (!expo) {
-    const t = await getTranslations({ locale, namespace: "meta" });
     return { title: t("exhibitionNotFound") };
   }
 
   const description = metaDescription(
     expo.description,
-    `${expo.title} — ${expo.dates} at ${expo.venue}, ${expo.city}, ${expo.country}.`
+    t("exhibitionSummary", { title: expo.title, dates: expo.dates, venue: expo.venue, city: expo.city, country: expo.country })
   );
   // og:image crawlers (Facebook/WhatsApp/Twitter) need a fetchable URL, not
   // a data: URI -- route through the dedicated image endpoint for uploaded

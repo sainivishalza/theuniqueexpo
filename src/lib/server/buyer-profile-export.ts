@@ -75,7 +75,8 @@ const EXCEL_IMAGE_TYPES = new Set(["jpeg", "png", "gif"]);
 // in that cell instead.
 export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: string[]): Promise<Buffer> {
   const textKeys = fieldKeys.filter((k) => k in FIELD_LABELS);
-  const docKeys = fieldKeys.filter((k): k is DocumentField => (DOCUMENT_FIELDS as readonly string[]).includes(k));
+  // Document columns always follow the fixed order (passport, visa, ...), whatever order they were ticked in.
+  const docKeys = DOCUMENT_FIELDS.filter((k) => fieldKeys.includes(k));
 
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet("Buyers");
@@ -139,13 +140,16 @@ export async function buildBuyersDocumentsZip(rows: BuyerExportProfile[]): Promi
     usedNames.set(folderName, count + 1);
     if (count > 0) folderName = `${folderName} (${count + 1})`;
 
-    for (const field of DOCUMENT_FIELDS) {
+    DOCUMENT_FIELDS.forEach((field, index) => {
       const dataUrl = row.documentData[field];
-      if (!dataUrl) continue;
+      if (!dataUrl) return;
       const parsed = parseDataUrl(dataUrl);
-      if (!parsed) continue;
-      zipfile.addBuffer(parsed.buffer, `${folderName}/${DOC_LABELS[field]}.${parsed.extension}`);
-    }
+      if (!parsed) return;
+      // Numbered so a folder window (which sorts A-Z) shows them in the fixed order;
+      // a "/" in the label ("Invoice / Order List") would create a nested folder.
+      const fileLabel = DOC_LABELS[field].replace(/\s*\/\s*/g, " - ");
+      zipfile.addBuffer(parsed.buffer, `${folderName}/${index + 1} - ${fileLabel}.${parsed.extension}`);
+    });
   }
 
   return new Promise((resolve, reject) => {

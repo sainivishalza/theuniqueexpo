@@ -79,6 +79,7 @@ export default function AdminConsultationsPage() {
                     <td className="px-6 py-4 text-gray-500">{b.topic}</td>
                     <td className="px-6 py-4">
                       <select
+                        aria-label={`${ta("status")}: ${b.name}`}
                         value={b.status}
                         disabled={updatingId === b.id}
                         onChange={(e) => updateStatus(b.id, e.target.value)}

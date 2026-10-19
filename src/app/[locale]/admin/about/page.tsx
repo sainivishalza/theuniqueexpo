@@ -131,8 +131,9 @@ export default function AdminAboutPage() {
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-heading">{t("header")}</h2>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heading")}</label>
+                  <label htmlFor="about-heading" className="block text-xs font-semibold text-gray-500 mb-1">{t("heading")}</label>
                   <input
+                    id="about-heading"
                     type="text"
                     value={current.heading}
                     onChange={(e) => updateText({ heading: e.target.value })}
@@ -140,8 +141,9 @@ export default function AdminAboutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("tagline")}</label>
+                  <label htmlFor="about-tagline" className="block text-xs font-semibold text-gray-500 mb-1">{t("tagline")}</label>
                   <input
+                    id="about-tagline"
                     type="text"
                     value={current.tagline}
                     onChange={(e) => updateText({ tagline: e.target.value })}
@@ -150,8 +152,9 @@ export default function AdminAboutPage() {
                 </div>
                 {lang === "en" && (
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heroImageUrl")}</label>
+                  <label htmlFor="about-hero-image" className="block text-xs font-semibold text-gray-500 mb-1">{t("heroImageUrl")}</label>
                   <input
+                    id="about-hero-image"
                     type="text"
                     value={content.heroImage}
                     onChange={(e) => update({ heroImage: e.target.value })}
@@ -166,6 +169,7 @@ export default function AdminAboutPage() {
                 <h2 className="font-bold text-heading">{t("ourStory")}</h2>
                 <p className="text-xs text-gray-400">{t("storyHint")}</p>
                 <textarea
+                  aria-label={t("ourStory")}
                   value={current.story}
                   onChange={(e) => updateText({ story: e.target.value })}
                   rows={8}
@@ -177,6 +181,7 @@ export default function AdminAboutPage() {
                 <Card shadow="sm" bordered={false} className="p-6 space-y-3">
                   <h2 className="font-bold text-heading">{t("mission")}</h2>
                   <textarea
+                    aria-label={t("mission")}
                     value={current.mission}
                     onChange={(e) => updateText({ mission: e.target.value })}
                     rows={4}
@@ -186,6 +191,7 @@ export default function AdminAboutPage() {
                 <Card shadow="sm" bordered={false} className="p-6 space-y-3">
                   <h2 className="font-bold text-heading">{t("vision")}</h2>
                   <textarea
+                    aria-label={t("vision")}
                     value={current.vision}
                     onChange={(e) => updateText({ vision: e.target.value })}
                     rows={4}
@@ -200,6 +206,7 @@ export default function AdminAboutPage() {
                   <div key={i} className="flex items-center gap-3">
                     <input
                       type="text"
+                      aria-label={`${t("statValue")} ${i + 1}`}
                       value={stat.value}
                       onChange={(e) => updateStat(i, { value: e.target.value })}
                       placeholder="200+"
@@ -207,6 +214,7 @@ export default function AdminAboutPage() {
                     />
                     <input
                       type="text"
+                      aria-label={`${t("statLabel")} ${i + 1}`}
                       value={stat.label}
                       onChange={(e) => updateStat(i, { label: e.target.value })}
                       placeholder={t("statLabelPlaceholder")}

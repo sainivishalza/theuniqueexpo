@@ -83,10 +83,10 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Role Picker */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t("iAmA")}</label>
-              <div className="grid grid-cols-2 gap-3">
+              <span id="signup-role-label" className="block text-sm font-medium text-gray-700 mb-2">{t("iAmA")}</span>
+              <div role="group" aria-labelledby="signup-role-label" className="grid grid-cols-2 gap-3">
                 {roles.map((r) => (
-                  <button key={r.value} type="button" onClick={() => setForm({ ...form, role: r.value })}
+                  <button key={r.value} type="button" aria-pressed={form.role === r.value} onClick={() => setForm({ ...form, role: r.value })}
                     className={`p-3 rounded-[var(--radius-card)] border-2 text-left transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${form.role === r.value ? "border-emerald-900 bg-emerald-50" : "border-gray-200 hover:border-gray-300"}`}>
                     <span className="text-xl">{r.icon}</span>
                     <div className="font-semibold text-sm mt-1">{r.label}</div>

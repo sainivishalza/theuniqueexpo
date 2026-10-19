@@ -80,6 +80,7 @@ export default function ExhibitionsView({
           <select
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
+            aria-label={t("filterIndustry")}
             className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none"
           >
             <option value="All">{t("allIndustries")}</option>
@@ -90,6 +91,7 @@ export default function ExhibitionsView({
           <select
             value={city}
             onChange={(e) => setCity(e.target.value)}
+            aria-label={t("filterCity")}
             className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none"
           >
             <option value="All">{t("allCities")}</option>

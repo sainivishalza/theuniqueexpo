@@ -96,6 +96,7 @@ export default function AdminEventRegistrationsPage({ params }: { params: Promis
                     <td className="px-6 py-4 text-gray-500">{r.userEmail}</td>
                     <td className="px-6 py-4">
                       <select
+                        aria-label={`${ta("status")}: ${r.userName}`}
                         value={r.status}
                         disabled={updatingId === r.id}
                         onChange={(e) => updateStatus(r.id, e.target.value)}

@@ -80,16 +80,18 @@ export default function AdminSiteThemePage() {
 
   const colorField = (key: "primaryColor" | "goldColor" | "backgroundColor" | "footerColor" | "heroColor" | "headingColor", label: string, hint: string) => (
     <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
+      <label htmlFor={`theme-${key}`} className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
       <p className="text-xs text-gray-400 mb-2">{hint}</p>
       <div className="flex items-center gap-3">
         <input
           type="color"
+          aria-label={label}
           value={theme[key]}
           onChange={(e) => update({ [key]: e.target.value } as Partial<SiteTheme>)}
           className="w-12 h-10 rounded-lg border border-gray-200 cursor-pointer"
         />
         <input
+          id={`theme-${key}`}
           type="text"
           value={theme[key]}
           onChange={(e) => update({ [key]: e.target.value } as Partial<SiteTheme>)}
@@ -138,8 +140,9 @@ export default function AdminSiteThemePage() {
                 </div>
                 <div className="grid gap-5 sm:grid-cols-3">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">{t("headingFont")}</label>
+                    <label htmlFor="theme-heading-font" className="block text-sm font-semibold text-gray-700 mb-1">{t("headingFont")}</label>
                     <select
+                      id="theme-heading-font"
                       value={theme.headingFont}
                       onChange={(e) => update({ headingFont: e.target.value as HeadingFontKey })}
                       className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
@@ -148,8 +151,9 @@ export default function AdminSiteThemePage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">{t("bodyFont")}</label>
+                    <label htmlFor="theme-body-font" className="block text-sm font-semibold text-gray-700 mb-1">{t("bodyFont")}</label>
                     <select
+                      id="theme-body-font"
                       value={theme.bodyFont}
                       onChange={(e) => update({ bodyFont: e.target.value as BodyFontKey })}
                       className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
@@ -158,8 +162,9 @@ export default function AdminSiteThemePage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">{t("scriptFont")}</label>
+                    <label htmlFor="theme-script-font" className="block text-sm font-semibold text-gray-700 mb-1">{t("scriptFont")}</label>
                     <select
+                      id="theme-script-font"
                       value={theme.scriptFont}
                       onChange={(e) => update({ scriptFont: e.target.value as ScriptFontKey })}
                       className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
@@ -182,6 +187,7 @@ export default function AdminSiteThemePage() {
                       <button
                         key={o.key}
                         type="button"
+                        aria-pressed={theme.cornerStyle === o.key}
                         onClick={() => update({ cornerStyle: o.key as CornerStyleKey })}
                         className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-colors ${
                           theme.cornerStyle === o.key ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-gray-300"
@@ -210,6 +216,7 @@ export default function AdminSiteThemePage() {
                       <button
                         key={o.key}
                         type="button"
+                        aria-pressed={theme.cardShadowStyle === o.key}
                         onClick={() => update({ cardShadowStyle: o.key as CardShadowStyleKey })}
                         className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-colors ${
                           theme.cardShadowStyle === o.key ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-gray-300"

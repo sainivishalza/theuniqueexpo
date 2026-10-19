@@ -143,8 +143,9 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-heading">{t("header")}</h2>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("heading")}</label>
+                  <label htmlFor="sp-heading" className="block text-xs font-semibold text-gray-500 mb-1">{t("heading")}</label>
                   <input
+                    id="sp-heading"
                     type="text"
                     value={current.heading}
                     onChange={(e) => updateText({ heading: e.target.value })}
@@ -152,8 +153,9 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">{t("tagline")}</label>
+                  <label htmlFor="sp-tagline" className="block text-xs font-semibold text-gray-500 mb-1">{t("tagline")}</label>
                   <input
+                    id="sp-tagline"
                     type="text"
                     value={current.tagline}
                     onChange={(e) => updateText({ tagline: e.target.value })}
@@ -166,6 +168,7 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                 <h2 className="font-bold text-heading">{t("bodyText")}</h2>
                 <p className="text-xs text-gray-400">{t("bodyHint")}</p>
                 <textarea
+                  aria-label={t("bodyText")}
                   value={current.body}
                   onChange={(e) => updateText({ body: e.target.value })}
                   rows={5}
@@ -178,8 +181,9 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                 <h2 className="font-bold text-heading">{t("contactDetails")}</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">{ta("email")}</label>
+                    <label htmlFor="sp-email" className="block text-xs font-semibold text-gray-500 mb-1">{ta("email")}</label>
                     <input
+                      id="sp-email"
                       type="text"
                       value={content.contactEmail}
                       onChange={(e) => update({ contactEmail: e.target.value })}
@@ -188,8 +192,9 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">{t("phone")}</label>
+                    <label htmlFor="sp-phone" className="block text-xs font-semibold text-gray-500 mb-1">{t("phone")}</label>
                     <input
+                      id="sp-phone"
                       type="text"
                       value={content.contactPhone}
                       onChange={(e) => update({ contactPhone: e.target.value })}
@@ -204,8 +209,9 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
               <Card shadow="sm" bordered={false} className="p-6 space-y-4">
                 <div>
                   <h2 className="font-bold text-heading">{t("itemsList")}</h2>
-                  <label className="block text-xs font-semibold text-gray-500 mt-3 mb-1">{t("sectionHeading")}</label>
+                  <label htmlFor="sp-items-label" className="block text-xs font-semibold text-gray-500 mt-3 mb-1">{t("sectionHeading")}</label>
                   <input
+                    id="sp-items-label"
                     type="text"
                     value={current.itemsLabel}
                     onChange={(e) => updateText({ itemsLabel: e.target.value })}
@@ -217,12 +223,14 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
                   <div key={i} className="rounded-xl border border-gray-200 p-4 space-y-2">
                     <input
                       type="text"
+                      aria-label={`${t("itemTitle")} ${i + 1}`}
                       value={item.title}
                       onChange={(e) => updateItem(i, { title: e.target.value })}
                       placeholder={t("itemTitle")}
                       className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold"
                     />
                     <textarea
+                      aria-label={`${t("itemDescription")} ${i + 1}`}
                       value={item.description}
                       onChange={(e) => updateItem(i, { description: e.target.value })}
                       placeholder={t("itemDescription")}

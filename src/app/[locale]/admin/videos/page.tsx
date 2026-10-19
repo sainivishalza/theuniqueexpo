@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
@@ -170,8 +170,9 @@ export default function AdminVideosPage() {
                 <Field label={t("fields.displayOrder")} type="number" value={String(form.displayOrder)} onChange={(v) => setForm({ ...form, displayOrder: Number(v) || 0 })} />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.description")}</label>
+                <label htmlFor="vid-fields-description" className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.description")}</label>
                 <textarea
+                  id="vid-fields-description"
                   className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   rows={2}
                   value={form.description}
@@ -180,8 +181,8 @@ export default function AdminVideosPage() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.relatedType")}</label>
-                  <select value={form.relatedType} onChange={(e) => setForm({ ...form, relatedType: e.target.value, relatedId: "" })} className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  <label htmlFor="vid-related-type" className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.relatedType")}</label>
+                  <select id="vid-related-type" value={form.relatedType} onChange={(e) => setForm({ ...form, relatedType: e.target.value, relatedId: "" })} className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     <option value="">{t("relatedTypeNone")}</option>
                     <option value="exhibition">{t("relatedTypeExhibition")}</option>
                     <option value="tour">{t("relatedTypeTour")}</option>
@@ -231,10 +232,12 @@ export default function AdminVideosPage() {
 }
 
 function Field({ label, value, onChange, type = "text", placeholder }: { label: string; value: string; onChange: (v: string) => void; type?: string; placeholder?: string }) {
+  const id = useId();
   return (
     <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
+      <label htmlFor={id} className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
       <input
+        id={id}
         type={type}
         value={value}
         placeholder={placeholder}

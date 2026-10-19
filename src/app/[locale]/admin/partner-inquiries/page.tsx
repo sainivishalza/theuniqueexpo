@@ -92,6 +92,7 @@ export default function AdminPartnerInquiriesPage() {
                     <td className="px-6 py-4 text-gray-500 max-w-xs truncate">{a.message || "—"}</td>
                     <td className="px-6 py-4">
                       <select
+                        aria-label={`${ta("status")}: ${a.name}`}
                         value={a.status}
                         disabled={updatingId === a.id}
                         onChange={(e) => updateStatus(a.id, e.target.value)}

@@ -144,7 +144,7 @@ export default function ApplyPage({ params }: { params: Promise<{ slug: string }
 
           <Card shadow="sm" bordered={false} className="p-8">
             <h2 className="text-xl font-bold text-heading mb-4">{t("specialRequests")}</h2>
-            <textarea value={form.specialRequests} onChange={(e) => setForm({...form, specialRequests: e.target.value})} rows={4} placeholder={t("specialRequestsPlaceholder")} className={fieldClasses(false, "resize-none")} />
+            <textarea aria-label={t("specialRequests")} value={form.specialRequests} onChange={(e) => setForm({...form, specialRequests: e.target.value})} rows={4} placeholder={t("specialRequestsPlaceholder")} className={fieldClasses(false, "resize-none")} />
           </Card>
 
           {error && <div className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}

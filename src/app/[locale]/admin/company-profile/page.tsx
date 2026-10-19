@@ -62,8 +62,9 @@ export default function AdminCompanyProfilePage() {
 
   const field = (key: keyof CompanyProfile, label: string, placeholder = "") => (
     <div>
-      <label className="block text-xs font-semibold text-gray-500 mb-1">{label}</label>
+      <label htmlFor={`company-${key}`} className="block text-xs font-semibold text-gray-500 mb-1">{label}</label>
       <input
+        id={`company-${key}`}
         type="text"
         value={profile[key]}
         onChange={(e) => update({ [key]: e.target.value } as Partial<CompanyProfile>)}

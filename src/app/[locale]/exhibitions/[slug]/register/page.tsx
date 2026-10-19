@@ -1,5 +1,5 @@
 "use client";
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useId, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -403,10 +403,10 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Registration type */}
           <Card shadow="sm" bordered={false} className="p-8">
-            <h2 className="text-xl font-bold text-heading mb-4">{t("registeringAs")}</h2>
-            <div className="grid grid-cols-2 gap-3">
+            <h2 id="reg-type-heading" className="text-xl font-bold text-heading mb-4">{t("registeringAs")}</h2>
+            <div role="group" aria-labelledby="reg-type-heading" className="grid grid-cols-2 gap-3">
               {(["buyer", "visitor"] as RegistrationType[]).map((rt) => (
-                <button key={rt} type="button" onClick={() => setForm({ ...form, registrationType: rt })}
+                <button key={rt} type="button" aria-pressed={form.registrationType === rt} onClick={() => setForm({ ...form, registrationType: rt })}
                   className={`p-4 rounded-[var(--radius-card)] border-2 text-center font-semibold capitalize transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${form.registrationType === rt ? "border-emerald-900 bg-emerald-50 text-emerald-900" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
                   {t(`roles.${rt}`)}
                 </button>
@@ -418,11 +418,11 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
           <Card shadow="sm" bordered={false} className="p-8 space-y-5">
             <h2 className="text-xl font-bold text-heading">{t("personalInformation")}</h2>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t("genderRequired")}</label>
-              <div className="flex gap-3">
+              <span id="reg-gender-label" className="block text-sm font-medium text-gray-700 mb-2">{t("genderRequired")}</span>
+              <div role="radiogroup" aria-labelledby="reg-gender-label" aria-required="true" className="flex gap-3">
                 {(["male", "female"] as Gender[]).map((g) => (
-                  <label key={g} className={`flex-1 text-center capitalize p-3 rounded-[var(--radius-card)] border cursor-pointer ${form.gender === g ? "border-emerald-900 bg-emerald-50 text-emerald-900" : "border-gray-200 text-gray-600"}`}>
-                    <input type="radio" name="gender" className="hidden" checked={form.gender === g} onChange={() => setForm({ ...form, gender: g })} />
+                  <label key={g} className={`relative flex-1 text-center capitalize p-3 rounded-[var(--radius-card)] border cursor-pointer focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2 ${form.gender === g ? "border-emerald-900 bg-emerald-50 text-emerald-900" : "border-gray-200 text-gray-600"}`}>
+                    <input type="radio" name="gender" className="sr-only" checked={form.gender === g} onChange={() => setForm({ ...form, gender: g })} />
                     {t(`genders.${g}`)}
                   </label>
                 ))}
@@ -499,9 +499,9 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
                     ) : (
                       <div className="h-20 w-full flex items-center justify-center mb-2 rounded-[var(--radius-button)] bg-cream-50 text-sm text-gray-500">{t("fileAttached")}</div>
                     ))}
-                    <label className="cursor-pointer inline-block rounded-[var(--radius-button)] border border-gray-700 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+                    <label className="relative cursor-pointer inline-block rounded-[var(--radius-button)] border border-gray-700 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                       {value ? t("replaceFile") : t("chooseFile")}
-                      <input type="file" accept="image/*,application/pdf" className="hidden" onChange={(e) => handleFile(key, e.target.files?.[0] || null)} />
+                      <input type="file" aria-label={`${label}: ${value ? t("replaceFile") : t("chooseFile")}`} accept="image/*,application/pdf" className="sr-only" onChange={(e) => handleFile(key, e.target.files?.[0] || null)} />
                     </label>
                     {fileErrors[key] && <p className="mt-1 text-xs text-red-600">{fileErrors[key]}</p>}
                   </div>
@@ -555,6 +555,7 @@ function CustomField({
   fileError?: string;
 }) {
   const t = useTranslations("expoRegisterPage");
+  const groupId = useId();
   if (field.type === "text") {
     return <TextField label={field.label} required={field.required} value={(value as string) || ""} onChange={onChange} />;
   }
@@ -582,8 +583,8 @@ function CustomField({
   if (field.type === "checkbox") {
     const selected = Array.isArray(value) ? (value as string[]) : [];
     return (
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">{field.label} {field.required && "*"}</label>
+      <div role="group" aria-labelledby={`${groupId}-label`}>
+        <span id={`${groupId}-label`} className="block text-sm font-medium text-gray-700 mb-2">{field.label} {field.required && "*"}</span>
         <div className="grid gap-2 md:grid-cols-2">
           {(field.options || []).map((o) => (
             <label key={o} className={`flex items-center gap-3 p-3 rounded-[var(--radius-card)] border cursor-pointer transition-colors text-sm ${selected.includes(o) ? "border-emerald-900 bg-emerald-50" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
@@ -607,9 +608,9 @@ function CustomField({
       ) : (
         <div className="h-20 w-full flex items-center justify-center mb-2 rounded-[var(--radius-button)] bg-cream-50 text-sm text-gray-500">{t("fileAttached")}</div>
       ))}
-      <label className="cursor-pointer inline-block rounded-[var(--radius-button)] border border-gray-700 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+      <label className="relative cursor-pointer inline-block rounded-[var(--radius-button)] border border-gray-700 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
         {fileValue ? t("replaceFile") : t("chooseFile")}
-        <input type="file" accept="image/*,application/pdf" className="hidden" onChange={(e) => onFile(e.target.files?.[0] || null)} />
+        <input type="file" aria-label={`${field.label}: ${fileValue ? t("replaceFile") : t("chooseFile")}`} accept="image/*,application/pdf" className="sr-only" onChange={(e) => onFile(e.target.files?.[0] || null)} />
       </label>
       {fileError && <p className="mt-1 text-xs text-red-600">{fileError}</p>}
     </div>
@@ -617,13 +618,14 @@ function CustomField({
 }
 
 function OptionGroup({ label, value, onChange, options, required }: { label: string; value: string; onChange: (v: string) => void; options: string[]; required?: boolean }) {
+  const groupId = useId();
   return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">{label} {required && "*"}</label>
+    <div role="radiogroup" aria-labelledby={`${groupId}-label`} aria-required={required || undefined}>
+      <span id={`${groupId}-label`} className="block text-sm font-medium text-gray-700 mb-2">{label} {required && "*"}</span>
       <div className="grid gap-2 md:grid-cols-2">
         {options.map((o) => (
-          <label key={o} className={`flex items-center gap-3 p-3 rounded-[var(--radius-card)] border cursor-pointer transition-colors text-sm ${value === o ? "border-emerald-900 bg-emerald-50 text-emerald-900" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
-            <input type="radio" className="hidden" checked={value === o} onChange={() => onChange(o)} />
+          <label key={o} className={`relative flex items-center gap-3 p-3 rounded-[var(--radius-card)] border cursor-pointer transition-colors text-sm focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2 ${value === o ? "border-emerald-900 bg-emerald-50 text-emerald-900" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}>
+            <input type="radio" name={groupId} className="sr-only" checked={value === o} onChange={() => onChange(o)} />
             {o}
           </label>
         ))}

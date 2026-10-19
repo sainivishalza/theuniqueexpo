@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
@@ -186,12 +186,13 @@ export default function AdminPartnerTiersPage() {
               <Field label={t("fields.displayOrder")} type="number" value={String(form.displayOrder)} onChange={(v) => setForm({ ...form, displayOrder: Number(v) || 0 })} />
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.badgeTone")}</label>
-              <div className="flex flex-wrap gap-2">
+              <label id="tier-badge-tone" className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.badgeTone")}</label>
+              <div role="group" aria-labelledby="tier-badge-tone" className="flex flex-wrap gap-2">
                 {BADGE_TONES.map((tone) => (
                   <button
                     key={tone}
                     type="button"
+                    aria-pressed={form.badgeTone === tone}
                     onClick={() => setForm({ ...form, badgeTone: tone })}
                     className={`rounded-full px-3 py-1 ${form.badgeTone === tone ? "ring-2 ring-emerald-500" : ""}`}
                   >
@@ -201,9 +202,10 @@ export default function AdminPartnerTiersPage() {
               </div>
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.benefits")}</label>
+              <label htmlFor="tier-fields-benefits" className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.benefits")}</label>
               <p className="text-xs text-gray-500 mb-2">{t("benefitsHint")}</p>
               <textarea
+                id="tier-fields-benefits"
                 className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={6}
                 value={form.benefits}
@@ -256,10 +258,12 @@ export default function AdminPartnerTiersPage() {
 }
 
 function Field({ label, value, onChange, type = "text", placeholder }: { label: string; value: string; onChange: (v: string) => void; type?: string; placeholder?: string }) {
+  const id = useId();
   return (
     <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
+      <label htmlFor={id} className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
       <input
+        id={id}
         type={type}
         value={value}
         placeholder={placeholder}

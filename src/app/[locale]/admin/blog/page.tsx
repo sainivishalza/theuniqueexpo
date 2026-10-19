@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
@@ -199,8 +199,9 @@ export default function AdminBlogPage() {
                 placeholder="life-in-guangzhou-first-month"
               />
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.category")}</label>
+                <label htmlFor="blog-category" className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.category")}</label>
                 <select
+                  id="blog-category"
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
                   className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
@@ -213,8 +214,9 @@ export default function AdminBlogPage() {
               <Field label={t("fields.authorBio")} value={form.authorBio} onChange={(v) => setForm({ ...form, authorBio: v })} placeholder={t("fields.authorBioPlaceholder")} />
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.excerpt")}</label>
+              <label htmlFor="blog-excerpt" className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.excerpt")}</label>
               <textarea
+                id="blog-excerpt"
                 className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={2}
                 value={form.excerpt}
@@ -223,9 +225,10 @@ export default function AdminBlogPage() {
               />
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.content")}</label>
+              <label htmlFor="blog-content" className="block text-sm font-semibold text-gray-700 mb-1">{t("fields.content")}</label>
               <p className="text-xs text-gray-400 mb-1">{t("fields.contentHint")}</p>
               <textarea
+                id="blog-content"
                 className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 rows={14}
                 value={form.content}
@@ -241,6 +244,7 @@ export default function AdminBlogPage() {
                     <div className="flex items-start gap-2">
                       <input
                         type="text"
+                        aria-label={`${t("fields.faqQuestionPlaceholder")} ${i + 1}`}
                         value={item.question}
                         onChange={(e) => updateFaqItem(i, { question: e.target.value })}
                         placeholder={t("fields.faqQuestionPlaceholder")}
@@ -249,6 +253,7 @@ export default function AdminBlogPage() {
                       <Button onClick={() => removeFaqItem(i)} variant="linkDanger" size="inline" className="whitespace-nowrap py-2">{ta("delete")}</Button>
                     </div>
                     <textarea
+                      aria-label={`${t("fields.faqAnswerPlaceholder")} ${i + 1}`}
                       value={item.answer}
                       onChange={(e) => updateFaqItem(i, { answer: e.target.value })}
                       placeholder={t("fields.faqAnswerPlaceholder")}
@@ -318,10 +323,12 @@ export default function AdminBlogPage() {
 }
 
 function Field({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
+  const id = useId();
   return (
     <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
+      <label htmlFor={id} className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
       <input
+        id={id}
         type="text"
         value={value}
         placeholder={placeholder}

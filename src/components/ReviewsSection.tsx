@@ -115,6 +115,7 @@ export default function ReviewsSection({ apiBasePath, kind }: { apiBasePath: str
             <Stars value={rating} onSelect={setRating} />
           </div>
           <textarea
+            aria-label={t(`shareYourExperience.${kind}`)}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             rows={2}

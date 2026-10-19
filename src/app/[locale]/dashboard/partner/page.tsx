@@ -83,6 +83,7 @@ export default function PartnerDashboard() {
                 type="text"
                 value={referralLink}
                 readOnly
+                aria-label={t("referralLinkTitle")}
                 className="flex-1 rounded-xl border border-gray-200 bg-cream-50 px-4 py-3 text-sm font-mono text-gray-700"
               />
               <Button onClick={() => navigator.clipboard.writeText(referralLink)} variant="gradientCta" size="wide">

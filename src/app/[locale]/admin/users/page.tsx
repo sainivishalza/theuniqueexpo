@@ -183,15 +183,17 @@ export default function AdminUsersPage() {
             <p className="text-gray-500 text-center py-10">{ta("loading")}</p>
           ) : (
             <div className="bg-white rounded-2xl shadow-sm">
-              <div className="overflow-x-auto rounded-2xl">
+              {/* The list scrolls inside its own frame: the column headings stay in view while going down
+                  and the sideways scroll bar is always at the bottom of the screen. */}
+              <div className="max-h-[calc(100vh-6rem)] overflow-auto rounded-2xl">
                 <table className="w-full text-sm">
-                  <thead className="bg-cream-50 border-b border-gray-100">
+                  <thead className="border-b border-gray-100">
                     <tr>
-                      <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
-                      <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("role")}</th>
-                      <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("statusColumn")}</th>
-                      <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("joined")}</th>
-                      <th className="text-right px-6 py-3 font-semibold text-gray-600">{ta("actions")}</th>
+                      <th className="sticky left-0 top-0 z-30 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 shadow-[0_1px_0_0_#e5e7eb]">{ta("name")}</th>
+                      <th className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 shadow-[0_1px_0_0_#e5e7eb]">{t("role")}</th>
+                      <th className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 shadow-[0_1px_0_0_#e5e7eb]">{t("statusColumn")}</th>
+                      <th className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 shadow-[0_1px_0_0_#e5e7eb]">{t("joined")}</th>
+                      <th className="sticky top-0 z-20 bg-cream-50 text-right px-6 py-3 font-semibold text-gray-600 shadow-[0_1px_0_0_#e5e7eb]">{ta("actions")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -200,7 +202,7 @@ export default function AdminUsersPage() {
                       const busy = updatingId === u.id;
                       return (
                         <tr key={u.id} className="hover:bg-cream-50">
-                          <td className="px-6 py-4">
+                          <td className="sticky left-0 z-10 bg-white px-6 py-4">
                             {u.buyerNumber && <div className="text-xs font-bold tracking-wide text-emerald-700">{u.buyerNumber}</div>}
                             <div className="font-semibold text-gray-900">{u.name}</div>
                             <div className="text-xs text-gray-500">{isPlaceholderEmail(u.email) ? t("noEmail") : u.email}</div>

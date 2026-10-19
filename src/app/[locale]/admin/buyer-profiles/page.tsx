@@ -160,7 +160,8 @@ const TABLE_FIELDS: FieldDef[] = [
   ...TABLE_FIRST.map((key) => FIELDS.find((f) => f.key === key)!),
   ...FIELDS.filter((f) => !TABLE_FIRST.includes(f.key)),
 ];
-const DOC_FIELDS = ["businessLicense", "businessCard", "passportFront", "visaPage", "cantonFairCard", "buyerPhoto", "invoiceOrderList"] as const;
+// Same order as the Excel and ZIP exports (DOCUMENT_FIELDS on the server).
+const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList"] as const;
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 5;

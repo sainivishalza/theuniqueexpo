@@ -4,13 +4,15 @@ import { expoIdsSql, expoNamesSql, parseExpoIds, setBuyerExpoNames } from "@/lib
 import { formatBuyerNumber } from "@/lib/buyer-number";
 import { assignMissingBuyerNumbers } from "@/lib/server/buyer-numbers";
 
+// The order documents are shown and exported in: passport, visa, business licence and card,
+// buyer photo, Canton Fair card, invoice / order list.
 export const DOCUMENT_FIELDS = [
-  "businessLicense",
-  "businessCard",
   "passportFront",
   "visaPage",
-  "cantonFairCard",
+  "businessLicense",
+  "businessCard",
   "buyerPhoto",
+  "cantonFairCard",
   "invoiceOrderList",
 ] as const;
 

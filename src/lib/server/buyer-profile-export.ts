@@ -140,15 +140,16 @@ export async function buildBuyersDocumentsZip(rows: BuyerExportProfile[]): Promi
     usedNames.set(folderName, count + 1);
     if (count > 0) folderName = `${folderName} (${count + 1})`;
 
-    for (const field of DOCUMENT_FIELDS) {
+    DOCUMENT_FIELDS.forEach((field, index) => {
       const dataUrl = row.documentData[field];
-      if (!dataUrl) continue;
+      if (!dataUrl) return;
       const parsed = parseDataUrl(dataUrl);
-      if (!parsed) continue;
-      // A "/" in the label ("Invoice / Order List") would create a nested folder.
+      if (!parsed) return;
+      // Numbered so a folder window (which sorts A-Z) shows them in the fixed order;
+      // a "/" in the label ("Invoice / Order List") would create a nested folder.
       const fileLabel = DOC_LABELS[field].replace(/\s*\/\s*/g, " - ");
-      zipfile.addBuffer(parsed.buffer, `${folderName}/${fileLabel}.${parsed.extension}`);
-    }
+      zipfile.addBuffer(parsed.buffer, `${folderName}/${index + 1} - ${fileLabel}.${parsed.extension}`);
+    });
   }
 
   return new Promise((resolve, reject) => {

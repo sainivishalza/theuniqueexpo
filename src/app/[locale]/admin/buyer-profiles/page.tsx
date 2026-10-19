@@ -162,6 +162,9 @@ const TABLE_FIELDS: FieldDef[] = [
 ];
 // Same order as the Excel and ZIP exports (DOCUMENT_FIELDS on the server).
 const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList"] as const;
+// Column order of the Excel download and its tick-list: the same as the table on screen.
+const TEXT_EXPORT_ORDER: string[] = [...TABLE_FIELDS.map((f) => f.key), "purchaseIntention", "otherPurchaseIntention"];
+const EXPORT_ORDER: string[] = [...TEXT_EXPORT_ORDER, ...DOC_FIELDS];
 
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 5;
@@ -399,7 +402,7 @@ export default function AdminBuyerProfilesPage() {
   const [reviewingField, setReviewingField] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{ userId: number; field: string; buyerName: string } | null>(null);
   const [selected, setSelected] = useState<Set<number>>(new Set());
-  const [exportFields, setExportFields] = useState<Set<string>>(new Set([...FIELDS.map((f) => f.key), "purchaseIntention", "otherPurchaseIntention", ...DOC_FIELDS]));
+  const [exportFields, setExportFields] = useState<Set<string>>(new Set(EXPORT_ORDER));
   const [exportPickerOpen, setExportPickerOpen] = useState(false);
   const [exporting, setExporting] = useState<"excel" | "zip" | null>(null);
   // "Select by registration numbers": paste a list or a range, tick exactly those buyers.
@@ -626,7 +629,8 @@ export default function AdminBuyerProfilesPage() {
     // Registration number, name and account email always ride along regardless of
     // what's ticked -- an export with none of the identifying fields checked
     // wouldn't even say whose row is whose.
-    const fields = Array.from(new Set(["buyerNumber", "name", "email", ...exportFields]));
+    // The other columns follow the same order as the table on screen.
+    const fields = ["buyerNumber", "name", "email", ...EXPORT_ORDER.filter((key) => exportFields.has(key))];
     downloadExport(
       "/api/admin/buyer-profiles/export/excel",
       { userIds: Array.from(selected), fields },
@@ -1050,7 +1054,7 @@ export default function AdminBuyerProfilesPage() {
             <div className="flex gap-4 mb-3">
               <button
                 type="button"
-                onClick={() => setExportFields(new Set([...FIELDS.map((f) => f.key), "purchaseIntention", "otherPurchaseIntention", ...DOC_FIELDS]))}
+                onClick={() => setExportFields(new Set(EXPORT_ORDER))}
                 className="text-xs font-semibold text-emerald-700 hover:text-emerald-900 underline"
               >
                 {t("selectAllFields")}
@@ -1061,7 +1065,7 @@ export default function AdminBuyerProfilesPage() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 mb-5">
-              {[...FIELDS.map((f) => f.key), "purchaseIntention", "otherPurchaseIntention"].map((key) => (
+              {TEXT_EXPORT_ORDER.map((key) => (
                 <label key={key} className="flex items-center gap-2 text-sm text-gray-700">
                   <input
                     type="checkbox"

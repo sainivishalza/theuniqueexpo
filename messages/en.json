@@ -310,6 +310,14 @@
       "meetingsBooked": "Meetings Booked",
       "ordersPlaced": "Orders Placed"
     },
+    "documents": {
+      "title": "Your documents",
+      "hint": "Upload every document so we can verify your account.",
+      "missing": "Not uploaded",
+      "upload": "Upload documents",
+      "allDone": "All documents are uploaded and checked. Thank you.",
+      "count": "{done} of {total} uploaded"
+    },
     "quickActions": "Quick Actions",
     "actions": {
       "browseExhibitions": {
@@ -2977,6 +2985,15 @@
     "expoSelectedCount": "{count} expos selected",
     "filterByExpo": "Filter by expo",
     "allExpos": "All expos",
+    "filterByDocuments": "Filter by documents",
+    "docFilter": {
+      "all": "All documents",
+      "missingAny": "Missing a document",
+      "complete": "All 7 uploaded",
+      "missingOne": "Missing: {name}",
+      "pendingReview": "Awaiting review",
+      "actionNeeded": "Needs the buyer to re-upload"
+    },
     "manageExpos": "Edit expo list",
     "noEmail": "No email (signs in with phone / passport)",
     "selectByNumbers": {

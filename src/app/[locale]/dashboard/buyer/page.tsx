@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
+import { Link } from "@/i18n/navigation";
 import Card from "@/components/ui/Card";
 
 // This dashboard used to be split between "buyer" and "visitor" roles --
@@ -22,8 +23,19 @@ const ACTION_KEYS = [
   { key: "meetings", icon: "📅", color: "from-pink-500 to-rose-500", comingSoon: true },
 ];
 
+// Same order as the admin Buyer Profiles screen and the downloads.
+const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList"] as const;
+type DocState = { hasDocument: Record<string, boolean>; documentReview: Record<string, { status: "pending" | "verified" | "rejected"; note: string }> };
+const DOC_BADGE = {
+  missing: "bg-gray-100 text-gray-600",
+  pending: "bg-amber-50 text-amber-700",
+  verified: "bg-green-50 text-green-700",
+  rejected: "bg-red-50 text-red-700",
+} as const;
+
 export default function BuyerDashboard() {
   const t = useTranslations("buyerDashboard");
+  const tp = useTranslations("buyerProfile");
   const tc = useTranslations("common");
   const actions = ACTION_KEYS.map((a) => ({
     ...a,
@@ -33,11 +45,15 @@ export default function BuyerDashboard() {
   const { user } = useAuth();
   // The buyer's registration number (TUE0001); stays hidden if it can't be loaded.
   const [buyerNumber, setBuyerNumber] = useState("");
+  const [docs, setDocs] = useState<DocState | null>(null);
   useEffect(() => {
     if (!user) return;
     fetch("/api/buyer-profile")
       .then((r) => (r.ok ? r.json() : null))
-      .then((data) => setBuyerNumber(data?.buyerNumber || ""))
+      .then((data) => {
+        setBuyerNumber(data?.buyerNumber || "");
+        if (data?.profile?.hasDocument && data.profile.documentReview) setDocs({ hasDocument: data.profile.hasDocument, documentReview: data.profile.documentReview });
+      })
       .catch(() => {});
   }, [user]);
 
@@ -77,6 +93,53 @@ export default function BuyerDashboard() {
           </div>
         </div>
       </section>
+
+      {/* Documents */}
+      {docs && (() => {
+        const rows = DOC_FIELDS.map((field) => {
+          const uploaded = !!docs.hasDocument[field];
+          const review = docs.documentReview[field];
+          const state = !uploaded ? "missing" : review?.status ?? "pending";
+          return { field, state, note: state === "rejected" ? review?.note : "" };
+        });
+        const done = rows.filter((r) => r.state !== "missing").length;
+        const allVerified = rows.every((r) => r.state === "verified");
+        return (
+          <section className="pt-10 bg-cream-50">
+            <div className="mx-auto max-w-7xl px-6">
+              <div className="rounded-2xl bg-white p-6 shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-xl font-bold text-heading">{t("documents.title")}</h2>
+                    <p className="mt-1 text-sm text-gray-600">{allVerified ? t("documents.allDone") : t("documents.hint")}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-semibold text-gray-700">{t("documents.count", { done, total: rows.length })}</span>
+                    {!allVerified && (
+                      <Link href="/dashboard/buyer/profile" className="rounded-xl bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800">
+                        {t("documents.upload")}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+                <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {rows.map((r) => (
+                    <li key={r.field} className="flex items-center justify-between gap-2 rounded-xl border border-gray-100 px-3 py-2">
+                      <span className="min-w-0">
+                        <span className="block text-sm font-medium text-gray-800">{tp(`docFields.${r.field}`)}</span>
+                        {r.note && <span className="block text-xs text-red-700">{tp("docReviewStatus.rejectedReason", { reason: r.note })}</span>}
+                      </span>
+                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${DOC_BADGE[r.state as keyof typeof DOC_BADGE]}`}>
+                        {r.state === "missing" ? t("documents.missing") : tp(`docReviewStatus.${r.state}`)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+        );
+      })()}
 
       {/* Actions */}
       <section className="py-10 bg-cream-50">

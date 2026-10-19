@@ -128,12 +128,12 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
             <>
               <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />
               {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
-              <div className={`bg-white rounded-2xl shadow-sm overflow-x-auto ${search.active && search.shown === 0 ? "hidden" : ""}`}>
+              <div className={`bg-white rounded-2xl shadow-sm max-h-[calc(100vh-6rem)] overflow-auto ${search.active && search.shown === 0 ? "hidden" : ""}`}>
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">{t("traveler")}</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600"></th>
+                <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600">{t("traveler")}</th>
+                <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
+                <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
+                <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600"></th>
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {search.results.map((r) => (
                   <tr key={r.id} className="hover:bg-cream-50">

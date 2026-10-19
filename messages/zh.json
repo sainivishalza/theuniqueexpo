@@ -310,6 +310,14 @@
       "meetingsBooked": "已预约会面",
       "ordersPlaced": "已下单"
     },
+    "documents": {
+      "title": "您的文件",
+      "hint": "请上传全部文件，以便我们核实您的账户。",
+      "missing": "未上传",
+      "upload": "上传文件",
+      "allDone": "所有文件均已上传并通过审核，谢谢。",
+      "count": "已上传 {done}/{total}"
+    },
     "quickActions": "快捷操作",
     "actions": {
       "browseExhibitions": {
@@ -2977,6 +2985,15 @@
     "expoSelectedCount": "已选择 {count} 个展会",
     "filterByExpo": "按展会筛选",
     "allExpos": "全部展会",
+    "filterByDocuments": "按文件筛选",
+    "docFilter": {
+      "all": "全部文件",
+      "missingAny": "缺少文件",
+      "complete": "7 项已全部上传",
+      "missingOne": "缺少：{name}",
+      "pendingReview": "待审核",
+      "actionNeeded": "需买家重新上传"
+    },
     "manageExpos": "编辑展会列表",
     "noEmail": "无邮箱（用手机号/护照号登录）",
     "selectByNumbers": {

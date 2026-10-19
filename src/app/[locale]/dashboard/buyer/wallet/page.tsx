@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { formatNumber } from "@/lib/format";
-import { formatInstantDateTime } from "@/lib/date-format";
+import { formatDateRange, formatInstantDateTime } from "@/lib/date-format";
 import { errorKey, walletApi } from "@/lib/client/wallet-client";
 import type { WalletTxType } from "@/lib/wallet";
 import Button from "@/components/ui/Button";
@@ -32,6 +33,8 @@ interface Tx {
   createdAt: string;
 }
 
+interface Reward { id: number; slug: string; title: string; startDate: string; endDate: string; points: number; region: string }
+
 const TX_ICONS: Record<WalletTxType, string> = {
   attendance: "🎫",
   expense: "🧾",
@@ -56,6 +59,8 @@ export default function BuyerWalletPage() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [copied, setCopied] = useState(false);
   const [origin, setOrigin] = useState("");
+  const [rewards, setRewards] = useState<Reward[]>([]);
+  const [departureCity, setDepartureCity] = useState("");
 
   const isBuyer = user?.role === "buyer";
   useEffect(() => {
@@ -72,6 +77,11 @@ export default function BuyerWalletPage() {
       setSummary(s.data);
       setItems(tx.data.items);
       setHasMore(tx.data.hasMore);
+      const rw = await walletApi<{ items: Reward[]; departureCity: string }>("/api/wallet/rewards");
+      if (!stale && rw.ok) {
+        setRewards(rw.data.items);
+        setDepartureCity(rw.data.departureCity);
+      }
     })();
     return () => {
       stale = true;
@@ -146,6 +156,28 @@ export default function BuyerWalletPage() {
               </button>
             </Card>
           </div>
+
+          {rewards.length > 0 && (
+            <Card shadow="sm" bordered={false} className="p-6">
+              <h2 className="text-lg font-bold text-heading">{t("rewards.title")}</h2>
+              <p className="mb-3 text-sm text-gray-600">
+                {departureCity ? t("rewards.basedOn", { city: departureCity }) : t("rewards.noCity")}{" "}
+                <Link href="/dashboard/buyer/profile" className="font-semibold text-emerald-700 hover:underline">{t("rewards.editProfile")}</Link>
+              </p>
+              <ul className="divide-y divide-gray-100">
+                {rewards.map((r) => (
+                  <li key={r.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
+                    <div className="min-w-0">
+                      <Link href={`/exhibitions/${r.slug}`} className="font-semibold text-heading hover:underline [overflow-wrap:anywhere]">{r.title}</Link>
+                      <p className="text-xs text-gray-600">{formatDateRange(r.startDate, r.endDate, locale)}{r.region ? ` · ${r.region}` : ""}</p>
+                    </div>
+                    <p className="text-lg font-extrabold text-green-700">+{formatNumber(r.points)} <span className="text-sm font-semibold text-gray-600">{t("pointsUnit")}</span></p>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-xs text-gray-600">{t("rewards.howEarned")}</p>
+            </Card>
+          )}
 
           <Card shadow="sm" bordered={false} className="p-6">
             <h2 className="text-lg font-bold text-heading mb-4">{t("statement")}</h2>

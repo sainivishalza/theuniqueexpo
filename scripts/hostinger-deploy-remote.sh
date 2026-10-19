@@ -133,6 +133,7 @@ run_mysql schema-migrations/053-expo-registration-lifecycle.sql
 run_mysql schema-migrations/054-buyer-numbers.sql
 run_mysql schema-migrations/055-buyer-document-flags.sql
 run_mysql schema-migrations/056-wallet.sql
+run_mysql schema-migrations/057-exhibition-point-tiers.sql
 
 # Every deploy saves a full copy of the database (uploaded documents included) and
 # nothing ever removed them, so they would slowly fill this account's disk. Keep the

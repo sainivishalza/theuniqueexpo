@@ -146,7 +146,7 @@ export default function PartnerDashboard() {
                 { icon: "🖼️", label: t("materials.bannerPack") },
                 { icon: "📋", label: t("materials.brochure") },
               ].map((m) => (
-                <button key={m.label} type="button" disabled className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-400 cursor-not-allowed">
+                <button key={m.label} type="button" disabled className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-500 cursor-not-allowed">
                   {m.icon} {m.label} <span className="text-xs">({tc("comingSoon")})</span>
                 </button>
               ))}

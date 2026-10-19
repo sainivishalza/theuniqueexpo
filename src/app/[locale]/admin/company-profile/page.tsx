@@ -92,23 +92,23 @@ export default function AdminCompanyProfilePage() {
             <>
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-heading">{t("identity")}</h2>
-                <p className="text-xs text-gray-400">{t("identityHint")}</p>
+                <p className="text-xs text-gray-500">{t("identityHint")}</p>
                 {field("legalName", t("legalName"))}
                 {field("logoUrl", t("logoUrl"), "https://...")}
                 {field("faviconUrl", t("faviconUrl"), "https://...")}
                 {field("contactEmail", t("contactEmail"))}
                 {field("phone", t("phone"), "+86 ...")}
                 {field("whatsapp", t("whatsapp"), "+86 138 0000 0000")}
-                <p className="text-xs text-gray-400 -mt-3">{t("whatsappHint")}</p>
+                <p className="text-xs text-gray-500 -mt-3">{t("whatsappHint")}</p>
                 {field("googleAnalyticsId", t("googleAnalyticsId"), "G-XXXXXXXXXX")}
-                <p className="text-xs text-gray-400 -mt-3">{t("googleAnalyticsIdHint")}</p>
+                <p className="text-xs text-gray-500 -mt-3">{t("googleAnalyticsIdHint")}</p>
                 {field("googleSiteVerification", t("googleSiteVerification"), "abc123...")}
-                <p className="text-xs text-gray-400 -mt-3">{t("googleSiteVerificationHint")}</p>
+                <p className="text-xs text-gray-500 -mt-3">{t("googleSiteVerificationHint")}</p>
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-heading">{t("address")}</h2>
-                <p className="text-xs text-gray-400">{t("addressHint")}</p>
+                <p className="text-xs text-gray-500">{t("addressHint")}</p>
                 {field("addressLine", t("addressLine"))}
                 <div className="grid grid-cols-2 gap-4">
                   {field("addressCity", t("addressCity"))}
@@ -118,7 +118,7 @@ export default function AdminCompanyProfilePage() {
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">
                 <h2 className="font-bold text-heading">{t("social")}</h2>
-                <p className="text-xs text-gray-400">{t("socialHint")}</p>
+                <p className="text-xs text-gray-500">{t("socialHint")}</p>
                 {field("socialLinkedIn", "LinkedIn", "https://linkedin.com/company/...")}
                 {field("socialFacebook", "Facebook", "https://facebook.com/...")}
                 {field("socialInstagram", "Instagram", "https://instagram.com/...")}

@@ -196,7 +196,7 @@ export default function BulkCreateUsersPage() {
 
             <div>
               <label htmlFor="bulk-data" className="block text-sm font-medium text-gray-700 mb-1">{t("dataLabel")}</label>
-              <p className="text-xs text-gray-400 mb-2">{t("dataHint")}</p>
+              <p className="text-xs text-gray-500 mb-2">{t("dataHint")}</p>
               <textarea
                 id="bulk-data"
                 value={raw}
@@ -207,13 +207,13 @@ export default function BulkCreateUsersPage() {
                 className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm font-mono focus:border-emerald-500 outline-none bg-white disabled:opacity-50"
               />
               {!fileRows && preview.length > 0 && (
-                <p className="mt-1.5 text-xs text-gray-400">{t("rowsDetected", { count: preview.length })}</p>
+                <p className="mt-1.5 text-xs text-gray-500">{t("rowsDetected", { count: preview.length })}</p>
               )}
             </div>
 
             <div className="border-t border-gray-100 pt-4">
               <label htmlFor="bulk-file" className="block text-sm font-medium text-gray-700 mb-1">{t("orUploadFile")}</label>
-              <p className="text-xs text-gray-400 mb-2">{t("fileHint")}</p>
+              <p className="text-xs text-gray-500 mb-2">{t("fileHint")}</p>
               <input
                 id="bulk-file"
                 type="file"

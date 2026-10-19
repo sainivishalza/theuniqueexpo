@@ -55,12 +55,12 @@ export default function FavoritesPage() {
       <h1 className="text-2xl font-bold text-heading">{t("title")}</h1>
       <p className="mt-1 text-sm text-gray-500">{t("subtitle")}</p>
 
-      {loading && <p className="mt-10 text-center text-gray-400">{t("loading")}</p>}
+      {loading && <p className="mt-10 text-center text-gray-500">{t("loading")}</p>}
 
       {!loading && exhibitions.length === 0 && (
         <div className="mt-16 text-center">
           <div className="text-5xl mb-4">🤍</div>
-          <p className="text-gray-400">{t("noResults")}</p>
+          <p className="text-gray-500">{t("noResults")}</p>
           <Link href="/exhibitions" className="mt-3 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("browseExhibitions")}</Link>
         </div>
       )}
@@ -90,7 +90,7 @@ export default function FavoritesPage() {
             <div className="p-4">
               <h3 className="font-bold text-heading truncate">{expo.title}</h3>
               <p className="text-sm text-gray-500 mt-1">{expo.dates}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{expo.venue}, {expo.city}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{expo.venue}, {expo.city}</p>
             </div>
           </Card>
         ))}

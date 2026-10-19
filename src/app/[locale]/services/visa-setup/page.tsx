@@ -37,14 +37,14 @@ export default function VisaSetupPage() {
                     <div className="grid grid-cols-2 gap-2">
                       {svc.features.map((f) => (
                         <div key={f} className="flex items-start gap-2 text-sm text-gray-600">
-                          <span className="text-green-500 mt-0.5">✓</span>{f}
+                          <span className="text-green-700 mt-0.5">✓</span>{f}
                         </div>
                       ))}
                     </div>
                   </div>
                   <div className="flex items-center gap-6 mb-6 text-sm">
-                    <div><span className="text-gray-400">{t("pricing")}</span> <span className="font-semibold text-gray-900">{svc.pricing}</span></div>
-                    <div><span className="text-gray-400">{t("timeline")}</span> <span className="font-semibold text-gray-900">{svc.estimatedTime}</span></div>
+                    <div><span className="text-gray-500">{t("pricing")}</span> <span className="font-semibold text-gray-900">{svc.pricing}</span></div>
+                    <div><span className="text-gray-500">{t("timeline")}</span> <span className="font-semibold text-gray-900">{svc.estimatedTime}</span></div>
                   </div>
                   <Button href={"/services/visa-setup/apply?service=" + svc.id} variant="save" size="wide">{t("getStarted")}</Button>
                 </div>
@@ -55,7 +55,7 @@ export default function VisaSetupPage() {
                   {svc.process.map((step) => (
                     <div key={step.step} className="flex items-center gap-2 bg-cream-50 rounded-[var(--radius-badge)] px-4 py-2">
                       <div className="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs font-bold">{step.step}</div>
-                      <div className="text-sm"><span className="font-medium text-gray-900">{step.title}</span> <span className="text-gray-400">({step.duration})</span></div>
+                      <div className="text-sm"><span className="font-medium text-gray-900">{step.title}</span> <span className="text-gray-500">({step.duration})</span></div>
                     </div>
                   ))}
                 </div>

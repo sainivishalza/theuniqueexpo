@@ -31,7 +31,7 @@ export default function AdminSitePagesIndex() {
             <Card key={p.slug} href={`/admin/pages/${p.slug}`} shadow="sm" className="p-5 flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-heading">{p.navLabel}</h3>
-                <p className="text-xs text-gray-400 mt-1">{p.path}</p>
+                <p className="text-xs text-gray-500 mt-1">{p.path}</p>
               </div>
               <span className="text-sm font-semibold text-emerald-600">{ta("edit")}</span>
             </Card>

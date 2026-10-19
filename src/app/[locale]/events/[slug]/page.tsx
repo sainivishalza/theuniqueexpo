@@ -39,7 +39,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
   }, [slug]);
 
   if (event === undefined) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-500">{t("loading")}</div>;
   }
 
   if (!event) {
@@ -114,7 +114,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
               <div className="flex items-start gap-3">
                 <span className="text-xl">📅</span>
                 <div>
-                  <div className="text-xs text-gray-400">{t("dateAndTime")}</div>
+                  <div className="text-xs text-gray-500">{t("dateAndTime")}</div>
                   <div className="text-sm font-semibold text-gray-900">
                     {localizeDay(event.eventDate, locale)}{event.startTime ? ` · ${event.startTime}${event.endTime ? `–${event.endTime}` : ""}` : ""}
                   </div>
@@ -124,7 +124,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
                 <div className="flex items-start gap-3">
                   <span className="text-xl">📍</span>
                   <div>
-                    <div className="text-xs text-gray-400">{t("location")}</div>
+                    <div className="text-xs text-gray-500">{t("location")}</div>
                     <div className="text-sm font-semibold text-gray-900">{event.venue}{event.city ? `, ${event.city}` : ""}</div>
                   </div>
                 </div>
@@ -132,7 +132,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ slug: st
               <div className="flex items-start gap-3">
                 <span className="text-xl">💰</span>
                 <div>
-                  <div className="text-xs text-gray-400">{t("price")}</div>
+                  <div className="text-xs text-gray-500">{t("price")}</div>
                   <div className="text-sm font-semibold text-gray-900">{event.price || t("free")}</div>
                 </div>
               </div>

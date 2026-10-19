@@ -44,7 +44,7 @@ export default function AdminPage() {
           <div className="text-6xl mb-4">🔒</div>
           <h1 className="text-2xl font-bold text-heading">{t("accessDenied")}</h1>
           <p className="mt-2 text-gray-500">{ta("accessRequired")}</p>
-          <p className="mt-1 text-xs text-gray-400">{t("loginTip")}</p>
+          <p className="mt-1 text-xs text-gray-500">{t("loginTip")}</p>
           <Link href="/" className="mt-4 inline-block text-emerald-600 hover:underline text-sm font-semibold">{t("goHome")}</Link>
         </div>
       </div>

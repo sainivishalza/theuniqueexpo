@@ -256,7 +256,7 @@ export default function BuyerProfilePage() {
 
           <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
             <h2 className="font-bold text-heading">{t("documents")}</h2>
-            <p className="text-xs text-gray-400">{t("documentsHint")}</p>
+            <p className="text-xs text-gray-500">{t("documentsHint")}</p>
             <div className="grid sm:grid-cols-3 gap-4">
               {DOC_FIELDS.map((field) => {
                 const review = profile.documentReview[field];
@@ -277,7 +277,7 @@ export default function BuyerProfilePage() {
                       className="h-24 w-full object-contain rounded-lg bg-cream-50 mb-2"
                     />
                   ) : (
-                    <div className="h-24 w-full flex items-center justify-center rounded-lg bg-cream-50 text-xs text-gray-400 mb-2">{t("noFile")}</div>
+                    <div className="h-24 w-full flex items-center justify-center rounded-lg bg-cream-50 text-xs text-gray-500 mb-2">{t("noFile")}</div>
                   )}
                   {review?.status === "rejected" && review.note && (
                     <p className="text-xs text-red-600 mb-2">{t("docReviewStatus.rejectedReason", { reason: review.note })}</p>

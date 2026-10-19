@@ -145,7 +145,7 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
                 <h2 className="font-bold text-heading mb-4">{t("registrationQuestions")}</h2>
                 <div className="space-y-4">
                   {fields.length === 0 && (
-                    <p className="text-sm text-gray-400 text-center py-6">{tb("noFieldsYet")}</p>
+                    <p className="text-sm text-gray-500 text-center py-6">{tb("noFieldsYet")}</p>
                   )}
                   {fields.map((field, index) => (
                     <div key={field.id} className="rounded-xl border border-gray-200 p-4 space-y-3">
@@ -180,8 +180,8 @@ export default function TourRegistrationFormBuilderPage({ params }: { params: Pr
                           </div>
                         </div>
                         <div className="flex flex-col gap-1 pt-5">
-                          <button onClick={() => moveField(index, -1)} aria-label={tb("moveUp")} disabled={index === 0} className="text-gray-400 hover:text-gray-700 disabled:opacity-30 text-xs">▲</button>
-                          <button onClick={() => moveField(index, 1)} aria-label={tb("moveDown")} disabled={index === fields.length - 1} className="text-gray-400 hover:text-gray-700 disabled:opacity-30 text-xs">▼</button>
+                          <button onClick={() => moveField(index, -1)} aria-label={tb("moveUp")} disabled={index === 0} className="text-gray-500 hover:text-gray-700 disabled:opacity-30 text-xs">▲</button>
+                          <button onClick={() => moveField(index, 1)} aria-label={tb("moveDown")} disabled={index === fields.length - 1} className="text-gray-500 hover:text-gray-700 disabled:opacity-30 text-xs">▼</button>
                         </div>
                       </div>
 

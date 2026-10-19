@@ -105,7 +105,7 @@ export default function AdminEventRegistrationsPage({ params }: { params: Promis
                         {STATUSES.map((s) => <option key={s} value={s}>{t(`statuses.${s}`)}</option>)}
                       </select>
                     </td>
-                    <td className="px-6 py-4 text-gray-400 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-gray-500 text-xs">{new Date(r.createdAt).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody></table>

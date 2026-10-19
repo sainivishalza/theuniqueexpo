@@ -76,7 +76,7 @@ export default function AdminMovingQuotesPage() {
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {quotes.map((q) => (
                   <tr key={q.id} className="hover:bg-cream-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{q.name}<br/><span className="text-xs text-gray-400">{q.email}</span></td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{q.name}<br/><span className="text-xs text-gray-500">{q.email}</span></td>
                     <td className="px-6 py-4 text-gray-500">{q.originCity} → {q.destinationCity}</td>
                     <td className="px-6 py-4 text-gray-500">{q.movingType}</td>
                     <td className="px-6 py-4">
@@ -90,7 +90,7 @@ export default function AdminMovingQuotesPage() {
                         {STATUSES.map((s) => <option key={s} value={s}>{t(`statuses.${s}`)}</option>)}
                       </select>
                     </td>
-                    <td className="px-6 py-4 text-gray-400 text-xs">{new Date(q.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-gray-500 text-xs">{new Date(q.createdAt).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody></table>

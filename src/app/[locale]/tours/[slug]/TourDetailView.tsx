@@ -111,7 +111,7 @@ export default function TourDetailView({ tour }: { tour: Tour | null }) {
             <div key={s.label} className="flex items-center gap-3 min-w-0">
               <IconBadge size="sm" icon={s.icon} tint="bg-gray-100" />
               <div className="min-w-0 [overflow-wrap:anywhere]">
-                <div className="text-xs text-gray-400">{s.label}</div>
+                <div className="text-xs text-gray-500">{s.label}</div>
                 <div className="text-sm font-bold text-gray-900">{s.value}</div>
               </div>
             </div>

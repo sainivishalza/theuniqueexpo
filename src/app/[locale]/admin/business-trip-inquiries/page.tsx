@@ -82,9 +82,9 @@ export default function AdminBusinessTripInquiriesPage() {
                 {inquiries.map((a) => (
                   <tr key={a.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">
-                      {a.name}<br/><span className="text-xs text-gray-400">{a.email}{a.whatsapp ? ` · ${a.whatsapp}` : ""}</span>
-                      {a.company && <div className="text-xs text-gray-400">{a.company}</div>}
-                      {a.country && <div className="text-xs text-gray-400">{a.country}</div>}
+                      {a.name}<br/><span className="text-xs text-gray-500">{a.email}{a.whatsapp ? ` · ${a.whatsapp}` : ""}</span>
+                      {a.company && <div className="text-xs text-gray-500">{a.company}</div>}
+                      {a.country && <div className="text-xs text-gray-500">{a.country}</div>}
                     </td>
                     <td className="px-6 py-4 text-gray-500">{a.attendingType === "in_china" ? t("inChina") : a.attendingType === "traveling" ? t("traveling") : "—"}</td>
                     <td className="px-6 py-4 text-gray-500 text-xs space-y-0.5">
@@ -111,7 +111,7 @@ export default function AdminBusinessTripInquiriesPage() {
                         {STATUSES.map((s) => <option key={s} value={s}>{t(`statuses.${s}`)}</option>)}
                       </select>
                     </td>
-                    <td className="px-6 py-4 text-gray-400 text-xs">{new Date(a.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-gray-500 text-xs">{new Date(a.createdAt).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody></table>

@@ -10,7 +10,7 @@ const TONE_CLASSES: Record<BadgeTone, string> = {
   // Frosted tag over an image, e.g. an industry label on a poster card.
   white: "bg-white/90 backdrop-blur-sm text-gray-900 shadow-sm",
   // "Upcoming" / status marker over an image.
-  live: "bg-green-500/90 backdrop-blur-sm text-white shadow-sm",
+  live: "bg-green-700/90 backdrop-blur-sm text-white shadow-sm",
   // Meta tag on a dark header bar, e.g. a detail page's industry/duration tag.
   "outline-light": "bg-white/10 text-white border border-white/10",
   // Admin status pill -- pending/awaiting action.

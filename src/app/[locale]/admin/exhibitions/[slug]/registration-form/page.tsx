@@ -156,21 +156,21 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
                     className={`p-4 rounded-xl border-2 text-left transition-all ${usingDefault ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-gray-300"}`}
                   >
                     <p className="font-semibold text-gray-900">{t("defaultFormTitle")}</p>
-                    <p className="text-xs text-gray-500 mt-1">{t("defaultFormDesc")}</p>
+                    <p className="text-xs text-gray-700 mt-1">{t("defaultFormDesc")}</p>
                   </button>
                   <button
                     onClick={() => setUsingDefault(false)}
                     className={`p-4 rounded-xl border-2 text-left transition-all ${!usingDefault ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-gray-300"}`}
                   >
                     <p className="font-semibold text-gray-900">{t("customFormTitle")}</p>
-                    <p className="text-xs text-gray-500 mt-1">{t("customFormDesc")}</p>
+                    <p className="text-xs text-gray-700 mt-1">{t("customFormDesc")}</p>
                   </button>
                 </div>
 
                 {!usingDefault && (
                   <div className="space-y-4">
                     {fields.length === 0 && (
-                      <p className="text-sm text-gray-400 text-center py-6">{tb("noFieldsYet")}</p>
+                      <p className="text-sm text-gray-500 text-center py-6">{tb("noFieldsYet")}</p>
                     )}
                     {fields.map((field, index) => (
                       <div key={field.id} className="rounded-xl border border-gray-200 p-4 space-y-3">
@@ -205,8 +205,8 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
                             </div>
                           </div>
                           <div className="flex flex-col gap-1 pt-5">
-                            <button onClick={() => moveField(index, -1)} aria-label={tb("moveUp")} disabled={index === 0} className="text-gray-400 hover:text-gray-700 disabled:opacity-30 text-xs">▲</button>
-                            <button onClick={() => moveField(index, 1)} aria-label={tb("moveDown")} disabled={index === fields.length - 1} className="text-gray-400 hover:text-gray-700 disabled:opacity-30 text-xs">▼</button>
+                            <button onClick={() => moveField(index, -1)} aria-label={tb("moveUp")} disabled={index === 0} className="text-gray-500 hover:text-gray-700 disabled:opacity-30 text-xs">▲</button>
+                            <button onClick={() => moveField(index, 1)} aria-label={tb("moveDown")} disabled={index === fields.length - 1} className="text-gray-500 hover:text-gray-700 disabled:opacity-30 text-xs">▼</button>
                           </div>
                         </div>
 

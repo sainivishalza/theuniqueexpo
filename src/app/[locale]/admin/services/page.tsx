@@ -43,7 +43,7 @@ export default function AdminServicesPage() {
     });
   }, [user]);
 
-  if (!user || user.role !== "admin") return <div className="min-h-[60vh] flex items-center justify-center"><div className="text-center"><div className="text-6xl mb-4">🔒</div><h1 className="text-2xl font-bold">{t("accessDenied")}</h1><p className="text-gray-500 mt-2">{t("accessRequired")}</p><p className="text-xs text-gray-400 mt-1">{t("loginTip")}</p></div></div>;
+  if (!user || user.role !== "admin") return <div className="min-h-[60vh] flex items-center justify-center"><div className="text-center"><div className="text-6xl mb-4">🔒</div><h1 className="text-2xl font-bold">{t("accessDenied")}</h1><p className="text-gray-500 mt-2">{t("accessRequired")}</p><p className="text-xs text-gray-500 mt-1">{t("loginTip")}</p></div></div>;
 
   const counters: Record<string, number> = {
     businessTours: businessToursData.length + chinaToursData.length,

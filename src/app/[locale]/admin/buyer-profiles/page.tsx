@@ -97,7 +97,7 @@ interface BuyerProfileDetail {
 }
 
 const STATUS_BADGE_STYLES: Record<VerificationStatus, string> = {
-  not_started: "bg-gray-100 text-gray-500",
+  not_started: "bg-gray-100 text-gray-600",
   pending_review: "bg-amber-50 text-amber-700",
   action_needed: "bg-red-50 text-red-700",
   verified: "bg-green-50 text-green-700",
@@ -350,8 +350,8 @@ function ExpoMultiSelect({
         aria-expanded={open}
         className="flex w-full items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-left text-sm focus:border-emerald-500 outline-none"
       >
-        <span className={`truncate ${names.length === 0 ? "text-gray-400" : "text-gray-900"}`}>{label}</span>
-        <svg className="h-4 w-4 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+        <span className={`truncate ${names.length === 0 ? "text-gray-500" : "text-gray-900"}`}>{label}</span>
+        <svg className="h-4 w-4 shrink-0 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
       </button>
       {open && (
         <div role="listbox" aria-multiselectable="true" className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
@@ -797,7 +797,7 @@ export default function AdminBuyerProfilesPage() {
                             <div>
                               {r.buyerNumber && <div className="text-xs font-bold tracking-wide text-emerald-700">{r.buyerNumber}</div>}
                               <div className="font-semibold text-gray-900">{r.name}</div>
-                              <div className="text-xs text-gray-400">{isPlaceholderEmail(r.email) ? t("noEmail") : r.email}</div>
+                              <div className="text-xs text-gray-500">{isPlaceholderEmail(r.email) ? t("noEmail") : r.email}</div>
                             </div>
                           </div>
                         </td>
@@ -877,7 +877,7 @@ export default function AdminBuyerProfilesPage() {
                   return open ? <p className="text-sm text-gray-500"><span className="font-bold text-emerald-700">{open.buyerNumber}</span>{open.buyerNumber ? " · " : ""}{open.name}</p> : null;
                 })()}
               </div>
-              <button onClick={() => setOpenId(null)} className="text-gray-400 hover:text-gray-600">✕</button>
+              <button onClick={() => setOpenId(null)} className="text-gray-500 hover:text-gray-600">✕</button>
             </div>
 
             {detailLoading || !detail ? (
@@ -974,7 +974,7 @@ export default function AdminBuyerProfilesPage() {
                               className="h-20 w-full object-contain rounded-lg bg-cream-50 mb-1.5 cursor-pointer hover:opacity-80 transition-opacity"
                             />
                           ) : (
-                            <div className="h-20 w-full flex items-center justify-center rounded-lg bg-cream-50 text-xs text-gray-400 mb-1.5">{t("noFile")}</div>
+                            <div className="h-20 w-full flex items-center justify-center rounded-lg bg-cream-50 text-xs text-gray-500 mb-1.5">{t("noFile")}</div>
                           )}
                           <input
                             type="file"
@@ -1032,10 +1032,10 @@ export default function AdminBuyerProfilesPage() {
           <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-white rounded-2xl shadow-2xl p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-1">
               <h2 className="text-lg font-bold text-heading">{t("exportPickerTitle")}</h2>
-              <button onClick={() => setExportPickerOpen(false)} className="text-gray-400 hover:text-gray-600">✕</button>
+              <button onClick={() => setExportPickerOpen(false)} className="text-gray-500 hover:text-gray-600">✕</button>
             </div>
             <p className="text-sm text-gray-500 mb-1">{t("exportPickerHint", { count: selected.size })}</p>
-            <p className="text-xs text-gray-400 mb-4">{t("exportAlwaysIncluded")}</p>
+            <p className="text-xs text-gray-500 mb-4">{t("exportAlwaysIncluded")}</p>
 
             <div className="flex gap-4 mb-3">
               <button

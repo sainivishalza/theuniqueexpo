@@ -105,7 +105,7 @@ export default function MarketplacePage() {
 
           <div className="space-y-4">
             {loading ? (
-              <div className="text-center py-20 text-gray-400">{t("loadingBuyRequests")}</div>
+              <div className="text-center py-20 text-gray-500">{t("loadingBuyRequests")}</div>
             ) : rfqs.length === 0 ? (
               <Card shadow="sm" bordered={false} className="text-center py-20">
                 <div className="text-5xl mb-4">📋</div>
@@ -143,7 +143,7 @@ export default function MarketplacePage() {
                       { icon: "💰", text: t("target", { value: rfq.targetPrice }) },
                       { icon: "📅", text: t("deadline", { value: localizeDay(rfq.deadline, locale) }) },
                     ].map((item) => (
-                      <span key={item.text} className="flex items-center gap-1.5 text-xs text-gray-400">
+                      <span key={item.text} className="flex items-center gap-1.5 text-xs text-gray-500">
                         <span>{item.icon}</span> {item.text}
                       </span>
                     ))}

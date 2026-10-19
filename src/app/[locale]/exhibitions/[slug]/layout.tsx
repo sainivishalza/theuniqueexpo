@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getExhibitionBySlugOrId } from "@/lib/server/exhibitions-repo";
 import { getTranslations } from "next-intl/server";
-import { metaDescription } from "@/lib/seo";
+import { fitTitle, metaDescription } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -28,7 +28,7 @@ export async function generateMetadata({
   const images = imageUrl ? [{ url: imageUrl }] : undefined;
 
   return {
-    title: expo.title,
+    title: fitTitle(expo.title, " | The Unique Expo"),
     description,
     openGraph: { title: expo.title, description, images },
     twitter: { title: expo.title, description, images },

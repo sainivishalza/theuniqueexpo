@@ -237,7 +237,7 @@ export default function AdminPartnerTiersPage() {
                     <span className="text-sm font-semibold text-heading">{tier.priceLabel}</span>
                   </div>
                   <p className="text-sm text-gray-500">{tier.tagline}</p>
-                  <p className="text-xs text-gray-400 mt-1">{tier.commissionRate} &middot; {tier.benefits.length} {t("benefitsCount")}</p>
+                  <p className="text-xs text-gray-500 mt-1">{tier.commissionRate} &middot; {tier.benefits.length} {t("benefitsCount")}</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Button onClick={() => openEdit(tier)} variant="ghost" size="xs">{t("editButton")}</Button>

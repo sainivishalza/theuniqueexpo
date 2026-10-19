@@ -69,7 +69,7 @@ export default function AdminNewsletterPage() {
                   <tr key={s.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{s.email}</td>
                     <td className="px-6 py-4 text-gray-500 uppercase">{s.locale}</td>
-                    <td className="px-6 py-4 text-gray-400 text-xs">{new Date(s.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-gray-500 text-xs">{new Date(s.createdAt).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody></table>

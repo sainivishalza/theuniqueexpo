@@ -286,7 +286,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
   }
 
   if (expo === undefined || authLoading || (!submitted && user && existing === undefined)) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-500">{t("loading")}</div>;
   }
   if (!expo) {
     return (
@@ -563,7 +563,7 @@ function CustomField({
   if (field.type === "textarea") {
     return (
       <FormField label={`${field.label}${field.required ? " *" : ""}`} htmlFor={`field-${field.label}`}>
-        {field.helpText && <p className="text-xs text-gray-400 mb-1">{field.helpText}</p>}
+        {field.helpText && <p className="text-xs text-gray-500 mb-1">{field.helpText}</p>}
         <textarea
           id={`field-${field.label}`}
           required={field.required}

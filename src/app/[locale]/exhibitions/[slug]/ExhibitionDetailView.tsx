@@ -132,7 +132,7 @@ export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null
             <div key={s.label} className="flex items-center gap-3 min-w-0">
               <IconBadge size="sm" icon={s.icon} tint="bg-gray-100" />
               <div className="min-w-0 [overflow-wrap:anywhere]">
-                <div className="text-xs text-gray-400">{s.label}</div>
+                <div className="text-xs text-gray-500">{s.label}</div>
                 <div className="text-sm font-bold text-gray-900">{s.value}</div>
               </div>
             </div>
@@ -245,15 +245,15 @@ export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null
                 <h2 className="text-2xl font-bold text-heading mb-5">{t("exhibitionDetails")}</h2>
                 <dl className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-400">{t("stats.duration")}</dt>
+                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-500">{t("stats.duration")}</dt>
                     <dd className="mt-1 text-sm font-semibold text-gray-800">{expo.dates}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-400">{t("stats.venue")}</dt>
+                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-500">{t("stats.venue")}</dt>
                     <dd className="mt-1 text-sm font-semibold text-gray-800">{expo.venue}, {expo.city}, {expo.country}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-400">{t("organizedBy")}</dt>
+                    <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-500">{t("organizedBy")}</dt>
                     <dd className="mt-1 text-sm font-semibold text-gray-800">{expo.organizer}</dd>
                   </div>
                 </dl>

@@ -71,7 +71,7 @@ export default function RFQDetailPage() {
   }, [id]);
 
   if (rfq === undefined) {
-    return <div className="min-h-[60vh] flex items-center justify-center text-gray-400">{t("loading")}</div>;
+    return <div className="min-h-[60vh] flex items-center justify-center text-gray-500">{t("loading")}</div>;
   }
 
   if (!rfq) {
@@ -130,7 +130,7 @@ export default function RFQDetailPage() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-3xl font-extrabold text-white">{rfq.title}</h1>
-              <p className="mt-2 text-gray-400">{t("postedBy", { name: rfq.buyerName, category: rfq.category })}</p>
+              <p className="mt-2 text-gray-500">{t("postedBy", { name: rfq.buyerName, category: rfq.category })}</p>
             </div>
             <Badge tone={STATUS_TONES[rfq.status] || "gray"} size="pill" className="font-bold whitespace-nowrap">
               {STATUS_LABELS[rfq.status] || rfq.status.replace("_", " ")}
@@ -156,7 +156,7 @@ export default function RFQDetailPage() {
                   ].map((s) => (
                     <div key={s.label} className="p-4 rounded-[var(--radius-card)] bg-cream-50 border border-gray-100 text-center">
                       <div className="text-xl mb-1">{s.icon}</div>
-                      <div className="text-xs text-gray-400">{s.label}</div>
+                      <div className="text-xs text-gray-500">{s.label}</div>
                       <div className="text-sm font-bold text-gray-900 mt-0.5">{s.value}</div>
                     </div>
                   ))}
@@ -219,7 +219,7 @@ export default function RFQDetailPage() {
                   {quotes.length === 0 ? (
                     <div className="py-12 text-center">
                       <div className="text-4xl mb-3">💬</div>
-                      <p className="text-gray-400 font-medium">{t("noQuotesYet")}</p>
+                      <p className="text-gray-500 font-medium">{t("noQuotesYet")}</p>
                     </div>
                   ) : (
                     quotes.map((q) => (
@@ -227,13 +227,13 @@ export default function RFQDetailPage() {
                         <div className="flex items-start justify-between mb-3">
                           <div>
                             <h3 className="font-bold text-heading">{q.exhibitorName}</h3>
-                            <p className="text-xs text-gray-400">{t("submittedOn", { date: localizeDay(q.createdAt, locale) })}</p>
+                            <p className="text-xs text-gray-500">{t("submittedOn", { date: localizeDay(q.createdAt, locale) })}</p>
                           </div>
                           <Badge tone="emerald" size="tag">{STATUS_LABELS[q.status] || q.status}</Badge>
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm mb-2">
-                          <div><span className="text-gray-400">{t("price")}</span><p className="font-bold text-gray-900">{q.price}</p></div>
-                          <div><span className="text-gray-400">{t("leadTime")}</span><p className="font-bold text-gray-900">{q.leadTime}</p></div>
+                          <div><span className="text-gray-500">{t("price")}</span><p className="font-bold text-gray-900">{q.price}</p></div>
+                          <div><span className="text-gray-500">{t("leadTime")}</span><p className="font-bold text-gray-900">{q.leadTime}</p></div>
                         </div>
                         {q.notes && <p className="text-sm text-gray-500 mt-2">{q.notes}</p>}
                         {user && (String(user.id) === rfq.buyerId || String(user.id) === q.exhibitorId) && (

@@ -107,7 +107,7 @@ export default async function AboutPage() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-2xl md:text-3xl font-bold text-gray-400">{initials(member.name)}</span>
+                      <span className="text-2xl md:text-3xl font-bold text-gray-500">{initials(member.name)}</span>
                     )}
                   </div>
                   <h3 className="mt-4 font-bold text-heading">{member.name}</h3>

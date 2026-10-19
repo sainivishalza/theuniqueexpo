@@ -91,7 +91,7 @@ export default function RelocationPage() {
                   <span className="text-2xl">{s.icon}</span>
                   <div>
                     <h3 className="font-bold text-heading">{t(`topics.${s.key}.title`)}</h3>
-                    <p className="text-sm text-gray-500">{t(`topics.${s.key}.desc`)}</p>
+                    <p className="text-sm text-gray-700">{t(`topics.${s.key}.desc`)}</p>
                   </div>
                 </div>
               ))}
@@ -106,7 +106,7 @@ export default function RelocationPage() {
             </Card>
             <Link href="/services/relocation-cost-estimator" className="mt-4 flex items-center gap-4 p-4 rounded-[var(--radius-card)] bg-emerald-50 border border-emerald-100 hover:border-emerald-300 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">
               <span className="text-2xl">🧮</span>
-              <div><h3 className="font-bold text-heading">{t("costEstimatorTeaser.title")}</h3><p className="text-sm text-gray-500">{t("costEstimatorTeaser.desc")}</p></div>
+              <div><h3 className="font-bold text-heading">{t("costEstimatorTeaser.title")}</h3><p className="text-sm text-gray-700">{t("costEstimatorTeaser.desc")}</p></div>
             </Link>
           </div>
 

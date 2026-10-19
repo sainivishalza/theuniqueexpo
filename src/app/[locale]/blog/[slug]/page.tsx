@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { renderMarkdown } from "@/lib/markdown";
 import { getPublishedPostBySlug } from "@/lib/server/blog-repo";
 import Card from "@/components/ui/Card";
-import { defaultOgImage, metaDescription } from "@/lib/seo";
+import { defaultOgImage, fitTitle, metaDescription } from "@/lib/seo";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { getAboutContent } from "@/lib/server/about-content-repo";
 
@@ -28,7 +28,7 @@ export async function generateMetadata({
   const description = metaDescription(post.excerpt, post.title);
   const images = [{ url: post.coverImage || defaultOgImage(locale) }];
   return {
-    title: post.title,
+    title: fitTitle(post.title, " | The Unique Expo"),
     description,
     openGraph: {
       type: "article",
@@ -142,7 +142,7 @@ export default async function BlogPostPage({
               {(post.authorName || t("editorialTeam")).charAt(0)}
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{t("writtenBy")}</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{t("writtenBy")}</p>
               <p className="font-bold text-gray-900">{post.authorName || t("editorialTeam")}</p>
               {(post.authorName ? post.authorBio : aboutTagline) && (
                 <p className="text-sm text-gray-500 mt-1">{post.authorName ? post.authorBio : aboutTagline}</p>

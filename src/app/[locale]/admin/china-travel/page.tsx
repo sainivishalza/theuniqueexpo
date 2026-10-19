@@ -217,7 +217,7 @@ export default function AdminChinaTravelPage() {
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-4">
                 <h2 className="font-bold text-heading">{t("routes")}</h2>
-                <p className="text-xs text-gray-400">{t("routesHint")}</p>
+                <p className="text-xs text-gray-500">{t("routesHint")}</p>
                 {content.routes.map((route, i) => (
                   <div key={i} className="rounded-xl border border-gray-200 p-4 space-y-2">
                     <div className="flex gap-2">

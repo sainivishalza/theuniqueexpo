@@ -117,7 +117,7 @@ export default function ServicesPage() {
                     {svc.featureKeys.slice(0, 4).map((f) => (
                       <span key={f} className="rounded-[var(--radius-badge)] bg-gray-100 px-2.5 py-1 text-xs text-gray-600">{t(f)}</span>
                     ))}
-                    {svc.featureKeys.length > 4 && <span className="rounded-[var(--radius-badge)] bg-gray-100 px-2.5 py-1 text-xs text-gray-400">{t("moreFeatures", { count: svc.featureKeys.length - 4 })}</span>}
+                    {svc.featureKeys.length > 4 && <span className="rounded-[var(--radius-badge)] bg-gray-100 px-2.5 py-1 text-xs text-gray-600">{t("moreFeatures", { count: svc.featureKeys.length - 4 })}</span>}
                   </div>
                   <span className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-900 group-hover:text-gold-600 transition-colors">
                     {t(svc.ctaKey)}

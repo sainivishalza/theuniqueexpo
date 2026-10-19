@@ -48,7 +48,7 @@ export default function BuyerRegistrationsPage() {
       <section className="py-10 bg-cream-50 min-h-[40vh]">
         <div className="mx-auto max-w-4xl px-6 space-y-4">
           {failed && <p role="alert" className="text-center text-red-600">{t("loadFailed")}</p>}
-          {!failed && items === null && <p className="text-center text-gray-400">{t("loading")}</p>}
+          {!failed && items === null && <p className="text-center text-gray-500">{t("loading")}</p>}
           {items && items.length === 0 && (
             <Card shadow="sm" bordered={false} className="p-10 text-center">
               <div className="text-5xl mb-3" aria-hidden="true">🎫</div>

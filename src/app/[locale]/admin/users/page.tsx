@@ -203,7 +203,7 @@ export default function AdminUsersPage() {
                           <td className="px-6 py-4">
                             {u.buyerNumber && <div className="text-xs font-bold tracking-wide text-emerald-700">{u.buyerNumber}</div>}
                             <div className="font-semibold text-gray-900">{u.name}</div>
-                            <div className="text-xs text-gray-400">{isPlaceholderEmail(u.email) ? t("noEmail") : u.email}</div>
+                            <div className="text-xs text-gray-500">{isPlaceholderEmail(u.email) ? t("noEmail") : u.email}</div>
                           </td>
                           <td className="px-6 py-4">
                             <select
@@ -225,7 +225,7 @@ export default function AdminUsersPage() {
                               {u.status === "active" ? t("statusActive") : t("statusSuspended")}
                             </button>
                           </td>
-                          <td className="px-6 py-4 text-gray-400 text-xs">{new Date(u.createdAt * 1000).toLocaleDateString()}</td>
+                          <td className="px-6 py-4 text-gray-500 text-xs">{new Date(u.createdAt * 1000).toLocaleDateString()}</td>
                           <td className="px-6 py-4 text-right space-x-2">
                             <Button
                               onClick={() => handleResetPassword(u.id, u.name)}

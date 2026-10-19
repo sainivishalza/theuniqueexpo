@@ -24,6 +24,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       { key: "home", href: homeHref, label: tc("shell.dashboard"), icon: "🏠" },
       { key: "myProfile", href: "/dashboard/buyer/profile", label: tb("actions.myProfile.title"), icon: "🪪", group: "account" },
       { key: "myRegistrations", href: "/dashboard/buyer/registrations", label: tb("actions.myRegistrations.title"), icon: "🎫", group: "account" },
+      { key: "myWallet", href: "/dashboard/buyer/wallet", label: tb("actions.myWallet.title"), icon: "💰", group: "account" },
       { key: "browseExhibitions", href: "/exhibitions", label: tb("actions.browseExhibitions.title"), icon: "🎯", group: "explore" },
       { key: "savedExhibitions", href: "/favorites", label: tb("actions.savedExhibitions.title"), icon: "❤️", group: "explore" },
       { key: "messages", href: "/messages", label: tb("actions.messages.title"), icon: "💬", group: "explore" },

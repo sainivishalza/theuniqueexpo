@@ -1,0 +1,19 @@
+import { NextResponse } from "next/server";
+import { cancelWithdrawal } from "@/lib/server/wallet-repo";
+import { positiveId, readJson, requireBuyer, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
+
+// A buyer can cancel a withdrawal that has not been paid or refused yet; the points
+// return to the balance.
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await requireBuyer(request);
+  if (auth.response) return auth.response;
+  const id = positiveId((await params).id);
+  const body = await readJson(request);
+  if (!id || body?.action !== "cancel") return walletFail("invalid_input");
+  try {
+    await cancelWithdrawal(auth.user.id, id);
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    return walletErrorResponse(err);
+  }
+}

@@ -39,5 +39,6 @@ export const ADMIN_SECTIONS: AdminSection[] = [
   { key: "userManagement", href: "/admin/users", icon: "👥", color: "from-orange-500 to-red-500", group: "people" },
   { key: "buyerProfiles", href: "/admin/buyer-profiles", icon: "🪪", color: "from-emerald-600 to-teal-700", group: "people" },
   { key: "buyerExpos", href: "/admin/buyer-expos", icon: "🏷️", color: "from-teal-600 to-emerald-700", group: "people" },
+  { key: "rewardsWallet", href: "/admin/wallet", icon: "💰", color: "from-amber-500 to-yellow-600", group: "people" },
   { key: "homepageSlideshow", href: "/admin/slideshow", icon: "🖼️", color: "from-cyan-500 to-teal-600", group: "content" },
 ];

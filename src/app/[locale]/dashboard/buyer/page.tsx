@@ -17,6 +17,7 @@ const ACTION_KEYS = [
   { key: "savedSuppliers", icon: "⭐", color: "from-yellow-400 to-amber-500", comingSoon: true },
   { key: "messages", href: "/messages", icon: "💬", color: "from-pink-500 to-rose-500" },
   { key: "myRegistrations", href: "/dashboard/buyer/registrations", icon: "🎫", color: "from-emerald-500 to-green-600" },
+  { key: "myWallet", href: "/dashboard/buyer/wallet", icon: "💰", color: "from-amber-500 to-yellow-600" },
   { key: "visitPlanner", icon: "📅", color: "from-purple-500 to-purple-600", comingSoon: true },
   { key: "meetings", icon: "📅", color: "from-pink-500 to-rose-500", comingSoon: true },
 ];

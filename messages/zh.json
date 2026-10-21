@@ -2983,6 +2983,7 @@
     "expoPlaceholder": "选择展会...",
     "noExpoOptions": "暂无展会——请先在“采购商展会”中添加",
     "expoSelectedCount": "已选择 {count} 个展会",
+    "profileSaved": "已保存。",
     "filterByExpo": "按展会筛选",
     "allExpos": "全部展会",
     "filterByDocuments": "按文件筛选",

@@ -319,6 +319,18 @@
       "allDone": "所有文件均已上传并通过审核，谢谢。",
       "count": "已上传 {done}/{total}"
     },
+    "news": {
+      "title": "积分动态",
+      "openWallet": "打开我的钱包",
+      "topup": "您的充值已通过：+{points} 积分",
+      "attendance": "您获得了参展积分：+{points} 积分",
+      "expense": "您的费用申请已通过：+{points} 积分",
+      "adjustment": "团队为您增加了积分：+{points} 积分",
+      "refund": "积分已退回您的钱包：+{points} 积分",
+      "withdrawal_paid": "您提现的 {points} 积分已支付",
+      "withdrawal_rejected": "您提现的 {points} 积分未支付，积分已退回钱包",
+      "reason": "原因：{reason}"
+    },
     "quickActions": "快捷操作",
     "actions": {
       "browseExhibitions": {
@@ -4027,6 +4039,15 @@
       "purchases": "套餐购买",
       "pointsSetup": "积分设置",
       "settings": "设置"
+    },
+    "export": {
+      "withdrawals": "下载这些提现申请（Excel）",
+      "movements": "下载积分变动记录（Excel）",
+      "from": "开始日期",
+      "to": "结束日期",
+      "rangeHint": "日期留空则包含全部。文件中的时间为 UTC。",
+      "working": "正在准备…",
+      "failed": "无法下载文件，请重试。"
     },
     "loading": "加载中…",
     "saving": "保存中…",

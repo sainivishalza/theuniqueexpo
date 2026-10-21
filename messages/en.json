@@ -319,6 +319,18 @@
       "allDone": "All documents are uploaded and checked. Thank you.",
       "count": "{done} of {total} uploaded"
     },
+    "news": {
+      "title": "Rewards news",
+      "openWallet": "Open my wallet",
+      "topup": "Your top-up was approved: +{points} points",
+      "attendance": "You earned attendance points: +{points} points",
+      "expense": "Your expense claim was approved: +{points} points",
+      "adjustment": "Points added by our team: +{points} points",
+      "refund": "Points returned to your wallet: +{points} points",
+      "withdrawal_paid": "Your withdrawal of {points} points was paid",
+      "withdrawal_rejected": "Your withdrawal of {points} points was not paid; the points are back in your wallet",
+      "reason": "Reason: {reason}"
+    },
     "quickActions": "Quick Actions",
     "actions": {
       "browseExhibitions": {
@@ -4027,6 +4039,15 @@
       "purchases": "Package purchases",
       "pointsSetup": "Points setup",
       "settings": "Settings"
+    },
+    "export": {
+      "withdrawals": "Download these withdrawals (Excel)",
+      "movements": "Download point movements (Excel)",
+      "from": "From date",
+      "to": "To date",
+      "rangeHint": "Leave the dates empty to include everything. Times in the file are UTC.",
+      "working": "Preparing…",
+      "failed": "Could not download the file. Please try again."
     },
     "loading": "Loading…",
     "saving": "Saving…",

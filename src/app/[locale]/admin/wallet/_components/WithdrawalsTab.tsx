@@ -8,7 +8,7 @@ import { fieldClasses } from "@/components/ui/FormField";
 import { errorKey, walletApi } from "@/lib/client/wallet-client";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
-import { ImageViewer, ListFilters, PersonLine, ShowMore, StatusBadge, useAdminList, useDebounced, type Person } from "./shared";
+import { DownloadExcel, ImageViewer, ListFilters, PersonLine, ShowMore, StatusBadge, useAdminList, useDebounced, type Person } from "./shared";
 
 interface Withdrawal extends Person {
   id: number; points: number; method: "alipay" | "wechat" | "bank"; accountName: string; bankName: string; bankBranch: string; bankAccount: string;
@@ -70,6 +70,7 @@ export default function WithdrawalsTab() {
 
   return (
     <div>
+      <div className="mb-3"><DownloadExcel path={`/api/admin/wallet/export/withdrawals?status=${encodeURIComponent(status)}`} fallbackName="withdrawals.xlsx" label={t("export.withdrawals")} /></div>
       <ListFilters statuses={["pending", "paid", "rejected", "cancelled"]} status={status} onStatus={setStatus} q={q} onQ={setQ} statusLabel={(s) => t(`status.${s}`)} />
       {error && <p role="alert" className="mb-3 text-red-700">{error}</p>}
       {!loading && items.length === 0 && !error && <p className="text-gray-600">{t("withdrawals.empty")}</p>}

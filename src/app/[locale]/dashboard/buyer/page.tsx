@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatNumber } from "@/lib/format";
+import { formatInstantDateTime } from "@/lib/date-format";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import Card from "@/components/ui/Card";
@@ -33,7 +35,10 @@ const DOC_BADGE = {
   rejected: "bg-red-50 text-red-700",
 } as const;
 
+interface NewsItem { kind: string; points: number; at: string; note: string }
+
 export default function BuyerDashboard() {
+  const locale = useLocale();
   const t = useTranslations("buyerDashboard");
   const tp = useTranslations("buyerProfile");
   const tc = useTranslations("common");
@@ -46,6 +51,7 @@ export default function BuyerDashboard() {
   // The buyer's registration number (TUE0001); stays hidden if it can't be loaded.
   const [buyerNumber, setBuyerNumber] = useState("");
   const [docs, setDocs] = useState<DocState | null>(null);
+  const [news, setNews] = useState<NewsItem[]>([]);
   useEffect(() => {
     if (!user) return;
     fetch("/api/buyer-profile")
@@ -54,6 +60,11 @@ export default function BuyerDashboard() {
         setBuyerNumber(data?.buyerNumber || "");
         if (data?.profile?.hasDocument && data.profile.documentReview) setDocs({ hasDocument: data.profile.hasDocument, documentReview: data.profile.documentReview });
       })
+      .catch(() => {});
+    // Recent reward news; the card stays hidden if it cannot be loaded.
+    fetch("/api/wallet/news")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => setNews(Array.isArray(data?.items) ? data.items : []))
       .catch(() => {});
   }, [user]);
 
@@ -93,6 +104,29 @@ export default function BuyerDashboard() {
           </div>
         </div>
       </section>
+
+      {/* Rewards news */}
+      {news.length > 0 && (
+        <section className="pt-10 bg-cream-50">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="rounded-2xl bg-white p-6 shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h2 className="text-xl font-bold text-heading">{t("news.title")}</h2>
+                <Link href="/dashboard/buyer/wallet" className="text-sm font-semibold text-emerald-800 underline hover:text-emerald-900">{t("news.openWallet")}</Link>
+              </div>
+              <ul className="mt-4 divide-y divide-gray-100">
+                {news.map((n, i) => (
+                  <li key={`${n.kind}-${n.at}-${i}`} className="py-2.5">
+                    <p className="text-sm font-semibold text-gray-900">{t(`news.${n.kind}`, { points: formatNumber(n.points) })}</p>
+                    {n.note && <p className="text-sm text-gray-700 [overflow-wrap:anywhere]">{t("news.reason", { reason: n.note })}</p>}
+                    <p className="text-xs text-gray-600">{formatInstantDateTime(n.at, locale)}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Documents */}
       {docs && (() => {

@@ -10,7 +10,7 @@ import { newClientKey } from "@/lib/wallet";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
-import { ListFilters, PersonLine, ShowMore, useAdminList, useDebounced, type Person } from "./shared";
+import { DownloadExcel, ListFilters, PersonLine, ShowMore, useAdminList, useDebounced, type Person } from "./shared";
 
 interface WalletRow extends Person { balance: number; frozen: boolean; suspended: boolean }
 interface Tx { id: number; amount: number; balanceAfter: number; type: string; note: string; createdAt: string; counterparty: string; by: string }
@@ -124,6 +124,32 @@ function WalletDetail({ userId, onChanged }: { userId: number; onChanged: () => 
   );
 }
 
+// All point movements as an Excel file, for a date range or for everything.
+function MovementsExport() {
+  const t = useTranslations("adminWallet");
+  const ids = { from: useId(), to: useId() };
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const params = new URLSearchParams();
+  if (from) params.set("from", from);
+  if (to) params.set("to", to);
+  const query = params.toString();
+  return (
+    <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-gray-200 bg-white p-3">
+      <div>
+        <label htmlFor={ids.from} className="mb-1 block text-sm font-medium text-gray-700">{t("export.from")}</label>
+        <input id={ids.from} type="date" value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} className={fieldClasses()} />
+      </div>
+      <div>
+        <label htmlFor={ids.to} className="mb-1 block text-sm font-medium text-gray-700">{t("export.to")}</label>
+        <input id={ids.to} type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} className={fieldClasses()} />
+      </div>
+      <DownloadExcel path={`/api/admin/wallet/export/transactions${query ? `?${query}` : ""}`} fallbackName="point-movements.xlsx" label={t("export.movements")} />
+      <p className="basis-full text-xs text-gray-600">{t("export.rangeHint")}</p>
+    </div>
+  );
+}
+
 export default function WalletsTab() {
   const t = useTranslations("adminWallet");
   const [q, setQ] = useState("");
@@ -133,6 +159,7 @@ export default function WalletsTab() {
 
   return (
     <div>
+      <MovementsExport />
       <ListFilters statuses={[]} status="" onStatus={() => {}} q={q} onQ={setQ} statusLabel={(s) => s} />
       {error && <p role="alert" className="mb-3 text-red-700">{error}</p>}
       {!loading && items.length === 0 && !error && <p className="text-gray-600">{t("wallets.empty")}</p>}

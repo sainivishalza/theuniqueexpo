@@ -54,3 +54,25 @@ export function walletCodeFromText(text: string): string | null {
   }
   return /^[A-Za-z0-9_-]{24}$/.test(value) ? value : null;
 }
+
+// Fetches a file from an admin export and hands it to the browser as a download. Never throws:
+// { ok: false } with the error code when it did not work.
+export async function downloadWalletFile(path: string, fallbackName: string): Promise<{ ok: boolean; code?: string }> {
+  try {
+    const res = await fetch(path);
+    if (!res.ok) {
+      const data = (await res.json().catch(() => ({}))) as { code?: string };
+      return { ok: false, code: data.code };
+    }
+    const named = /filename="([^"]+)"/.exec(res.headers.get("Content-Disposition") ?? "");
+    const blob = await res.blob();
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = named?.[1] ?? fallbackName;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    return { ok: true };
+  } catch {
+    return { ok: false, code: "network" };
+  }
+}

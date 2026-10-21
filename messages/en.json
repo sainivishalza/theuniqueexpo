@@ -2984,6 +2984,8 @@
     "noExpoOptions": "No expos yet -- add some in Buyer Expos",
     "expoSelectedCount": "{count} expos selected",
     "profileSaved": "Saved.",
+    "rewardPointsShort": "{points} points",
+    "openWallet": "Open Rewards Wallet",
     "filterByExpo": "Filter by expo",
     "allExpos": "All expos",
     "filterByDocuments": "Filter by documents",

@@ -153,9 +153,11 @@ export async function getExpenseReceipts(id: number): Promise<string[] | null> {
 export async function listWallets(q: string, page: number) {
   const filter = personFilter("u", q);
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT w.user_id, w.balance, w.frozen, u.name, u.email, u.buyer_no, u.status AS user_status
-     FROM wallets w JOIN users u ON u.id = w.user_id
-     WHERE 1 = 1${filter.sql} ORDER BY w.balance DESC, w.user_id LIMIT ? OFFSET ?`,
+    // Every buyer, not only those who have opened their wallet: one who has not yet has 0 points
+    // (the wallet itself is created the first time points are added or the buyer opens it).
+    `SELECT u.id AS user_id, COALESCE(w.balance, 0) AS balance, COALESCE(w.frozen, 0) AS frozen, u.name, u.email, u.buyer_no, u.status AS user_status
+     FROM users u LEFT JOIN wallets w ON w.user_id = u.id
+     WHERE u.role = 'buyer'${filter.sql} ORDER BY COALESCE(w.balance, 0) DESC, u.buyer_no IS NULL, u.buyer_no, u.id LIMIT ? OFFSET ?`,
     [...filter.params, ADMIN_PAGE_SIZE + 1, pageOffset(page)]
   );
   return {
@@ -168,8 +170,8 @@ export async function listWallets(q: string, page: number) {
 
 export async function getWalletDetail(userId: number, beforeId?: number) {
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT w.user_id, w.balance, w.frozen, u.name, u.email, u.buyer_no, u.status AS user_status
-     FROM wallets w JOIN users u ON u.id = w.user_id WHERE w.user_id = ?`,
+    `SELECT u.id AS user_id, COALESCE(w.balance, 0) AS balance, COALESCE(w.frozen, 0) AS frozen, u.name, u.email, u.buyer_no, u.status AS user_status
+     FROM users u LEFT JOIN wallets w ON w.user_id = u.id WHERE u.id = ? AND u.role = 'buyer'`,
     [userId]
   );
   const r = rows[0];

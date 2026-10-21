@@ -8,6 +8,7 @@ import { isPlaceholderEmail } from "@/lib/login-id";
 import { extractBuyerNumbers, formatBuyerNumber, parseBuyerNumber } from "@/lib/buyer-number";
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
+import { formatNumber } from "@/lib/format";
 import { TEXT_COLUMN_ORDER } from "@/lib/buyer-profile-columns";
 import Button from "@/components/ui/Button";
 import UrlSearchSync from "@/components/UrlSearchSync";
@@ -20,6 +21,7 @@ interface AdminBuyerProfileRow {
   // Registration number as shown (TUE0001) and as a plain number.
   buyerNumber: string;
   buyerNo: number | null;
+  rewardPoints: number;
   expoIds: number[];
   name: string;
   email: string;
@@ -858,7 +860,10 @@ export default function AdminBuyerProfilesPage() {
                               aria-label={r.name}
                             />
                             <div>
-                              {r.buyerNumber && <div className="text-xs font-bold tracking-wide text-emerald-700">{r.buyerNumber}</div>}
+                              <div className="flex items-center gap-2">
+                                {r.buyerNumber && <span className="text-xs font-bold tracking-wide text-emerald-700">{r.buyerNumber}</span>}
+                                <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-800">{t("rewardPointsShort", { points: formatNumber(r.rewardPoints) })}</span>
+                              </div>
                               <div className="font-semibold text-gray-900">{r.name}</div>
                               <div className="text-xs text-gray-500">{isPlaceholderEmail(r.email) ? t("noEmail") : r.email}</div>
                             </div>
@@ -939,6 +944,16 @@ export default function AdminBuyerProfilesPage() {
                 {(() => {
                   const open = rows.find((r) => r.userId === openId);
                   return open ? <p className="text-sm text-gray-500"><span className="font-bold text-emerald-700">{open.buyerNumber}</span>{open.buyerNumber ? " · " : ""}{open.name}</p> : null;
+                })()}
+                {(() => {
+                  const open = rows.find((r) => r.userId === openId);
+                  return open ? (
+                    <p className="mt-1 text-sm text-gray-700">
+                      <span className="font-semibold">{t("rewardPointsShort", { points: formatNumber(open.rewardPoints) })}</span>
+                      {" · "}
+                      <Link href="/admin/wallet?tab=wallets" className="font-semibold text-emerald-800 underline hover:text-emerald-900">{t("openWallet")}</Link>
+                    </p>
+                  ) : null;
                 })()}
               </div>
               <button onClick={() => setOpenId(null)} className="text-gray-500 hover:text-gray-600">✕</button>

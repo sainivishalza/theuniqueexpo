@@ -2984,6 +2984,8 @@
     "noExpoOptions": "Выставок пока нет — добавьте их в разделе «Выставки покупателей»",
     "expoSelectedCount": "Выбрано выставок: {count}",
     "profileSaved": "Сохранено.",
+    "rewardPointsShort": "{points} баллов",
+    "openWallet": "Открыть кошелёк бонусов",
     "filterByExpo": "Фильтр по выставке",
     "allExpos": "Все выставки",
     "filterByDocuments": "Фильтр по документам",

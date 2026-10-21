@@ -241,6 +241,8 @@ export interface AdminBuyerProfileRow {
   name: string;
   email: string;
   status: "active" | "suspended";
+  // Reward points in the buyer's wallet (0 when they have none yet).
+  rewardPoints: number;
   companyName: string;
   nationality: string;
   passportNumber: string;
@@ -307,9 +309,11 @@ function adminListQuery(useFlagColumns: boolean): string {
             p.date_of_birth, p.visa_type, p.visa_expire_date, p.purchase_intention, p.other_purchase_intention,
             ${documentPresenceSql(useFlagColumns)},
             p.doc_business_license_status, p.doc_business_card_status, p.doc_passport_front_status,
-            p.doc_visa_page_status, p.doc_canton_fair_card_status, p.doc_buyer_photo_status, p.doc_invoice_order_list_status
+            p.doc_visa_page_status, p.doc_canton_fair_card_status, p.doc_buyer_photo_status, p.doc_invoice_order_list_status,
+            COALESCE(w.balance, 0) AS reward_points
      FROM users u
      LEFT JOIN buyer_profiles p ON p.user_id = u.id
+     LEFT JOIN wallets w ON w.user_id = u.id
      WHERE u.role = 'buyer'
      ORDER BY u.created_at DESC`;
 }
@@ -343,6 +347,7 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
       name: row.name,
       email: row.email,
       status: row.status,
+      rewardPoints: Number(row.reward_points ?? 0),
       companyName: row.company_name || "",
       nationality: row.nationality || "",
       passportNumber: row.passport_number || "",

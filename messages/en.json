@@ -2983,6 +2983,7 @@
     "expoPlaceholder": "Select expos...",
     "noExpoOptions": "No expos yet -- add some in Buyer Expos",
     "expoSelectedCount": "{count} expos selected",
+    "profileSaved": "Saved.",
     "filterByExpo": "Filter by expo",
     "allExpos": "All expos",
     "filterByDocuments": "Filter by documents",

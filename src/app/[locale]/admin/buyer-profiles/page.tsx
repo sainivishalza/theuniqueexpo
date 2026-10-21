@@ -406,6 +406,8 @@ export default function AdminBuyerProfilesPage() {
   const [detail, setDetail] = useState<BuyerProfileDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  // The profile object as last saved: "Saved." shows while the form still equals it, and goes away on the next edit.
+  const [savedDetail, setSavedDetail] = useState<BuyerProfileDetail | null>(null);
   const [uploadingField, setUploadingField] = useState<string | null>(null);
   const [docVersion, setDocVersion] = useState(0);
   const [reviewingField, setReviewingField] = useState<string | null>(null);
@@ -501,6 +503,8 @@ export default function AdminBuyerProfilesPage() {
   async function openDetail(userId: number) {
     setOpenId(userId);
     setDetail(null);
+    setSavedDetail(null);
+    setError("");
     setDetailLoading(true);
     try {
       const res = await fetch(`/api/admin/buyer-profiles/${userId}`);
@@ -527,6 +531,7 @@ export default function AdminBuyerProfilesPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || t("saveFailed"));
       setDetail(data.profile);
+      setSavedDetail(data.profile);
       await loadRows();
       await loadExpoOptions();
     } catch (err) {
@@ -926,7 +931,8 @@ export default function AdminBuyerProfilesPage() {
       {openId !== null && (
         <div className="fixed inset-0 z-50 flex items-stretch justify-end">
           <div className="absolute inset-0 bg-black/40" onClick={() => setOpenId(null)} />
-          <div className="relative w-full max-w-xl bg-white h-full overflow-y-auto p-6 shadow-2xl">
+          <div className="relative flex h-full w-full max-w-xl flex-col bg-white shadow-2xl">
+            <div className="flex-1 overflow-y-auto p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold text-heading">{t("editProfile")}</h2>
@@ -1012,10 +1018,6 @@ export default function AdminBuyerProfilesPage() {
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none"
                   />
                 </div>
-                <Button onClick={handleSave} disabled={saving} variant="save" size="compact">
-                  {saving ? ta("saving") : ta("save")}
-                </Button>
-
                 <div>
                   <p className="text-xs font-semibold text-gray-500 uppercase mb-2">{t("documents")}</p>
                   <div className="grid grid-cols-2 gap-3">
@@ -1078,6 +1080,21 @@ export default function AdminBuyerProfilesPage() {
                     })}
                   </div>
                 </div>
+              </div>
+            )}
+            </div>
+            {/* Always in view, however far the form is scrolled. */}
+            {!detailLoading && detail && (
+              <div className="flex flex-wrap items-center gap-3 border-t border-gray-200 bg-white px-6 py-4">
+                <Button onClick={handleSave} disabled={saving} variant="save" size="compact">
+                  {saving ? ta("saving") : ta("save")}
+                </Button>
+                <Button onClick={() => setOpenId(null)} variant="secondaryOutline" size="compact">{ta("close")}</Button>
+                {error ? (
+                  <span role="alert" className="text-sm text-red-700">{error}</span>
+                ) : savedDetail !== null && detail === savedDetail ? (
+                  <span role="status" className="text-sm font-semibold text-emerald-700">{t("profileSaved")}</span>
+                ) : null}
               </div>
             )}
           </div>

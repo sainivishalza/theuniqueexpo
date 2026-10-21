@@ -34,6 +34,7 @@ export const FIELD_LABELS: Record<string, string> = {
   jobTitle: "Job Title",
   contactEmail: "Contact Email",
   phoneNumber: "Phone Number",
+  rewardPoints: "Reward Points",
 };
 
 export const DOC_LABELS: Record<DocumentField, string> = {
@@ -99,10 +100,11 @@ export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: st
 
   const asRecord = rows as unknown as Record<string, unknown>[];
   rows.forEach((row, rowIndex) => {
-    const values: Record<string, string> = {};
+    const values: Record<string, string | number> = {};
     for (const key of textKeys) {
       const value = (asRecord[rowIndex] as Record<string, unknown>)[key];
-      values[key] = typeof value === "string" ? value : "";
+      // Points stay a real number in the sheet, so they can be added up or sorted.
+      values[key] = typeof value === "string" || typeof value === "number" ? value : "";
     }
     const excelRow = sheet.addRow(values);
     if (docKeys.length > 0) excelRow.height = 72;

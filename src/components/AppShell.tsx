@@ -13,6 +13,8 @@ export interface ShellItem {
   icon: string;
   /** Key of the group heading this item sits under (items without one come first). */
   group?: string;
+  /** A number to show next to the label (how many requests are waiting); hidden when 0 or missing. */
+  count?: number;
 }
 
 export interface ShellGroup {
@@ -207,6 +209,7 @@ export default function AppShell({ areaLabel, badge, items, groups = [], homeHre
                       >
                         <span aria-hidden="true" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-base">{item.icon}</span>
                         <span className="min-w-0 leading-tight [overflow-wrap:anywhere]">{item.label}</span>
+                        {item.count ? <span className="ml-auto shrink-0 rounded-full bg-gold-400 px-2 py-0.5 text-[11px] font-bold text-emerald-950" aria-label={t("shell.waiting", { count: item.count })}>{item.count}</span> : null}
                       </Link>
                     </li>
                   );
@@ -293,6 +296,7 @@ export default function AppShell({ areaLabel, badge, items, groups = [], homeHre
                           >
                             <span aria-hidden="true" className="text-lg leading-none">{item.icon}</span>
                             <span className="min-w-0 leading-tight [overflow-wrap:anywhere]">{item.label}</span>
+                            {item.count ? <span className="ml-auto shrink-0 rounded-full bg-gold-400 px-2 py-0.5 text-[11px] font-bold text-emerald-950" aria-label={t("shell.waiting", { count: item.count })}>{item.count}</span> : null}
                           </Link>
                         </li>
                       );

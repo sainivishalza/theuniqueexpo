@@ -270,6 +270,7 @@
       "viewSite": "View site",
       "logout": "Log out",
       "language": "Language",
+      "waiting": "{count} waiting",
       "findBuyers": "Find buyers matching “{query}”",
       "findUsers": "Find users matching “{query}”",
       "areas": {
@@ -2936,6 +2937,7 @@
     "noFile": "No file",
     "selectPlaceholder": "Select...",
     "fields": {
+      "rewardPoints": "Reward Points",
       "companyName": "Company Name",
       "nationality": "Nationality",
       "passportNumber": "Passport Number",
@@ -2986,6 +2988,25 @@
     "profileSaved": "Saved.",
     "rewardPointsShort": "{points} points",
     "openWallet": "Open Rewards Wallet",
+    "bulk": {
+      "toggle": "Give points",
+      "title": "Give points to {count} selected buyer(s)",
+      "amountLabel": "Points for each buyer",
+      "limitHint": "Whole numbers, up to {max} each.",
+      "reasonLabel": "Reason (shown in each buyer's history)",
+      "summary": "{count} buyer(s) × {amount} points = {total} points in total",
+      "confirm": "Give points",
+      "giving": "Adding…",
+      "done": "Added {amount} points to {added} buyer(s).",
+      "someFailed": "{failed} buyer(s) could not be credited."
+    },
+    "filterByPoints": "Filter by reward points",
+    "pointsFilter": {
+      "all": "All points",
+      "has": "Has points",
+      "none": "No points",
+      "top": "Most points first"
+    },
     "filterByExpo": "Filter by expo",
     "allExpos": "All expos",
     "filterByDocuments": "Filter by documents",

@@ -270,6 +270,7 @@
       "viewSite": "Открыть сайт",
       "logout": "Выйти",
       "language": "Язык",
+      "waiting": "Ожидает: {count}",
       "findBuyers": "Найти покупателей: «{query}»",
       "findUsers": "Найти пользователей: «{query}»",
       "areas": {
@@ -2936,6 +2937,7 @@
     "noFile": "Нет файла",
     "selectPlaceholder": "Выберите...",
     "fields": {
+      "rewardPoints": "Бонусные баллы",
       "companyName": "Название компании",
       "nationality": "Гражданство",
       "passportNumber": "Номер паспорта",
@@ -2986,6 +2988,25 @@
     "profileSaved": "Сохранено.",
     "rewardPointsShort": "{points} баллов",
     "openWallet": "Открыть кошелёк бонусов",
+    "bulk": {
+      "toggle": "Начислить баллы",
+      "title": "Начислить баллы выбранным покупателям: {count}",
+      "amountLabel": "Баллов каждому покупателю",
+      "limitHint": "Целое число, не больше {max} каждому.",
+      "reasonLabel": "Причина (видна в истории каждого покупателя)",
+      "summary": "Покупателей: {count} × {amount} баллов = всего {total} баллов",
+      "confirm": "Начислить баллы",
+      "giving": "Начисляем…",
+      "done": "Начислено {amount} баллов: покупателей — {added}.",
+      "someFailed": "Не удалось начислить: {failed}."
+    },
+    "filterByPoints": "Фильтр по баллам",
+    "pointsFilter": {
+      "all": "Все баллы",
+      "has": "Есть баллы",
+      "none": "Нет баллов",
+      "top": "Больше баллов — выше"
+    },
     "filterByExpo": "Фильтр по выставке",
     "allExpos": "Все выставки",
     "filterByDocuments": "Фильтр по документам",

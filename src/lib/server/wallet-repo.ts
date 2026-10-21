@@ -746,6 +746,31 @@ export async function adjustWallet(adminId: number, userId: number, delta: numbe
   });
 }
 
+// The same points for many buyers, each as its own ledger row (so each buyer's statement
+// shows it and the reason). Not all-or-nothing: a buyer who cannot be credited is
+// reported and the rest go through. The batch key makes a repeated request harmless --
+// every buyer's entry is keyed by it, so nobody is credited twice.
+export async function bulkAdjustWallets(
+  adminId: number,
+  userIds: number[],
+  amount: number,
+  note: string,
+  key: string
+): Promise<{ added: number; failed: { userId: number; code: string }[] }> {
+  const ids = Array.from(new Set(userIds)).sort((a, b) => a - b);
+  const failed: { userId: number; code: string }[] = [];
+  let added = 0;
+  for (const userId of ids) {
+    try {
+      await adjustWallet(adminId, userId, amount, note, `${key}-${userId}`);
+      added += 1;
+    } catch (err) {
+      failed.push({ userId, code: err instanceof WalletError ? err.code : "server_error" });
+    }
+  }
+  return { added, failed };
+}
+
 export async function setWalletFrozen(userId: number, frozen: boolean): Promise<void> {
   await ensureWallet(userId);
   const [res] = await pool.query<ResultSetHeader>("UPDATE wallets SET frozen = ? WHERE user_id = ?", [frozen ? 1 : 0, userId]);

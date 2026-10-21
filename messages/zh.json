@@ -270,6 +270,7 @@
       "viewSite": "查看网站",
       "logout": "退出登录",
       "language": "语言",
+      "waiting": "{count} 项待处理",
       "findBuyers": "查找买家:“{query}”",
       "findUsers": "查找用户:“{query}”",
       "areas": {
@@ -2936,6 +2937,7 @@
     "noFile": "无文件",
     "selectPlaceholder": "请选择...",
     "fields": {
+      "rewardPoints": "奖励积分",
       "companyName": "公司名称",
       "nationality": "国籍",
       "passportNumber": "护照号码",
@@ -2986,6 +2988,25 @@
     "profileSaved": "已保存。",
     "rewardPointsShort": "{points} 积分",
     "openWallet": "打开奖励积分钱包",
+    "bulk": {
+      "toggle": "发放积分",
+      "title": "向所选的 {count} 位买家发放积分",
+      "amountLabel": "每位买家的积分",
+      "limitHint": "整数，每人最多 {max}。",
+      "reasonLabel": "原因（会显示在每位买家的记录中）",
+      "summary": "{count} 位买家 × {amount} 积分 = 共 {total} 积分",
+      "confirm": "发放积分",
+      "giving": "正在发放…",
+      "done": "已向 {added} 位买家各发放 {amount} 积分。",
+      "someFailed": "有 {failed} 位买家未能发放。"
+    },
+    "filterByPoints": "按积分筛选",
+    "pointsFilter": {
+      "all": "全部积分",
+      "has": "有积分",
+      "none": "无积分",
+      "top": "积分从高到低"
+    },
     "filterByExpo": "按展会筛选",
     "allExpos": "全部展会",
     "filterByDocuments": "按文件筛选",

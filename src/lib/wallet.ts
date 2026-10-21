@@ -5,6 +5,10 @@
 
 export const MAX_POINTS = 10_000_000; // one operation never moves more than this
 
+// Giving the same points to many buyers at once: caps that stop a slip of the finger.
+export const BULK_MAX_POINTS = 100_000; // per buyer
+export const BULK_MAX_BUYERS = 500;
+
 export const DEFAULT_WALLET_SETTINGS = {
   transferMax: 50_000, // points in one transfer
   transferDailyMax: 100_000, // points a buyer can send in 24 hours

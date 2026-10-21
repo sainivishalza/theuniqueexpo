@@ -383,6 +383,7 @@ export interface BuyerExportProfile extends BuyerProfileFields {
   buyerNumber: string;
   name: string;
   email: string;
+  rewardPoints: number;
   // Raw data URL per document (null if never uploaded) -- unlike mapRow's
   // hasDocument/documentReview, an export needs the actual image bytes to
   // embed, not just a boolean.
@@ -401,9 +402,10 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
             p.company_name, p.nationality, p.passport_number, p.annual_turnover, p.purchase_intention, p.other_purchase_intention,
             p.contact_person, p.registration_code, ${expoNamesSql("u.id")} AS source_exhibitions, p.departure_city, p.attendance_day, p.meeting_or_visiting,
             p.passport_name, p.gender, p.wechat_id, p.overseas_company_address, p.company_field, p.job_title, p.contact_email, p.phone_number,
-            p.date_of_birth, p.visa_type, p.visa_expire_date, ${docColumns}
+            p.date_of_birth, p.visa_type, p.visa_expire_date, ${docColumns}, COALESCE(w.balance, 0) AS reward_points
      FROM users u
      LEFT JOIN buyer_profiles p ON p.user_id = u.id
+     LEFT JOIN wallets w ON w.user_id = u.id
      WHERE u.id IN (${placeholders})
      ORDER BY u.buyer_no IS NULL, u.buyer_no, u.id`,
     userIds
@@ -443,6 +445,7 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
       dateOfBirth: row.date_of_birth || "",
       visaType: row.visa_type || "",
       visaExpireDate: row.visa_expire_date || "",
+      rewardPoints: Number(row.reward_points ?? 0),
       documentData,
       documentStatus,
     };

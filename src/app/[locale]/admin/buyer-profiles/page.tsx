@@ -9,6 +9,7 @@ import { extractBuyerNumbers, formatBuyerNumber, parseBuyerNumber } from "@/lib/
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import { formatNumber } from "@/lib/format";
+import BulkPointsDialog from "./BulkPointsDialog";
 import { TEXT_COLUMN_ORDER } from "@/lib/buyer-profile-columns";
 import Button from "@/components/ui/Button";
 import UrlSearchSync from "@/components/UrlSearchSync";
@@ -401,6 +402,8 @@ export default function AdminBuyerProfilesPage() {
   const [search, setSearch] = useState("");
   const [expoFilter, setExpoFilter] = useState("");
   const [docFilter, setDocFilter] = useState("");
+  const [pointsFilter, setPointsFilter] = useState("");
+  const [bulkOpen, setBulkOpen] = useState(false);
   const [expoOptions, setExpoOptions] = useState<ExpoOption[]>([]);
   const [error, setError] = useState("");
 
@@ -455,19 +458,23 @@ export default function AdminBuyerProfilesPage() {
     const matches = rows.filter((r, i) => {
       if (expoId !== null && !r.expoIds.includes(expoId)) return false;
       if (docFilter && !matchesDocFilter(r, docFilter)) return false;
+      if (pointsFilter === "has" && r.rewardPoints <= 0) return false;
+      if (pointsFilter === "none" && r.rewardPoints > 0) return false;
       if (!q) return true;
       if (asNumber !== null && r.buyerNo === asNumber) return true;
       return searchable[i].some((value) => value.includes(q));
     });
+    // "Most points first" (a stable sort: buyers with the same points keep their order).
+    if (pointsFilter === "top") matches.sort((x, y) => y.rewardPoints - x.rewardPoints);
     // Searching "TUE12" also matches TUE1200-TUE1299: keep the exact number on the first page.
     const exact = asNumber === null ? -1 : matches.findIndex((r) => r.buyerNo === asNumber);
     if (exact > 0) matches.unshift(...matches.splice(exact, 1));
     return matches;
-  }, [rows, searchable, expoFilter, docFilter, deferredSearch]);
+  }, [rows, searchable, expoFilter, docFilter, pointsFilter, deferredSearch]);
   // How many pages of the list are showing. Changing the search or the expo filter
   // starts again from the first page (state adjusted while rendering, the pattern React
   // documents for "reset state when an input changes").
-  const filterKey = `${expoFilter}\n${docFilter}\n${deferredSearch}`;
+  const filterKey = `${expoFilter}\n${docFilter}\n${pointsFilter}\n${deferredSearch}`;
   const [pageState, setPageState] = useState({ key: filterKey, pages: 1 });
   if (pageState.key !== filterKey) setPageState({ key: filterKey, pages: 1 });
   const visible = filtered.slice(0, pageState.pages * PAGE_SIZE);
@@ -756,6 +763,17 @@ export default function AdminBuyerProfilesPage() {
                 <option key={field} value={`missing:${field}`}>{t("docFilter.missingOne", { name: t(`docFields.${field}`) })}</option>
               ))}
             </select>
+            <select
+              value={pointsFilter}
+              onChange={(e) => setPointsFilter(e.target.value)}
+              aria-label={t("filterByPoints")}
+              className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="">{t("pointsFilter.all")}</option>
+              <option value="has">{t("pointsFilter.has")}</option>
+              <option value="none">{t("pointsFilter.none")}</option>
+              <option value="top">{t("pointsFilter.top")}</option>
+            </select>
             <Link href="/admin/buyer-expos" className="text-sm font-semibold text-emerald-800 hover:text-emerald-900 underline">{t("manageExpos")}</Link>
             {selected.size > 0 && (
               <div className="flex flex-wrap items-center gap-2 rounded-xl bg-emerald-50 px-3 py-2">
@@ -764,6 +782,7 @@ export default function AdminBuyerProfilesPage() {
                 <Button onClick={runExportZip} disabled={exporting === "zip"} variant="secondaryOutline" size="xs">
                   {exporting === "zip" ? ta("loading") : t("exportZip")}
                 </Button>
+                <Button onClick={() => setBulkOpen(true)} variant="secondaryOutline" size="xs">{t("bulk.toggle")}</Button>
                 <button type="button" onClick={() => setSelected(new Set())} className="text-xs text-emerald-700 hover:text-emerald-900 underline">
                   {t("clearSelection")}
                 </button>
@@ -1116,6 +1135,7 @@ export default function AdminBuyerProfilesPage() {
         </div>
       )}
 
+      {bulkOpen && <BulkPointsDialog userIds={Array.from(selected)} onClose={() => setBulkOpen(false)} onDone={() => loadRows()} />}
       {exportPickerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setExportPickerOpen(false)}>
           <div className="absolute inset-0 bg-black/40" />

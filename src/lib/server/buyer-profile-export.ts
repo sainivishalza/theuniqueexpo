@@ -45,6 +45,7 @@ export const DOC_LABELS: Record<DocumentField, string> = {
   cantonFairCard: "Canton Fair Card",
   buyerPhoto: "Buyer Photo",
   invoiceOrderList: "Invoice / Order List",
+  latestEntryStamp: "Latest Entry Stamp Photo",
 };
 
 export const EXPORTABLE_FIELD_KEYS = Object.keys(FIELD_LABELS);

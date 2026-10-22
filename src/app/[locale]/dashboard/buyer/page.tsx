@@ -26,7 +26,7 @@ const ACTION_KEYS = [
 ];
 
 // Same order as the admin Buyer Profiles screen and the downloads.
-const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList"] as const;
+const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList", "latestEntryStamp"] as const;
 type DocState = { hasDocument: Record<string, boolean>; documentReview: Record<string, { status: "pending" | "verified" | "rejected"; note: string }> };
 const DOC_BADGE = {
   missing: "bg-gray-100 text-gray-600",

@@ -5,7 +5,7 @@ import { formatBuyerNumber } from "@/lib/buyer-number";
 import { assignMissingBuyerNumbers } from "@/lib/server/buyer-numbers";
 
 // The order documents are shown and exported in: passport, visa, business licence and card,
-// buyer photo, Canton Fair card, invoice / order list.
+// buyer photo, Canton Fair card, invoice / order list, latest entry stamp photo.
 export const DOCUMENT_FIELDS = [
   "passportFront",
   "visaPage",
@@ -14,6 +14,7 @@ export const DOCUMENT_FIELDS = [
   "buyerPhoto",
   "cantonFairCard",
   "invoiceOrderList",
+  "latestEntryStamp",
 ] as const;
 
 export type DocumentField = (typeof DOCUMENT_FIELDS)[number];
@@ -26,6 +27,7 @@ const DOCUMENT_COLUMNS: Record<DocumentField, string> = {
   cantonFairCard: "doc_canton_fair_card",
   buyerPhoto: "doc_buyer_photo",
   invoiceOrderList: "doc_invoice_order_list",
+  latestEntryStamp: "doc_latest_entry_stamp",
 };
 
 export type DocumentReviewStatus = "pending" | "verified" | "rejected";
@@ -38,6 +40,7 @@ const DOCUMENT_STATUS_COLUMNS: Record<DocumentField, string> = {
   cantonFairCard: "doc_canton_fair_card_status",
   buyerPhoto: "doc_buyer_photo_status",
   invoiceOrderList: "doc_invoice_order_list_status",
+  latestEntryStamp: "doc_latest_entry_stamp_status",
 };
 
 const DOCUMENT_NOTE_COLUMNS: Record<DocumentField, string> = {
@@ -48,7 +51,34 @@ const DOCUMENT_NOTE_COLUMNS: Record<DocumentField, string> = {
   cantonFairCard: "doc_canton_fair_card_note",
   buyerPhoto: "doc_buyer_photo_note",
   invoiceOrderList: "doc_invoice_order_list_note",
+  latestEntryStamp: "doc_latest_entry_stamp_note",
 };
+
+// The eighth document (migration 058). The site can go live a few minutes before the deploy job
+// has applied a migration, so until the new columns exist the app carries on with the first
+// seven documents instead of failing on columns that are not there yet. Checked once the columns
+// are found; while they are missing, looked at again at most every 30 seconds.
+const STAMP_COLUMNS = ["doc_latest_entry_stamp", "doc_latest_entry_stamp_status", "doc_latest_entry_stamp_note", "has_doc_latest_entry_stamp"];
+let stampColumnsFound = false;
+let stampCheckedAt = 0;
+
+async function stampColumnsReady(): Promise<boolean> {
+  if (stampColumnsFound) return true;
+  if (Date.now() - stampCheckedAt < 30_000) return false;
+  stampCheckedAt = Date.now();
+  const [rows] = await pool.query<RowDataPacket[]>(
+    `SELECT COUNT(*) AS n FROM information_schema.columns
+     WHERE table_schema = DATABASE() AND table_name = 'buyer_profiles' AND column_name IN (${STAMP_COLUMNS.map(() => "?").join(",")})`,
+    STAMP_COLUMNS
+  );
+  stampColumnsFound = Number(rows[0]?.n) === STAMP_COLUMNS.length;
+  return stampColumnsFound;
+}
+
+// The documents the database can serve right now.
+async function activeDocumentFields(): Promise<readonly DocumentField[]> {
+  return (await stampColumnsReady()) ? DOCUMENT_FIELDS : DOCUMENT_FIELDS.filter((f) => f !== "latestEntryStamp");
+}
 
 export interface BuyerProfileFields {
   companyName: string;
@@ -168,6 +198,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
       cantonFairCard: !!row.doc_canton_fair_card,
       buyerPhoto: !!row.doc_buyer_photo,
       invoiceOrderList: !!row.doc_invoice_order_list,
+      latestEntryStamp: !!row.doc_latest_entry_stamp,
     },
     documentReview: {
       businessLicense: { status: row.doc_business_license_status || "pending", note: row.doc_business_license_note || "" },
@@ -177,12 +208,14 @@ function mapRow(row: RowDataPacket): BuyerProfile {
       cantonFairCard: { status: row.doc_canton_fair_card_status || "pending", note: row.doc_canton_fair_card_note || "" },
       buyerPhoto: { status: row.doc_buyer_photo_status || "pending", note: row.doc_buyer_photo_note || "" },
       invoiceOrderList: { status: row.doc_invoice_order_list_status || "pending", note: row.doc_invoice_order_list_note || "" },
+      latestEntryStamp: { status: row.doc_latest_entry_stamp_status || "pending", note: row.doc_latest_entry_stamp_note || "" },
     },
     updatedAt: Math.floor(new Date(row.updated_at).getTime() / 1000),
   };
 }
 
-const SELECT_SUMMARY_COLUMNS =
+function summaryColumns(stamp: boolean): string {
+  return (
   "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, registration_code, " +
   `${expoNamesSql("buyer_profiles.user_id")} AS source_exhibitions, ${expoIdsSql("buyer_profiles.user_id")} AS expo_ids, ` +
   "departure_city, attendance_day, meeting_or_visiting, passport_name, gender, wechat_id, overseas_company_address, company_field, job_title, contact_email, phone_number, " +
@@ -192,11 +225,14 @@ const SELECT_SUMMARY_COLUMNS =
   "doc_passport_front_status, doc_passport_front_note, doc_visa_page_status, doc_visa_page_note, " +
   "doc_canton_fair_card_status, doc_canton_fair_card_note, doc_buyer_photo_status, doc_buyer_photo_note, " +
   "doc_invoice_order_list_status, doc_invoice_order_list_note, " +
-  "updated_at";
+  (stamp ? "doc_latest_entry_stamp, doc_latest_entry_stamp_status, doc_latest_entry_stamp_note, " : "") +
+  "updated_at"
+  );
+}
 
 export async function getBuyerProfile(userId: number): Promise<BuyerProfile | null> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT ${SELECT_SUMMARY_COLUMNS} FROM buyer_profiles WHERE user_id = ? LIMIT 1`,
+    `SELECT ${summaryColumns(await stampColumnsReady())} FROM buyer_profiles WHERE user_id = ? LIMIT 1`,
     [userId]
   );
   const row = rows[0];
@@ -220,6 +256,7 @@ export async function getBuyerProfileOrEmpty(userId: number): Promise<BuyerProfi
       cantonFairCard: false,
       buyerPhoto: false,
       invoiceOrderList: false,
+      latestEntryStamp: false,
     },
     documentReview: emptyDocumentReview(),
     updatedAt: 0,
@@ -291,8 +328,8 @@ function overallVerificationStatus(docs: { uploaded: boolean; status: DocumentRe
 // every buyer, so selecting them just to tick "uploaded" pulled gigabytes into the
 // server once a couple of thousand buyers had documents. Migration 055 adds a stored
 // has_doc_* flag column per document that the database keeps in step by itself.
-function documentPresenceSql(useFlagColumns: boolean): string {
-  return DOCUMENT_FIELDS.map((f) => {
+function documentPresenceSql(useFlagColumns: boolean, fields: readonly DocumentField[]): string {
+  return fields.map((f) => {
     const column = DOCUMENT_COLUMNS[f];
     // Until the migration has run on a server, ask the database for the length instead
     // (the image still never reaches the app).
@@ -300,16 +337,15 @@ function documentPresenceSql(useFlagColumns: boolean): string {
   }).join(", ");
 }
 
-function adminListQuery(useFlagColumns: boolean): string {
+function adminListQuery(useFlagColumns: boolean, fields: readonly DocumentField[]): string {
   return `SELECT u.id AS user_id, u.buyer_no, u.name, u.email, u.status,
             p.company_name, p.nationality, p.passport_number, p.passport_name, p.gender, p.wechat_id,
             p.departure_city, p.attendance_day, p.meeting_or_visiting, p.job_title, p.company_field,
             p.overseas_company_address, p.contact_email, p.phone_number, p.registration_code, p.annual_turnover, p.contact_person,
             ${expoNamesSql("u.id")} AS source_exhibitions, ${expoIdsSql("u.id")} AS expo_ids,
             p.date_of_birth, p.visa_type, p.visa_expire_date, p.purchase_intention, p.other_purchase_intention,
-            ${documentPresenceSql(useFlagColumns)},
-            p.doc_business_license_status, p.doc_business_card_status, p.doc_passport_front_status,
-            p.doc_visa_page_status, p.doc_canton_fair_card_status, p.doc_buyer_photo_status, p.doc_invoice_order_list_status,
+            ${documentPresenceSql(useFlagColumns, fields)},
+            ${fields.map((f) => `p.${DOCUMENT_STATUS_COLUMNS[f]}`).join(", ")},
             COALESCE(w.balance, 0) AS reward_points
      FROM users u
      LEFT JOIN buyer_profiles p ON p.user_id = u.id
@@ -321,12 +357,13 @@ function adminListQuery(useFlagColumns: boolean): string {
 export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[]> {
   await assignMissingBuyerNumbers();
   let rows: RowDataPacket[];
+  const fields = await activeDocumentFields();
   try {
-    [rows] = await pool.query<RowDataPacket[]>(adminListQuery(true));
+    [rows] = await pool.query<RowDataPacket[]>(adminListQuery(true, fields));
   } catch (err) {
     // The code can go live a few minutes before the deploy job has applied migration 055.
     if ((err as { code?: string }).code !== "ER_BAD_FIELD_ERROR") throw err;
-    [rows] = await pool.query<RowDataPacket[]>(adminListQuery(false));
+    [rows] = await pool.query<RowDataPacket[]>(adminListQuery(false, fields));
   }
   return rows.map((row) => {
     const documents: Record<DocumentField, { uploaded: boolean; status: DocumentReviewStatus }> = {
@@ -337,6 +374,7 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
       cantonFairCard: { uploaded: !!row.has_doc_canton_fair_card, status: (row.doc_canton_fair_card_status || "pending") as DocumentReviewStatus },
       buyerPhoto: { uploaded: !!row.has_doc_buyer_photo, status: (row.doc_buyer_photo_status || "pending") as DocumentReviewStatus },
       invoiceOrderList: { uploaded: !!row.has_doc_invoice_order_list, status: (row.doc_invoice_order_list_status || "pending") as DocumentReviewStatus },
+      latestEntryStamp: { uploaded: !!row.has_doc_latest_entry_stamp, status: (row.doc_latest_entry_stamp_status || "pending") as DocumentReviewStatus },
     };
     const docs = Object.values(documents);
     return {
@@ -396,7 +434,7 @@ export interface BuyerExportProfile extends BuyerProfileFields {
 export async function getBuyerProfilesForExport(userIds: number[]): Promise<BuyerExportProfile[]> {
   if (userIds.length === 0) return [];
   const placeholders = userIds.map(() => "?").join(", ");
-  const docColumns = DOCUMENT_FIELDS.map((f) => `p.${DOCUMENT_COLUMNS[f]}, p.${DOCUMENT_STATUS_COLUMNS[f]}`).join(", ");
+  const docColumns = (await activeDocumentFields()).map((f) => `p.${DOCUMENT_COLUMNS[f]}, p.${DOCUMENT_STATUS_COLUMNS[f]}`).join(", ");
   const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT u.id AS user_id, u.buyer_no, u.name, u.email,
             p.company_name, p.nationality, p.passport_number, p.annual_turnover, p.purchase_intention, p.other_purchase_intention,

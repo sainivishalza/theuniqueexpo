@@ -2892,7 +2892,8 @@
       "visaPage": "Visa Page",
       "cantonFairCard": "Canton Fair Card",
       "buyerPhoto": "Buyer Photo",
-      "invoiceOrderList": "Invoice / Order List"
+      "invoiceOrderList": "Invoice / Order List",
+      "latestEntryStamp": "Latest Entry Stamp Photo"
     },
     "docReviewStatus": {
       "pending": "Pending review",
@@ -2992,7 +2993,8 @@
       "visaPage": "Visa Page",
       "cantonFairCard": "Canton Fair Card",
       "buyerPhoto": "Buyer Photo",
-      "invoiceOrderList": "Invoice / Order List"
+      "invoiceOrderList": "Invoice / Order List",
+      "latestEntryStamp": "Latest Entry Stamp Photo"
     },
     "expoPlaceholder": "Select expos...",
     "noExpoOptions": "No expos yet -- add some in Buyer Expos",
@@ -3025,7 +3027,7 @@
     "docFilter": {
       "all": "All documents",
       "missingAny": "Missing a document",
-      "complete": "All 7 uploaded",
+      "complete": "All documents uploaded",
       "missingOne": "Missing: {name}",
       "pendingReview": "Awaiting review",
       "actionNeeded": "Needs the buyer to re-upload"

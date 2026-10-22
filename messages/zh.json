@@ -2892,7 +2892,8 @@
       "visaPage": "签证页",
       "cantonFairCard": "广交会证件",
       "buyerPhoto": "买家照片",
-      "invoiceOrderList": "发票 / 订单清单"
+      "invoiceOrderList": "发票 / 订单清单",
+      "latestEntryStamp": "最近入境章照片"
     },
     "docReviewStatus": {
       "pending": "待审核",
@@ -2992,7 +2993,8 @@
       "visaPage": "签证页",
       "cantonFairCard": "广交会证件",
       "buyerPhoto": "买家照片",
-      "invoiceOrderList": "发票 / 订单清单"
+      "invoiceOrderList": "发票 / 订单清单",
+      "latestEntryStamp": "最近入境章照片"
     },
     "expoPlaceholder": "选择展会...",
     "noExpoOptions": "暂无展会——请先在“采购商展会”中添加",
@@ -3025,7 +3027,7 @@
     "docFilter": {
       "all": "全部文件",
       "missingAny": "缺少文件",
-      "complete": "7 项已全部上传",
+      "complete": "文件已全部上传",
       "missingOne": "缺少：{name}",
       "pendingReview": "待审核",
       "actionNeeded": "需买家重新上传"

@@ -80,7 +80,7 @@ const FIELDS: FieldDef[] = [
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];
 // Same order as the admin Buyer Profiles screen and the downloads.
-const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList"] as const;
+const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList", "latestEntryStamp"] as const;
 
 const DOC_STATUS_BADGE: Record<DocReviewStatus, string> = {
   pending: "bg-amber-50 text-amber-700",

@@ -161,7 +161,7 @@ const FIELDS: FieldDef[] = [
 // (The edit form keeps the order of FIELDS above.)
 const TABLE_FIELDS: FieldDef[] = TEXT_COLUMN_ORDER.flatMap((key) => FIELDS.filter((f) => f.key === key));
 // Same order as the Excel and ZIP exports (DOCUMENT_FIELDS on the server).
-const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList"] as const;
+const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList", "latestEntryStamp"] as const;
 // Column order of the Excel download and its tick-list: the same as the table on screen.
 const TEXT_EXPORT_ORDER: string[] = [...TEXT_COLUMN_ORDER];
 const EXPORT_ORDER: string[] = [...TEXT_EXPORT_ORDER, ...DOC_FIELDS];

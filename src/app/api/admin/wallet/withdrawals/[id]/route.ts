@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { markWithdrawalPaid, rejectWithdrawal } from "@/lib/server/wallet-repo";
 import { getWithdrawalQr } from "@/lib/server/wallet-admin-repo";
+import { notifyWalletRequest } from "@/lib/server/notifications";
 import { positiveId, readJson, requireWalletAdmin, text, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
 
 // The buyer's Alipay / WeChat QR code, to scan when paying them.
@@ -26,9 +27,13 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (!id || !body) return walletFail("invalid_input");
   try {
     if (body.action === "paid") {
-      await markWithdrawalPaid(auth.admin.id, id, text(body.reference, 150), text(body.note, 500));
+      const reference = text(body.reference, 150);
+      await markWithdrawalPaid(auth.admin.id, id, reference, text(body.note, 500));
+      notifyWalletRequest("wallet_withdrawals", id, "withdrawalPaid", { reason: reference });
     } else if (body.action === "reject") {
-      await rejectWithdrawal(auth.admin.id, id, text(body.note, 500));
+      const note = text(body.note, 500);
+      await rejectWithdrawal(auth.admin.id, id, note);
+      notifyWalletRequest("wallet_withdrawals", id, "withdrawalRejected", { reason: note });
     } else {
       return walletFail("invalid_input");
     }

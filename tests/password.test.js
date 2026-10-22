@@ -1,0 +1,61 @@
+const fs=require('fs'); const { BASE, sql, ok, done, mkUsers } = require('./helpers/common.js'); const SHOTS=require('./helpers/common.js').SHOTS;
+const bcrypt = require('bcryptjs');
+const { chromium } = require('playwright');
+const axeSrc=require('./helpers/browser.js').axeSource;
+const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+const loginRaw=(email,password)=>fetch(BASE+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json','x-forwarded-for':'10.9.'+Math.floor(Math.random()*250)+'.'+Math.floor(Math.random()*250)},body:JSON.stringify({email,password})});
+(async()=>{
+ const u=await mkUsers('ac'); const email=u.m.b; const cookie='token='+u.bT;
+ const cp=(body,ck=cookie)=>fetch(BASE+'/api/auth/change-password',{method:'POST',headers:{'Content-Type':'application/json',cookie:ck},body:JSON.stringify(body)});
+ console.log('\n== change password: the API');
+ ok((await fetch(BASE+'/api/auth/change-password',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status===401,'signed-out is refused');
+ let r=await cp({}); ok(r.status===400,'an empty request is refused',r.status);
+ r=await cp({currentPassword:'pass1234',newPassword:'x'}); ok(r.status===400,'a missing confirmation is refused',r.status);
+ r=await cp({currentPassword:'wrong-one',newPassword:'short',confirmPassword:'short'}); let j=await r.json(); ok(r.status===403&&j.code==='wrong_password','the current password is checked first (a wrong one cannot be used to probe the rules)',[r.status,j.code]);
+ r=await cp({currentPassword:'pass1234',newPassword:'short12',confirmPassword:'short12'}); j=await r.json(); ok(r.status===400&&j.code==='weak_password','7 characters is too short',[r.status,j.code]);
+ r=await cp({currentPassword:'pass1234',newPassword:'é'.repeat(37),confirmPassword:'é'.repeat(37)}); j=await r.json(); ok(r.status===400&&j.code==='too_long','a password over 72 bytes is refused (bcrypt would cut it short)',[r.status,j.code]);
+ r=await cp({currentPassword:'pass1234',newPassword:'newpass99',confirmPassword:'newpass98'}); j=await r.json(); ok(r.status===400&&j.code==='mismatch','confirmation must match',[r.status,j.code]);
+ r=await cp({currentPassword:'pass1234',newPassword:'pass1234',confirmPassword:'pass1234'}); j=await r.json(); ok(r.status===400&&j.code==='same_password','the new password must differ',[r.status,j.code]);
+ const before=sql(`SELECT password_hash FROM users WHERE id=${u.bId}`); ok(await bcrypt.compare('pass1234',before),'nothing changed so far');
+ r=await cp({currentPassword:'pass1234',newPassword:'My New Pass 2026!',confirmPassword:'My New Pass 2026!'}); const fresh='token='+/token=([^;]+)/.exec(r.headers.getSetCookie().join(';'))[1]; j=await r.json(); ok(r.status===200&&j.success,'a valid change works',[r.status,j]);
+ const after=sql(`SELECT password_hash FROM users WHERE id=${u.bId}`); ok(after!==before&&after.startsWith('$2')&&await bcrypt.compare('My New Pass 2026!',after)&&!after.includes('My New Pass'),'stored as a new bcrypt hash, never as plain text');
+ ok((await loginRaw(email,'pass1234')).status===401,'the old password no longer signs in');
+ ok((await loginRaw(email,'My New Pass 2026!')).status===200,'the new password signs in');
+ ok((await (await fetch(BASE+'/api/auth/me',{headers:{cookie:fresh}})).json()).user!==null,'this device stays signed in (it gets a fresh cookie)');
+ r=await cp({currentPassword:'My New Pass 2026!',newPassword:'Another one 77',confirmPassword:'Another one 77'},fresh); ok(r.status===200,'it can be changed again with the new current password');
+ // another account is untouched
+ ok((await loginRaw(u.m.a,'pass1234')).status===200,'another account is not affected');
+ // rate limit on a separate user
+ const v=await mkUsers('acr'); const ck2='token='+v.bT; let last;
+ for(let i=0;i<6;i++){ last=await cp({currentPassword:'bad'+i,newPassword:'abcdefgh1',confirmPassword:'abcdefgh1'},ck2); }
+ ok(last.status===403,'six wrong current passwords are each refused');
+ r=await cp({currentPassword:'pass1234',newPassword:'abcdefgh1',confirmPassword:'abcdefgh1'},ck2); ok(r.status===429&&r.headers.get('retry-after'),'then a pause (429) even for the right password',[r.status,r.headers.get('retry-after')]);
+ const w=await mkUsers('acs'); const ck3='token='+w.bT; for(let i=0;i<3;i++) await cp({currentPassword:'bad'+i,newPassword:'abcdefgh1',confirmPassword:'abcdefgh1'},ck3);
+ r=await cp({currentPassword:'pass1234',newPassword:'abcdefgh1',confirmPassword:'abcdefgh1'},ck3); ok(r.status===200,'a few typos followed by the right password still works');
+ r=await fetch(BASE+'/api/auth/change-password',{method:'POST',headers:{'Content-Type':'application/json','x-forwarded-for':'1.2.3.4',cookie:'token='+u.aT},body:JSON.stringify({currentPassword:'pass1234',newPassword:'Admin new pass 1',confirmPassword:'Admin new pass 1'})}); ok(r.status===200,'works for any signed-in role (admin tried)',r.status);
+ console.log('\n== change password: the profile page');
+ const br=await require('./helpers/browser.js').launch();
+ const mk=async(t,vp={width:1360,height:1000})=>{const c=await br.newContext({viewport:vp}); await c.addCookies([{name:'token',value:t,url:BASE}]); return c;};
+ const z=await mkUsers('acu'); let c=await mk(z.bT); let p=await c.newPage();
+ await p.goto(BASE+'/en/dashboard/buyer/profile',{waitUntil:'networkidle'}); await p.waitForSelector('#change-password');
+ ok(await p.getByRole('link',{name:/Change password/}).count()>=1,'a "Change password" link is at the top of the profile');
+ await p.getByRole('link',{name:/Change password/}).first().click(); await sleep(300); ok(/#change-password/.test(p.url()),'it jumps to the card');
+ const card=p.locator('#change-password'); const cur=card.getByLabel('Current password'), nw=card.getByLabel('New password',{exact:true}), cf=card.getByLabel('Confirm new password');
+ ok(await cur.getAttribute('type')==='password'&&await cur.getAttribute('autocomplete')==='current-password'&&await nw.getAttribute('autocomplete')==='new-password','three password boxes with the right autocomplete hints');
+ await card.getByRole('button',{name:'Show'}).first().click(); ok(await cur.getAttribute('type')==='text','Show reveals what was typed'); await card.getByRole('button',{name:'Hide'}).first().click(); ok(await cur.getAttribute('type')==='password','and Hide covers it again');
+ const submit=card.getByRole('button',{name:'Change password'});
+ await submit.click(); ok(/type your current password/i.test(await card.getByRole('alert').innerText()),'empty current password: plain message');
+ await cur.fill('pass1234'); await nw.fill('abc'); await cf.fill('abc'); await submit.click(); ok(/at least 8/.test(await card.getByRole('alert').innerText()),'too short: says 8 characters');
+ await nw.fill('longenough1'); await cf.fill('longenough2'); await submit.click(); ok(/not the same/.test(await card.getByRole('alert').innerText()),'confirmation differs: says so');
+ await nw.fill('pass1234'); await cf.fill('pass1234'); await submit.click(); ok(/different from the current/.test(await card.getByRole('alert').innerText()),'same as the old one: says so');
+ await cur.fill('not my password'); await nw.fill('longenough1'); await cf.fill('longenough1'); await submit.click(); await card.getByRole('alert').filter({hasText:'current password is not correct'}).waitFor({timeout:8000}); ok(true,'a wrong current password: the server answer is shown');
+ await p.screenshot({path:SHOTS+'/pw_card.png',fullPage:false});
+ await cur.fill('pass1234'); await submit.click(); await card.getByRole('status').filter({hasText:'password has been changed'}).waitFor({timeout:8000}); ok(await cur.inputValue()===''&&await nw.inputValue()==='','success message, boxes cleared');
+ ok((await loginRaw(z.m.b,'longenough1')).status===200,'the new password works for signing in');
+ await c.close();
+ for(const [loc,title,btn] of [['ru','Смена пароля','Сменить пароль'],['zh','修改密码','修改密码']]){ c=await mk(v.bT); p=await c.newPage(); await p.goto(`${BASE}/${loc}/dashboard/buyer/profile`,{waitUntil:'networkidle'}); await p.waitForSelector('#change-password'); ok((await p.locator('#change-password').innerText()).includes(title)&&!/password\./.test(await p.locator('#change-password').innerText()),loc+': translated');
+   await p.evaluate(axeSrc); const vio=await p.evaluate(async()=>(await window.axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}})).violations.map(x=>x.id+':'+x.nodes.length)); ok(vio.length===0,loc+': profile page axe 0 violations',vio); await c.close(); }
+ c=await mk(v.bT); p=await c.newPage(); await p.goto(BASE+'/en/dashboard/buyer/profile',{waitUntil:'networkidle'}); await p.evaluate(axeSrc); let vio=await p.evaluate(async()=>(await window.axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}})).violations.map(x=>x.id+':'+x.nodes.length)); ok(vio.length===0,'en: profile page axe 0 violations',vio); await c.close();
+ c=await mk(v.bT,{width:375,height:800}); p=await c.newPage(); await p.goto(BASE+'/en/dashboard/buyer/profile',{waitUntil:'networkidle'}); await p.waitForSelector('#change-password'); let wd=await p.evaluate(()=>({sw:document.documentElement.scrollWidth,vw:innerWidth})); ok(wd.sw<=wd.vw+1,'375px: no sideways overflow on the profile',wd); await p.locator('#change-password').scrollIntoViewIfNeeded(); await p.screenshot({path:SHOTS+'/pw_card_phone.png'}); await c.close();
+ await br.close(); done();
+})();

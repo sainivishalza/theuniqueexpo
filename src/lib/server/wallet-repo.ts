@@ -13,6 +13,7 @@ import {
   type WithdrawalInput,
 } from "@/lib/wallet";
 import { formatBuyerNumber } from "@/lib/buyer-number";
+import { notifyPointsReceived } from "@/lib/server/notifications";
 import { attendanceRewardFor } from "@/lib/server/wallet-tiers";
 
 // Rewards wallet. 1 point = 1 RMB, whole points only.
@@ -463,7 +464,14 @@ export async function awardAttendance(registrationId: number): Promise<number> {
 // still booked only once).
 export async function awardAttendanceQuietly(registrationId: number): Promise<void> {
   try {
-    await awardAttendance(registrationId);
+    const points = await awardAttendance(registrationId);
+    if (points > 0) {
+      const [rows] = await pool.query<RowDataPacket[]>(
+        "SELECT r.user_id, e.title FROM expo_registrations r JOIN exhibitions e ON e.id = r.exhibition_id WHERE r.id = ?",
+        [registrationId]
+      );
+      if (rows[0]) notifyPointsReceived(rows[0].user_id, points, String(rows[0].title));
+    }
   } catch (err) {
     console.error("Could not award attendance points for registration", registrationId, err);
   }
@@ -771,19 +779,22 @@ export async function bulkAdjustWallets(
   amount: number,
   note: string,
   key: string
-): Promise<{ added: number; failed: { userId: number; code: string }[] }> {
+): Promise<{ added: number; failed: { userId: number; code: string }[]; credited: number[] }> {
   const ids = Array.from(new Set(userIds)).sort((a, b) => a - b);
   const failed: { userId: number; code: string }[] = [];
+  // Buyers credited by this very request (a repeat of an earlier request credits no one, and sends no e-mail).
+  const credited: number[] = [];
   let added = 0;
   for (const userId of ids) {
     try {
-      await adjustWallet(adminId, userId, amount, note, `${key}-${userId}`);
+      const posted = await adjustWallet(adminId, userId, amount, note, `${key}-${userId}`);
       added += 1;
+      if (!posted.replayed) credited.push(userId);
     } catch (err) {
       failed.push({ userId, code: err instanceof WalletError ? err.code : "server_error" });
     }
   }
-  return { added, failed };
+  return { added, failed, credited };
 }
 
 export async function setWalletFrozen(userId: number, frozen: boolean): Promise<void> {

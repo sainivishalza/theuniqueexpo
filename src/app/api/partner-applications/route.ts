@@ -10,7 +10,7 @@ const LEAD_FORM_WINDOW_MS = 60 * 60 * 1000;
 // no login required. Applying is a request for admin review, not an
 // instant self-selected role (see schema-migrations/023-partner-program.sql).
 export async function POST(request: Request) {
-  const limited = rateLimitOrNull(request, "partner-applications", LEAD_FORM_LIMIT, LEAD_FORM_WINDOW_MS);
+  const limited = await rateLimitOrNull(request, "partner-applications", LEAD_FORM_LIMIT, LEAD_FORM_WINDOW_MS);
   if (limited) return limited;
 
   try {

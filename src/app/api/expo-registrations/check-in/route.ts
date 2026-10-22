@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     if (body.action !== "check_in" && body.action !== "check_out") {
       return NextResponse.json({ error: "Unknown action" }, { status: 400 });
     }
-    const { allowed, retryAfterSeconds } = checkRateLimit(`checkin:${user.id}`, 20, 60_000);
+    const { allowed, retryAfterSeconds } = await checkRateLimit(`checkin:${user.id}`, 20, 60_000);
     if (!allowed) {
       return NextResponse.json({ error: "Too many attempts. Please wait a moment." }, { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } });
     }

@@ -9,7 +9,7 @@ import { limitOrNull, requireBuyer, walletErrorResponse, walletFail } from "@/li
 export async function GET(request: Request) {
   const auth = await requireBuyer(request);
   if (auth.response) return auth.response;
-  const limited = limitOrNull(auth.user.id, "lookup", 60, 10 * 60 * 1000);
+  const limited = await limitOrNull(auth.user.id, "lookup", 60, 10 * 60 * 1000);
   if (limited) return limited;
   try {
     const params = new URL(request.url).searchParams;

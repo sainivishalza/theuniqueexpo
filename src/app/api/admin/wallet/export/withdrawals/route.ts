@@ -6,7 +6,7 @@ import { limitOrNull, requireWalletAdmin, walletErrorResponse } from "@/lib/serv
 export async function GET(request: Request) {
   const auth = await requireWalletAdmin(request);
   if (auth.response) return auth.response;
-  const limited = limitOrNull(auth.admin.id, "export", 30, 60_000);
+  const limited = await limitOrNull(auth.admin.id, "export", 30, 60_000);
   if (limited) return limited;
   try {
     const status = new URL(request.url).searchParams.get("status") ?? "";

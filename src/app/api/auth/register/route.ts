@@ -3,6 +3,7 @@ import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { createUserAccount, setSessionCookie } from "@/lib/auth-server";
 import { rateLimitOrNull } from "@/lib/server/rate-limit";
+import { detectLocale, rememberLocale } from "@/lib/server/notifications";
 import { isValidPartnerId, createReferral } from "@/lib/server/partner-referrals-repo";
 
 // "admin" is deliberately excluded -- it's a UserRole (for session/UI typing)
@@ -13,7 +14,7 @@ const REGISTER_LIMIT = 5;
 const REGISTER_WINDOW_MS = 60 * 60 * 1000;
 
 export async function POST(request: Request) {
-  const limited = rateLimitOrNull(request, "register", REGISTER_LIMIT, REGISTER_WINDOW_MS);
+  const limited = await rateLimitOrNull(request, "register", REGISTER_LIMIT, REGISTER_WINDOW_MS);
   if (limited) return limited;
 
   try {
@@ -53,6 +54,7 @@ export async function POST(request: Request) {
       }
     }
 
+    rememberLocale(user.id, detectLocale(request));
     const response = NextResponse.json({ user });
     setSessionCookie(response, token);
     return response;

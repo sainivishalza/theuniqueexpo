@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { parsePoints } from "@/lib/wallet";
 import { approveTopup, rejectTopup } from "@/lib/server/wallet-repo";
 import { getTopupProof } from "@/lib/server/wallet-admin-repo";
+import { notifyWalletRequest } from "@/lib/server/notifications";
 import { positiveId, readJson, requireWalletAdmin, text, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
 
 // The payment proof the buyer uploaded (kept out of the list because it is a full image).
@@ -31,8 +32,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       const points = parsePoints(body.points);
       if (points === null) return walletFail("invalid_amount");
       await approveTopup(auth.admin.id, id, points, text(body.note, 500));
+      notifyWalletRequest("wallet_topups", id, "topupApproved", { points });
     } else if (body.action === "reject") {
-      await rejectTopup(auth.admin.id, id, text(body.note, 500));
+      const note = text(body.note, 500);
+      await rejectTopup(auth.admin.id, id, note);
+      notifyWalletRequest("wallet_topups", id, "topupRejected", { reason: note });
     } else {
       return walletFail("invalid_input");
     }

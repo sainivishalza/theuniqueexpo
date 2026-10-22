@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { parsePoints } from "@/lib/wallet";
 import { reviewExpenseClaim } from "@/lib/server/wallet-repo";
 import { getExpenseReceipts } from "@/lib/server/wallet-admin-repo";
+import { notifyWalletRequest } from "@/lib/server/notifications";
 import { positiveId, readJson, requireWalletAdmin, text, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
 
 // The receipts the buyer uploaded.
@@ -31,8 +32,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       const points = parsePoints(body.points);
       if (points === null) return walletFail("invalid_amount");
       await reviewExpenseClaim(auth.admin.id, id, { approve: true, points, adminNote: text(body.note, 500) });
+      notifyWalletRequest("wallet_expense_claims", id, "expenseApproved", { points });
     } else if (body.action === "reject") {
-      await reviewExpenseClaim(auth.admin.id, id, { approve: false, adminNote: text(body.note, 500) });
+      const note = text(body.note, 500);
+      await reviewExpenseClaim(auth.admin.id, id, { approve: false, adminNote: note });
+      notifyWalletRequest("wallet_expense_claims", id, "expenseRejected", { reason: note });
     } else {
       return walletFail("invalid_input");
     }

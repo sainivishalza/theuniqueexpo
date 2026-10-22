@@ -16,7 +16,7 @@ export const ADMIN_NAMESPACES = [
   "adminBusinessTripInquiries", "adminChinaTravel", "adminPartnerInquiries", "adminSlideshow",
   "adminRegFormBuilder", "adminRegistrationsCommon", "adminRfqs", "adminServiceTours", "adminServicesHome",
   "adminCityPartnershipInquiries", "adminCityPartnershipsContent", "adminConferenceHostingContent", "adminConferenceInquiries", "adminMagazine", "adminVideos",
-  "accountPassword", "adminBuyerProfiles", "adminBuyerExpos", "adminBuyerForm", "adminImportBuyers", "adminWallet",
+  "accountPassword", "adminEmail", "adminBuyerProfiles", "adminBuyerExpos", "adminBuyerForm", "adminImportBuyers", "adminWallet",
   "adminPartnerApplications", "adminPartnerReferrals", "adminPartnerTiers", "adminUsers", "adminUsersBulk",
   "adminSitePageEditor", "adminSiteTheme", "adminSubsidies", "adminSubsidyApplications", "adminTeam", "adminTourApplications",
   "adminTourRegForm", "adminTourRegistrations", "adminToursCrud", "adminVisaApplications",
@@ -29,7 +29,7 @@ export const DASHBOARD_NAMESPACES = [
 ];
 
 // Only read by server-side generateMetadata, never by client components.
-export const SERVER_ONLY_NAMESPACES = ["meta"];
+export const SERVER_ONLY_NAMESPACES = ["meta", "emails"];
 
 export function pickMessages<T extends Record<string, unknown>>(messages: T, namespaces: string[]): Partial<T> {
   const picked: Partial<T> = {};

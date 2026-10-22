@@ -7,8 +7,10 @@ import {
   setBuyerDocument,
   setDocumentReview,
 } from "@/lib/server/buyer-profile-repo";
-import { isValidUploadedDocument, isAllowedImageContentType } from "@/lib/server/validate-upload";
+import { isValidUploadedDocument } from "@/lib/server/validate-upload";
+import { documentResponse } from "@/lib/server/document-response";
 import { formErrorResponse } from "@/lib/server/buyer-form-api";
+import { notifyDocumentRejected } from "@/lib/server/notifications";
 
 // An admin can open any document that exists, shown to buyers or hidden.
 async function isKnownDocument(value: string): Promise<boolean> {
@@ -30,21 +32,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
   const value = await getBuyerDocument(Number(userId), type);
   if (!value) return NextResponse.json({ error: "No document uploaded" }, { status: 404 });
 
-  const match = /^data:([^;]+);base64,(.+)$/.exec(value);
-  if (!match) return NextResponse.json({ error: "Malformed document data" }, { status: 500 });
-  const [, contentType, base64Data] = match;
-  if (!isAllowedImageContentType(contentType)) {
-    return NextResponse.json({ error: "Unsupported content type for inline serving" }, { status: 415 });
-  }
-  const bytes = Buffer.from(base64Data, "base64");
-
-  return new NextResponse(bytes, {
-    headers: {
-      "Content-Type": contentType,
-      "Cache-Control": "private, max-age=3600",
-      "Content-Length": String(bytes.length),
-    },
-  });
+  // ?thumb=1 sends a small preview for the lists instead of the whole picture.
+  return documentResponse(value, { thumb: new URL(request.url).searchParams.get("thumb") === "1" });
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ userId: string; type: string }> }) {
@@ -86,6 +75,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
 
   try {
     await setDocumentReview(Number(userId), type, body.status, note);
+    if (body.status === "rejected") notifyDocumentRejected(Number(userId), type, note);
   } catch (err) {
     return formErrorResponse(err);
   }

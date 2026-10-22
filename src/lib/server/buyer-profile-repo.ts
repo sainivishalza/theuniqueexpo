@@ -4,6 +4,7 @@ import { expoIdsSql, expoNamesSql, parseExpoIds, setBuyerExpoNames } from "@/lib
 import { formatBuyerNumber } from "@/lib/buyer-number";
 import { assignMissingBuyerNumbers } from "@/lib/server/buyer-numbers";
 import { overallStatus } from "@/lib/buyer-form";
+import { shrinkDocumentDataUrl } from "@/lib/server/document-image";
 import {
   FormError,
   findFormItem,
@@ -11,6 +12,7 @@ import {
   getCustomDocumentData,
   getCustomDocumentStates,
   getCustomValues,
+  formTablesReady,
   getFormItems,
   setCustomDocument,
   setCustomDocumentReview,
@@ -613,7 +615,9 @@ export async function upsertBuyerProfileFields(userId: number, fields: Partial<B
 // one back to pending or rejected whenever that's actually needed. Always
 // clears any previous rejection note, since a fresh upload replacing a
 // rejected one shouldn't keep showing stale rejection wording.
-export async function setBuyerDocument(userId: number, field: string, dataUrl: string): Promise<void> {
+export async function setBuyerDocument(userId: number, field: string, uploaded: string): Promise<void> {
+  // Shrunk before it is stored (see document-image.ts); throws DocumentFileError for a file that is not what it claims to be.
+  const dataUrl = await shrinkDocumentDataUrl(uploaded);
   if (!isBuiltinDocument(field)) {
     await requireCustomDocument(field);
     await setCustomDocument(userId, field, dataUrl);
@@ -663,4 +667,61 @@ export async function setDocumentReview(
     `UPDATE buyer_profiles SET ${statusColumn} = ?, ${noteColumn} = ? WHERE user_id = ?`,
     [status, note, userId]
   );
+}
+
+// Admin: review documents for many buyers at once. "verify" marks every uploaded document still
+// waiting for review as verified; "reject" marks one chosen document as rejected, with the reason the
+// buyer sees on their profile, for those buyers who uploaded it. Returns how many documents changed.
+export async function bulkReviewDocuments(
+  userIds: number[],
+  action: "verify" | "reject",
+  documentKey: string | null,
+  note: string
+): Promise<{ changed: number; rejectedUserIds: number[] }> {
+  if (userIds.length === 0) return { changed: 0, rejectedUserIds: [] };
+  let changed = 0;
+
+  if (action === "verify") {
+    for (const field of DOCUMENT_FIELDS) {
+      const column = DOCUMENT_COLUMNS[field];
+      const [r] = await pool.query<ResultSetHeader>(
+        `UPDATE buyer_profiles SET ${DOCUMENT_STATUS_COLUMNS[field]} = 'verified'
+         WHERE user_id IN (?) AND ${column} IS NOT NULL AND ${column} <> '' AND ${DOCUMENT_STATUS_COLUMNS[field]} = 'pending'`,
+        [userIds]
+      );
+      changed += r.affectedRows;
+    }
+    if (await formTablesReady()) {
+      const [r] = await pool.query<ResultSetHeader>(
+        "UPDATE buyer_custom_documents SET status = 'verified' WHERE user_id IN (?) AND status = 'pending'",
+        [userIds]
+      );
+      changed += r.affectedRows;
+    }
+    return { changed, rejectedUserIds: [] };
+  }
+
+  if (!documentKey) throw new FormError("not_found", 404);
+  if (isBuiltinDocument(documentKey)) {
+    const column = DOCUMENT_COLUMNS[documentKey];
+    const where = `user_id IN (?) AND ${column} IS NOT NULL AND ${column} <> '' AND ${DOCUMENT_STATUS_COLUMNS[documentKey]} <> 'rejected'`;
+    // Who is about to be rejected (they are told by e-mail), taken before the update changes the statuses.
+    const [who] = await pool.query<RowDataPacket[]>(`SELECT user_id FROM buyer_profiles WHERE ${where}`, [userIds]);
+    const [r] = await pool.query<ResultSetHeader>(
+      `UPDATE buyer_profiles SET ${DOCUMENT_STATUS_COLUMNS[documentKey]} = 'rejected', ${DOCUMENT_NOTE_COLUMNS[documentKey]} = ?
+       WHERE ${where}`,
+      [note, userIds]
+    );
+    return { changed: r.affectedRows, rejectedUserIds: who.map((w) => Number(w.user_id)) };
+  }
+  await requireCustomDocument(documentKey);
+  const [who] = await pool.query<RowDataPacket[]>(
+    "SELECT user_id FROM buyer_custom_documents WHERE item_key = ? AND user_id IN (?) AND status <> 'rejected'",
+    [documentKey, userIds]
+  );
+  const [r] = await pool.query<ResultSetHeader>(
+    "UPDATE buyer_custom_documents SET status = 'rejected', note = ? WHERE item_key = ? AND user_id IN (?) AND status <> 'rejected'",
+    [note, documentKey, userIds]
+  );
+  return { changed: r.affectedRows, rejectedUserIds: who.map((w) => Number(w.user_id)) };
 }

@@ -3,6 +3,7 @@ import pool from "@/lib/db";
 import { safeParseArray, safeParseJson, stripFileAnswers } from "@/lib/server/db-helpers";
 import { translateString } from "@/lib/server/content-translations";
 import { formatBuyerNumber } from "@/lib/buyer-number";
+import { shrinkDocumentDataUrl } from "@/lib/server/document-image";
 import { awardAttendanceQuietly } from "@/lib/server/wallet-repo";
 import type { ExpoRegistration, ExpoRegistrationInput } from "@/lib/expo-registrations";
 import {
@@ -164,7 +165,25 @@ const MY_SELECT = `
   FROM expo_registrations r
   JOIN exhibitions e ON e.id = r.exhibition_id`;
 
-export async function createExpoRegistration(userId: number, input: ExpoRegistrationInput) {
+// The registration form's five document pictures are shrunk before they are stored (see
+// document-image.ts). They were already checked as pictures or PDFs, so a file that cannot be
+// shrunk is stored as it came rather than failing the registration.
+async function shrinkRegistrationDocuments(input: ExpoRegistrationInput): Promise<ExpoRegistrationInput> {
+  const out = { ...input };
+  for (const key of ["docPassportFront", "docBusinessCard", "docVisaPage", "docBusinessLicense", "docOrderList"] as const) {
+    const value = out[key];
+    if (typeof value !== "string" || !value) continue;
+    try {
+      out[key] = await shrinkDocumentDataUrl(value);
+    } catch {
+      // keep the file as uploaded
+    }
+  }
+  return out;
+}
+
+export async function createExpoRegistration(userId: number, uploaded: ExpoRegistrationInput) {
+  const input = await shrinkRegistrationDocuments(uploaded);
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO expo_registrations
       (exhibition_id, user_id, registration_type, gender, full_name, nationality, passport_number,
@@ -242,7 +261,7 @@ export async function rewriteRegistration(
   if (form.kind === "default") {
     const [result] = await pool.query<ResultSetHeader>(
       `UPDATE expo_registrations SET ${reset} ${DEFAULT_FORM_SET_SQL} WHERE id = ? AND user_id = ? AND ${allowed}`,
-      [...defaultFormValues(form.input), id, userId]
+      [...defaultFormValues(await shrinkRegistrationDocuments(form.input)), id, userId]
     );
     return result.affectedRows > 0;
   }

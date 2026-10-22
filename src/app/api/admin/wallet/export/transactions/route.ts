@@ -8,7 +8,7 @@ const DAY = /^\d{4}-\d{2}-\d{2}$/;
 export async function GET(request: Request) {
   const auth = await requireWalletAdmin(request);
   if (auth.response) return auth.response;
-  const limited = limitOrNull(auth.admin.id, "export", 30, 60_000);
+  const limited = await limitOrNull(auth.admin.id, "export", 30, 60_000);
   if (limited) return limited;
   const params = new URL(request.url).searchParams;
   const from = params.get("from") || null;

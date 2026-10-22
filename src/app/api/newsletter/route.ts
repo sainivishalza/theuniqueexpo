@@ -9,7 +9,7 @@ const LOCALES = ["en", "ru", "zh"];
 
 // Public footer signup -- no login required.
 export async function POST(request: Request) {
-  const limited = rateLimitOrNull(request, "newsletter", NEWSLETTER_LIMIT, NEWSLETTER_WINDOW_MS);
+  const limited = await rateLimitOrNull(request, "newsletter", NEWSLETTER_LIMIT, NEWSLETTER_WINDOW_MS);
   if (limited) return limited;
 
   try {

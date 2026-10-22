@@ -9,7 +9,7 @@ const LEAD_FORM_WINDOW_MS = 60 * 60 * 1000;
 // Public lead capture, same as subsidy-applications/consultation-bookings --
 // no login required.
 export async function POST(request: Request) {
-  const limited = rateLimitOrNull(request, "city-partnership-inquiries", LEAD_FORM_LIMIT, LEAD_FORM_WINDOW_MS);
+  const limited = await rateLimitOrNull(request, "city-partnership-inquiries", LEAD_FORM_LIMIT, LEAD_FORM_WINDOW_MS);
   if (limited) return limited;
 
   try {

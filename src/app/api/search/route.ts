@@ -6,7 +6,7 @@ const LOCALES = ["en", "ru", "zh"];
 
 // Public site search: ?q=words&locale=en. At least two characters; at most 80 are used.
 export async function GET(request: Request) {
-  const limited = rateLimitOrNull(request, "site-search", 60, 60_000);
+  const limited = await rateLimitOrNull(request, "site-search", 60, 60_000, { memoryOnly: true });
   if (limited) return limited;
   const params = new URL(request.url).searchParams;
   const query = (params.get("q") ?? "").trim().slice(0, 80);

@@ -1,9 +1,12 @@
+import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
+import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
+import pool from "@/lib/db";
 
-// In-memory, per-process fixed-window rate limiter. Good enough for a
-// single Node server (see AGENTS.md: no separate backend service for the
-// MVP) -- if this ever runs across multiple instances, swap the Map for a
-// shared store (e.g. Redis) instead of adding more limiters like this one.
+// Fixed-window request limiter. The counters live in the rate_limits table, so a restart of the
+// server (or a second server process) does not give anyone a fresh start. If the table cannot be
+// used (a deploy that has not created it yet, a database hiccup) the limiter falls back to the
+// per-process memory below for a short while rather than failing the request.
 interface RateLimitBucket {
   count: number;
   resetAt: number;
@@ -28,7 +31,9 @@ export interface RateLimitResult {
   retryAfterSeconds: number;
 }
 
-export function checkRateLimit(key: string, limit: number, windowMs: number): RateLimitResult {
+// ----- per-process memory (the fallback, and for limits that are too frequent to store) -----
+
+export function checkRateLimitMemory(key: string, limit: number, windowMs: number): RateLimitResult {
   const now = Date.now();
   const bucket = buckets.get(key);
 
@@ -46,19 +51,91 @@ export function checkRateLimit(key: string, limit: number, windowMs: number): Ra
   return { allowed: true, retryAfterSeconds: 0 };
 }
 
-// Looks at a bucket without counting an attempt: "is this key already over its limit?"
-// For checks where only the failures should count (a wrong password), not every try.
-export function peekRateLimit(key: string, limit: number): RateLimitResult {
+function peekMemory(key: string, limit: number): RateLimitResult {
   const now = Date.now();
   const bucket = buckets.get(key);
   if (!bucket || bucket.resetAt <= now || bucket.count < limit) return { allowed: true, retryAfterSeconds: 0 };
   return { allowed: false, retryAfterSeconds: Math.ceil((bucket.resetAt - now) / 1000) };
 }
 
+// ----- the rate_limits table -----
+
+// After a database error the table is not tried again for this long.
+const DB_RETRY_AFTER_MS = 30_000;
+let dbDownUntil = 0;
+let callsSinceCleanup = 0;
+
+const hashKey = (key: string) => createHash("sha256").update(key).digest("hex");
+
+function dbUsable(): boolean {
+  return Date.now() >= dbDownUntil;
+}
+
+function dbFailed(err: unknown): void {
+  dbDownUntil = Date.now() + DB_RETRY_AFTER_MS;
+  console.error("rate_limits table unavailable, using memory:", (err as { code?: string })?.code ?? err);
+}
+
+// Old windows are removed now and then (every few hundred checks), so the table stays small.
+function maybeCleanup(): void {
+  callsSinceCleanup += 1;
+  if (callsSinceCleanup < 300) return;
+  callsSinceCleanup = 0;
+  pool.query("DELETE FROM rate_limits WHERE reset_at < ?", [Date.now() - 60_000]).catch(() => {});
+}
+
+// Counts one attempt. The window starts at the first attempt and is not extended by later ones.
+// The count column is assigned before reset_at, so it still sees the window's old end. LAST_INSERT_ID(x)
+// hands this statement's own count back in the reply (insertId), so two requests arriving at the same
+// moment each get their own number and the limit is exact.
+export async function checkRateLimit(key: string, limit: number, windowMs: number): Promise<RateLimitResult> {
+  if (!dbUsable()) return checkRateLimitMemory(key, limit, windowMs);
+  const now = Date.now();
+  const id = hashKey(key);
+  try {
+    const [result] = await pool.query<ResultSetHeader>(
+      `INSERT INTO rate_limits (key_hash, hits, reset_at) VALUES (?, LAST_INSERT_ID(1), ?)
+       ON DUPLICATE KEY UPDATE hits = LAST_INSERT_ID(IF(reset_at <= ?, 1, hits + 1)), reset_at = IF(reset_at <= ?, ?, reset_at)`,
+      [id, now + windowMs, now, now, now + windowMs]
+    );
+    maybeCleanup();
+    const hits = Number(result.insertId);
+    if (hits <= limit) return { allowed: true, retryAfterSeconds: 0 };
+    const [rows] = await pool.query<RowDataPacket[]>("SELECT reset_at FROM rate_limits WHERE key_hash = ?", [id]);
+    const resetAt = Number(rows[0]?.reset_at ?? now + windowMs);
+    return { allowed: false, retryAfterSeconds: Math.max(1, Math.ceil((resetAt - now) / 1000)) };
+  } catch (err) {
+    dbFailed(err);
+    return checkRateLimitMemory(key, limit, windowMs);
+  }
+}
+
+// Looks at a bucket without counting an attempt: "is this key already over its limit?"
+// For checks where only the failures should count (a wrong password), not every try.
+export async function peekRateLimit(key: string, limit: number): Promise<RateLimitResult> {
+  if (!dbUsable()) return peekMemory(key, limit);
+  const now = Date.now();
+  try {
+    const [rows] = await pool.query<RowDataPacket[]>("SELECT hits, reset_at FROM rate_limits WHERE key_hash = ?", [hashKey(key)]);
+    const row = rows[0];
+    if (!row || Number(row.reset_at) <= now || Number(row.hits) < limit) return { allowed: true, retryAfterSeconds: 0 };
+    return { allowed: false, retryAfterSeconds: Math.max(1, Math.ceil((Number(row.reset_at) - now) / 1000)) };
+  } catch (err) {
+    dbFailed(err);
+    return peekMemory(key, limit);
+  }
+}
+
 // Called after a successful attempt so a legitimate user who mistyped
 // their password a few times isn't left counting down a stale window.
-export function resetRateLimit(key: string): void {
+export async function resetRateLimit(key: string): Promise<void> {
   buckets.delete(key);
+  if (!dbUsable()) return;
+  try {
+    await pool.query("DELETE FROM rate_limits WHERE key_hash = ?", [hashKey(key)]);
+  } catch (err) {
+    dbFailed(err);
+  }
 }
 
 // X-Forwarded-For is append-only across hops (each proxy adds the address
@@ -73,9 +150,15 @@ export function resetRateLimit(key: string): void {
 // forms, etc.) -- these have no session to key on, so IP is the only
 // signal available. Returns a ready-to-return 429 response, or null if
 // the request is within the limit.
-export function rateLimitOrNull(request: Request, keyPrefix: string, limit: number, windowMs: number): NextResponse | null {
+export async function rateLimitOrNull(
+  request: Request,
+  keyPrefix: string,
+  limit: number,
+  windowMs: number,
+  options: { memoryOnly?: boolean } = {}
+): Promise<NextResponse | null> {
   const key = `${keyPrefix}:${getClientIp(request)}`;
-  const { allowed, retryAfterSeconds } = checkRateLimit(key, limit, windowMs);
+  const { allowed, retryAfterSeconds } = options.memoryOnly ? checkRateLimitMemory(key, limit, windowMs) : await checkRateLimit(key, limit, windowMs);
   if (!allowed) {
     return NextResponse.json(
       { error: "Too many requests. Please try again later." },
@@ -102,10 +185,10 @@ const LOGIN_ACCOUNT_ATTEMPT_WINDOW_MS = 5 * 60 * 1000;
 // password). All draw from the same per-IP (and, when an email is known,
 // per-account) buckets so brute-forcing one account can't bypass the limit
 // just by hitting a different endpoint or spreading requests across IPs.
-export function checkLoginRateLimit(request: Request, email?: string): RateLimitResult {
-  const byIp = checkRateLimit(`login:${getClientIp(request)}`, LOGIN_ATTEMPT_LIMIT, LOGIN_ATTEMPT_WINDOW_MS);
+export async function checkLoginRateLimit(request: Request, email?: string): Promise<RateLimitResult> {
+  const byIp = await checkRateLimit(`login:${getClientIp(request)}`, LOGIN_ATTEMPT_LIMIT, LOGIN_ATTEMPT_WINDOW_MS);
   if (!byIp.allowed || !email) return byIp;
-  const byAccount = checkRateLimit(
+  const byAccount = await checkRateLimit(
     `login-account:${email.trim().toLowerCase()}`,
     LOGIN_ACCOUNT_ATTEMPT_LIMIT,
     LOGIN_ACCOUNT_ATTEMPT_WINDOW_MS
@@ -113,9 +196,9 @@ export function checkLoginRateLimit(request: Request, email?: string): RateLimit
   return byAccount.allowed ? byIp : byAccount;
 }
 
-export function resetLoginRateLimit(request: Request, email?: string): void {
-  resetRateLimit(`login:${getClientIp(request)}`);
-  if (email) resetRateLimit(`login-account:${email.trim().toLowerCase()}`);
+export async function resetLoginRateLimit(request: Request, email?: string): Promise<void> {
+  await resetRateLimit(`login:${getClientIp(request)}`);
+  if (email) await resetRateLimit(`login-account:${email.trim().toLowerCase()}`);
 }
 
 export function getClientIp(request: Request): string {

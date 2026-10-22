@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   if (points === null) return walletFail("invalid_amount");
   if (!isValidClientKey(body.key)) return walletFail("invalid_input");
   if (!isValidUploadedDocument(body.proof, MAX_WALLET_IMAGE_BYTES)) return walletFail("invalid_input");
-  const limited = limitOrNull(auth.user.id, "topup", 20, 24 * 60 * 60 * 1000);
+  const limited = await limitOrNull(auth.user.id, "topup", 20, 24 * 60 * 60 * 1000);
   if (limited) return limited;
   try {
     const result = await createTopup(auth.user.id, {

@@ -700,7 +700,8 @@
       "topups": "{count, plural, one {# points top-up to check} other {# points top-ups to check}}",
       "withdrawals": "{count, plural, one {# withdrawal to pay} other {# withdrawals to pay}}",
       "expenses": "{count, plural, one {# expense claim to review} other {# expense claims to review}}",
-      "documents": "{count, plural, one {# buyer document to review} other {# buyer documents to review}}"
+      "documents": "{count, plural, one {# buyer document to review} other {# buyer documents to review}}",
+      "failedEmails": "{count, plural, one {# e-mail could not be sent this week} other {# e-mails could not be sent this week}}"
     }
   },
   "adminSubsidies": {

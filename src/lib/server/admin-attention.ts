@@ -8,6 +8,8 @@ export interface AttentionCounts {
   withdrawals: number;
   expenses: number;
   documents: number;
+  /** E-mails that could not be sent in the last 7 days. */
+  failedEmails: number;
 }
 
 async function count(sql: string): Promise<number> {
@@ -28,7 +30,7 @@ const DOC_COLUMNS = [
 export async function getAttentionCounts(): Promise<AttentionCounts> {
   // A buyer's uploaded documents still waiting for review (an upload counts as verified unless an admin set it back).
   const docSql = DOC_COLUMNS.map((c) => `(SELECT COUNT(*) FROM buyer_profiles WHERE has_doc_${c} = 1 AND doc_${c}_status = 'pending')`).join(" + ");
-  const [registrations, tourRegistrations, topups, withdrawals, expenses, builtinDocs, customDocs] = await Promise.all([
+  const [registrations, tourRegistrations, topups, withdrawals, expenses, builtinDocs, customDocs, failedEmails] = await Promise.all([
     count("SELECT COUNT(*) AS n FROM expo_registrations WHERE status = 'pending'"),
     count("SELECT COUNT(*) AS n FROM tour_registrations WHERE status = 'pending'"),
     count("SELECT COUNT(*) AS n FROM wallet_topups WHERE status = 'pending'"),
@@ -36,6 +38,7 @@ export async function getAttentionCounts(): Promise<AttentionCounts> {
     count("SELECT COUNT(*) AS n FROM wallet_expense_claims WHERE status = 'pending'"),
     count(`SELECT ${docSql} AS n`),
     count("SELECT COUNT(*) AS n FROM buyer_custom_documents WHERE status = 'pending'"),
+    count("SELECT COUNT(*) AS n FROM email_log WHERE status = 'failed' AND created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)"),
   ]);
-  return { registrations, tourRegistrations, topups, withdrawals, expenses, documents: builtinDocs + customDocs };
+  return { registrations, tourRegistrations, topups, withdrawals, expenses, documents: builtinDocs + customDocs, failedEmails };
 }

@@ -11,6 +11,7 @@ interface Counts {
   withdrawals: number;
   expenses: number;
   documents: number;
+  failedEmails: number;
 }
 
 const ROWS: { key: keyof Counts; icon: string; href: string }[] = [
@@ -20,6 +21,7 @@ const ROWS: { key: keyof Counts; icon: string; href: string }[] = [
   { key: "withdrawals", icon: "💸", href: "/admin/wallet?tab=withdrawals" },
   { key: "expenses", icon: "🧾", href: "/admin/wallet?tab=expenses" },
   { key: "documents", icon: "🪪", href: "/admin/buyer-profiles?docs=waiting_review" },
+  { key: "failedEmails", icon: "📭", href: "/admin/email" },
 ];
 
 // Everything that waits for an admin, with the number and a link straight to it. Shown at the

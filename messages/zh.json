@@ -700,7 +700,8 @@
       "topups": "{count} 笔积分充值待核对",
       "withdrawals": "{count} 笔提现待支付",
       "expenses": "{count} 份费用申请待审核",
-      "documents": "{count} 份买家文档待审核"
+      "documents": "{count} 份买家文档待审核",
+      "failedEmails": "本周有 {count} 封邮件发送失败"
     }
   },
   "adminSubsidies": {

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { formatNumber } from "@/lib/format";
 import { formatInstantDateTime } from "@/lib/date-format";
+import { useBuyerForm } from "@/lib/client/buyer-form";
+import { overallStatus } from "@/lib/buyer-form";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import Card from "@/components/ui/Card";
@@ -25,8 +27,6 @@ const ACTION_KEYS = [
   { key: "meetings", icon: "📅", color: "from-pink-500 to-rose-500", comingSoon: true },
 ];
 
-// Same order as the admin Buyer Profiles screen and the downloads.
-const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList", "latestEntryStamp"] as const;
 type DocState = { hasDocument: Record<string, boolean>; documentReview: Record<string, { status: "pending" | "verified" | "rejected"; note: string }> };
 const DOC_BADGE = {
   missing: "bg-gray-100 text-gray-600",
@@ -52,6 +52,8 @@ export default function BuyerDashboard() {
   const [buyerNumber, setBuyerNumber] = useState("");
   const [docs, setDocs] = useState<DocState | null>(null);
   const [news, setNews] = useState<NewsItem[]>([]);
+  // The documents an admin has set up (Admin -> Buyer form settings), in order.
+  const form = useBuyerForm(!!user);
   useEffect(() => {
     if (!user) return;
     fetch("/api/buyer-profile")
@@ -129,15 +131,19 @@ export default function BuyerDashboard() {
       )}
 
       {/* Documents */}
-      {docs && (() => {
-        const rows = DOC_FIELDS.map((field) => {
-          const uploaded = !!docs.hasDocument[field];
-          const review = docs.documentReview[field];
+      {docs && form.ready && (() => {
+        const rows = form.documents.map((item) => {
+          const uploaded = !!docs.hasDocument[item.key];
+          const review = docs.documentReview[item.key];
           const state = !uploaded ? "missing" : review?.status ?? "pending";
-          return { field, state, note: state === "rejected" ? review?.note : "" };
+          return { item, state, note: state === "rejected" ? review?.note : "" };
         });
         const done = rows.filter((r) => r.state !== "missing").length;
-        const allVerified = rows.every((r) => r.state === "verified");
+        const allVerified =
+          overallStatus(
+            Object.fromEntries(rows.map((r) => [r.item.key, { uploaded: r.state !== "missing", status: r.state === "missing" ? "pending" : (r.state as "pending" | "verified" | "rejected") }])),
+            form.documents
+          ) === "verified";
         return (
           <section className="pt-10 bg-cream-50">
             <div className="mx-auto max-w-7xl px-6">
@@ -158,9 +164,9 @@ export default function BuyerDashboard() {
                 </div>
                 <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   {rows.map((r) => (
-                    <li key={r.field} className="flex items-center justify-between gap-2 rounded-xl border border-gray-100 px-3 py-2">
+                    <li key={r.item.key} className="flex items-center justify-between gap-2 rounded-xl border border-gray-100 px-3 py-2">
                       <span className="min-w-0">
-                        <span className="block text-sm font-medium text-gray-800">{tp(`docFields.${r.field}`)}</span>
+                        <span className="block text-sm font-medium text-gray-800">{form.label(r.item)}</span>
                         {r.note && <span className="block text-xs text-red-700">{tp("docReviewStatus.rejectedReason", { reason: r.note })}</span>}
                       </span>
                       <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${DOC_BADGE[r.state as keyof typeof DOC_BADGE]}`}>

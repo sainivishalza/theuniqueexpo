@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getBuyerProfilesForExport } from "@/lib/server/buyer-profile-repo";
 import { buildBuyersExcel, EXPORTABLE_FIELD_KEYS } from "@/lib/server/buyer-profile-export";
-import { DOCUMENT_FIELDS } from "@/lib/server/buyer-profile-repo";
+import { getActiveFormItems } from "@/lib/server/buyer-form-repo";
 
-const ALL_FIELD_KEYS = new Set([...EXPORTABLE_FIELD_KEYS, ...DOCUMENT_FIELDS]);
+// Keys that are always exportable; the documents and extra fields currently asked for are added per request.
+const BUILTIN_FIELD_KEYS = new Set(EXPORTABLE_FIELD_KEYS);
 // A sheet with documents embeds every photo, which is heavy; a plain sheet of
 // details can be much longer.
 const MAX_USER_IDS_WITH_DOCUMENTS = 500;
@@ -16,11 +17,14 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null);
   const userIds = Array.isArray(body?.userIds) ? body.userIds.filter((v: unknown) => typeof v === "number") : [];
-  const fields = Array.isArray(body?.fields) ? body.fields.filter((v: unknown) => typeof v === "string" && ALL_FIELD_KEYS.has(v)) : [];
+  const items = await getActiveFormItems();
+  const allowed = new Set([...BUILTIN_FIELD_KEYS, ...items.map((i) => i.key)]);
+  const fields = Array.isArray(body?.fields) ? body.fields.filter((v: unknown) => typeof v === "string" && allowed.has(v)) : [];
 
   if (userIds.length === 0) return NextResponse.json({ error: "Select at least one buyer" }, { status: 400 });
   if (fields.length === 0) return NextResponse.json({ error: "Select at least one field to export" }, { status: 400 });
-  const withDocuments = fields.some((f: string) => (DOCUMENT_FIELDS as readonly string[]).includes(f));
+  const documentKeys = new Set(items.filter((i) => i.kind === "document").map((i) => i.key));
+  const withDocuments = fields.some((f: string) => documentKeys.has(f));
   const maxIds = withDocuments ? MAX_USER_IDS_WITH_DOCUMENTS : MAX_USER_IDS_TEXT_ONLY;
   if (userIds.length > maxIds) {
     return NextResponse.json(
@@ -32,7 +36,7 @@ export async function POST(request: Request) {
   // The registration number always comes first, so every row says which buyer it is.
   const orderedFields = ["buyerNumber", ...fields.filter((f: string) => f !== "buyerNumber")];
   const rows = await getBuyerProfilesForExport(userIds);
-  const buffer = await buildBuyersExcel(rows, orderedFields);
+  const buffer = await buildBuyersExcel(rows, orderedFields, items);
   const date = new Date().toISOString().slice(0, 10);
 
   return new NextResponse(new Uint8Array(buffer), {

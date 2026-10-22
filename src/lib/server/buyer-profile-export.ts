@@ -1,7 +1,8 @@
 import ExcelJS from "exceljs";
 import { ZipFile } from "yazl";
 import { TEXT_COLUMN_ORDER } from "../buyer-profile-columns";
-import { DOCUMENT_FIELDS, type BuyerExportProfile, type DocumentField } from "./buyer-profile-repo";
+import type { FormItem } from "../buyer-form";
+import type { BuyerExportProfile, DocumentField } from "./buyer-profile-repo";
 
 // English-only labels for the exported file itself (not the live admin
 // UI, which is already translated via next-intl) -- an Excel/ZIP an admin
@@ -37,6 +38,7 @@ export const FIELD_LABELS: Record<string, string> = {
   rewardPoints: "Reward Points",
 };
 
+// The built-in names, kept as a reference; the exports use the names in Admin -> Buyer form settings.
 export const DOC_LABELS: Record<DocumentField, string> = {
   businessLicense: "Business License",
   businessCard: "Business Card",
@@ -49,6 +51,11 @@ export const DOC_LABELS: Record<DocumentField, string> = {
 };
 
 export const EXPORTABLE_FIELD_KEYS = Object.keys(FIELD_LABELS);
+
+// A document name as a file name: a "/" would create a nested folder, and some characters are not allowed in file names.
+function fileSafe(name: string): string {
+  return name.replace(/\s*\/\s*/g, " - ").replace(/[\\:*?"<>|]/g, "_").trim() || "Document";
+}
 
 function sanitizeFolderName(name: string): string {
   const cleaned = name.replace(/[\\/:*?"<>|]/g, "_").trim();
@@ -76,7 +83,7 @@ const EXCEL_IMAGE_TYPES = new Set(["jpeg", "png", "gif"]);
 // embedded in its cell rather than just a filename or a checkmark -- a
 // PDF document can't be embedded as an image, so it's left as a text note
 // in that cell instead.
-export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: string[]): Promise<Buffer> {
+export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: string[], items: FormItem[]): Promise<Buffer> {
   // Number, name and account email first, then the same order as the table on screen -- whatever
   // order the browser sent the fields in.
   const LEAD = ["buyerNumber", "name", "email"];
@@ -87,14 +94,18 @@ export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: st
     return LEAD.length + (i >= 0 ? i : TEXT_COLUMN_ORDER.length);
   };
   const textKeys = fieldKeys.filter((k) => k in FIELD_LABELS).sort((a, b) => rank(a) - rank(b));
-  // Document columns always follow the fixed order (passport, visa, ...), whatever order they were ticked in.
-  const docKeys = DOCUMENT_FIELDS.filter((k) => fieldKeys.includes(k));
+  // Extra information fields an admin added come after the built-in ones, then the documents; both
+  // follow the order set in Buyer form settings, whatever order they were ticked in.
+  const customFields = items.filter((i) => i.kind === "field" && i.active && fieldKeys.includes(i.key));
+  const docItems = items.filter((i) => i.kind === "document" && i.active && fieldKeys.includes(i.key));
+  const docKeys = docItems.map((i) => i.key);
 
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet("Buyers");
   sheet.columns = [
     ...textKeys.map((k) => ({ header: FIELD_LABELS[k], key: k, width: 24 })),
-    ...docKeys.map((k) => ({ header: DOC_LABELS[k], key: k, width: 16 })),
+    ...customFields.map((f) => ({ header: f.labels.en, key: f.key, width: 24 })),
+    ...docItems.map((d) => ({ header: d.labels.en, key: d.key, width: 16 })),
   ];
   sheet.getRow(1).font = { bold: true };
   sheet.getRow(1).alignment = { vertical: "middle" };
@@ -107,12 +118,13 @@ export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: st
       // Points stay a real number in the sheet, so they can be added up or sorted.
       values[key] = typeof value === "string" || typeof value === "number" ? value : "";
     }
+    for (const field of customFields) values[field.key] = row.custom[field.key] ?? "";
     const excelRow = sheet.addRow(values);
     if (docKeys.length > 0) excelRow.height = 72;
 
     docKeys.forEach((docKey, docIndex) => {
       const dataUrl = row.documentData[docKey];
-      const colIndex = textKeys.length + docIndex;
+      const colIndex = textKeys.length + customFields.length + docIndex;
       if (!dataUrl) return;
       const parsed = parseDataUrl(dataUrl);
       if (!parsed) return;
@@ -141,7 +153,8 @@ export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: st
 // their account name or user ID, with " (2)" etc. appended for a
 // collision) containing only that buyer's own uploaded documents -- no
 // empty folders or placeholder files for a document they never uploaded.
-export async function buildBuyersDocumentsZip(rows: BuyerExportProfile[]): Promise<Buffer> {
+export async function buildBuyersDocumentsZip(rows: BuyerExportProfile[], items: FormItem[]): Promise<Buffer> {
+  const docItems = items.filter((i) => i.kind === "document" && i.active);
   const zipfile = new ZipFile();
   const usedNames = new Map<string, number>();
 
@@ -153,14 +166,13 @@ export async function buildBuyersDocumentsZip(rows: BuyerExportProfile[]): Promi
     usedNames.set(folderName, count + 1);
     if (count > 0) folderName = `${folderName} (${count + 1})`;
 
-    DOCUMENT_FIELDS.forEach((field, index) => {
-      const dataUrl = row.documentData[field];
+    docItems.forEach((item, index) => {
+      const dataUrl = row.documentData[item.key];
       if (!dataUrl) return;
       const parsed = parseDataUrl(dataUrl);
       if (!parsed) return;
-      // Numbered so a folder window (which sorts A-Z) shows them in the fixed order;
-      // a "/" in the label ("Invoice / Order List") would create a nested folder.
-      const fileLabel = DOC_LABELS[field].replace(/\s*\/\s*/g, " - ");
+      // Numbered so a folder window (which sorts A-Z) shows them in the order set in Buyer form settings.
+      const fileLabel = fileSafe(item.labels.en);
       zipfile.addBuffer(parsed.buffer, `${folderName}/${index + 1} - ${fileLabel}.${parsed.extension}`);
     });
   }

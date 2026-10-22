@@ -2842,6 +2842,8 @@
     "title": "我的资料",
     "subtitle": "保持您的公司信息和证件资料最新",
     "loginRequired": "请登录以查看您的资料。",
+    "extraInfo": "补充信息",
+    "customInvalid": "部分填写内容无效，请检查后重试。",
     "saveFailed": "保存资料失败",
     "saveSuccess": "资料已保存",
     "uploadFailed": "文件上传失败",

@@ -2842,6 +2842,8 @@
     "title": "My Profile",
     "subtitle": "Keep your company info and documents up to date",
     "loginRequired": "Please log in to view your profile.",
+    "extraInfo": "Additional information",
+    "customInvalid": "Some of your answers are not valid. Please check them and try again.",
     "saveFailed": "Could not save your profile",
     "saveSuccess": "Profile saved",
     "uploadFailed": "Could not upload file",

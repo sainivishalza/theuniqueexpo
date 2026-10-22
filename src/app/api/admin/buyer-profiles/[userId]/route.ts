@@ -3,6 +3,8 @@ import { requireAdmin } from "@/lib/auth-server";
 import { getUserById } from "@/lib/server/users-repo";
 import { getBuyerProfileOrEmpty, upsertBuyerProfileFields } from "@/lib/server/buyer-profile-repo";
 import { setBuyerExpoIds } from "@/lib/server/buyer-expos-repo";
+import { setCustomValues } from "@/lib/server/buyer-form-repo";
+import { formErrorResponse } from "@/lib/server/buyer-form-api";
 
 export async function GET(request: Request, { params }: { params: Promise<{ userId: string }> }) {
   const admin = await requireAdmin(request);
@@ -60,6 +62,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
     if (typeof body[field] === "string") update[field] = body[field];
   }
 
+  try {
+    if (body.custom && typeof body.custom === "object" && !Array.isArray(body.custom)) await setCustomValues(targetId, body.custom);
+  } catch (err) {
+    return formErrorResponse(err);
+  }
   await upsertBuyerProfileFields(targetId, update);
   // Expos are picked from the Buyer Expos list (a multi-select), sent as ids.
   if (Array.isArray(body.expoIds)) {

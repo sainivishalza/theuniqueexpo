@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth-server";
 import { getBuyerNumber } from "@/lib/server/buyer-numbers";
 import { getBuyerProfileOrEmpty, upsertBuyerProfileFields } from "@/lib/server/buyer-profile-repo";
+import { setCustomValues } from "@/lib/server/buyer-form-repo";
+import { formErrorResponse } from "@/lib/server/buyer-form-api";
 
 export async function GET(request: Request) {
   const user = await getSessionUser(request);
@@ -49,6 +51,12 @@ export async function PATCH(request: Request) {
     if (typeof body[field] === "string") update[field] = body[field];
   }
 
+  // Answers to the extra fields an admin added: checked against each field, and refused as a whole if one does not fit.
+  try {
+    if (body.custom && typeof body.custom === "object" && !Array.isArray(body.custom)) await setCustomValues(user.id, body.custom);
+  } catch (err) {
+    return formErrorResponse(err);
+  }
   await upsertBuyerProfileFields(user.id, update);
   const profile = await getBuyerProfileOrEmpty(user.id);
   return NextResponse.json({ profile });

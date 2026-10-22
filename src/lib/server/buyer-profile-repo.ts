@@ -3,6 +3,18 @@ import pool from "@/lib/db";
 import { expoIdsSql, expoNamesSql, parseExpoIds, setBuyerExpoNames } from "@/lib/server/buyer-expos-repo";
 import { formatBuyerNumber } from "@/lib/buyer-number";
 import { assignMissingBuyerNumbers } from "@/lib/server/buyer-numbers";
+import { overallStatus } from "@/lib/buyer-form";
+import {
+  FormError,
+  findFormItem,
+  getCustomDocument,
+  getCustomDocumentData,
+  getCustomDocumentStates,
+  getCustomValues,
+  getFormItems,
+  setCustomDocument,
+  setCustomDocumentReview,
+} from "@/lib/server/buyer-form-repo";
 
 // The order documents are shown and exported in: passport, visa, business licence and card,
 // buyer photo, Canton Fair card, invoice / order list, latest entry stamp photo.
@@ -18,6 +30,23 @@ export const DOCUMENT_FIELDS = [
 ] as const;
 
 export type DocumentField = (typeof DOCUMENT_FIELDS)[number];
+
+export function isBuiltinDocument(key: string): key is DocumentField {
+  return (DOCUMENT_FIELDS as readonly string[]).includes(key);
+}
+
+// A document an admin added must exist in the form settings (shown or hidden).
+async function requireCustomDocument(key: string): Promise<void> {
+  const item = await findFormItem(key);
+  if (!item || item.kind !== "document") throw new FormError("not_found", 404);
+}
+
+/** Is this a document we know (built-in or added by an admin), and is it shown to buyers? */
+export async function documentAccess(key: string): Promise<{ exists: boolean; active: boolean }> {
+  const item = await findFormItem(key);
+  if (!item || item.kind !== "document") return { exists: false, active: false };
+  return { exists: true, active: item.active };
+}
 
 const DOCUMENT_COLUMNS: Record<DocumentField, string> = {
   businessLicense: "doc_business_license",
@@ -125,16 +154,19 @@ export interface DocumentReview {
 export interface BuyerProfile extends BuyerProfileFields {
   userId: number;
   expoIds: number[];
-  hasDocument: Record<DocumentField, boolean>;
-  documentReview: Record<DocumentField, DocumentReview>;
+  // Keyed by document: the built-in ones and any an admin added (Admin -> Buyer form settings).
+  hasDocument: Record<string, boolean>;
+  documentReview: Record<string, DocumentReview>;
+  // Answers to the extra information fields an admin added, by field key.
+  custom: Record<string, string>;
   updatedAt: number;
 }
 
-function emptyDocumentReview(): Record<DocumentField, DocumentReview> {
+function emptyDocumentReview(): Record<string, DocumentReview> {
   return DOCUMENT_FIELDS.reduce((acc, field) => {
     acc[field] = { status: "pending", note: "" };
     return acc;
-  }, {} as Record<DocumentField, DocumentReview>);
+  }, {} as Record<string, DocumentReview>);
 }
 
 const EMPTY_FIELDS: BuyerProfileFields = {
@@ -210,8 +242,24 @@ function mapRow(row: RowDataPacket): BuyerProfile {
       invoiceOrderList: { status: row.doc_invoice_order_list_status || "pending", note: row.doc_invoice_order_list_note || "" },
       latestEntryStamp: { status: row.doc_latest_entry_stamp_status || "pending", note: row.doc_latest_entry_stamp_note || "" },
     },
+    custom: {},
     updatedAt: Math.floor(new Date(row.updated_at).getTime() / 1000),
   };
+}
+
+// Adds what an admin added to the form: their documents and the answers to their extra fields.
+async function withCustom(profile: BuyerProfile): Promise<BuyerProfile> {
+  const [items, states, values] = await Promise.all([getFormItems(), getCustomDocumentStates([profile.userId]), getCustomValues([profile.userId])]);
+  const mine = states.get(profile.userId) ?? {};
+  const hasDocument = { ...profile.hasDocument };
+  const documentReview = { ...profile.documentReview };
+  for (const item of items) {
+    if (item.kind !== "document" || item.builtin) continue;
+    const state = mine[item.key];
+    hasDocument[item.key] = !!state;
+    documentReview[item.key] = state ? { status: state.status, note: state.note } : { status: "pending", note: "" };
+  }
+  return { ...profile, hasDocument, documentReview, custom: values.get(profile.userId) ?? {} };
 }
 
 function summaryColumns(stamp: boolean): string {
@@ -236,7 +284,7 @@ export async function getBuyerProfile(userId: number): Promise<BuyerProfile | nu
     [userId]
   );
   const row = rows[0];
-  return row ? mapRow(row) : null;
+  return row ? withCustom(mapRow(row)) : null;
 }
 
 // The buyer dashboard/admin detail view should always have something to
@@ -244,7 +292,7 @@ export async function getBuyerProfile(userId: number): Promise<BuyerProfile | nu
 export async function getBuyerProfileOrEmpty(userId: number): Promise<BuyerProfile> {
   const existing = await getBuyerProfile(userId);
   if (existing) return existing;
-  return {
+  return withCustom({
     userId,
     expoIds: [],
     ...EMPTY_FIELDS,
@@ -259,8 +307,9 @@ export async function getBuyerProfileOrEmpty(userId: number): Promise<BuyerProfi
       latestEntryStamp: false,
     },
     documentReview: emptyDocumentReview(),
+    custom: {},
     updatedAt: 0,
-  };
+  });
 }
 
 export type OverallVerificationStatus = "not_started" | "pending_review" | "action_needed" | "verified";
@@ -307,21 +356,14 @@ export interface AdminBuyerProfileRow {
   verificationStatus: OverallVerificationStatus;
   // Per-document upload + review state, so the admin list table can show a
   // status column for each of the 7 documents without a second request.
-  documents: Record<DocumentField, { uploaded: boolean; status: DocumentReviewStatus }>;
+  documents: Record<string, { uploaded: boolean; status: DocumentReviewStatus }>;
+  // Answers to the extra information fields an admin added, by field key.
+  custom: Record<string, string>;
 }
 
-// A buyer's overall status is a simple rollup of their 6 documents' own
-// review statuses: any rejection needs the buyer's attention regardless of
-// how many other documents are fine, an all-verified-and-complete set is
-// done, and anything in between (some uploaded, none rejected, not all
-// verified yet) is still awaiting review.
-function overallVerificationStatus(docs: { uploaded: boolean; status: DocumentReviewStatus }[]): OverallVerificationStatus {
-  const uploaded = docs.filter((d) => d.uploaded);
-  if (uploaded.length === 0) return "not_started";
-  if (uploaded.some((d) => d.status === "rejected")) return "action_needed";
-  if (uploaded.length === docs.length && uploaded.every((d) => d.status === "verified")) return "verified";
-  return "pending_review";
-}
+// A buyer's overall status is a rollup of the documents currently asked for (overallStatus in
+// @/lib/buyer-form): any rejection needs the buyer's attention, every required document uploaded
+// and verified is done, and anything in between is still awaiting review.
 
 // Whether each document has been uploaded, WITHOUT reading the document: the images are
 // base64 text in MEDIUMTEXT columns (hundreds of KB each), and the admin list covers
@@ -365,8 +407,12 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
     if ((err as { code?: string }).code !== "ER_BAD_FIELD_ERROR") throw err;
     [rows] = await pool.query<RowDataPacket[]>(adminListQuery(false, fields));
   }
+  // What an admin added to the form: the documents asked for now, and every buyer's custom files
+  // (state only, never the files) and answers.
+  const [items, customStates, customValues] = await Promise.all([getFormItems(), getCustomDocumentStates(), getCustomValues()]);
+  const customDocumentKeys = items.filter((i) => i.kind === "document" && !i.builtin).map((i) => i.key);
   return rows.map((row) => {
-    const documents: Record<DocumentField, { uploaded: boolean; status: DocumentReviewStatus }> = {
+    const documents: Record<string, { uploaded: boolean; status: DocumentReviewStatus }> = {
       businessLicense: { uploaded: !!row.has_doc_business_license, status: (row.doc_business_license_status || "pending") as DocumentReviewStatus },
       businessCard: { uploaded: !!row.has_doc_business_card, status: (row.doc_business_card_status || "pending") as DocumentReviewStatus },
       passportFront: { uploaded: !!row.has_doc_passport_front, status: (row.doc_passport_front_status || "pending") as DocumentReviewStatus },
@@ -376,6 +422,10 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
       invoiceOrderList: { uploaded: !!row.has_doc_invoice_order_list, status: (row.doc_invoice_order_list_status || "pending") as DocumentReviewStatus },
       latestEntryStamp: { uploaded: !!row.has_doc_latest_entry_stamp, status: (row.doc_latest_entry_stamp_status || "pending") as DocumentReviewStatus },
     };
+    const mine = customStates.get(row.user_id) ?? {};
+    for (const key of customDocumentKeys) {
+      documents[key] = mine[key] ? { uploaded: true, status: mine[key].status } : { uploaded: false, status: "pending" };
+    }
     const docs = Object.values(documents);
     return {
       userId: row.user_id,
@@ -410,13 +460,16 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
       purchaseIntention: row.purchase_intention || "",
       otherPurchaseIntention: row.other_purchase_intention || "",
       documentsUploaded: docs.filter((d) => d.uploaded).length,
-      verificationStatus: overallVerificationStatus(docs),
+      verificationStatus: overallStatus(documents, items),
       documents,
+      custom: customValues.get(row.user_id) ?? {},
     };
   });
 }
 
 export interface BuyerExportProfile extends BuyerProfileFields {
+  // Answers to the extra information fields an admin added, by field key.
+  custom: Record<string, string>;
   userId: number;
   buyerNumber: string;
   name: string;
@@ -425,8 +478,8 @@ export interface BuyerExportProfile extends BuyerProfileFields {
   // Raw data URL per document (null if never uploaded) -- unlike mapRow's
   // hasDocument/documentReview, an export needs the actual image bytes to
   // embed, not just a boolean.
-  documentData: Record<DocumentField, string | null>;
-  documentStatus: Record<DocumentField, DocumentReviewStatus>;
+  documentData: Record<string, string | null>;
+  documentStatus: Record<string, DocumentReviewStatus>;
 }
 
 // Batched fetch for the Excel/ZIP export tools -- one query for however
@@ -448,12 +501,18 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
      ORDER BY u.buyer_no IS NULL, u.buyer_no, u.id`,
     userIds
   );
+  const [items, customFiles, customStates, customValues] = await Promise.all([getFormItems(), getCustomDocumentData(userIds), getCustomDocumentStates(userIds), getCustomValues(userIds)]);
+  const customDocumentKeys = items.filter((i) => i.kind === "document" && !i.builtin).map((i) => i.key);
   return rows.map((row) => {
-    const documentData = {} as Record<DocumentField, string | null>;
-    const documentStatus = {} as Record<DocumentField, DocumentReviewStatus>;
+    const documentData = {} as Record<string, string | null>;
+    const documentStatus = {} as Record<string, DocumentReviewStatus>;
     for (const f of DOCUMENT_FIELDS) {
       documentData[f] = row[DOCUMENT_COLUMNS[f]] || null;
       documentStatus[f] = (row[DOCUMENT_STATUS_COLUMNS[f]] || "pending") as DocumentReviewStatus;
+    }
+    for (const key of customDocumentKeys) {
+      documentData[key] = customFiles.get(row.user_id)?.[key] ?? null;
+      documentStatus[key] = customStates.get(row.user_id)?.[key]?.status ?? "pending";
     }
     return {
       userId: row.user_id,
@@ -484,6 +543,7 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
       visaType: row.visa_type || "",
       visaExpireDate: row.visa_expire_date || "",
       rewardPoints: Number(row.reward_points ?? 0),
+      custom: customValues.get(row.user_id) ?? {},
       documentData,
       documentStatus,
     };
@@ -553,7 +613,12 @@ export async function upsertBuyerProfileFields(userId: number, fields: Partial<B
 // one back to pending or rejected whenever that's actually needed. Always
 // clears any previous rejection note, since a fresh upload replacing a
 // rejected one shouldn't keep showing stale rejection wording.
-export async function setBuyerDocument(userId: number, field: DocumentField, dataUrl: string): Promise<void> {
+export async function setBuyerDocument(userId: number, field: string, dataUrl: string): Promise<void> {
+  if (!isBuiltinDocument(field)) {
+    await requireCustomDocument(field);
+    await setCustomDocument(userId, field, dataUrl);
+    return;
+  }
   const column = DOCUMENT_COLUMNS[field];
   const statusColumn = DOCUMENT_STATUS_COLUMNS[field];
   const noteColumn = DOCUMENT_NOTE_COLUMNS[field];
@@ -564,7 +629,11 @@ export async function setBuyerDocument(userId: number, field: DocumentField, dat
   );
 }
 
-export async function getBuyerDocument(userId: number, field: DocumentField): Promise<string | null> {
+export async function getBuyerDocument(userId: number, field: string): Promise<string | null> {
+  if (!isBuiltinDocument(field)) {
+    await requireCustomDocument(field);
+    return getCustomDocument(userId, field);
+  }
   const column = DOCUMENT_COLUMNS[field];
   const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT ${column} AS value FROM buyer_profiles WHERE user_id = ? LIMIT 1`,
@@ -579,10 +648,15 @@ export async function getBuyerDocument(userId: number, field: DocumentField): Pr
 // first, which is what creates that row), so no INSERT branch needed here.
 export async function setDocumentReview(
   userId: number,
-  field: DocumentField,
+  field: string,
   status: DocumentReviewStatus,
   note: string
 ): Promise<void> {
+  if (!isBuiltinDocument(field)) {
+    await requireCustomDocument(field);
+    await setCustomDocumentReview(userId, field, status, note);
+    return;
+  }
   const statusColumn = DOCUMENT_STATUS_COLUMNS[field];
   const noteColumn = DOCUMENT_NOTE_COLUMNS[field];
   await pool.query<ResultSetHeader>(

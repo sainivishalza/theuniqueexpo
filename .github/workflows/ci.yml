@@ -1,0 +1,92 @@
+name: CI
+
+# Runs on every pull request (and on pushes to main): type check, the translation check, a production
+# build, and the end-to-end tests against a throwaway MariaDB. Nothing here deploys anything.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    env:
+      JWT_SECRET: ci-only-secret-not-used-anywhere-else
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run check:messages
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "1"
+          MARIADB_DATABASE: unique_expo_ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      JWT_SECRET: ci-only-secret-not-used-anywhere-else
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASSWORD: ""
+      DB_NAME: unique_expo_ci
+      TEST_BASE_URL: http://localhost:3100
+      TEST_DB_HOST: 127.0.0.1
+      TEST_DB_USER: root
+      TEST_DB_NAME: unique_expo_ci
+      SHOTS_DIR: ${{ github.workspace }}/tests/artifacts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Build the database like a deploy does (base schema, then every migration in order)
+        run: |
+          set -e
+          M="mysql --default-character-set=utf8mb4 -h127.0.0.1 -uroot unique_expo_ci"
+          $M < schema.sql
+          $M < schema-admin.sql
+          for f in $(grep '^run_mysql schema-migrations' scripts/hostinger-deploy-remote.sh | awk '{print $2}'); do
+            echo "applying $f"
+            $M < "$f"
+          done
+
+      - name: Build the site
+        run: npm run build
+
+      - name: Start the site
+        run: |
+          nohup npx next start -p 3100 > site.log 2>&1 &
+          for i in $(seq 1 60); do curl -s -o /dev/null http://localhost:3100/api/auth/me && exit 0; sleep 1; done
+          cat site.log; exit 1
+
+      - name: Install the browser the tests drive
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: npm run test:e2e
+
+      - name: Keep screenshots and the site log when something failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-artifacts
+          path: |
+            tests/artifacts
+            site.log
+          if-no-files-found: ignore

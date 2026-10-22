@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth-server";
 import { documentAccess, getBuyerDocument, setBuyerDocument } from "@/lib/server/buyer-profile-repo";
 import { formErrorResponse } from "@/lib/server/buyer-form-api";
-import { isValidUploadedDocument, isAllowedImageContentType } from "@/lib/server/validate-upload";
+import { isValidUploadedDocument } from "@/lib/server/validate-upload";
+import { documentResponse } from "@/lib/server/document-response";
 
 // A buyer can only see and upload the documents currently asked for (not a hidden one).
 async function isShownDocument(value: string): Promise<boolean> {
@@ -23,25 +24,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ type
   const value = await getBuyerDocument(user.id, type);
   if (!value) return NextResponse.json({ error: "No document uploaded" }, { status: 404 });
 
-  const match = /^data:([^;]+);base64,(.+)$/.exec(value);
-  if (!match) return NextResponse.json({ error: "Malformed document data" }, { status: 500 });
-  const [, contentType, base64Data] = match;
-
-  // PDFs are allowed on upload (isValidUploadedDocument) but this route
-  // only ever serves images back inline -- a stored PDF is instead just
-  // linked to directly by its data: URL from the page that already has it.
-  if (!isAllowedImageContentType(contentType)) {
-    return NextResponse.json({ error: "Unsupported content type for inline serving" }, { status: 415 });
-  }
-  const bytes = Buffer.from(base64Data, "base64");
-
-  return new NextResponse(bytes, {
-    headers: {
-      "Content-Type": contentType,
-      "Cache-Control": "private, max-age=3600",
-      "Content-Length": String(bytes.length),
-    },
-  });
+  return documentResponse(value);
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ type: string }> }) {

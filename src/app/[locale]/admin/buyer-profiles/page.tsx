@@ -16,6 +16,7 @@ import { documentsComplete, type FormItem } from "@/lib/buyer-form";
 import Button from "@/components/ui/Button";
 import UrlSearchSync from "@/components/UrlSearchSync";
 import DocumentLightbox from "../../dashboard/_components/DocumentLightbox";
+import DocumentThumb from "../../dashboard/_components/DocumentThumb";
 
 type VerificationStatus = "not_started" | "pending_review" | "action_needed" | "verified";
 type DocReviewStatus = "pending" | "verified" | "rejected";
@@ -182,6 +183,21 @@ function matchesDocFilter(row: AdminBuyerProfileRow, filter: string, docs: FormI
 // The list draws this many buyers at a time (then "Show more"): with a couple of
 // thousand buyers a single table of every row made typing in the search box lag.
 const PAGE_SIZE = 100;
+
+// A document's small picture in the table; a PDF (no picture) shows a "PDF file" tile.
+function ListThumb({ src, alt, pdfLabel }: { src: string; alt: string; pdfLabel: string }) {
+  const [failed, setFailed] = useState(false);
+  const box = "mb-1 h-12 w-16 rounded-lg border border-gray-200 transition-colors hover:border-emerald-400";
+  if (failed) {
+    return (
+      <span className={`${box} flex flex-col items-center justify-center bg-cream-50 text-emerald-900`}>
+        <span aria-hidden="true" className="text-base leading-none">📄</span>
+        <span className="text-[10px] font-bold">{pdfLabel}</span>
+      </span>
+    );
+  }
+  return <img src={src} alt={alt} loading="lazy" onError={() => setFailed(true)} className={`${box} object-cover`} />;
+}
 
 interface ExpoOption {
   id: number;
@@ -804,11 +820,10 @@ export default function AdminBuyerProfilesPage() {
                                   onClick={() => setLightbox({ userId: r.userId, field, buyerName: r.name })}
                                   className="block"
                                 >
-                                  <img
-                                    src={`/api/admin/buyer-profiles/${r.userId}/documents/${field}`}
+                                  <ListThumb
+                                    src={`/api/admin/buyer-profiles/${r.userId}/documents/${field}?thumb=1`}
                                     alt={form.label(item)}
-                                    loading="lazy"
-                                    className="h-12 w-16 object-cover rounded-lg border border-gray-200 hover:border-emerald-400 transition-colors mb-1"
+                                    pdfLabel={ta("viewer.pdf")}
                                   />
                                   <span className={`rounded-lg px-2 py-0.5 text-[11px] font-semibold ${DOC_BADGE_STYLES[doc.status]}`}>
                                     {t(`docReview.${doc.status}`)}
@@ -994,21 +1009,12 @@ export default function AdminBuyerProfilesPage() {
                         <div key={field} className={`rounded-xl border-2 p-2 ${DOC_STATUS_STYLES[review.status]}`}>
                           <p className="text-xs font-semibold text-gray-600 mb-1.5">{form.label(item)}</p>
                           {detail.hasDocument[field] ? (
-                            <button
-                              type="button"
-                              onClick={() => setLightbox({ userId: openId, field, buyerName: form.label(item) })}
-                              aria-label={`${ta("viewer.enlarge")}: ${form.label(item)}`}
-                              className="group relative mb-1.5 block w-full cursor-zoom-in rounded-lg bg-cream-50 ring-1 ring-transparent hover:ring-emerald-500"
-                            >
-                              <img
-                                src={`/api/admin/buyer-profiles/${openId}/documents/${field}?v=${docVersion}`}
-                                alt=""
-                                className="h-20 w-full object-contain rounded-lg"
-                              />
-                              <span className="absolute bottom-1 right-1 rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] font-semibold text-white shadow group-hover:bg-emerald-700">
-                                🔍 {ta("viewer.enlarge")}
-                              </span>
-                            </button>
+                            <DocumentThumb
+                              src={`/api/admin/buyer-profiles/${openId}/documents/${field}?v=${docVersion}`}
+                              label={`${ta("viewer.enlarge")}: ${form.label(item)}`}
+                              onOpen={() => setLightbox({ userId: openId, field, buyerName: form.label(item) })}
+                              heightClass="h-20"
+                            />
                           ) : (
                             <div className="h-20 w-full flex items-center justify-center rounded-lg bg-cream-50 text-xs text-gray-500 mb-1.5">{t("noFile")}</div>
                           )}

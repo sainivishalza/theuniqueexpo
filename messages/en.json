@@ -551,7 +551,9 @@
       "close": "Close",
       "openFile": "Open the file",
       "hint": "Pinch or scroll to zoom, double-tap to zoom in and out",
-      "enlarge": "Enlarge"
+      "enlarge": "Enlarge",
+      "pdf": "PDF file",
+      "open": "Open"
     }
   },
   "adminHome": {
@@ -4338,6 +4340,18 @@
       "builtin": "Built-in items cannot be deleted. Hide them instead.",
       "not_found": "That item no longer exists. Please refresh the page.",
       "not_ready": "The database update for this page has not been applied yet. Try again in a few minutes."
+    },
+    "storage": {
+      "title": "Photo storage",
+      "intro": "Buyer photos are shrunk automatically when they are uploaded. This button shrinks the big photos that were uploaded earlier, so the website and the Excel and ZIP downloads stay fast. Review statuses are not changed and PDF files are left as they are.",
+      "summary": "{files} documents are stored, {size} MB in total.",
+      "large": "{files} large photos ({size} MB) can be shrunk.",
+      "noneLarge": "No large photos: nothing to shrink.",
+      "button": "Shrink large photos",
+      "running": "Shrinking…",
+      "working": "Checked {checked} photos so far…",
+      "done": "Done: {shrunk} photos shrunk, {saved} MB saved.",
+      "failed": "{failed} files could not be read and were left as they are."
     }
   },
   "accountPassword": {

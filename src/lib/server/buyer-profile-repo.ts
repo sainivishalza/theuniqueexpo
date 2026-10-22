@@ -4,6 +4,7 @@ import { expoIdsSql, expoNamesSql, parseExpoIds, setBuyerExpoNames } from "@/lib
 import { formatBuyerNumber } from "@/lib/buyer-number";
 import { assignMissingBuyerNumbers } from "@/lib/server/buyer-numbers";
 import { overallStatus } from "@/lib/buyer-form";
+import { shrinkDocumentDataUrl } from "@/lib/server/document-image";
 import {
   FormError,
   findFormItem,
@@ -613,7 +614,9 @@ export async function upsertBuyerProfileFields(userId: number, fields: Partial<B
 // one back to pending or rejected whenever that's actually needed. Always
 // clears any previous rejection note, since a fresh upload replacing a
 // rejected one shouldn't keep showing stale rejection wording.
-export async function setBuyerDocument(userId: number, field: string, dataUrl: string): Promise<void> {
+export async function setBuyerDocument(userId: number, field: string, uploaded: string): Promise<void> {
+  // Shrunk before it is stored (see document-image.ts); throws DocumentFileError for a file that is not what it claims to be.
+  const dataUrl = await shrinkDocumentDataUrl(uploaded);
   if (!isBuiltinDocument(field)) {
     await requireCustomDocument(field);
     await setCustomDocument(userId, field, dataUrl);

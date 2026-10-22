@@ -3,6 +3,7 @@ import { useCallback, useEffect, useId, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
+import StorageCard from "./StorageCard";
 import Button from "@/components/ui/Button";
 import { fieldClasses } from "@/components/ui/FormField";
 import { itemLabel, MAX_LABEL_LENGTH, type FieldType, type FormItem, type FormItemKind } from "@/lib/buyer-form";
@@ -293,6 +294,7 @@ export default function AdminBuyerFormPage() {
               <p className="rounded-xl bg-white px-4 py-3 text-sm text-gray-700 shadow-sm">{t("howItWorks")}</p>
               {Section({ kind: "document", items: data.documents })}
               {Section({ kind: "field", items: data.fields })}
+              <StorageCard />
             </>
           )}
         </div>

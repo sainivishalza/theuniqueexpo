@@ -551,7 +551,9 @@
       "close": "关闭",
       "openFile": "打开文件",
       "hint": "双指缩放或滚动缩放，双击放大或还原",
-      "enlarge": "放大"
+      "enlarge": "放大",
+      "pdf": "PDF 文件",
+      "open": "打开"
     }
   },
   "adminHome": {
@@ -4338,6 +4340,18 @@
       "builtin": "内置项目无法删除，请改为隐藏。",
       "not_found": "该项目已不存在，请刷新页面。",
       "not_ready": "此页面所需的数据库更新尚未应用，请几分钟后再试。"
+    },
+    "storage": {
+      "title": "照片存储",
+      "intro": "买家照片在上传时会自动压缩。此按钮会压缩之前上传的大照片，使网站以及 Excel 和 ZIP 下载保持流畅。审核状态不会改变，PDF 文件保持原样。",
+      "summary": "已存储 {files} 份文档，共 {size} MB。",
+      "large": "有 {files} 张大照片（{size} MB）可以压缩。",
+      "noneLarge": "没有大照片，无需压缩。",
+      "button": "压缩大照片",
+      "running": "正在压缩…",
+      "working": "已检查 {checked} 张照片…",
+      "done": "完成：已压缩 {shrunk} 张照片，节省 {saved} MB。",
+      "failed": "有 {failed} 个文件无法读取，已保持原样。"
     }
   },
   "accountPassword": {

@@ -11,6 +11,7 @@ import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
 import DocumentLightbox from "../../_components/DocumentLightbox";
+import DocumentThumb from "../../_components/DocumentThumb";
 
 type DocReviewStatus = "pending" | "verified" | "rejected";
 
@@ -316,21 +317,11 @@ export default function BuyerProfilePage() {
                     )}
                   </div>
                   {profile.hasDocument[field] ? (
-                    <button
-                      type="button"
-                      onClick={() => setViewing(field)}
-                      aria-label={t("enlarge", { name: form.label(item) })}
-                      className="group relative mb-2 block w-full cursor-zoom-in rounded-lg bg-cream-50 outline-offset-2 ring-1 ring-transparent hover:ring-emerald-500"
-                    >
-                      <img
-                        src={`/api/buyer-profile/documents/${field}?v=${docVersion}`}
-                        alt=""
-                        className="h-24 w-full object-contain rounded-lg"
-                      />
-                      <span className="absolute bottom-1 right-1 rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] font-semibold text-white shadow group-hover:bg-emerald-700">
-                        🔍 {t("enlargeShort")}
-                      </span>
-                    </button>
+                    <DocumentThumb
+                      src={`/api/buyer-profile/documents/${field}?v=${docVersion}`}
+                      label={t("enlarge", { name: form.label(item) })}
+                      onOpen={() => setViewing(field)}
+                    />
                   ) : (
                     <div className="h-24 w-full flex items-center justify-center rounded-lg bg-cream-50 text-xs text-gray-500 mb-2">{t("noFile")}</div>
                   )}

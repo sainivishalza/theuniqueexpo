@@ -91,3 +91,16 @@ export async function setUserPasswordHash(id: number, passwordHash: string) {
     await pool.query<ResultSetHeader>("UPDATE users SET password_hash = ? WHERE id = ?", [passwordHash, id]);
   }
 }
+
+// "Sign out everywhere": every session signed before this moment ends (see signedBeforePasswordChange in
+// auth-server.ts); the caller is given a fresh session by the route. Before migration 061 there is no such
+// column, and nothing can be ended.
+export async function endAllSessions(id: number): Promise<boolean> {
+  try {
+    await pool.query<ResultSetHeader>("UPDATE users SET password_changed_at = ? WHERE id = ?", [Math.floor(Date.now() / 1000), id]);
+    return true;
+  } catch (err) {
+    if ((err as { code?: string }).code !== "ER_BAD_FIELD_ERROR") throw err;
+    return false;
+  }
+}

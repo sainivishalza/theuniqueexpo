@@ -4,6 +4,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import ChangePasswordCard from "../_components/ChangePasswordCard";
+import SessionsCard from "../_components/SessionsCard";
+import MyDataCard from "../_components/MyDataCard";
 
 // "My account": where any signed-in customer (buyer, exhibitor or partner) changes their password.
 export default function AccountPage() {
@@ -31,7 +33,11 @@ export default function AccountPage() {
       </section>
       <section className="bg-cream-50 py-8">
         <div className="mx-auto max-w-3xl px-6">
-          <ChangePasswordCard />
+          <div className="space-y-6">
+            <ChangePasswordCard />
+            <SessionsCard />
+            <MyDataCard />
+          </div>
         </div>
       </section>
     </div>

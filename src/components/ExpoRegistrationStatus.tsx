@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { formatDateOnly, formatDateTime, STATUS_TONE } from "@/lib/client/registration-format";
+import { buildIcs } from "@/lib/client/ics";
 import { MAX_ARRIVAL_NOTE_LENGTH, MAX_FEEDBACK_LENGTH, type MyRegistration } from "@/lib/registration-lifecycle";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
@@ -109,6 +110,28 @@ export default function ExpoRegistrationStatus({ exhibitionSlug, fallback = null
     }
   }
 
+  // "Add to calendar": a .ics file made right here (nothing is sent anywhere) for the exhibition's days.
+  function addToCalendar() {
+    if (!registration) return;
+    const ics = buildIcs({
+      uid: `registration-${registration.id}`,
+      title: registration.exhibitionTitle,
+      start: registration.exhibitionStart,
+      end: registration.exhibitionEnd,
+      description: buyerNumber ? `${t("registrationNumber")}: ${buyerNumber}` : undefined,
+      url: `${window.location.origin}/${locale}/exhibitions/${registration.exhibitionSlug}`,
+    });
+    if (!ics) return;
+    const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${registration.exhibitionSlug}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
   if (authLoading || registration === undefined || !registration) return <>{fallback}</>;
 
   const status = registration.status;
@@ -128,6 +151,15 @@ export default function ExpoRegistrationStatus({ exhibitionSlug, fallback = null
       )}
       <p className="mt-2 text-xs text-gray-500">{t("registeredOn", { date: formatDateTime(registration.createdAt, locale) })}</p>
       {buyerNumber && <p className="mt-1 text-xs text-gray-500">{t("registrationNumber")}: <span className="font-bold text-emerald-700">{buyerNumber}</span></p>}
+      {(status === "approved" || status === "confirmed") && registration.exhibitionStart && (
+        <button
+          type="button"
+          onClick={addToCalendar}
+          className="mt-3 inline-flex items-center gap-1.5 rounded-[var(--radius-button)] border border-emerald-600 px-3 py-1.5 text-sm font-semibold text-emerald-900 hover:bg-emerald-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
+        >
+          <span aria-hidden="true">📅</span> {t("addToCalendar")}
+        </button>
+      )}
 
       {/* Approved: confirm attendance */}
       {actions.confirm && (

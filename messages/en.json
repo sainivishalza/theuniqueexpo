@@ -3915,7 +3915,8 @@
       "submitting": "Sending...",
       "thanks": "Thank you for your feedback."
     },
-    "registrationNumber": "Registration no."
+    "registrationNumber": "Registration no.",
+    "addToCalendar": "Add to my calendar"
   },
   "expoCheckIn": {
     "loading": "Loading...",
@@ -4490,7 +4491,24 @@
     "pageSubtitle": "Keep your account safe with a password only you know.",
     "menu": "Account & password",
     "adminCardTitle": "My account",
-    "adminCardDescription": "Change your own sign-in password"
+    "adminCardDescription": "Change your own sign-in password",
+    "sessions": {
+      "title": "Signed in somewhere else?",
+      "intro": "Sign out of every other phone and computer where you are signed in. You stay signed in here.",
+      "button": "Sign out of other devices",
+      "working": "Working…",
+      "confirm": "Sign out of all your other devices? You will stay signed in here.",
+      "done": "Done. Every other device has been signed out.",
+      "failed": "Could not sign out the other devices. Please try again."
+    },
+    "myData": {
+      "title": "Your data",
+      "intro": "Download a copy of what we keep about you: your account, profile, registrations and points history, as one file. Uploaded document photos are not inside it; open them from your profile.",
+      "button": "Download my data",
+      "working": "Preparing…",
+      "failed": "We could not prepare your data. Please try again.",
+      "tooMany": "You asked for this several times. Please try again in an hour."
+    }
   },
   "emails": {
     "greeting": "Hello {name},",
@@ -4879,7 +4897,8 @@
       "blog_post_created": "Added a blog post",
       "blog_post_updated": "Edited a blog post",
       "blog_post_deleted": "Deleted a blog post",
-      "site_page_saved": "Saved a website page"
+      "site_page_saved": "Saved a website page",
+      "signed_out_everywhere": "Signed out of all other devices"
     }
   }
 }

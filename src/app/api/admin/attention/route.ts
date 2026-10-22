@@ -3,11 +3,13 @@ import { requireAdmin } from "@/lib/auth-server";
 import { getAttentionCounts } from "@/lib/server/admin-attention";
 import { isTwoStepOn } from "@/lib/server/totp";
 import { runRemindersInBackground } from "@/lib/server/reminders";
+import { runHousekeepingInBackground } from "@/lib/server/housekeeping";
 
 export async function GET(request: Request) {
   const admin = await requireAdmin(request);
   if (!admin) return NextResponse.json({ error: "Admin access required" }, { status: 401 });
   // Opening the admin home also starts the reminder job (at most every 6 hours; see reminders.ts).
   runRemindersInBackground();
+  runHousekeepingInBackground();
   return NextResponse.json({ ...(await getAttentionCounts()), twoStepOff: !(await isTwoStepOn(admin.id)) }, { headers: { "Cache-Control": "no-store" } });
 }

@@ -244,7 +244,7 @@ export default function AdminPartnerTiersPage() {
                   <p className="text-xs text-gray-500 mt-1">{tier.commissionRate} &middot; {tier.benefits.length} {t("benefitsCount")}</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Button onClick={() => openEdit(tier)} variant="ghost" size="xs">{t("editButton")}</Button>
+                  <Button onClick={() => openEdit(tier)} variant="save" size="xs">{t("editButton")}</Button>
                   <Button onClick={() => handleDelete(tier.id)} disabled={deletingId === tier.id} variant="ghostDanger" size="xs">
                     {deletingId === tier.id ? t("deleting") : ta("delete")}
                   </Button>

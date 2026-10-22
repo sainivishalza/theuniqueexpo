@@ -13,6 +13,7 @@ export default function ExhibitorDashboard() {
   const t = useTranslations("exhibitorDashboard");
   const locale = useLocale();
   const tc = useTranslations("common");
+  const tp = useTranslations("accountPassword");
   const { user } = useAuth();
   const bookings = user ? getBookingsForExhibitor(String(user.id)) : [];
 
@@ -63,6 +64,13 @@ export default function ExhibitorDashboard() {
                 <h3 className="font-bold text-heading">{t("leadsCrm")}</h3>
                 <p className="text-sm text-gray-500 mt-1">{t("leadsCrmDesc")}</p>
                 <span className="mt-2 inline-block rounded-lg bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-600">{tc("comingSoon")}</span>
+              </div>
+            </Card>
+            <Card href="/dashboard/account" shadow="sm" className="p-6 flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-xl">🔑</div>
+              <div>
+                <h3 className="font-bold text-heading">{tp("title")}</h3>
+                <p className="text-sm text-gray-500 mt-1">{tp("pageSubtitle")}</p>
               </div>
             </Card>
           </div>

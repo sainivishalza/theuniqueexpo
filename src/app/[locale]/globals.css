@@ -90,6 +90,41 @@
   .font-script {
     font-family: var(--font-script), "Caveat", cursive;
   }
+  /* Every "Choose File" button on the site looks like the green Save button, so
+     people can see where to pick a file. Set in the base layer, so a utility class
+     on a particular input can still override it. */
+  input[type="file"] {
+    cursor: pointer;
+  }
+  input[type="file"]:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  input[type="file"]::file-selector-button {
+    margin-right: 0.75rem;
+    padding: 0.55rem 1rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, var(--color-emerald-500) 0%, var(--color-emerald-600) 100%);
+    color: #fff;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    transition: opacity 0.15s;
+  }
+  input[type="file"]:hover::file-selector-button {
+    opacity: 0.9;
+  }
+  input[type="file"]:disabled::file-selector-button {
+    cursor: not-allowed;
+  }
+  input[type="file"]:focus-visible {
+    outline: 2px solid var(--color-emerald-500);
+    outline-offset: 2px;
+    border-radius: 0.5rem;
+  }
 }
 
 @layer utilities {

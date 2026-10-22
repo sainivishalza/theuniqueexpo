@@ -108,7 +108,7 @@ export default function TopupsTab() {
                     <Button type="button" variant="ghost" size="xs" onClick={() => setOpenId(null)}>{t("close")}</Button>
                   </div>
                 ) : (
-                  <Button type="button" variant="ghost" size="xs" onClick={() => open(row)}>{row.status === "pending" ? t("review") : t("viewProof")}</Button>
+                  <Button type="button" variant={row.status === "pending" ? "save" : "ghost"} size="xs" onClick={() => open(row)}>{row.status === "pending" ? t("review") : t("viewProof")}</Button>
                 )}
               </div>
             </Card>

@@ -246,8 +246,8 @@ export default function AdminEventsPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button href={`/events/${event.slug}`} variant="ghost" size="xs">{t("view")}</Button>
-                <Button href={`/admin/events/${event.slug}/registrations`} variant="ghost" size="xs">{t("registrations")}</Button>
-                <Button onClick={() => openEdit(event)} variant="ghost" size="xs">{t("editButton")}</Button>
+                <Button href={`/admin/events/${event.slug}/registrations`} variant="tint" size="xs">{t("registrations")}</Button>
+                <Button onClick={() => openEdit(event)} variant="save" size="xs">{t("editButton")}</Button>
                 <Button onClick={() => handleDelete(event.id)} disabled={deletingId === event.id} variant="ghostDanger" size="xs">
                   {deletingId === event.id ? t("deleting") : ta("delete")}
                 </Button>

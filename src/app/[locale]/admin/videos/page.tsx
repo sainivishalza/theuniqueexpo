@@ -219,7 +219,7 @@ export default function AdminVideosPage() {
                 {video.relatedType && <p className="text-xs text-gray-500 mt-1">{t("linkedTo", { type: video.relatedType, id: video.relatedId })}</p>}
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button onClick={() => openEdit(video)} variant="ghost" size="xs">{t("editButton")}</Button>
+                <Button onClick={() => openEdit(video)} variant="save" size="xs">{t("editButton")}</Button>
                 <Button onClick={() => handleDelete(video.id)} disabled={deletingId === video.id} variant="ghostDanger" size="xs">
                   {deletingId === video.id ? t("deleting") : ta("delete")}
                 </Button>

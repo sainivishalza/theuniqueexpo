@@ -118,7 +118,7 @@ export default function ExpensesTab() {
                     <Button type="button" variant="ghost" size="xs" onClick={() => setOpenId(null)}>{t("close")}</Button>
                   </div>
                 ) : (
-                  <Button type="button" variant="ghost" size="xs" onClick={() => open(row)}>{row.status === "pending" ? t("review") : t("details")}</Button>
+                  <Button type="button" variant={row.status === "pending" ? "save" : "ghost"} size="xs" onClick={() => open(row)}>{row.status === "pending" ? t("review") : t("details")}</Button>
                 )}
               </div>
             </Card>

@@ -543,7 +543,16 @@
     "email": "Email",
     "date": "Date",
     "confirmDelete": "Are you sure you want to delete this?",
-    "somethingWentWrong": "Something went wrong"
+    "somethingWentWrong": "Something went wrong",
+    "viewer": {
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "reset": "Reset",
+      "close": "Close",
+      "openFile": "Open the file",
+      "hint": "Pinch or scroll to zoom, double-tap to zoom in and out",
+      "enlarge": "Enlarge"
+    }
   },
   "adminHome": {
     "accessDenied": "Access Denied",
@@ -670,6 +679,10 @@
       "buyerForm": {
         "title": "Buyer form settings",
         "description": "Choose the documents buyers upload and add extra questions, without a developer."
+      },
+      "myAccount": {
+        "title": "My account",
+        "description": "Change your own sign-in password"
       }
     }
   },
@@ -2925,30 +2938,8 @@
     },
     "registrationNumber": "Your registration number",
     "registrationNumberHint": "Quote it whenever you contact us.",
-    "password": {
-      "title": "Change password",
-      "intro": "Choose a new password for your account. You will stay signed in on this device.",
-      "current": "Current password",
-      "new": "New password",
-      "confirm": "Confirm new password",
-      "hint": "At least {min} characters. Use something you do not use anywhere else.",
-      "show": "Show",
-      "hide": "Hide",
-      "submit": "Change password",
-      "saving": "Saving…",
-      "success": "Your password has been changed. Use the new one the next time you sign in.",
-      "errors": {
-        "currentMissing": "Please type your current password.",
-        "wrong_password": "The current password is not correct.",
-        "weak_password": "The new password must be at least {min} characters.",
-        "too_long": "The new password is too long. Please use a shorter one.",
-        "mismatch": "The new password and its confirmation are not the same.",
-        "same_password": "The new password must be different from the current one.",
-        "rate_limited": "Too many wrong attempts. Please wait a few minutes and try again.",
-        "unauthorized": "Please sign in again.",
-        "generic": "We could not change your password. Please try again."
-      }
-    }
+    "enlarge": "Tap to enlarge {name}",
+    "enlargeShort": "Enlarge"
   },
   "adminBuyerProfiles": {
     "backToAdmin": "← Back to Admin",
@@ -4348,5 +4339,35 @@
       "not_found": "That item no longer exists. Please refresh the page.",
       "not_ready": "The database update for this page has not been applied yet. Try again in a few minutes."
     }
+  },
+  "accountPassword": {
+    "title": "Change password",
+    "intro": "Choose a new password for your account. You will stay signed in on this device.",
+    "current": "Current password",
+    "new": "New password",
+    "confirm": "Confirm new password",
+    "hint": "At least {min} characters. Use something you do not use anywhere else.",
+    "show": "Show",
+    "hide": "Hide",
+    "submit": "Change password",
+    "saving": "Saving…",
+    "success": "Your password has been changed. Use the new one the next time you sign in.",
+    "errors": {
+      "currentMissing": "Please type your current password.",
+      "wrong_password": "The current password is not correct.",
+      "weak_password": "The new password must be at least {min} characters.",
+      "too_long": "The new password is too long. Please use a shorter one.",
+      "mismatch": "The new password and its confirmation are not the same.",
+      "same_password": "The new password must be different from the current one.",
+      "rate_limited": "Too many wrong attempts. Please wait a few minutes and try again.",
+      "unauthorized": "Please sign in again.",
+      "generic": "We could not change your password. Please try again."
+    },
+    "backToDashboard": "← Back to dashboard",
+    "pageTitle": "My account",
+    "pageSubtitle": "Keep your account safe with a password only you know.",
+    "menu": "Account & password",
+    "adminCardTitle": "My account",
+    "adminCardDescription": "Change your own sign-in password"
   }
 }

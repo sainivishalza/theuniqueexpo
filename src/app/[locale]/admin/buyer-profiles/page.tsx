@@ -11,6 +11,8 @@ import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-op
 import { formatNumber } from "@/lib/format";
 import BulkPointsDialog from "./BulkPointsDialog";
 import { TEXT_COLUMN_ORDER } from "@/lib/buyer-profile-columns";
+import { useBuyerForm } from "@/lib/client/buyer-form";
+import { documentsComplete, type FormItem } from "@/lib/buyer-form";
 import Button from "@/components/ui/Button";
 import UrlSearchSync from "@/components/UrlSearchSync";
 
@@ -53,6 +55,8 @@ interface AdminBuyerProfileRow {
   documentsUploaded: number;
   verificationStatus: VerificationStatus;
   documents: Record<string, { uploaded: boolean; status: DocReviewStatus }>;
+  // Answers to the extra information fields an admin added, by field key.
+  custom: Record<string, string>;
 }
 
 // Every string field above is searchable from the one search box -- see
@@ -98,6 +102,7 @@ interface BuyerProfileDetail {
   visaExpireDate: string;
   hasDocument: Record<string, boolean>;
   documentReview: Record<string, DocReview>;
+  custom: Record<string, string>;
 }
 
 const STATUS_BADGE_STYLES: Record<VerificationStatus, string> = {
@@ -119,7 +124,7 @@ const DOC_BADGE_STYLES: Record<DocReviewStatus, string> = {
   rejected: "bg-red-50 text-red-700",
 };
 
-type DetailFieldKey = Exclude<keyof BuyerProfileDetail, "hasDocument" | "documentReview" | "expoIds">;
+type DetailFieldKey = Exclude<keyof BuyerProfileDetail, "hasDocument" | "documentReview" | "expoIds" | "custom">;
 
 interface FieldDef {
   key: DetailFieldKey;
@@ -160,20 +165,16 @@ const FIELDS: FieldDef[] = [
 // The columns of the list: the order is shared with the Excel download (src/lib/buyer-profile-columns.ts).
 // (The edit form keeps the order of FIELDS above.)
 const TABLE_FIELDS: FieldDef[] = TEXT_COLUMN_ORDER.flatMap((key) => FIELDS.filter((f) => f.key === key));
-// Same order as the Excel and ZIP exports (DOCUMENT_FIELDS on the server).
-const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList", "latestEntryStamp"] as const;
-// Column order of the Excel download and its tick-list: the same as the table on screen.
-const TEXT_EXPORT_ORDER: string[] = [...TEXT_COLUMN_ORDER];
-const EXPORT_ORDER: string[] = [...TEXT_EXPORT_ORDER, ...DOC_FIELDS];
-const EXPORT_FIELDS_STORAGE_KEY = "buyer-profiles-export-fields";
+// The documents and extra fields come from Admin -> Buyer form settings (see useBuyerForm below).
+const EXPORT_UNTICKED_STORAGE_KEY = "buyer-profiles-export-unticked";
 
 // The "Filter by documents" choices: which buyers still owe a document, or are waiting on review.
-function matchesDocFilter(row: AdminBuyerProfileRow, filter: string): boolean {
-  const uploaded = DOC_FIELDS.filter((f) => row.documents[f].uploaded).length;
-  if (filter === "missing_any") return uploaded < DOC_FIELDS.length;
-  if (filter === "complete") return uploaded === DOC_FIELDS.length;
+function matchesDocFilter(row: AdminBuyerProfileRow, filter: string, docs: FormItem[]): boolean {
+  const uploaded = docs.filter((d) => row.documents[d.key]?.uploaded).length;
+  if (filter === "missing_any") return uploaded < docs.length;
+  if (filter === "complete") return documentsComplete(row.documents, docs);
   if (filter === "pending_review" || filter === "action_needed") return row.verificationStatus === filter;
-  if (filter.startsWith("missing:")) return !row.documents[filter.slice(8) as (typeof DOC_FIELDS)[number]]?.uploaded;
+  if (filter.startsWith("missing:")) return !row.documents[filter.slice(8)]?.uploaded;
   return true;
 }
 
@@ -418,14 +419,32 @@ export default function AdminBuyerProfilesPage() {
   const [reviewingField, setReviewingField] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{ userId: number; field: string; buyerName: string } | null>(null);
   const [selected, setSelected] = useState<Set<number>>(new Set());
-  const [exportFields, setExportFields] = useState<Set<string>>(new Set(EXPORT_ORDER));
+  // The documents and extra fields currently asked for (Admin -> Buyer form settings), in order.
+  const form = useBuyerForm(true);
+  const docItems = form.documents;
+  const docLabel = (key: string) => {
+    const item = docItems.find((d) => d.key === key);
+    return item ? form.label(item) : key;
+  };
+  // Export columns: the built-in ones in screen order, the extra fields, then the documents. Everything
+  // is ticked unless the admin unticked it; what was unticked is remembered in this browser.
+  const exportOrder = useMemo(() => [...TEXT_COLUMN_ORDER, ...form.fields.map((f) => f.key), ...form.documents.map((d) => d.key)], [form.fields, form.documents]);
+  const [unticked, setUnticked] = useState<Set<string>>(new Set());
+  const exportFields = useMemo(() => new Set(exportOrder.filter((k) => !unticked.has(k))), [exportOrder, unticked]);
+  const toggleExport = (key: string) =>
+    setUnticked((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
   const [exportPickerOpen, setExportPickerOpen] = useState(false);
   // The ticked export columns are remembered in this browser, so they are not ticked again each time.
   const [exportFieldsLoaded, setExportFieldsLoaded] = useState(false);
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem(EXPORT_FIELDS_STORAGE_KEY) ?? "null");
-      if (Array.isArray(saved)) setExportFields(new Set(saved.filter((key): key is string => typeof key === "string" && EXPORT_ORDER.includes(key))));
+      const saved = JSON.parse(localStorage.getItem(EXPORT_UNTICKED_STORAGE_KEY) ?? "null");
+      if (Array.isArray(saved)) setUnticked(new Set(saved.filter((key): key is string => typeof key === "string")));
     } catch {
       // storage blocked or unreadable: keep the default (everything ticked)
     }
@@ -434,11 +453,11 @@ export default function AdminBuyerProfilesPage() {
   useEffect(() => {
     if (!exportFieldsLoaded) return;
     try {
-      localStorage.setItem(EXPORT_FIELDS_STORAGE_KEY, JSON.stringify(Array.from(exportFields)));
+      localStorage.setItem(EXPORT_UNTICKED_STORAGE_KEY, JSON.stringify(Array.from(unticked)));
     } catch {
       // ignore: remembering is a convenience only
     }
-  }, [exportFields, exportFieldsLoaded]);
+  }, [unticked, exportFieldsLoaded]);
   const [exporting, setExporting] = useState<"excel" | "zip" | null>(null);
   // "Select by registration numbers": paste a list or a range, tick exactly those buyers.
   const [numbersOpen, setNumbersOpen] = useState(false);
@@ -448,7 +467,7 @@ export default function AdminBuyerProfilesPage() {
   // The search box stays responsive while the (deferred) list catches up.
   const deferredSearch = useDeferredValue(search);
   // Every searchable field of every buyer, lower-cased once per load instead of on every keystroke.
-  const searchable = useMemo(() => rows.map((r) => SEARCHABLE_ROW_FIELDS.map((field) => r[field].toLowerCase())), [rows]);
+  const searchable = useMemo(() => rows.map((r) => [...SEARCHABLE_ROW_FIELDS.map((field) => r[field].toLowerCase()), ...Object.values(r.custom ?? {}).map((v) => v.toLowerCase())]), [rows]);
   const filtered = useMemo(() => {
     const q = deferredSearch.trim().toLowerCase();
     const expoId = expoFilter ? Number(expoFilter) : null;
@@ -457,7 +476,7 @@ export default function AdminBuyerProfilesPage() {
     const asNumber = q && /^(tue)?\s*\d+$/i.test(q) ? parseBuyerNumber(q) : null;
     const matches = rows.filter((r, i) => {
       if (expoId !== null && !r.expoIds.includes(expoId)) return false;
-      if (docFilter && !matchesDocFilter(r, docFilter)) return false;
+      if (docFilter && !matchesDocFilter(r, docFilter, docItems)) return false;
       if (pointsFilter === "has" && r.rewardPoints <= 0) return false;
       if (pointsFilter === "none" && r.rewardPoints > 0) return false;
       if (!q) return true;
@@ -470,7 +489,7 @@ export default function AdminBuyerProfilesPage() {
     const exact = asNumber === null ? -1 : matches.findIndex((r) => r.buyerNo === asNumber);
     if (exact > 0) matches.unshift(...matches.splice(exact, 1));
     return matches;
-  }, [rows, searchable, expoFilter, docFilter, pointsFilter, deferredSearch]);
+  }, [rows, searchable, expoFilter, docFilter, pointsFilter, deferredSearch, docItems]);
   // How many pages of the list are showing. Changing the search or the expo filter
   // starts again from the first page (state adjusted while rendering, the pattern React
   // documents for "reset state when an input changes").
@@ -673,7 +692,7 @@ export default function AdminBuyerProfilesPage() {
     // what's ticked -- an export with none of the identifying fields checked
     // wouldn't even say whose row is whose.
     // The other columns follow the same order as the table on screen.
-    const fields = ["buyerNumber", "name", "email", ...EXPORT_ORDER.filter((key) => exportFields.has(key))];
+    const fields = ["buyerNumber", "name", "email", ...exportOrder.filter((key) => exportFields.has(key))];
     downloadExport(
       "/api/admin/buyer-profiles/export/excel",
       { userIds: Array.from(selected), fields },
@@ -759,8 +778,8 @@ export default function AdminBuyerProfilesPage() {
               <option value="complete">{t("docFilter.complete")}</option>
               <option value="pending_review">{t("docFilter.pendingReview")}</option>
               <option value="action_needed">{t("docFilter.actionNeeded")}</option>
-              {DOC_FIELDS.map((field) => (
-                <option key={field} value={`missing:${field}`}>{t("docFilter.missingOne", { name: t(`docFields.${field}`) })}</option>
+              {docItems.map((d) => (
+                <option key={d.key} value={`missing:${d.key}`}>{t("docFilter.missingOne", { name: form.label(d) })}</option>
               ))}
             </select>
             <select
@@ -859,8 +878,11 @@ export default function AdminBuyerProfilesPage() {
                       ))}
                       <th className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{t("fields.purchaseIntention")}</th>
                       <th className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{t("fields.otherPurchaseIntention")}</th>
-                      {DOC_FIELDS.map((field) => (
-                        <th key={field} className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{t(`docFields.${field}`)}</th>
+                      {form.fields.map((item) => (
+                        <th key={item.key} className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{form.label(item)}</th>
+                      ))}
+                      {docItems.map((item) => (
+                        <th key={item.key} className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{form.label(item)}</th>
                       ))}
                       <th className="sticky top-0 z-20 bg-cream-50 text-left px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{t("verificationColumn")}</th>
                       <th className="sticky top-0 z-20 bg-cream-50 text-right px-6 py-3 font-semibold text-gray-600 whitespace-nowrap shadow-[0_1px_0_0_#e5e7eb]">{ta("actions")}</th>
@@ -893,7 +915,14 @@ export default function AdminBuyerProfilesPage() {
                         ))}
                         <td className="px-6 py-4 text-gray-700 max-w-[220px] truncate" title={r.purchaseIntention}>{r.purchaseIntention || "—"}</td>
                         <td className="px-6 py-4 text-gray-700 max-w-[220px] truncate" title={r.otherPurchaseIntention}>{r.otherPurchaseIntention || "—"}</td>
-                        {DOC_FIELDS.map((field) => {
+                        {form.fields.map((item) => {
+                          const value = r.custom?.[item.key] ?? "";
+                          return (
+                            <td key={item.key} className="px-6 py-4 text-gray-700 max-w-[220px] truncate" title={value}>{value ? (item.fieldType === "choice" ? form.choice(item, value) : value) : "—"}</td>
+                          );
+                        })}
+                        {docItems.map((item) => {
+                          const field = item.key;
                           const doc = r.documents[field];
                           return (
                             <td key={field} className="px-6 py-4 whitespace-nowrap">
@@ -905,7 +934,7 @@ export default function AdminBuyerProfilesPage() {
                                 >
                                   <img
                                     src={`/api/admin/buyer-profiles/${r.userId}/documents/${field}`}
-                                    alt={t(`docFields.${field}`)}
+                                    alt={form.label(item)}
                                     loading="lazy"
                                     className="h-12 w-16 object-cover rounded-lg border border-gray-200 hover:border-emerald-400 transition-colors mb-1"
                                   />
@@ -930,7 +959,7 @@ export default function AdminBuyerProfilesPage() {
                       </tr>
                     ))}
                     {filtered.length === 0 && (
-                      <tr><td colSpan={FIELDS.length + DOC_FIELDS.length + 5} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
+                      <tr><td colSpan={FIELDS.length + form.fields.length + docItems.length + 5} className="px-6 py-10 text-center text-gray-500">{t("noResults")}</td></tr>
                     )}
                   </tbody>
                 </table>
@@ -1052,19 +1081,51 @@ export default function AdminBuyerProfilesPage() {
                     className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none"
                   />
                 </div>
+                {form.fields.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase mb-2">{t("extraInfo")}</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      {form.fields.map((item) => {
+                        const id = `ebp-custom-${item.key}`;
+                        const value = detail.custom?.[item.key] ?? "";
+                        const set = (v: string) => setDetail({ ...detail, custom: { ...detail.custom, [item.key]: v } });
+                        const common = "w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none";
+                        return (
+                          <div key={item.key} className={item.fieldType === "longtext" ? "col-span-2" : undefined}>
+                            <label htmlFor={id} className="block text-xs font-semibold text-gray-500 mb-1">{form.label(item)}</label>
+                            {item.fieldType === "longtext" ? (
+                              <textarea id={id} value={value} maxLength={2000} rows={3} onChange={(e) => set(e.target.value)} className={common} />
+                            ) : item.fieldType === "date" ? (
+                              <input id={id} type="date" value={value} onChange={(e) => set(e.target.value)} className={common} />
+                            ) : item.fieldType === "choice" ? (
+                              <select id={id} value={value} onChange={(e) => set(e.target.value)} className={common}>
+                                <option value="">{t("selectPlaceholder")}</option>
+                                {item.options.en.map((opt) => <option key={opt} value={opt}>{form.choice(item, opt)}</option>)}
+                              </select>
+                            ) : (
+                              <input id={id} type="text" value={value} maxLength={300} onChange={(e) => set(e.target.value)} className={common} />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <p className="text-xs font-semibold text-gray-500 uppercase mb-2">{t("documents")}</p>
                   <div className="grid grid-cols-2 gap-3">
-                    {DOC_FIELDS.map((field) => {
+                    {docItems.map((item) => {
+                      const field = item.key;
                       const review = detail.documentReview[field] ?? { status: "pending" as DocReviewStatus, note: "" };
                       return (
                         <div key={field} className={`rounded-xl border-2 p-2 ${DOC_STATUS_STYLES[review.status]}`}>
-                          <p className="text-xs font-semibold text-gray-600 mb-1.5">{t(`docFields.${field}`)}</p>
+                          <p className="text-xs font-semibold text-gray-600 mb-1.5">{form.label(item)}</p>
                           {detail.hasDocument[field] ? (
                             <img
                               src={`/api/admin/buyer-profiles/${openId}/documents/${field}?v=${docVersion}`}
-                              alt={t(`docFields.${field}`)}
-                              onClick={() => setLightbox({ userId: openId, field, buyerName: t(`docFields.${field}`) })}
+                              alt={form.label(item)}
+                              onClick={() => setLightbox({ userId: openId, field, buyerName: form.label(item) })}
                               className="h-20 w-full object-contain rounded-lg bg-cream-50 mb-1.5 cursor-pointer hover:opacity-80 transition-opacity"
                             />
                           ) : (
@@ -1072,7 +1133,7 @@ export default function AdminBuyerProfilesPage() {
                           )}
                           <input
                             type="file"
-                            aria-label={t(`docFields.${field}`)}
+                            aria-label={form.label(item)}
                             accept="image/*,application/pdf"
                             disabled={uploadingField === field}
                             onChange={(e) => handleDocUpload(field, e.target.files?.[0] || null)}
@@ -1081,7 +1142,7 @@ export default function AdminBuyerProfilesPage() {
                           {detail.hasDocument[field] && (
                             <>
                               <select
-                                aria-label={`${t(`docFields.${field}`)} — ${t("verificationColumn")}`}
+                                aria-label={`${form.label(item)} — ${t("verificationColumn")}`}
                                 value={review.status}
                                 disabled={reviewingField === field}
                                 onChange={(e) => handleReviewChange(field, e.target.value as DocReviewStatus, review.note)}
@@ -1150,55 +1211,41 @@ export default function AdminBuyerProfilesPage() {
             <div className="flex gap-4 mb-3">
               <button
                 type="button"
-                onClick={() => setExportFields(new Set(EXPORT_ORDER))}
+                onClick={() => setUnticked(new Set())}
                 className="text-xs font-semibold text-emerald-700 hover:text-emerald-900 underline"
               >
                 {t("selectAllFields")}
               </button>
-              <button type="button" onClick={() => setExportFields(new Set())} className="text-xs font-semibold text-gray-500 hover:text-gray-700 underline">
+              <button type="button" onClick={() => setUnticked(new Set(exportOrder))} className="text-xs font-semibold text-gray-500 hover:text-gray-700 underline">
                 {t("deselectAllFields")}
               </button>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 mb-5">
-              {TEXT_EXPORT_ORDER.map((key) => (
+              {[...TEXT_COLUMN_ORDER, ...form.fields.map((f) => f.key)].map((key) => (
                 <label key={key} className="flex items-center gap-2 text-sm text-gray-700">
                   <input
                     type="checkbox"
                     checked={exportFields.has(key)}
-                    onChange={() =>
-                      setExportFields((prev) => {
-                        const next = new Set(prev);
-                        if (next.has(key)) next.delete(key);
-                        else next.add(key);
-                        return next;
-                      })
-                    }
+                    onChange={() => toggleExport(key)}
                     className="h-4 w-4 rounded border-gray-300"
                   />
-                  {t(`fields.${key}`)}
+                  {form.fields.some((f) => f.key === key) ? form.label(form.fields.find((f) => f.key === key)!) : t(`fields.${key}`)}
                 </label>
               ))}
             </div>
 
             <p className="text-xs font-semibold text-gray-500 uppercase mb-2">{t("documents")}</p>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 mb-6">
-              {DOC_FIELDS.map((key) => (
+              {docItems.map((item) => item.key).map((key) => (
                 <label key={key} className="flex items-center gap-2 text-sm text-gray-700">
                   <input
                     type="checkbox"
                     checked={exportFields.has(key)}
-                    onChange={() =>
-                      setExportFields((prev) => {
-                        const next = new Set(prev);
-                        if (next.has(key)) next.delete(key);
-                        else next.add(key);
-                        return next;
-                      })
-                    }
+                    onChange={() => toggleExport(key)}
                     className="h-4 w-4 rounded border-gray-300"
                   />
-                  {t(`docFields.${key}`)}
+                  {docLabel(key)}
                 </label>
               ))}
             </div>
@@ -1218,7 +1265,7 @@ export default function AdminBuyerProfilesPage() {
         return (
           <DocumentLightbox
             src={`/api/admin/buyer-profiles/${lightbox.userId}/documents/${lightbox.field}`}
-            title={`${lightbox.buyerName} — ${t(`docFields.${lightbox.field}`)}`}
+            title={`${lightbox.buyerName} — ${docLabel(lightbox.field)}`}
             statusLabel={t(`docReview.${docStatus}`)}
             statusClass={DOC_BADGE_STYLES[docStatus]}
             onClose={() => setLightbox(null)}

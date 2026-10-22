@@ -650,6 +650,10 @@
       "rewardsWallet": {
         "title": "奖励积分钱包",
         "description": "买家积分：充值、提现、费用申请、钱包与规则。"
+      },
+      "buyerForm": {
+        "title": "买家表单设置",
+        "description": "选择买家上传的文件并添加额外问题，无需开发人员。"
       }
     }
   },
@@ -3044,7 +3048,8 @@
       "found": "已选择 {count} 位买家。",
       "notFound": "未找到买家:{list}"
     },
-    "exportAlwaysIncluded": "注册编号、姓名和账号邮箱始终包含在内。"
+    "exportAlwaysIncluded": "注册编号、姓名和账号邮箱始终包含在内。",
+    "extraInfo": "补充信息"
   },
   "homepageSlideshow": {
     "previous": "上一张照片",
@@ -4246,6 +4251,62 @@
       "article": "文章",
       "magazine": "杂志",
       "video": "视频"
+    }
+  },
+  "adminBuyerForm": {
+    "title": "买家表单设置",
+    "subtitle": "选择买家需要上传哪些文件、回答哪些额外问题。更改会立即在所有地方生效：买家页面、管理员表格、筛选以及 Excel 和 ZIP 下载。",
+    "howItWorks": "内置文件可以重命名、调整顺序、隐藏或设为可选。您添加的文件和问题单独保存。隐藏不会删除买家已提交的内容，只是不再显示和导出。",
+    "documentsTitle": "文件",
+    "documentsHint": "买家上传的文件（图片或 PDF）。此处的顺序就是各处的顺序。",
+    "fieldsTitle": "额外问题",
+    "fieldsHint": "买家在资料中填写的补充信息，显示在标准公司信息之后。",
+    "addDocument": "添加文件",
+    "addField": "添加问题",
+    "emptyFields": "暂无内容。",
+    "nameEn": "英文名称",
+    "nameRu": "俄文名称",
+    "nameZh": "中文名称",
+    "nameHint": "英文必填。俄文或中文留空时，将显示英文名称。",
+    "requiredLabel": "计入“已验证”",
+    "requiredHint": "只有所有必填文件都已上传并审核，买家才算“已验证”。可选文件会显示，但不影响状态。",
+    "typeLabel": "回答类型",
+    "types": {
+      "text": "短文本",
+      "longtext": "长文本",
+      "date": "日期",
+      "choice": "从列表选择"
+    },
+    "optionsHint": "每行一个选项。各语言行数相同、顺序一致；俄文或中文留空则显示英文。",
+    "optionsEn": "英文选项",
+    "optionsRu": "俄文选项",
+    "optionsZh": "中文选项",
+    "optionsChangeNote": "修改选项的措辞不会改变买家已选的内容；他们之前的回答保持原样。",
+    "badgeBuiltin": "内置",
+    "badgeAdded": "您添加的",
+    "badgeHidden": "已隐藏",
+    "badgeRequired": "必填",
+    "badgeOptional": "可选",
+    "edit": "编辑",
+    "hide": "隐藏",
+    "show": "显示",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "deleteConfirm": "删除“{name}”？此操作无法撤销。",
+    "deleteBlocked": "买家已填写，因此只能隐藏。",
+    "added": "已添加。",
+    "saved": "已保存。",
+    "deleted": "已删除。",
+    "loadFailed": "无法加载设置，请刷新页面。",
+    "notReady": "此页面所需的数据库更新尚未应用，请几分钟后再试。",
+    "errors": {
+      "invalid_input": "部分信息缺失或无效。需要名称；列表至少需要两个不同的选项。",
+      "options_mismatch": "俄文和中文选项的行数必须与英文一致（或留空）。",
+      "limit": "已达到可添加项目的上限。",
+      "in_use": "买家已填写，无法删除，请改为隐藏。",
+      "builtin": "内置项目无法删除，请改为隐藏。",
+      "not_found": "该项目已不存在，请刷新页面。",
+      "not_ready": "此页面所需的数据库更新尚未应用，请几分钟后再试。"
     }
   }
 }

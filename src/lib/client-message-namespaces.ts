@@ -16,7 +16,7 @@ export const ADMIN_NAMESPACES = [
   "adminBusinessTripInquiries", "adminChinaTravel", "adminPartnerInquiries", "adminSlideshow",
   "adminRegFormBuilder", "adminRegistrationsCommon", "adminRfqs", "adminServiceTours", "adminServicesHome",
   "adminCityPartnershipInquiries", "adminCityPartnershipsContent", "adminConferenceHostingContent", "adminConferenceInquiries", "adminMagazine", "adminVideos",
-  "adminBuyerProfiles", "adminBuyerExpos", "adminImportBuyers", "adminWallet",
+  "adminBuyerProfiles", "adminBuyerExpos", "adminBuyerForm", "adminImportBuyers", "adminWallet",
   "adminPartnerApplications", "adminPartnerReferrals", "adminPartnerTiers", "adminUsers", "adminUsersBulk",
   "adminSitePageEditor", "adminSiteTheme", "adminSubsidies", "adminSubsidyApplications", "adminTeam", "adminTourApplications",
   "adminTourRegForm", "adminTourRegistrations", "adminToursCrud", "adminVisaApplications",

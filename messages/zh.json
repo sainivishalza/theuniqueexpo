@@ -3662,6 +3662,10 @@
     "resetPassword": {
       "title": "设置新密码 | The Unique Expo",
       "description": "为您的 The Unique Expo 账户设置新密码。"
+    },
+    "confirmEmail": {
+      "title": "确认邮箱 | The Unique Expo",
+      "description": "确认您的 The Unique Expo 账户的邮箱地址。"
     }
   },
   "whatsappButton": {
@@ -4522,6 +4526,25 @@
       "intro": "如果您能看到这封邮件，说明邮件发送功能正常。",
       "body": "此测试邮件发送自“管理 → 邮件”。",
       "button": "打开网站"
+    },
+    "confirmEmail": {
+      "subject": "请确认您的邮箱地址",
+      "intro": "请确认此邮箱地址将用于您的 The Unique Expo 账户。",
+      "body": "确认后，您可以使用它登录，并接收重置密码链接和通知。该链接仅可使用一次，{minutes} 分钟后失效。",
+      "button": "确认邮箱地址",
+      "ignore": "如果这不是您本人的操作，请忽略此邮件，不会有任何更改。"
+    },
+    "registrationReminder": {
+      "subject": "请确认您出席 {expo}",
+      "intro": "您报名的 {expo} 已通过审核，但我们尚未收到您的确认。",
+      "body": "请确认您将出席{deadline}，以便为您保留名额。",
+      "deadline": "（请在 {date} 前）",
+      "button": "确认出席"
+    },
+    "announcement": {
+      "subject": "{subject}",
+      "intro": "{message}",
+      "button": "打开网站"
     }
   },
   "adminEmail": {
@@ -4578,7 +4601,10 @@
       "withdrawalRejected": "提现未支付",
       "expenseApproved": "费用申请已通过",
       "expenseRejected": "费用申请未通过",
-      "test": "测试邮件"
+      "test": "测试邮件",
+      "confirmEmail": "邮箱确认链接",
+      "registrationReminder": "报名提醒",
+      "announcement": "公告"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -4630,6 +4656,36 @@
         "rate_limited": "尝试次数过多，请稍后再试。",
         "generic": "无法更改密码，请重试。"
       }
+    },
+    "confirm": {
+      "title": "确认您的邮箱地址",
+      "intro": "点击按钮，将此邮箱地址绑定到您的账户。",
+      "button": "确认邮箱地址",
+      "working": "确认中…",
+      "success": "您的邮箱地址已确认。",
+      "successBody": "现在您可以使用 {email} 登录，并在该邮箱接收重置密码链接和通知。",
+      "signIn": "前往登录",
+      "invalidTitle": "此链接无法使用",
+      "invalidBody": "链接已过期或已被使用。请打开您的账户并重新获取链接。",
+      "takenTitle": "该地址已被使用",
+      "takenBody": "另一个账户已在使用此邮箱地址，因此无法添加。请使用其他地址。",
+      "backToAccount": "返回我的账户"
+    }
+  },
+  "accountEmail": {
+    "title": "添加您的邮箱地址",
+    "intro": "您的账户还没有邮箱地址。添加后可接收重置密码链接和通知（报名结果、文档、积分）。我们会发送一个确认链接。",
+    "label": "邮箱地址",
+    "submit": "发送确认链接",
+    "sending": "发送中…",
+    "sentTitle": "请查看您的邮箱",
+    "sentBody": "如果 {email} 可用，我们已发送确认链接。链接 60 分钟内有效。如未收到，请查看垃圾邮件文件夹。",
+    "errors": {
+      "invalid_email": "请输入有效的邮箱地址。",
+      "rate_limited": "尝试次数过多，请稍后再试。",
+      "mail_off": "目前无法发送邮件，请稍后再试。",
+      "has_email": "您的账户已有邮箱地址。",
+      "generic": "无法发送链接，请重试。"
     }
   }
 }

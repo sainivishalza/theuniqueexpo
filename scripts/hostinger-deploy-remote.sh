@@ -138,6 +138,7 @@ run_mysql schema-migrations/058-buyer-latest-entry-stamp-document.sql
 run_mysql schema-migrations/059-buyer-form-settings.sql
 run_mysql schema-migrations/060-rate-limits.sql
 run_mysql schema-migrations/061-email.sql
+run_mysql schema-migrations/062-email-changes-reminders.sql
 
 # Every deploy saves a full copy of the database (uploaded documents included) and
 # nothing ever removed them, so they would slowly fill this account's disk. Keep the

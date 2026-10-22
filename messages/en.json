@@ -3662,6 +3662,10 @@
     "resetPassword": {
       "title": "Choose a new password | The Unique Expo",
       "description": "Choose a new password for your The Unique Expo account."
+    },
+    "confirmEmail": {
+      "title": "Confirm your e-mail | The Unique Expo",
+      "description": "Confirm the e-mail address of your The Unique Expo account."
     }
   },
   "whatsappButton": {
@@ -4522,6 +4526,25 @@
       "intro": "If you can read this, e-mail sending works.",
       "body": "This test was sent from Admin → Email.",
       "button": "Open the website"
+    },
+    "confirmEmail": {
+      "subject": "Confirm your e-mail address",
+      "intro": "Please confirm that this e-mail address should be used for your The Unique Expo account.",
+      "body": "After you confirm it, you can sign in with it and get password reset links and notifications. The link works once and expires in {minutes} minutes.",
+      "button": "Confirm e-mail address",
+      "ignore": "If you did not ask for this, ignore this e-mail: nothing will change."
+    },
+    "registrationReminder": {
+      "subject": "Please confirm your attendance at {expo}",
+      "intro": "Your registration for {expo} is approved, but we have not received your confirmation yet.",
+      "body": "Please confirm that you will attend{deadline}, so that your place is kept.",
+      "deadline": " before {date}",
+      "button": "Confirm my attendance"
+    },
+    "announcement": {
+      "subject": "{subject}",
+      "intro": "{message}",
+      "button": "Open the website"
     }
   },
   "adminEmail": {
@@ -4578,7 +4601,10 @@
       "withdrawalRejected": "Withdrawal not paid",
       "expenseApproved": "Expense claim approved",
       "expenseRejected": "Expense claim not approved",
-      "test": "Test e-mail"
+      "test": "Test e-mail",
+      "confirmEmail": "E-mail confirmation link",
+      "registrationReminder": "Registration reminder",
+      "announcement": "Announcement"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -4630,6 +4656,36 @@
         "rate_limited": "Too many attempts. Please try again later.",
         "generic": "We could not change your password. Please try again."
       }
+    },
+    "confirm": {
+      "title": "Confirm your e-mail address",
+      "intro": "Press the button to attach this e-mail address to your account.",
+      "button": "Confirm e-mail address",
+      "working": "Confirming…",
+      "success": "Your e-mail address is confirmed.",
+      "successBody": "You can now sign in with {email}, and you will get password reset links and notifications there.",
+      "signIn": "Go to sign in",
+      "invalidTitle": "This link cannot be used",
+      "invalidBody": "It has expired or was already used. Open your account and ask for a new link.",
+      "takenTitle": "This address is already used",
+      "takenBody": "Another account already uses this e-mail address, so it could not be added. Please use a different address.",
+      "backToAccount": "Back to my account"
+    }
+  },
+  "accountEmail": {
+    "title": "Add your e-mail address",
+    "intro": "Your account has no e-mail address yet. Add one to get password reset links and notifications (registration decisions, documents, points). We will send a link to confirm it.",
+    "label": "E-mail address",
+    "submit": "Send the confirmation link",
+    "sending": "Sending…",
+    "sentTitle": "Check your e-mail",
+    "sentBody": "If {email} can be used, we have sent a link to confirm it. The link works for 60 minutes. Look in your spam folder if you do not see it.",
+    "errors": {
+      "invalid_email": "Please enter a valid e-mail address.",
+      "rate_limited": "Too many tries. Please wait a while and try again.",
+      "mail_off": "E-mail is not available right now. Please try again later.",
+      "has_email": "Your account already has an e-mail address.",
+      "generic": "We could not send the link. Please try again."
     }
   }
 }

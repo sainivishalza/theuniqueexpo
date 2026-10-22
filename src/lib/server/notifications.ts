@@ -23,6 +23,9 @@ export type EmailKind =
   | "withdrawalRejected"
   | "expenseApproved"
   | "expenseRejected"
+  | "confirmEmail"
+  | "registrationReminder"
+  | "announcement"
   | "test";
 
 export type EmailLocale = "en" | "ru" | "zh";

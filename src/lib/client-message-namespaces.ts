@@ -23,7 +23,7 @@ export const ADMIN_NAMESPACES = [
 ];
 
 export const DASHBOARD_NAMESPACES = [
-  "accountPassword", "buyerDashboard", "buyerProfile", "buyerWallet", "exhibitorDashboard", "partnerDashboard",
+  "accountEmail", "accountPassword", "buyerDashboard", "buyerProfile", "buyerWallet", "exhibitorDashboard", "partnerDashboard",
   // The buyer profile page reuses its Save / error strings.
   "adminCommon",
 ];

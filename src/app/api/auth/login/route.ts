@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { verifyUserPassword, signSessionToken, setSessionCookie } from "@/lib/auth-server";
 import { checkLoginRateLimit, resetLoginRateLimit } from "@/lib/server/rate-limit";
 import { detectLocale, rememberLocale } from "@/lib/server/notifications";
+import { isTwoStepOn, signChallenge } from "@/lib/server/totp";
+import { logAdminAction } from "@/lib/server/audit-log";
 
 export async function POST(request: Request) {
   try {
@@ -26,8 +28,14 @@ export async function POST(request: Request) {
     if (!user) {
       return NextResponse.json({ error: "Incorrect login details or password" }, { status: 401 });
     }
+    // An admin with two-step sign-in on is not signed in yet: the browser gets a short-lived pass and
+    // must come back with the code from the authenticator app (/api/auth/login/totp).
+    if (user.role === "admin" && (await isTwoStepOn(user.id))) {
+      return NextResponse.json({ needsSecondStep: true, challenge: signChallenge(user.id) });
+    }
     await resetLoginRateLimit(request, email);
 
+    if (user.role === "admin") logAdminAction(request, user, "sign_in", { targetType: "user", targetId: user.id });
     rememberLocale(user.id, detectLocale(request));
     const token = signSessionToken(user);
     const response = NextResponse.json({ user });

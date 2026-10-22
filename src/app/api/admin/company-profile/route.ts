@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { getCompanyProfile, updateCompanyProfile } from "@/lib/server/company-profile-repo";
 import { normalizeCompanyProfile, GA_MEASUREMENT_ID_RE, extractSiteVerification, SITE_VERIFICATION_RE } from "@/lib/company-profile";
@@ -35,5 +36,6 @@ export async function PUT(request: Request) {
   }
 
   await updateCompanyProfile(normalizeCompanyProfile(body));
+  logAdminAction(request, admin, "company_profile_saved", { targetType: "settings" });
   return NextResponse.json({ ok: true });
 }

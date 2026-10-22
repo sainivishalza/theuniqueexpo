@@ -10,6 +10,7 @@ import { overallStatus } from "@/lib/buyer-form";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
 import Card from "@/components/ui/Card";
+import AddEmailCard from "../_components/AddEmailCard";
 
 // This dashboard used to be split between "buyer" and "visitor" roles --
 // merged into one role/one dashboard, so it now carries both sets of
@@ -136,6 +137,9 @@ export default function BuyerDashboard() {
           </div>
         </div>
       </section>
+
+      {/* Only for an account with no real e-mail address; empty (and hidden) otherwise. */}
+      <div className="mx-auto max-w-7xl px-6 pt-8 empty:hidden"><AddEmailCard /></div>
 
       {/* Rewards news */}
       {news.length > 0 && (

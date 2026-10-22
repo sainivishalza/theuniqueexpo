@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { listTiers, saveTiers, type PointTier } from "@/lib/server/wallet-tiers";
 import { positiveId, readJson, requireWalletAdmin, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
 
@@ -31,6 +32,7 @@ export async function PUT(request: Request) {
   }
   try {
     const error = await saveTiers(id, tiers);
+    if (!error) logAdminAction(request, auth.admin, "point_regions_saved", { targetType: "exhibition", targetId: id, details: `${tiers.length} regions` });
     return error ? walletFail(error) : NextResponse.json({ success: true });
   } catch (err) {
     return walletErrorResponse(err);

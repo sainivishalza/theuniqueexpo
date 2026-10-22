@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { markWithdrawalPaid, rejectWithdrawal } from "@/lib/server/wallet-repo";
 import { getWithdrawalQr } from "@/lib/server/wallet-admin-repo";
 import { notifyWalletRequest } from "@/lib/server/notifications";
@@ -30,10 +31,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       const reference = text(body.reference, 150);
       await markWithdrawalPaid(auth.admin.id, id, reference, text(body.note, 500));
       notifyWalletRequest("wallet_withdrawals", id, "withdrawalPaid", { reason: reference });
+      logAdminAction(request, auth.admin, "withdrawal_paid", { targetType: "withdrawal", targetId: id, details: reference });
     } else if (body.action === "reject") {
       const note = text(body.note, 500);
       await rejectWithdrawal(auth.admin.id, id, note);
       notifyWalletRequest("wallet_withdrawals", id, "withdrawalRejected", { reason: note });
+      logAdminAction(request, auth.admin, "withdrawal_rejected", { targetType: "withdrawal", targetId: id, details: note });
     } else {
       return walletFail("invalid_input");
     }

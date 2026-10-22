@@ -30,7 +30,7 @@ const AXE=async(p)=>{ await p.evaluate(axeSrc); return p.evaluate(async()=>(awai
  console.log('\n== needs attention');
  r=await fetch(BASE+'/api/admin/attention',{headers:H(u.bT)}); ok(r.status===401,'buyers cannot read it');
  sql(`UPDATE buyer_profiles SET doc_visa_page_status='pending' WHERE user_id=${u2.bId}`);
- let a=await (await fetch(BASE+'/api/admin/attention',{headers:H(u.aT)})).json(); ok(Object.keys(a).sort().join()==='documents,expenses,registrations,topups,tourRegistrations,withdrawals','six counts',a); ok(a.documents>=1,'documents waiting is counted',a);
+ let a=await (await fetch(BASE+'/api/admin/attention',{headers:H(u.aT)})).json(); ok(Object.keys(a).sort().join()==='documents,expenses,failedEmails,registrations,topups,tourRegistrations,twoStepOff,withdrawals','seven counts and the two-step reminder',a); ok(a.documents>=1,'documents waiting is counted',a);
  const before=a.documents; sql(`UPDATE buyer_profiles SET doc_visa_page_status='verified' WHERE user_id=${u2.bId}`); a=await (await fetch(BASE+'/api/admin/attention',{headers:H(u.aT)})).json(); ok(a.documents===before-1,'and goes down when one is verified',[before,a.documents]);
  console.log('\n== screens');
  const b=await require('./helpers/browser.js').launch(); const mk=async(t,vp={width:1360,height:1000})=>{const c=await b.newContext({viewport:vp}); await c.addCookies([{name:'token',value:t,url:BASE}]); return c;};

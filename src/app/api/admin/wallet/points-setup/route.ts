@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { MAX_POINTS } from "@/lib/wallet";
 import { getPointsSetup, setExhibitionPoints, setTourPoints } from "@/lib/server/wallet-admin-repo";
 import { positiveId, readJson, requireWalletAdmin, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
@@ -26,6 +27,7 @@ export async function PUT(request: Request) {
   if (typeof points !== "number" || !Number.isSafeInteger(points) || points < 0 || points > MAX_POINTS) return walletFail("invalid_amount");
   try {
     const found = body.type === "exhibition" ? await setExhibitionPoints(id, points) : await setTourPoints(id, points);
+    if (found) logAdminAction(request, auth.admin, "points_setup_changed", { targetType: body.type, targetId: id, details: `${points} points` });
     return found ? NextResponse.json({ success: true }) : walletFail("not_found");
   } catch (err) {
     return walletErrorResponse(err);

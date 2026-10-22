@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { isValidSitePageSlug, normalizeSitePageContent } from "@/lib/site-pages";
 import { getSitePageForAdmin, updateSitePage } from "@/lib/server/site-pages-repo";
@@ -31,5 +32,6 @@ export async function PUT(request: Request, { params }: { params: Promise<{ slug
   }
 
   await updateSitePage(slug, normalizeSitePageContent(slug, body));
+  logAdminAction(request, admin, "site_page_saved", { targetType: "page", targetId: slug });
   return NextResponse.json({ ok: true });
 }

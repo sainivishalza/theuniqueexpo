@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { deletePendingDocument } from "@/lib/server/buyer-pending-documents-repo";
 
@@ -11,5 +12,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
   const { id } = await params;
   await deletePendingDocument(Number(id));
+  logAdminAction(request, admin, "pending_document_deleted", { targetType: "pending_document", targetId: id });
   return NextResponse.json({ success: true });
 }

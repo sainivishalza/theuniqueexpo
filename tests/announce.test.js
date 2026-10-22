@@ -1,0 +1,74 @@
+const bcrypt = require('bcryptjs');
+const { BASE, sql, ok, done, mkUsers, SHOTS } = require('./helpers/common.js');
+const smtp = require('./helpers/fake-smtp.js');
+const { launch, axeViolations } = require('./helpers/browser.js');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const ipn = () => '198.17.' + Math.floor(Math.random() * 256) + '.' + (Math.floor(Math.random() * 250) + 2);
+const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'token=' + t, 'x-forwarded-for': ipn(), ...extra });
+
+(async () => {
+  sql('DELETE FROM mail_settings');
+  const u = await mkUsers('an');
+  const srv = await smtp.start(2528);
+  const settings = { enabled: true, host: '127.0.0.1', port: 2528, secure: false, username: 'm', password: 'x', fromName: 'The Unique Expo', fromEmail: 'noreply@theuniqueexpo.test' };
+  const put = (b) => fetch(BASE + '/api/admin/email', { method: 'PUT', headers: H(u.aT), body: JSON.stringify(b) });
+  await put({ ...settings, enabled: false });
+  const st = Date.now(), h = bcrypt.hashSync('pass1234', 10);
+  const mk = (tag, locale, over = {}) => { const e = over.email || `an-${tag}-${st}@test.invalid`; sql(`INSERT INTO users (name,email,password_hash,role,country,preferred_locale,status) VALUES ('${over.name || 'An ' + tag}','${e}','${h}','${over.role || 'buyer'}','',${locale ? `'${locale}'` : 'NULL'},'${over.status || 'active'}')`); return { email: e, id: Number(sql(`SELECT id FROM users WHERE email='${e}'`)) }; };
+  const en = mk('en'), ru = mk('ru', 'ru', { name: 'Иван' }), zh = mk('zh', 'zh'), noEmail = mk('ph', null, { email: `phone-1390${String(st).slice(-7)}@noemail.invalid` }), sus = mk('sus', null, { status: 'suspended' }), exh = mk('exh', null, { role: 'exhibitor' }), tricky = mk('tricky', null, { name: 'A <b>Name</b> & Co' });
+  const send = (body, t = u.aT) => fetch(BASE + '/api/admin/buyer-profiles/announce', { method: 'POST', headers: H(t), body: JSON.stringify(body) });
+  const texts = { subject: { en: 'Venue change <important>', ru: 'Смена площадки', zh: '' }, message: { en: 'First paragraph with <script>alert(1)</script> & more.\nSecond line.\n\nSecond paragraph.', ru: 'Первый абзац.\n\nВторой абзац.', zh: '' } };
+
+  console.log('\n== refusals');
+  let r = await send({ userIds: [en.id], ...texts }, u.bT); ok(r.status === 401, 'a buyer cannot send announcements');
+  r = await send({ userIds: [], ...texts }); ok(r.status === 400 && (await r.json()).code === 'no_buyers', 'no buyers is refused');
+  r = await send({ userIds: Array.from({ length: 501 }, (_, i) => i + 1), ...texts }); ok(r.status === 400 && (await r.json()).code === 'too_many', 'more than 500 is refused');
+  r = await send({ userIds: [en.id], subject: { en: 'Hi', ru: '', zh: '' }, message: { en: 'short', ru: '', zh: '' } }); ok(r.status === 400 && (await r.json()).code === 'english_required', 'a subject under 3 letters is refused (English required)');
+  r = await send({ userIds: [en.id], subject: { en: 'Hello there', ru: '', zh: '' }, message: { en: '', ru: 'только по-русски', zh: '' } }); ok(r.status === 400, 'only Russian, no English: refused');
+  r = await send({ userIds: [en.id], subject: { en: 'Line\nbreak', ru: '', zh: '' }, message: { en: 'long enough message', ru: '', zh: '' } }); ok(r.status === 400, 'a subject with a line break is refused (header injection)');
+  r = await send({ userIds: [en.id], ...texts }); ok(r.status === 503 && (await r.json()).code === 'mail_off', 'with e-mail off: 503');
+  await put(settings); await sleep(200);
+
+  console.log('\n== sending');
+  const n0 = srv.messages.length;
+  r = await send({ userIds: [en.id, ru.id, zh.id, noEmail.id, sus.id, exh.id, tricky.id] }); ok(r.status === 400, 'no text at all is refused');
+  sql('UPDATE rate_limits SET hits=0');
+  r = await send({ userIds: [en.id, ru.id, zh.id, noEmail.id, sus.id, exh.id, tricky.id], ...texts }); let j = await r.json(); ok(r.status === 200 && j.queued === 4 && j.withoutEmail === 3, 'four people get it; the placeholder address, the suspended account and the exhibitor are skipped', j);
+  for (let i = 0; i < 80 && srv.messages.length < n0 + 4; i++) await sleep(150);
+  const got = srv.messages.slice(n0).map((m) => ({ to: m.to.join().toLowerCase(), ...smtp.decode(m.raw), raw: m.raw }));
+  ok(got.length === 4, 'four messages arrive', got.length);
+  const forUser = (e) => got.find((g) => g.to.includes(e.toLowerCase()));
+  ok(/Venue change <important>/.test(forUser(en.email).subject), 'an English reader gets the English subject', forUser(en.email).subject);
+  ok(/Смена площадки/.test(forUser(ru.email).subject) && /Иван/.test(forUser(ru.email).text) && /Второй абзац/.test(forUser(ru.email).text), 'a Russian reader gets the Russian text, greeted by name');
+  ok(/Venue change/.test(forUser(zh.email).subject), 'a Chinese reader gets English when no Chinese was written');
+  const enParts = smtp.parts(forUser(en.email).raw); ok(enParts.html.length > 100 && !/<script>/.test(enParts.html) && /&lt;script&gt;/.test(enParts.html), 'the admin\'s text cannot inject HTML (script tags are escaped in the HTML part)', enParts.html.slice(0, 400));
+  ok(/First paragraph[^]*<br>Second line/.test(enParts.html), 'a single line break becomes a line break, a blank line a new paragraph');
+  ok(/Hello An en/.test(forUser(en.email).text) || /An en/.test(forUser(en.email).text), 'greeted by name');
+  const trParts = smtp.parts(forUser(tricky.email).raw); ok(trParts.html.includes('A &lt;b&gt;Name&lt;/b&gt; &amp; Co') && !/<b>Name<\/b>/.test(trParts.html), 'a name with HTML in it is escaped too');
+  ok(/First paragraph/.test(forUser(en.email).text) && /Second paragraph/.test(forUser(en.email).text), 'paragraphs are kept');
+  const log = await (await fetch(BASE + '/api/admin/email', { headers: H(u.aT) })).json(); ok(log.log.filter((x) => x.kind === 'announcement' && x.status === 'sent').length >= 4, 'each message is in the e-mail log as "announcement"');
+  const codes = []; for (let i = 0; i < 5; i++) codes.push((await send({ userIds: [en.id], ...texts })).status); ok(codes.slice(0, 4).every((c) => c === 200) && codes[4] === 429, 'a sixth real announcement within an hour is paused (429)', codes);
+
+  console.log('\n== screens');
+  sql('UPDATE rate_limits SET hits=0');
+  const br = await launch(); const ctxFor = async (t, vp = { width: 1360, height: 1000 }) => { const c = await br.newContext({ viewport: vp }); await c.addCookies([{ name: 'token', value: t, url: BASE }]); return c; };
+  let c = await ctxFor(u.aT); let p = await c.newPage(); await p.goto(BASE + '/en/admin/buyer-profiles', { waitUntil: 'networkidle' });
+  await p.getByPlaceholder(/Search by registration no/).fill(`an-`); await sleep(1200);
+  const rows = p.locator('tbody tr').filter({ hasText: `-${st}@test.invalid` }); const count = await rows.count(); ok(count >= 3, 'the test buyers are listed', count);
+  for (let i = 0; i < count; i++) await rows.nth(i).locator('input[type=checkbox]').check();
+  await p.getByRole('button', { name: 'Send e-mail' }).click(); const dlg = p.getByRole('dialog'); await dlg.waitFor();
+  ok(/E-mail \d+ selected buyers/.test(await dlg.innerText()), 'the dialog opens for the selection'); ok(/have a real e-mail address/.test(await dlg.innerText()), 'it says how many will get it');
+  ok(await dlg.getByRole('button', { name: 'Review and send' }).isDisabled(), 'sending is disabled until English is written');
+  await dlg.getByLabel('Subject', { exact: true }).fill('Hello from the team'); await dlg.getByLabel('Message', { exact: true }).fill('Short note for everyone.'); ok(await dlg.getByRole('button', { name: 'Review and send' }).isEnabled(), 'enabled once English is written');
+  await dlg.getByRole('tab', { name: /Русский/ }).click(); ok((await dlg.getByLabel('Subject', { exact: true }).inputValue()) === '', 'the Russian tab starts empty (optional)'); await dlg.getByLabel('Subject', { exact: true }).fill('Привет'); await dlg.getByLabel('Message', { exact: true }).fill('Короткое сообщение.'); await dlg.getByRole('tab', { name: /English/ }).click(); ok((await dlg.getByLabel('Subject', { exact: true }).inputValue()) === 'Hello from the team', 'switching tabs keeps what was typed');
+  await p.screenshot({ path: SHOTS + '/announce_dialog.png' }); let vio = await axeViolations(p); ok(vio.length === 0, 'axe 0 with the dialog open', vio);
+  await dlg.getByRole('button', { name: 'Review and send' }).click(); ok(/cannot be taken back/.test(await dlg.innerText()), 'a confirmation step asks before sending'); await dlg.getByRole('button', { name: 'Back' }).click(); ok(await dlg.getByRole('button', { name: 'Review and send' }).isVisible(), 'Back returns to editing');
+  const nb = srv.messages.length; await dlg.getByRole('button', { name: 'Review and send' }).click(); await dlg.getByRole('button', { name: 'Yes, send it' }).click(); await dlg.getByRole('status').waitFor({ timeout: 10000 }); ok(/being sent to \d+ buyers/.test(await dlg.innerText()), 'the dialog reports how many are being e-mailed', await dlg.innerText());
+  for (let i = 0; i < 60 && srv.messages.length === nb; i++) await sleep(150); ok(srv.messages.length > nb, 'the mails go out'); await c.close();
+  for (const [loc, btn] of [['ru', 'Отправить письмо'], ['zh', '发送邮件']]) { c = await ctxFor(u.aT); p = await c.newPage(); await p.goto(`${BASE}/${loc}/admin/buyer-profiles`, { waitUntil: 'networkidle' }); await p.getByPlaceholder(/./).nth(1).fill('an-').catch(() => {}); await sleep(900); await p.locator('tbody tr').first().locator('input[type=checkbox]').check(); ok(await p.getByRole('button', { name: btn }).count() === 1, loc + ': the Send e-mail button is translated'); await c.close(); }
+  c = await ctxFor(u.aT, { width: 375, height: 800 }); p = await c.newPage(); await p.goto(BASE + '/en/admin/email', { waitUntil: 'networkidle' }); await p.getByRole('heading', { name: 'Daily reminders' }).waitFor(); ok(true, 'the Email page has the Daily reminders card'); const wd = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, vw: innerWidth })); ok(wd.sw <= wd.vw + 1, '375px: no sideways overflow on the Email page', wd);
+  vio = await axeViolations(p); ok(vio.length === 0, 'Email page axe 0', vio);
+  await p.getByRole('button', { name: 'Make a reminder key' }).click(); await p.getByText('Your reminder key').waitFor(); ok(/REMINDER_KEY/.test(await p.locator('main, body').first().innerText()), 'the key is shown once with the GitHub instructions'); await c.close();
+  await br.close(); await srv.close(); sql('DELETE FROM mail_settings');
+  done();
+})();

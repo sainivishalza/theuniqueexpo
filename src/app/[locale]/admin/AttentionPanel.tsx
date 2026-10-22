@@ -11,15 +11,18 @@ interface Counts {
   withdrawals: number;
   expenses: number;
   documents: number;
+  failedEmails: number;
+  twoStepOff?: boolean;
 }
 
-const ROWS: { key: keyof Counts; icon: string; href: string }[] = [
+const ROWS: { key: Exclude<keyof Counts, "twoStepOff">; icon: string; href: string }[] = [
   { key: "registrations", icon: "🎪", href: "/admin/exhibitions" },
   { key: "tourRegistrations", icon: "🧳", href: "/admin/tours" },
   { key: "topups", icon: "💳", href: "/admin/wallet?tab=topups" },
   { key: "withdrawals", icon: "💸", href: "/admin/wallet?tab=withdrawals" },
   { key: "expenses", icon: "🧾", href: "/admin/wallet?tab=expenses" },
   { key: "documents", icon: "🪪", href: "/admin/buyer-profiles?docs=waiting_review" },
+  { key: "failedEmails", icon: "📭", href: "/admin/email" },
 ];
 
 // Everything that waits for an admin, with the number and a link straight to it. Shown at the
@@ -60,6 +63,12 @@ export default function AttentionPanel() {
               </li>
             ))}
           </ul>
+        )}
+        {counts?.twoStepOff && (
+          <p className="mt-4 border-t border-gray-100 pt-3 text-sm text-gray-700">
+            🔐 {t("twoStepOff")}{" "}
+            <Link href="/admin/account#two-step" className="font-semibold text-emerald-800 underline hover:text-emerald-900">{t("twoStepAction")}</Link>
+          </p>
         )}
       </div>
     </section>

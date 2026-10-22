@@ -1,0 +1,35 @@
+name: Live site check
+
+# Opens the live website every night in a phone-sized browser and checks that the pages load, nothing runs
+# off the side of the screen and the menu button can be pressed (tests/live/smoke.js). If something is wrong
+# this run fails and GitHub e-mails the repository owner. It can also be started by hand:
+# Actions -> "Live site check" -> Run workflow.
+#
+# Optional, for signed-in checks: add these repository secrets (Settings -> Secrets and variables -> Actions)
+# for a TEST account, never a real person's: SMOKE_BUYER_EMAIL, SMOKE_BUYER_PASSWORD,
+# SMOKE_ADMIN_EMAIL, SMOKE_ADMIN_PASSWORD. Without them only the public pages are checked.
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Check the live site
+        env:
+          SMOKE_BASE_URL: https://theuniqueexpo.com
+          SMOKE_BUYER_EMAIL: ${{ secrets.SMOKE_BUYER_EMAIL }}
+          SMOKE_BUYER_PASSWORD: ${{ secrets.SMOKE_BUYER_PASSWORD }}
+          SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL }}
+          SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD }}
+        run: node tests/live/smoke.js

@@ -1,0 +1,93 @@
+const crypto = require('node:crypto');
+const bcrypt = require('bcryptjs');
+const { BASE, sql, ok, done, mkUsers, SHOTS } = require('./helpers/common.js');
+const smtp = require('./helpers/fake-smtp.js');
+const { launch, axeViolations } = require('./helpers/browser.js');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const ipn = () => '198.19.' + Math.floor(Math.random() * 256) + '.' + (Math.floor(Math.random() * 250) + 2);
+const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'token=' + t, 'x-forwarded-for': ipn(), ...extra });
+const login = async (email) => /token=([^;]+)/.exec((await fetch(BASE + '/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-forwarded-for': ipn() }, body: JSON.stringify({ email, password: 'pass1234' }) })).headers.getSetCookie().join(';'))[1];
+
+(async () => {
+  sql('DELETE FROM mail_settings');
+  const u = await mkUsers('ae');
+  const srv = await smtp.start(2526);
+  const settings = { enabled: true, host: '127.0.0.1', port: 2526, secure: false, username: 'm', password: 'x', fromName: 'The Unique Expo', fromEmail: 'noreply@theuniqueexpo.test' };
+  const put = (body) => fetch(BASE + '/api/admin/email', { method: 'PUT', headers: H(u.aT), body: JSON.stringify(body) });
+  const st = Date.now(), h = bcrypt.hashSync('pass1234', 10);
+  const ph = `phone-139${String(st).slice(-8)}@noemail.invalid`;
+  sql(`INSERT INTO users (name,email,password_hash,role,country) VALUES ('Imported Buyer','${ph}','${h}','buyer','')`);
+  const phId = Number(sql(`SELECT id FROM users WHERE email='${ph}'`));
+  let pT = await login(ph);
+
+  console.log('\n== who needs it');
+  await put({ ...settings, enabled: false });
+  let r = await fetch(BASE + '/api/auth/add-email', { headers: H(pT) }); let j = await r.json();
+  ok(r.status === 200 && j.needed === true && j.enabled === false, 'an imported buyer needs an address; e-mail is off', j);
+  r = await fetch(BASE + '/api/auth/add-email', { method: 'POST', headers: H(pT), body: JSON.stringify({ email: `new-${st}@test.invalid` }) });
+  ok(r.status === 503 && (await r.json()).code === 'mail_off', 'while e-mail is off it says so (503)', r.status);
+  await put(settings); await sleep(200);
+  r = await fetch(BASE + '/api/auth/add-email', { headers: H(pT) }); j = await r.json(); ok(j.needed && j.enabled, 'with e-mail on the card is offered');
+  r = await fetch(BASE + '/api/auth/add-email', { headers: H(u.bT) }); j = await r.json(); ok(j.needed === false, 'a buyer who has an address does not need it');
+  r = await fetch(BASE + '/api/auth/add-email'); ok(r.status === 401, 'signed out: 401');
+  r = await fetch(BASE + '/api/auth/add-email', { method: 'POST', headers: H(u.bT), body: JSON.stringify({ email: `x-${st}@test.invalid` }) }); ok(r.status === 409, 'a buyer who has an address cannot replace it this way (409)', r.status);
+
+  console.log('\n== asking for the link');
+  const add = (email, t = pT) => fetch(BASE + '/api/auth/add-email', { method: 'POST', headers: H(t), body: JSON.stringify({ email }) });
+  r = await add('nonsense'); ok(r.status === 400, 'a malformed address is refused');
+  r = await add('x@noemail.invalid'); ok(r.status === 400, 'a placeholder address is refused');
+  const before = srv.messages.length;
+  r = await add(u.m.b); j = await r.json(); ok(r.status === 200 && j.ok, 'an address that belongs to another account gets the normal answer (no account lookup)'); await sleep(900); ok(srv.messages.length === before, 'and nothing is sent to it');
+  const fresh = `fresh-${st}@test.invalid`;
+  r = await add(fresh.toUpperCase()); ok(r.status === 200, 'a free address (typed in capitals) is accepted');
+  const waitFor = async (re, n0) => { for (let i = 0; i < 60; i++) { const m = srv.messages.slice(n0).find((x) => re.test(smtp.decode(x.raw).subject)); if (m) return m; await sleep(150); } return null; };
+  const mail = await waitFor(/confirm your e-mail|Confirm your e-mail/i, before); ok(!!mail, 'the confirmation mail arrives');
+  const dec = smtp.decode(mail.raw); ok(mail.to.join().toLowerCase().includes(fresh), 'it goes to the NEW address, not the account', mail.to);
+  const tok = /confirm-email\?token=([A-Za-z0-9_-]{43})/.exec(dec.text)[1]; ok(!!tok, 'with a 256-bit link');
+  ok(sql(`SELECT COUNT(*) FROM email_changes WHERE token_hash='${crypto.createHash('sha256').update(tok).digest('hex')}'`) === '1' && sql(`SELECT COUNT(*) FROM email_changes WHERE token_hash='${tok}'`) === '0', 'only the hash of the link is stored');
+  ok(sql(`SELECT new_email FROM email_changes WHERE user_id=${phId}`) === fresh, 'the address is stored in lower case');
+  ok(sql(`SELECT email FROM users WHERE id=${phId}`) === ph, 'the account still has its old address until the link is used');
+  for (let i = 0; i < 4; i++) await add(`more${i}-${st}@test.invalid`); r = await add(`more9-${st}@test.invalid`); ok(r.status === 429, 'after 5 requests in an hour: 429', r.status);
+  sql(`UPDATE rate_limits SET hits=0`);
+
+  console.log('\n== using the link');
+  r = await fetch(BASE + '/api/auth/confirm-email?token=short'); ok((await r.json()).valid === false, 'a junk link is invalid');
+  // the newest request replaced earlier links: ask once more cleanly and read the mail
+  sql(`UPDATE rate_limits SET hits=0`);
+  const n1 = srv.messages.length; r = await add(fresh); const m2 = await waitFor(/confirm your e-mail/i, n1); const tok2 = /confirm-email\?token=([A-Za-z0-9_-]{43})/.exec(smtp.decode(m2.raw).text)[1];
+  r = await fetch(BASE + '/api/auth/confirm-email?token=' + tok); ok((await r.json()).valid === false, 'an older link no longer works (only the newest does)');
+  r = await fetch(BASE + '/api/auth/confirm-email?token=' + tok2); ok((await r.json()).valid === true, 'the newest link is valid');
+  const conf = (t) => fetch(BASE + '/api/auth/confirm-email', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-forwarded-for': ipn() }, body: JSON.stringify({ token: t }) });
+  const [c1, c2] = await Promise.all([conf(tok2), conf(tok2)]); const sts = [c1.status, c2.status].sort(); ok(sts[0] === 200 && sts[1] === 400, 'two uses of the link at once: exactly one wins', sts);
+  ok(sql(`SELECT email FROM users WHERE id=${phId}`) === fresh, 'the account now has the new address');
+  r = await conf(tok2); ok(r.status === 400, 'the link cannot be used twice');
+  const lg = await fetch(BASE + '/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-forwarded-for': ipn() }, body: JSON.stringify({ email: fresh, password: 'pass1234' }) }); ok(lg.status === 200, 'signing in with the new address works');
+  r = await fetch(BASE + '/api/auth/add-email', { headers: H(pT) }); j = await r.json(); ok(j.needed === false, 'the card is no longer needed');
+  console.log('\n== taken in the meantime / expiry');
+  const ph2 = `passport-ab${String(st).slice(-6)}@noemail.invalid`; sql(`INSERT INTO users (name,email,password_hash,role,country) VALUES ('Imported Two','${ph2}','${h}','buyer','')`); const p2T = await login(ph2);
+  const target = `target-${st}@test.invalid`; sql('UPDATE rate_limits SET hits=0'); const n2 = srv.messages.length; await add(target, p2T); const m3 = await waitFor(/confirm your e-mail/i, n2); const tok3 = /confirm-email\?token=([A-Za-z0-9_-]{43})/.exec(smtp.decode(m3.raw).text)[1];
+  sql(`INSERT INTO users (name,email,password_hash,role,country) VALUES ('Took It','${target}','${h}','buyer','')`);
+  r = await conf(tok3); j = await r.json(); ok(r.status === 400 && j.code === 'email_taken', 'an address taken by someone else in the meantime is refused (email_taken)', j);
+  ok(sql(`SELECT email FROM users WHERE email='${ph2}'`) === ph2, 'and the account is unchanged');
+  sql('UPDATE rate_limits SET hits=0'); const n3 = srv.messages.length; await add(`exp-${st}@test.invalid`, p2T); const m4 = await waitFor(/confirm your e-mail/i, n3); const tok4 = /confirm-email\?token=([A-Za-z0-9_-]{43})/.exec(smtp.decode(m4.raw).text)[1];
+  sql(`UPDATE email_changes SET expires_at=${Date.now() - 1000} WHERE user_id=${Number(sql(`SELECT id FROM users WHERE email='${ph2}'`))}`); r = await conf(tok4); ok(r.status === 400 && (await r.json()).code === 'invalid_token', 'an expired link is refused');
+
+  console.log('\n== screens');
+  const br = await launch(); const mk = async (t, vp = { width: 1360, height: 1000 }) => { const c = await br.newContext({ viewport: vp }); if (t) await c.addCookies([{ name: 'token', value: t, url: BASE }]); return c; };
+  const ph3 = `phone-137${String(st).slice(-8)}@noemail.invalid`; sql(`INSERT INTO users (name,email,password_hash,role,country) VALUES ('Imported Three','${ph3}','${h}','buyer','')`); const p3T = await login(ph3);
+  let c = await mk(p3T); let p = await c.newPage(); await p.goto(BASE + '/en/dashboard/buyer', { waitUntil: 'networkidle' }); await p.getByRole('heading', { name: /Add your e-mail address/ }).waitFor({ timeout: 10000 }).catch(() => {});
+  ok(await p.getByRole('heading', { name: /Add your e-mail address/ }).count() === 1, 'the card is on the buyer home for an imported buyer');
+  await p.screenshot({ path: SHOTS + '/add_email_home.png' });
+  let vio = await axeViolations(p); ok(vio.length === 0, 'axe 0 on the buyer home with the card', vio);
+  await p.getByLabel('E-mail address', { exact: true }).fill(`ui-${st}@test.invalid`); const n4 = srv.messages.length; await p.getByRole('button', { name: 'Send the confirmation link' }).click(); await p.locator('main [role=status], [role=status]').filter({ hasText: 'Check your e-mail' }).first().waitFor({ timeout: 8000 }); ok(true, 'the page says to check the e-mail');
+  const m5 = await waitFor(/confirm your e-mail/i, n4); const tok5 = /confirm-email\?token=([A-Za-z0-9_-]{43})/.exec(smtp.decode(m5.raw).text)[1];
+  await p.goto(BASE + '/en/dashboard/buyer/profile', { waitUntil: 'networkidle' }); await p.getByRole('heading', { name: /Add your e-mail address/ }).waitFor({ timeout: 10000 }).catch(() => {}); ok(await p.getByRole('heading', { name: /Add your e-mail address/ }).count() === 1, 'the card is on the profile page too'); await c.close();
+  c = await mk(null); p = await c.newPage(); await p.goto(BASE + '/en/confirm-email?token=' + tok5, { waitUntil: 'networkidle' }); await p.getByRole('button', { name: 'Confirm e-mail address' }).click(); await p.locator('main [role=status]').waitFor({ timeout: 8000 }); ok(/confirmed/.test(await p.locator('main [role=status]').innerText()), 'the confirm page works without being signed in'); await p.screenshot({ path: SHOTS + '/confirm_email.png' }); vio = await axeViolations(p); ok(vio.length === 0, 'confirm page axe 0', vio);
+  ok(sql(`SELECT email FROM users WHERE email='ui-${st}@test.invalid'`) === `ui-${st}@test.invalid`, 'the address is attached');
+  await p.goto(BASE + '/en/confirm-email?token=' + tok5, { waitUntil: 'networkidle' }); await sleep(500); ok(/cannot be used/.test(await p.locator('main [role=alert]').innerText()), 'opening it again says it cannot be used');
+  c = await mk(u.bT); p = await c.newPage(); await p.goto(BASE + '/en/dashboard/buyer', { waitUntil: 'networkidle' }); await sleep(800); ok(await p.getByRole('heading', { name: /Add your e-mail address/ }).count() === 0, 'a buyer with an address does not see the card'); await c.close();
+  for (const [loc, h1] of [['ru', 'Добавьте адрес электронной почты'], ['zh', '添加您的邮箱地址']]) { const ph4 = `phone-${loc}${String(st).slice(-7)}@noemail.invalid`; sql(`INSERT INTO users (name,email,password_hash,role,country) VALUES ('Imp ${loc}','${ph4}','${h}','buyer','')`); const t4 = await login(ph4); c = await mk(t4); p = await c.newPage(); await p.goto(`${BASE}/${loc}/dashboard/buyer`, { waitUntil: 'networkidle' }); await p.getByText(h1).first().waitFor({ timeout: 10000 }).catch(() => {}); ok((await p.locator('body').innerText()).includes(h1), loc + ': the card is translated'); vio = await axeViolations(p); ok(vio.length === 0, loc + ': axe 0', vio); await c.close(); }
+  c = await mk(p3T, { width: 375, height: 800 }); p = await c.newPage(); await p.goto(BASE + '/en/dashboard/buyer', { waitUntil: 'networkidle' }); await sleep(1500); const wd = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, vw: innerWidth })); ok(wd.sw <= wd.vw + 1, '375px: no sideways overflow', wd); await c.close();
+  await br.close(); await srv.close(); sql('DELETE FROM mail_settings');
+  done();
+})();

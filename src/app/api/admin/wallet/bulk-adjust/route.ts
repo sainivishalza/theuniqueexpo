@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { BULK_MAX_BUYERS, BULK_MAX_POINTS, isValidClientKey, parsePoints } from "@/lib/wallet";
 import { bulkAdjustWallets } from "@/lib/server/wallet-repo";
 import { notifyPointsReceived } from "@/lib/server/notifications";
@@ -26,6 +27,7 @@ export async function POST(request: Request) {
     for (const id of result.credited) notifyPointsReceived(id, amount, note);
     const { credited: _credited, ...visible } = result;
     void _credited;
+    logAdminAction(request, auth.admin, "points_bulk_given", { targetType: "wallet", details: `${amount} points to ${result.credited.length} buyers: ${note}` });
     return NextResponse.json({ ...visible, amount });
   } catch (err) {
     return walletErrorResponse(err);

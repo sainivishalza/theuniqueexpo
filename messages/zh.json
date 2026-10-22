@@ -215,7 +215,23 @@
     "forgotPasswordTitle": "忘记密码了吗?",
     "forgotPasswordBody": "目前还没有自动重置功能 -- 请联系我们,我们会为您设置新密码。",
     "identifier": "邮箱、手机号或护照号",
-    "identifierPlaceholder": "you@company.com 或手机号"
+    "identifierPlaceholder": "you@company.com 或手机号",
+    "secondStep": {
+      "title": "输入验证码",
+      "subtitle": "打开您的验证器应用，输入 The Unique Expo 的 6 位验证码。",
+      "recoverySubtitle": "请输入开启两步验证时保存的某一个恢复码。每个恢复码只能使用一次。",
+      "codeLabel": "6 位验证码",
+      "recoveryLabel": "恢复码",
+      "verify": "登录",
+      "checking": "正在验证…",
+      "useRecovery": "改用恢复码",
+      "useApp": "使用应用中的验证码",
+      "back": "重新开始",
+      "wrongCode": "验证码不正确。请等待应用生成新的验证码后重试。",
+      "wrongRecovery": "恢复码不正确或已被使用。",
+      "expired": "登录耗时过长，请重新输入密码。",
+      "rateLimited": "错误次数过多，请等待几分钟后重试。"
+    }
   },
   "registerPage": {
     "roles": {
@@ -689,6 +705,10 @@
       "email": {
         "title": "邮件",
         "description": "设置邮件服务器：密码重置链接和通知"
+      },
+      "activity": {
+        "title": "操作记录",
+        "description": "谁在管理后台做了什么"
       }
     },
     "attention": {
@@ -700,7 +720,10 @@
       "topups": "{count} 笔积分充值待核对",
       "withdrawals": "{count} 笔提现待支付",
       "expenses": "{count} 份费用申请待审核",
-      "documents": "{count} 份买家文档待审核"
+      "documents": "{count} 份买家文档待审核",
+      "failedEmails": "本周有 {count} 封邮件发送失败",
+      "twoStepOff": "您的管理员账户目前仅由密码保护。",
+      "twoStepAction": "开启两步验证"
     }
   },
   "adminSubsidies": {
@@ -1152,7 +1175,11 @@
     "copy": "复制",
     "done": "完成",
     "importBuyers": "从展会表格导入采购商",
-    "noEmail": "无邮箱（用手机号/护照号登录）"
+    "noEmail": "无邮箱（用手机号/护照号登录）",
+    "twoStepOn": "已开启两步验证",
+    "turnOffTwoStep": "关闭两步验证",
+    "confirmTurnOffTwoStep": "要为 {name} 关闭两步验证吗？在对方重新设置之前，将仅凭密码登录。仅在对方丢失手机和恢复码时才这样做。",
+    "turnOffTwoStepFailed": "无法关闭两步验证。"
   },
   "adminPartnerReferrals": {
     "title": "合作伙伴推荐记录",
@@ -3121,6 +3148,36 @@
         "invalid_document": "请选择文档。",
         "reason_required": "请填写买家将看到的原因（至少 3 个字符）。"
       }
+    },
+    "announce": {
+      "toggle": "发送邮件",
+      "title": "向已选的 {count} 位买家发送邮件",
+      "recipients": "已选的 {total} 位买家中有 {with} 位有真实邮箱地址，将收到邮件，其余的将被跳过。",
+      "noRecipients": "所选买家都没有真实邮箱地址。",
+      "languages": "邮件语言",
+      "lang": {
+        "en": "English",
+        "ru": "Русский",
+        "zh": "中文"
+      },
+      "subject": "主题",
+      "message": "内容",
+      "messageHint": "英文必填。俄文和中文可选：使用这些语言的买家会收到对应版本，其他人收到英文版。空一行表示新段落。",
+      "send": "检查并发送",
+      "confirmQuestion": "现在向 {count} 位买家发送这封邮件吗？发送后无法撤回。",
+      "confirmSend": "确认发送",
+      "sending": "发送中…",
+      "back": "返回",
+      "done": "完成：邮件正在发送给 {count} 位买家。",
+      "skipped": "有 {count} 位买家没有真实邮箱地址，已跳过。您可以在“管理 → 邮件”中查看所有邮件。",
+      "errors": {
+        "no_buyers": "请至少选择一位买家。",
+        "too_many": "最多选择 500 位买家。",
+        "too_long": "主题或内容过长。",
+        "english_required": "请用英文填写主题（至少 3 个字符）和内容（至少 5 个字符）。",
+        "mail_off": "邮件功能已关闭。请先在“管理 → 邮件”中开启。",
+        "rate_limited": "您在过去一小时内发送了多次公告，请稍候。"
+      }
     }
   },
   "homepageSlideshow": {
@@ -3661,6 +3718,10 @@
     "resetPassword": {
       "title": "设置新密码 | The Unique Expo",
       "description": "为您的 The Unique Expo 账户设置新密码。"
+    },
+    "confirmEmail": {
+      "title": "确认邮箱 | The Unique Expo",
+      "description": "确认您的 The Unique Expo 账户的邮箱地址。"
     }
   },
   "whatsappButton": {
@@ -4521,6 +4582,25 @@
       "intro": "如果您能看到这封邮件，说明邮件发送功能正常。",
       "body": "此测试邮件发送自“管理 → 邮件”。",
       "button": "打开网站"
+    },
+    "confirmEmail": {
+      "subject": "请确认您的邮箱地址",
+      "intro": "请确认此邮箱地址将用于您的 The Unique Expo 账户。",
+      "body": "确认后，您可以使用它登录，并接收重置密码链接和通知。该链接仅可使用一次，{minutes} 分钟后失效。",
+      "button": "确认邮箱地址",
+      "ignore": "如果这不是您本人的操作，请忽略此邮件，不会有任何更改。"
+    },
+    "registrationReminder": {
+      "subject": "请确认您出席 {expo}",
+      "intro": "您报名的 {expo} 已通过审核，但我们尚未收到您的确认。",
+      "body": "请确认您将出席{deadline}，以便为您保留名额。",
+      "deadline": "（请在 {date} 前）",
+      "button": "确认出席"
+    },
+    "announcement": {
+      "subject": "{subject}",
+      "intro": "{message}",
+      "button": "打开网站"
     }
   },
   "adminEmail": {
@@ -4577,7 +4657,10 @@
       "withdrawalRejected": "提现未支付",
       "expenseApproved": "费用申请已通过",
       "expenseRejected": "费用申请未通过",
-      "test": "测试邮件"
+      "test": "测试邮件",
+      "confirmEmail": "邮箱确认链接",
+      "registrationReminder": "报名提醒",
+      "announcement": "公告"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -4586,6 +4669,18 @@
       "invalid_input": "部分内容过长。",
       "incomplete": "要开启邮件，请填写邮件服务器和发件人邮箱地址。",
       "rate_limited": "测试次数过多，请稍等几分钟。"
+    },
+    "reminders": {
+      "title": "每日提醒",
+      "intro": "报名已通过但尚未确认的买家，在确认截止日期还剩 2 天或更少时会收到一封邮件。每次打开管理首页时会自动运行（最多每 6 小时一次）。若要确保没人打开管理页面的日子也能运行，请在 GitHub 添加密钥。",
+      "lastRun": "上次运行：{time} — 已发送 {count} 封邮件。",
+      "neverRun": "尚未运行。",
+      "makeKey": "生成提醒密钥",
+      "newKey": "您的提醒密钥（仅此一次显示，请复制）：",
+      "howTo": "在 GitHub 中添加：仓库 Settings → Secrets and variables → Actions → New repository secret，名称为 REMINDER_KEY。之后“Registration reminders”工作流将每天运行。",
+      "hasKey": "已有密钥。生成新密钥会替换旧密钥（也请更新 GitHub 中的密钥）。",
+      "copy": "复制",
+      "copied": "已复制"
     }
   },
   "authRecovery": {
@@ -4629,6 +4724,162 @@
         "rate_limited": "尝试次数过多，请稍后再试。",
         "generic": "无法更改密码，请重试。"
       }
+    },
+    "confirm": {
+      "title": "确认您的邮箱地址",
+      "intro": "点击按钮，将此邮箱地址绑定到您的账户。",
+      "button": "确认邮箱地址",
+      "working": "确认中…",
+      "success": "您的邮箱地址已确认。",
+      "successBody": "现在您可以使用 {email} 登录，并在该邮箱接收重置密码链接和通知。",
+      "signIn": "前往登录",
+      "invalidTitle": "此链接无法使用",
+      "invalidBody": "链接已过期或已被使用。请打开您的账户并重新获取链接。",
+      "takenTitle": "该地址已被使用",
+      "takenBody": "另一个账户已在使用此邮箱地址，因此无法添加。请使用其他地址。",
+      "backToAccount": "返回我的账户"
+    }
+  },
+  "accountEmail": {
+    "title": "添加您的邮箱地址",
+    "intro": "您的账户还没有邮箱地址。添加后可接收重置密码链接和通知（报名结果、文档、积分）。我们会发送一个确认链接。",
+    "label": "邮箱地址",
+    "submit": "发送确认链接",
+    "sending": "发送中…",
+    "sentTitle": "请查看您的邮箱",
+    "sentBody": "如果 {email} 可用，我们已发送确认链接。链接 60 分钟内有效。如未收到，请查看垃圾邮件文件夹。",
+    "errors": {
+      "invalid_email": "请输入有效的邮箱地址。",
+      "rate_limited": "尝试次数过多，请稍后再试。",
+      "mail_off": "目前无法发送邮件，请稍后再试。",
+      "has_email": "您的账户已有邮箱地址。",
+      "generic": "无法发送链接，请重试。"
+    }
+  },
+  "adminTwoStep": {
+    "title": "两步验证登录",
+    "statusOn": "已开启",
+    "statusOff": "未开启",
+    "intro": "输入密码后，登录时还需要输入手机验证器应用（Google Authenticator、Microsoft Authenticator、Authy 等）中的 6 位验证码。即使别人知道您的密码，也无法进入管理后台。",
+    "turnOn": "开启两步验证",
+    "passwordFirst": "请输入密码以开始。",
+    "password": "您的密码",
+    "continue": "继续",
+    "cancel": "取消",
+    "scan1": "在手机上打开验证器应用，选择添加账户。",
+    "scan2": "扫描此图片，或在应用中输入下方的密钥。",
+    "scan3": "输入应用显示的 6 位验证码，然后点击绿色按钮。",
+    "qrAlt": "用于将 The Unique Expo 添加到验证器应用的二维码",
+    "cannotScan": "无法扫描？请在应用中输入此密钥（基于时间，6 位数字）：",
+    "codeLabel": "应用中的 6 位验证码",
+    "confirmAndTurnOn": "开启",
+    "codesTitle": "您的恢复码",
+    "codesWarning": "请立即将这 10 个恢复码保存在安全的地方（密码管理器或打印出来）。它们只显示这一次。如果丢失手机，每个恢复码可登录一次。",
+    "copyCodes": "复制恢复码",
+    "copied": "已复制",
+    "savedThem": "我已保存",
+    "onBody": "您的账户已开启两步验证。",
+    "codesLeft": "{count, plural, other {还剩 # 个恢复码。}}",
+    "newCodes": "获取新的恢复码",
+    "newCodesBody": "旧的恢复码将失效。输入密码以获取 10 个新的恢复码。",
+    "turnOff": "关闭",
+    "turnOffBody": "输入密码和应用中的当前验证码（或一个恢复码），即可关闭两步验证。",
+    "codeOrRecovery": "应用中的验证码或恢复码",
+    "errors": {
+      "wrong_password": "密码不正确。",
+      "wrong_code": "验证码不正确。请等待应用生成新的验证码后重试。",
+      "wrong_password_or_code": "密码或验证码不正确。",
+      "rate_limited": "错误次数过多，请等待几分钟后重试。",
+      "already_on": "两步验证已开启。",
+      "not_on": "两步验证未开启。",
+      "unauthorized": "请重新登录。",
+      "generic": "出了点问题，请重试。"
+    }
+  },
+  "adminActivity": {
+    "title": "操作记录",
+    "subtitle": "谁在管理后台做了什么，最新的操作在最前面。",
+    "search": "搜索",
+    "searchPlaceholder": "姓名、邮箱、编号或原因…",
+    "searchButton": "搜索",
+    "who": "操作人",
+    "everyone": "所有人",
+    "what": "操作",
+    "everything": "全部",
+    "time": "时间",
+    "details": "详情",
+    "address": "地址",
+    "unknown": "未知",
+    "loading": "加载中…",
+    "empty": "暂无匹配记录。",
+    "loadFailed": "无法加载操作记录，请重试。",
+    "count": "{count, plural, other {# 条操作}}",
+    "pageOf": "第 {page} 页，共 {pages} 页",
+    "newer": "较新",
+    "older": "较早",
+    "actions": {
+      "sign_in": "登录",
+      "sign_in_code_wrong": "两步验证码错误",
+      "sign_in_recovery_code": "使用恢复码登录",
+      "two_step_on": "开启两步验证",
+      "two_step_off": "关闭两步验证",
+      "two_step_new_recovery_codes": "生成新的恢复码",
+      "two_step_reset_for_user": "为其他管理员关闭两步验证",
+      "user_role_changed": "更改用户角色",
+      "user_suspended": "停用用户",
+      "user_reactivated": "重新启用用户",
+      "user_deleted": "删除用户",
+      "user_password_reset": "重置用户密码",
+      "users_bulk_created": "批量添加用户",
+      "buyer_profile_edited": "编辑买家资料",
+      "document_uploaded": "上传买家文件",
+      "document_verified": "审核通过文件",
+      "document_rejected": "拒绝文件",
+      "document_pending": "将文件改回待审核",
+      "pending_document_deleted": "删除待处理文件",
+      "documents_bulk_verified": "批量审核通过文件",
+      "documents_bulk_rejected": "批量拒绝文件",
+      "announcement_sent": "发送公告",
+      "buyers_imported": "导入买家",
+      "points_bulk_given": "向多位买家发放积分",
+      "points_adjusted": "增加或扣除积分",
+      "wallet_frozen": "冻结钱包",
+      "wallet_unfrozen": "解冻钱包",
+      "topup_approved": "批准充值",
+      "topup_rejected": "拒绝充值",
+      "withdrawal_paid": "标记提现已支付",
+      "withdrawal_rejected": "拒绝提现",
+      "expense_approved": "批准费用申请",
+      "expense_rejected": "拒绝费用申请",
+      "purchase_refunded": "退还购买积分",
+      "wallet_settings_saved": "保存钱包设置",
+      "points_setup_changed": "更改展会或旅游的积分",
+      "point_regions_saved": "保存展会的积分地区",
+      "expo_registration_status": "更改展会报名状态",
+      "tour_registration_status": "更改旅游报名状态",
+      "mail_settings_saved": "保存邮件设置",
+      "reminder_key_made": "生成提醒密钥",
+      "buyer_form_document_added": "向买家表单添加文件",
+      "buyer_form_field_added": "向买家表单添加字段",
+      "buyer_form_item_moved": "移动买家表单项目",
+      "buyer_form_item_changed": "更改买家表单项目",
+      "buyer_form_item_removed": "移除买家表单项目",
+      "photos_shrink_started": "开始压缩已存照片",
+      "site_theme_saved": "保存网站主题",
+      "company_profile_saved": "保存公司资料",
+      "exhibition_created": "添加展会",
+      "exhibition_updated": "编辑展会",
+      "exhibition_deleted": "删除展会",
+      "tour_created": "添加旅游",
+      "tour_updated": "编辑旅游",
+      "tour_deleted": "删除旅游",
+      "event_created": "添加活动",
+      "event_updated": "编辑活动",
+      "event_deleted": "删除活动",
+      "blog_post_created": "添加博客文章",
+      "blog_post_updated": "编辑博客文章",
+      "blog_post_deleted": "删除博客文章",
+      "site_page_saved": "保存网站页面"
     }
   }
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { requireAdmin, createUserAccount } from "@/lib/auth-server";
@@ -157,6 +158,7 @@ export async function POST(request: Request) {
   }
 
   const count = (s: ImportStatus) => results.filter((r) => r.status === s).length;
+  logAdminAction(request, admin, "buyers_imported", { targetType: "user", details: `${count("created")} created, ${count("expo_added")} expo added, ${count("failed")} failed` });
   return NextResponse.json({
     results,
     created: count("created"),

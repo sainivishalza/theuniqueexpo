@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { documentStorageStats, shrinkStoredDocuments, type ShrinkCursor } from "@/lib/server/document-storage";
 
@@ -19,5 +20,7 @@ export async function POST(request: Request) {
     c && Number.isInteger(c.source) && Number.isInteger(c.afterUserId) && c.source >= 0 && c.source <= 20 && c.afterUserId >= 0
       ? { source: c.source, afterUserId: c.afterUserId }
       : undefined;
+  // One line per run, not one per chunk: only the first chunk is logged.
+  if (!cursor) logAdminAction(request, admin, "photos_shrink_started", { targetType: "documents" });
   return NextResponse.json(await shrinkStoredDocuments(cursor));
 }

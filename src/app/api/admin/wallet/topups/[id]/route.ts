@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { parsePoints } from "@/lib/wallet";
 import { approveTopup, rejectTopup } from "@/lib/server/wallet-repo";
 import { getTopupProof } from "@/lib/server/wallet-admin-repo";
@@ -33,10 +34,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       if (points === null) return walletFail("invalid_amount");
       await approveTopup(auth.admin.id, id, points, text(body.note, 500));
       notifyWalletRequest("wallet_topups", id, "topupApproved", { points });
+      logAdminAction(request, auth.admin, "topup_approved", { targetType: "topup", targetId: id, details: `${points} points` });
     } else if (body.action === "reject") {
       const note = text(body.note, 500);
       await rejectTopup(auth.admin.id, id, note);
       notifyWalletRequest("wallet_topups", id, "topupRejected", { reason: note });
+      logAdminAction(request, auth.admin, "topup_rejected", { targetType: "topup", targetId: id, details: note });
     } else {
       return walletFail("invalid_input");
     }

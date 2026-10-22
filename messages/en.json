@@ -215,7 +215,23 @@
     "forgotPasswordTitle": "Forgot your password?",
     "forgotPasswordBody": "There's no automatic reset yet -- contact us and we'll set a new one for you.",
     "identifier": "Email, phone number or passport number",
-    "identifierPlaceholder": "you@company.com or phone number"
+    "identifierPlaceholder": "you@company.com or phone number",
+    "secondStep": {
+      "title": "Enter your code",
+      "subtitle": "Open your authenticator app and type the 6-digit code for The Unique Expo.",
+      "recoverySubtitle": "Type one of the recovery codes you saved when you turned on two-step sign-in. Each code works once.",
+      "codeLabel": "6-digit code",
+      "recoveryLabel": "Recovery code",
+      "verify": "Sign in",
+      "checking": "Checking…",
+      "useRecovery": "Use a recovery code instead",
+      "useApp": "Use the code from the app",
+      "back": "Start again",
+      "wrongCode": "That code is not correct. Wait for a new code in the app and try again.",
+      "wrongRecovery": "That recovery code is not correct or was already used.",
+      "expired": "This sign-in took too long. Please type your password again.",
+      "rateLimited": "Too many wrong codes. Please wait a few minutes and try again."
+    }
   },
   "registerPage": {
     "roles": {
@@ -689,6 +705,10 @@
       "email": {
         "title": "Email",
         "description": "Set up the mail server: password reset links and notifications"
+      },
+      "activity": {
+        "title": "Activity",
+        "description": "Who did what in the admin area"
       }
     },
     "attention": {
@@ -700,7 +720,10 @@
       "topups": "{count, plural, one {# points top-up to check} other {# points top-ups to check}}",
       "withdrawals": "{count, plural, one {# withdrawal to pay} other {# withdrawals to pay}}",
       "expenses": "{count, plural, one {# expense claim to review} other {# expense claims to review}}",
-      "documents": "{count, plural, one {# buyer document to review} other {# buyer documents to review}}"
+      "documents": "{count, plural, one {# buyer document to review} other {# buyer documents to review}}",
+      "failedEmails": "{count, plural, one {# e-mail could not be sent this week} other {# e-mails could not be sent this week}}",
+      "twoStepOff": "Your admin account is protected by a password only.",
+      "twoStepAction": "Turn on two-step sign-in"
     }
   },
   "adminSubsidies": {
@@ -1152,7 +1175,11 @@
     "copy": "Copy",
     "done": "Done",
     "importBuyers": "Import buyers from expo sheets",
-    "noEmail": "No email (signs in with phone / passport)"
+    "noEmail": "No email (signs in with phone / passport)",
+    "twoStepOn": "Two-step sign-in is on",
+    "turnOffTwoStep": "Turn off two-step",
+    "confirmTurnOffTwoStep": "Turn off two-step sign-in for {name}? They will sign in with the password only until they set it up again. Do this only when they have lost their phone and recovery codes.",
+    "turnOffTwoStepFailed": "Could not turn off two-step sign-in."
   },
   "adminPartnerReferrals": {
     "title": "Partner Referrals",
@@ -3121,6 +3148,36 @@
         "invalid_document": "Choose a document.",
         "reason_required": "Give the reason the buyers will see (at least 3 letters)."
       }
+    },
+    "announce": {
+      "toggle": "Send e-mail",
+      "title": "E-mail {count} selected buyers",
+      "recipients": "{with} of the {total} selected buyers have a real e-mail address and will get it. The others are skipped.",
+      "noRecipients": "None of the selected buyers has a real e-mail address.",
+      "languages": "Language of the message",
+      "lang": {
+        "en": "English",
+        "ru": "Русский",
+        "zh": "中文"
+      },
+      "subject": "Subject",
+      "message": "Message",
+      "messageHint": "English is required. Russian and Chinese are optional: buyers using those languages get them when written, everyone else gets English. A blank line starts a new paragraph.",
+      "send": "Review and send",
+      "confirmQuestion": "Send this e-mail to {count} buyers now? It cannot be taken back.",
+      "confirmSend": "Yes, send it",
+      "sending": "Sending…",
+      "back": "Back",
+      "done": "Done: the e-mail is being sent to {count} buyers.",
+      "skipped": "{count} buyers have no real e-mail address and were skipped. You can see every message in Admin → Email.",
+      "errors": {
+        "no_buyers": "Select at least one buyer.",
+        "too_many": "Select at most 500 buyers.",
+        "too_long": "The subject or the message is too long.",
+        "english_required": "Write the subject (3 letters or more) and the message (5 letters or more) in English.",
+        "mail_off": "E-mail is switched off. Switch it on in Admin → Email first.",
+        "rate_limited": "You have sent several announcements in the last hour. Please wait a little."
+      }
     }
   },
   "homepageSlideshow": {
@@ -3661,6 +3718,10 @@
     "resetPassword": {
       "title": "Choose a new password | The Unique Expo",
       "description": "Choose a new password for your The Unique Expo account."
+    },
+    "confirmEmail": {
+      "title": "Confirm your e-mail | The Unique Expo",
+      "description": "Confirm the e-mail address of your The Unique Expo account."
     }
   },
   "whatsappButton": {
@@ -4521,6 +4582,25 @@
       "intro": "If you can read this, e-mail sending works.",
       "body": "This test was sent from Admin → Email.",
       "button": "Open the website"
+    },
+    "confirmEmail": {
+      "subject": "Confirm your e-mail address",
+      "intro": "Please confirm that this e-mail address should be used for your The Unique Expo account.",
+      "body": "After you confirm it, you can sign in with it and get password reset links and notifications. The link works once and expires in {minutes} minutes.",
+      "button": "Confirm e-mail address",
+      "ignore": "If you did not ask for this, ignore this e-mail: nothing will change."
+    },
+    "registrationReminder": {
+      "subject": "Please confirm your attendance at {expo}",
+      "intro": "Your registration for {expo} is approved, but we have not received your confirmation yet.",
+      "body": "Please confirm that you will attend{deadline}, so that your place is kept.",
+      "deadline": " before {date}",
+      "button": "Confirm my attendance"
+    },
+    "announcement": {
+      "subject": "{subject}",
+      "intro": "{message}",
+      "button": "Open the website"
     }
   },
   "adminEmail": {
@@ -4577,7 +4657,10 @@
       "withdrawalRejected": "Withdrawal not paid",
       "expenseApproved": "Expense claim approved",
       "expenseRejected": "Expense claim not approved",
-      "test": "Test e-mail"
+      "test": "Test e-mail",
+      "confirmEmail": "E-mail confirmation link",
+      "registrationReminder": "Registration reminder",
+      "announcement": "Announcement"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -4586,6 +4669,18 @@
       "invalid_input": "Some of the details are too long.",
       "incomplete": "To switch e-mail on, fill in the mail server and the sender e-mail address.",
       "rate_limited": "Too many tests. Please wait a few minutes."
+    },
+    "reminders": {
+      "title": "Daily reminders",
+      "intro": "Buyers whose registration is approved but not confirmed get one e-mail when their confirm-by date is 2 days away or less. This runs by itself whenever you open the admin home (at most every 6 hours). To make sure it also runs on days nobody opens the admin, add a key to GitHub.",
+      "lastRun": "Last run: {time} — {count} e-mails sent.",
+      "neverRun": "It has not run yet.",
+      "makeKey": "Make a reminder key",
+      "newKey": "Your reminder key (shown only now — copy it):",
+      "howTo": "Add it in GitHub: repository Settings → Secrets and variables → Actions → New repository secret, named REMINDER_KEY. The “Registration reminders” workflow then runs every day.",
+      "hasKey": "A key exists. Making a new one replaces it (update the GitHub secret too).",
+      "copy": "Copy",
+      "copied": "Copied"
     }
   },
   "authRecovery": {
@@ -4629,6 +4724,162 @@
         "rate_limited": "Too many attempts. Please try again later.",
         "generic": "We could not change your password. Please try again."
       }
+    },
+    "confirm": {
+      "title": "Confirm your e-mail address",
+      "intro": "Press the button to attach this e-mail address to your account.",
+      "button": "Confirm e-mail address",
+      "working": "Confirming…",
+      "success": "Your e-mail address is confirmed.",
+      "successBody": "You can now sign in with {email}, and you will get password reset links and notifications there.",
+      "signIn": "Go to sign in",
+      "invalidTitle": "This link cannot be used",
+      "invalidBody": "It has expired or was already used. Open your account and ask for a new link.",
+      "takenTitle": "This address is already used",
+      "takenBody": "Another account already uses this e-mail address, so it could not be added. Please use a different address.",
+      "backToAccount": "Back to my account"
+    }
+  },
+  "accountEmail": {
+    "title": "Add your e-mail address",
+    "intro": "Your account has no e-mail address yet. Add one to get password reset links and notifications (registration decisions, documents, points). We will send a link to confirm it.",
+    "label": "E-mail address",
+    "submit": "Send the confirmation link",
+    "sending": "Sending…",
+    "sentTitle": "Check your e-mail",
+    "sentBody": "If {email} can be used, we have sent a link to confirm it. The link works for 60 minutes. Look in your spam folder if you do not see it.",
+    "errors": {
+      "invalid_email": "Please enter a valid e-mail address.",
+      "rate_limited": "Too many tries. Please wait a while and try again.",
+      "mail_off": "E-mail is not available right now. Please try again later.",
+      "has_email": "Your account already has an e-mail address.",
+      "generic": "We could not send the link. Please try again."
+    }
+  },
+  "adminTwoStep": {
+    "title": "Two-step sign-in",
+    "statusOn": "On",
+    "statusOff": "Off",
+    "intro": "After your password, sign-in asks for a 6-digit code from an authenticator app on your phone (Google Authenticator, Microsoft Authenticator, Authy or similar). Someone who learns your password still cannot open the admin area.",
+    "turnOn": "Turn on two-step sign-in",
+    "passwordFirst": "Type your password to start.",
+    "password": "Your password",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "scan1": "Open the authenticator app on your phone and choose to add an account.",
+    "scan2": "Scan this picture, or type the key below into the app.",
+    "scan3": "Type the 6-digit code the app shows, then press the green button.",
+    "qrAlt": "QR code to add The Unique Expo to your authenticator app",
+    "cannotScan": "Cannot scan? Type this key into the app (time-based, 6 digits):",
+    "codeLabel": "6-digit code from the app",
+    "confirmAndTurnOn": "Turn on",
+    "codesTitle": "Your recovery codes",
+    "codesWarning": "Save these 10 recovery codes now, somewhere safe (a password manager or a printed page). They are shown only once. Each one signs you in once if you lose your phone.",
+    "copyCodes": "Copy codes",
+    "copied": "Copied",
+    "savedThem": "I have saved them",
+    "onBody": "Two-step sign-in is on for your account.",
+    "codesLeft": "{count, plural, one {# recovery code left.} other {# recovery codes left.}}",
+    "newCodes": "Get new recovery codes",
+    "newCodesBody": "The old recovery codes stop working. Type your password to get 10 new ones.",
+    "turnOff": "Turn off",
+    "turnOffBody": "Type your password and a current code from the app (or one recovery code) to turn two-step sign-in off.",
+    "codeOrRecovery": "Code from the app, or a recovery code",
+    "errors": {
+      "wrong_password": "The password is not correct.",
+      "wrong_code": "That code is not correct. Wait for a new code in the app and try again.",
+      "wrong_password_or_code": "The password or the code is not correct.",
+      "rate_limited": "Too many wrong attempts. Please wait a few minutes and try again.",
+      "already_on": "Two-step sign-in is already on.",
+      "not_on": "Two-step sign-in is not on.",
+      "unauthorized": "Please sign in again.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "adminActivity": {
+    "title": "Activity",
+    "subtitle": "Who did what in the admin area. The newest actions are first.",
+    "search": "Search",
+    "searchPlaceholder": "Name, e-mail, number or reason…",
+    "searchButton": "Search",
+    "who": "Who",
+    "everyone": "Everyone",
+    "what": "What",
+    "everything": "Everything",
+    "time": "When",
+    "details": "Details",
+    "address": "Address",
+    "unknown": "Unknown",
+    "loading": "Loading…",
+    "empty": "Nothing matches yet.",
+    "loadFailed": "The activity could not be loaded. Please try again.",
+    "count": "{count, plural, one {# action} other {# actions}}",
+    "pageOf": "Page {page} of {pages}",
+    "newer": "Newer",
+    "older": "Older",
+    "actions": {
+      "sign_in": "Signed in",
+      "sign_in_code_wrong": "Wrong two-step code",
+      "sign_in_recovery_code": "Signed in with a recovery code",
+      "two_step_on": "Turned on two-step sign-in",
+      "two_step_off": "Turned off two-step sign-in",
+      "two_step_new_recovery_codes": "Made new recovery codes",
+      "two_step_reset_for_user": "Turned off two-step sign-in for another admin",
+      "user_role_changed": "Changed a user's role",
+      "user_suspended": "Suspended a user",
+      "user_reactivated": "Reactivated a user",
+      "user_deleted": "Deleted a user",
+      "user_password_reset": "Reset a user's password",
+      "users_bulk_created": "Added users in bulk",
+      "buyer_profile_edited": "Edited a buyer profile",
+      "document_uploaded": "Uploaded a buyer document",
+      "document_verified": "Verified a document",
+      "document_rejected": "Rejected a document",
+      "document_pending": "Set a document back to waiting",
+      "pending_document_deleted": "Deleted a waiting document",
+      "documents_bulk_verified": "Verified documents in bulk",
+      "documents_bulk_rejected": "Rejected documents in bulk",
+      "announcement_sent": "Sent an announcement",
+      "buyers_imported": "Imported buyers",
+      "points_bulk_given": "Gave points to several buyers",
+      "points_adjusted": "Added or removed points",
+      "wallet_frozen": "Froze a wallet",
+      "wallet_unfrozen": "Unfroze a wallet",
+      "topup_approved": "Approved a top-up",
+      "topup_rejected": "Rejected a top-up",
+      "withdrawal_paid": "Marked a withdrawal as paid",
+      "withdrawal_rejected": "Rejected a withdrawal",
+      "expense_approved": "Approved an expense claim",
+      "expense_rejected": "Rejected an expense claim",
+      "purchase_refunded": "Refunded a purchase",
+      "wallet_settings_saved": "Saved wallet settings",
+      "points_setup_changed": "Changed points for an exhibition or tour",
+      "point_regions_saved": "Saved point regions of an exhibition",
+      "expo_registration_status": "Changed an exhibition registration",
+      "tour_registration_status": "Changed a tour registration",
+      "mail_settings_saved": "Saved e-mail settings",
+      "reminder_key_made": "Made a reminder key",
+      "buyer_form_document_added": "Added a document to the buyer form",
+      "buyer_form_field_added": "Added a field to the buyer form",
+      "buyer_form_item_moved": "Moved an item in the buyer form",
+      "buyer_form_item_changed": "Changed an item in the buyer form",
+      "buyer_form_item_removed": "Removed an item from the buyer form",
+      "photos_shrink_started": "Started shrinking stored photos",
+      "site_theme_saved": "Saved the site theme",
+      "company_profile_saved": "Saved the company profile",
+      "exhibition_created": "Added an exhibition",
+      "exhibition_updated": "Edited an exhibition",
+      "exhibition_deleted": "Deleted an exhibition",
+      "tour_created": "Added a tour",
+      "tour_updated": "Edited a tour",
+      "tour_deleted": "Deleted a tour",
+      "event_created": "Added an event",
+      "event_updated": "Edited an event",
+      "event_deleted": "Deleted an event",
+      "blog_post_created": "Added a blog post",
+      "blog_post_updated": "Edited a blog post",
+      "blog_post_deleted": "Deleted a blog post",
+      "site_page_saved": "Saved a website page"
     }
   }
 }

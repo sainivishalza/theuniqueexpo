@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { getUserById, updateUser, deleteUser, countAdmins } from "@/lib/server/users-repo";
 
@@ -42,6 +43,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   }
 
   await updateUser(targetId, { role, status: status as "active" | "suspended" | undefined });
+  if (role !== undefined && role !== target.role) logAdminAction(request, admin, "user_role_changed", { targetType: "user", targetId, details: `${target.email}: ${target.role} → ${role}` });
+  if (status !== undefined && status !== target.status) logAdminAction(request, admin, status === "suspended" ? "user_suspended" : "user_reactivated", { targetType: "user", targetId, details: target.email });
   return NextResponse.json({ success: true });
 }
 
@@ -67,6 +70,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
   try {
     await deleteUser(targetId);
+    logAdminAction(request, admin, "user_deleted", { targetType: "user", targetId, details: `${target.email} (${target.role})` });
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Delete user error:", err);

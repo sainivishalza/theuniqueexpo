@@ -37,6 +37,7 @@ export const ADMIN_SECTIONS: AdminSection[] = [
   { key: "faqManagement", href: "/admin/faq", icon: "❓", color: "from-rose-500 to-pink-600", group: "content" },
   { key: "myAccount", href: "/admin/account", icon: "🔑", color: "from-slate-500 to-gray-600", group: "settings" },
   { key: "email", href: "/admin/email", icon: "✉️", color: "from-sky-500 to-blue-600", group: "settings" },
+  { key: "activity", href: "/admin/activity", icon: "🕵️", color: "from-slate-500 to-gray-700", group: "settings" },
   { key: "siteTheme", href: "/admin/site-theme", icon: "🎨", color: "from-fuchsia-500 to-purple-600", group: "settings" },
   { key: "userManagement", href: "/admin/users", icon: "👥", color: "from-orange-500 to-red-500", group: "people" },
   { key: "buyerProfiles", href: "/admin/buyer-profiles", icon: "🪪", color: "from-emerald-600 to-teal-700", group: "people" },

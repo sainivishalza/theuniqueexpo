@@ -4,8 +4,9 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import ChangePasswordCard from "../../dashboard/_components/ChangePasswordCard";
+import TwoStepCard from "./TwoStepCard";
 
-// The admin's own account: change the password they sign in with.
+// The admin's own account: change the password they sign in with, and the two-step sign-in.
 export default function AdminAccountPage() {
   const t = useTranslations("accountPassword");
   const ta = useTranslations("adminCommon");
@@ -31,7 +32,10 @@ export default function AdminAccountPage() {
       </section>
       <section className="bg-cream-50 py-8">
         <div className="mx-auto max-w-3xl px-6">
-          <ChangePasswordCard />
+          <div className="space-y-6">
+            <ChangePasswordCard />
+            <TwoStepCard />
+          </div>
         </div>
       </section>
     </div>

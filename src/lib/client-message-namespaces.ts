@@ -16,14 +16,14 @@ export const ADMIN_NAMESPACES = [
   "adminBusinessTripInquiries", "adminChinaTravel", "adminPartnerInquiries", "adminSlideshow",
   "adminRegFormBuilder", "adminRegistrationsCommon", "adminRfqs", "adminServiceTours", "adminServicesHome",
   "adminCityPartnershipInquiries", "adminCityPartnershipsContent", "adminConferenceHostingContent", "adminConferenceInquiries", "adminMagazine", "adminVideos",
-  "accountPassword", "adminEmail", "adminBuyerProfiles", "adminBuyerExpos", "adminBuyerForm", "adminImportBuyers", "adminWallet",
+  "accountPassword", "adminEmail", "adminTwoStep", "adminActivity", "adminBuyerProfiles", "adminBuyerExpos", "adminBuyerForm", "adminImportBuyers", "adminWallet",
   "adminPartnerApplications", "adminPartnerReferrals", "adminPartnerTiers", "adminUsers", "adminUsersBulk",
   "adminSitePageEditor", "adminSiteTheme", "adminSubsidies", "adminSubsidyApplications", "adminTeam", "adminTourApplications",
   "adminTourRegForm", "adminTourRegistrations", "adminToursCrud", "adminVisaApplications",
 ];
 
 export const DASHBOARD_NAMESPACES = [
-  "accountPassword", "buyerDashboard", "buyerProfile", "buyerWallet", "exhibitorDashboard", "partnerDashboard",
+  "accountEmail", "accountPassword", "buyerDashboard", "buyerProfile", "buyerWallet", "exhibitorDashboard", "partnerDashboard",
   // The buyer profile page reuses its Save / error strings.
   "adminCommon",
 ];

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { deleteFormItem, moveFormItem, updateFormItem } from "@/lib/server/buyer-form-repo";
 import { formErrorResponse } from "@/lib/server/buyer-form-api";
@@ -19,6 +20,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ke
   try {
     if (body.move === "up" || body.move === "down") {
       await moveFormItem(key, body.move);
+      logAdminAction(request, admin, "buyer_form_item_moved", { targetType: "buyer_form", targetId: key, details: body.move });
       return NextResponse.json({ success: true });
     }
     const item = await updateFormItem(key, {
@@ -27,6 +29,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ ke
       active: typeof body.active === "boolean" ? body.active : undefined,
       options: body.options && typeof body.options === "object" ? body.options : undefined,
     });
+    logAdminAction(request, admin, "buyer_form_item_changed", { targetType: "buyer_form", targetId: key });
     return NextResponse.json({ item });
   } catch (err) {
     return formErrorResponse(err);
@@ -41,6 +44,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ k
   if (!KEY.test(key)) return NextResponse.json({ error: "not_found", code: "not_found" }, { status: 404 });
   try {
     await deleteFormItem(key);
+    logAdminAction(request, admin, "buyer_form_item_removed", { targetType: "buyer_form", targetId: key });
     return NextResponse.json({ success: true });
   } catch (err) {
     return formErrorResponse(err);

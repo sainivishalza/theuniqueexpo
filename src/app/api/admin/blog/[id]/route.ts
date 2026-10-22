@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { isDuplicateEntryError } from "@/lib/db";
 import { getPostById, updatePost, deletePost } from "@/lib/server/blog-repo";
@@ -34,6 +35,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
   try {
     await updatePost(Number(id), body);
+    logAdminAction(request, admin, "blog_post_updated", { targetType: "blog_post", targetId: id, details: String(body.title ?? "") });
     return NextResponse.json({ ok: true });
   } catch (err) {
     if (isDuplicateEntryError(err)) {
@@ -50,5 +52,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
   const { id } = await params;
   await deletePost(Number(id));
+  logAdminAction(request, admin, "blog_post_deleted", { targetType: "blog_post", targetId: id });
   return NextResponse.json({ ok: true });
 }

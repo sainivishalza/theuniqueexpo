@@ -3,6 +3,7 @@
 --                                 asks to add one: a single-use link is e-mailed to the new address and only
 --                                 its SHA-256 is stored here until it is used.
 --   expo_registrations.reminder_sent_at   when the "please confirm before ..." reminder was e-mailed (once).
+--   mail_settings.reminder_*              state of the daily reminder job (see src/lib/server/reminders.ts).
 --
 -- Idempotent: every statement can run again on a later deploy.
 
@@ -20,3 +21,10 @@ CREATE TABLE IF NOT EXISTS email_changes (
 
 ALTER TABLE expo_registrations
   ADD COLUMN IF NOT EXISTS reminder_sent_at DATETIME NULL;
+
+-- The reminder job: when it last ran and how many e-mails it sent (so it runs at most every few hours), and the
+-- key a scheduled caller (the nightly GitHub workflow) uses to start it.
+ALTER TABLE mail_settings
+  ADD COLUMN IF NOT EXISTS reminder_token_enc TEXT NULL,
+  ADD COLUMN IF NOT EXISTS reminders_last_run_at DATETIME NULL,
+  ADD COLUMN IF NOT EXISTS reminders_last_count INT NOT NULL DEFAULT 0;

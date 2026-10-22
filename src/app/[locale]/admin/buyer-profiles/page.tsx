@@ -11,6 +11,7 @@ import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-op
 import { formatNumber } from "@/lib/format";
 import BulkPointsDialog from "./BulkPointsDialog";
 import BulkReviewDialog from "./BulkReviewDialog";
+import AnnounceDialog from "./AnnounceDialog";
 import { TEXT_COLUMN_ORDER } from "@/lib/buyer-profile-columns";
 import { useBuyerForm } from "@/lib/client/buyer-form";
 import { documentsComplete, type FormItem } from "@/lib/buyer-form";
@@ -301,6 +302,7 @@ export default function AdminBuyerProfilesPage() {
   const [pointsFilter, setPointsFilter] = useState("");
   const [bulkOpen, setBulkOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
+  const [announceOpen, setAnnounceOpen] = useState(false);
   const [expoOptions, setExpoOptions] = useState<ExpoOption[]>([]);
   const [error, setError] = useState("");
 
@@ -700,6 +702,7 @@ export default function AdminBuyerProfilesPage() {
                 </Button>
                 <Button onClick={() => setBulkOpen(true)} variant="secondaryOutline" size="xs">{t("bulk.toggle")}</Button>
                 <Button onClick={() => setReviewOpen(true)} variant="secondaryOutline" size="xs">{t("review.toggle")}</Button>
+                <Button onClick={() => setAnnounceOpen(true)} variant="secondaryOutline" size="xs">{t("announce.toggle")}</Button>
                 <button type="button" onClick={() => setSelected(new Set())} className="text-xs text-emerald-700 hover:text-emerald-900 underline">
                   {t("clearSelection")}
                 </button>
@@ -1094,6 +1097,13 @@ export default function AdminBuyerProfilesPage() {
       )}
 
       {bulkOpen && <BulkPointsDialog userIds={Array.from(selected)} onClose={() => setBulkOpen(false)} onDone={() => loadRows()} />}
+      {announceOpen && (
+        <AnnounceDialog
+          userIds={Array.from(selected)}
+          withEmail={rows.filter((r) => selected.has(r.userId) && !!r.email && !isPlaceholderEmail(r.email)).length}
+          onClose={() => setAnnounceOpen(false)}
+        />
+      )}
       {reviewOpen && (
         <BulkReviewDialog
           userIds={Array.from(selected)}

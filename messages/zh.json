@@ -3122,6 +3122,36 @@
         "invalid_document": "请选择文档。",
         "reason_required": "请填写买家将看到的原因（至少 3 个字符）。"
       }
+    },
+    "announce": {
+      "toggle": "发送邮件",
+      "title": "向已选的 {count} 位买家发送邮件",
+      "recipients": "已选的 {total} 位买家中有 {with} 位有真实邮箱地址，将收到邮件，其余的将被跳过。",
+      "noRecipients": "所选买家都没有真实邮箱地址。",
+      "languages": "邮件语言",
+      "lang": {
+        "en": "English",
+        "ru": "Русский",
+        "zh": "中文"
+      },
+      "subject": "主题",
+      "message": "内容",
+      "messageHint": "英文必填。俄文和中文可选：使用这些语言的买家会收到对应版本，其他人收到英文版。空一行表示新段落。",
+      "send": "检查并发送",
+      "confirmQuestion": "现在向 {count} 位买家发送这封邮件吗？发送后无法撤回。",
+      "confirmSend": "确认发送",
+      "sending": "发送中…",
+      "back": "返回",
+      "done": "完成：邮件正在发送给 {count} 位买家。",
+      "skipped": "有 {count} 位买家没有真实邮箱地址，已跳过。您可以在“管理 → 邮件”中查看所有邮件。",
+      "errors": {
+        "no_buyers": "请至少选择一位买家。",
+        "too_many": "最多选择 500 位买家。",
+        "too_long": "主题或内容过长。",
+        "english_required": "请用英文填写主题（至少 3 个字符）和内容（至少 5 个字符）。",
+        "mail_off": "邮件功能已关闭。请先在“管理 → 邮件”中开启。",
+        "rate_limited": "您在过去一小时内发送了多次公告，请稍候。"
+      }
     }
   },
   "homepageSlideshow": {
@@ -4613,6 +4643,18 @@
       "invalid_input": "部分内容过长。",
       "incomplete": "要开启邮件，请填写邮件服务器和发件人邮箱地址。",
       "rate_limited": "测试次数过多，请稍等几分钟。"
+    },
+    "reminders": {
+      "title": "每日提醒",
+      "intro": "报名已通过但尚未确认的买家，在确认截止日期还剩 2 天或更少时会收到一封邮件。每次打开管理首页时会自动运行（最多每 6 小时一次）。若要确保没人打开管理页面的日子也能运行，请在 GitHub 添加密钥。",
+      "lastRun": "上次运行：{time} — 已发送 {count} 封邮件。",
+      "neverRun": "尚未运行。",
+      "makeKey": "生成提醒密钥",
+      "newKey": "您的提醒密钥（仅此一次显示，请复制）：",
+      "howTo": "在 GitHub 中添加：仓库 Settings → Secrets and variables → Actions → New repository secret，名称为 REMINDER_KEY。之后“Registration reminders”工作流将每天运行。",
+      "hasKey": "已有密钥。生成新密钥会替换旧密钥（也请更新 GitHub 中的密钥）。",
+      "copy": "复制",
+      "copied": "已复制"
     }
   },
   "authRecovery": {

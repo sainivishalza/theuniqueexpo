@@ -31,3 +31,23 @@ exports.decode=(raw)=>{ const [head,...rest]=raw.split('\r\n\r\n'); const body=r
   let text=body; if(/Content-Transfer-Encoding: base64/i.test(raw)) text=raw.split(/\r\n\r\n/).map(p=>{try{return Buffer.from(p.replace(/\r\n/g,''),'base64').toString('utf8');}catch{return '';}}).join('\n'); 
   text=text.replace(/=\r\n/g,'').replace(/(=[0-9A-F]{2})+/g,(m)=>{try{return Buffer.from(m.replace(/=/g,''),'hex').toString('utf8');}catch{return m;}});
   return {subject:dec,text,head};};
+
+// The plain-text and HTML parts of a message, decoded (quoted-printable or base64), for checking what a reader sees.
+exports.parts = (raw) => {
+  const bm = /boundary="?([^"\r\n;]+)"?/i.exec(raw);
+  const out = { text: '', html: '' };
+  if (!bm) return out;
+  for (const part of raw.split('--' + bm[1])) {
+    const [head, ...rest] = part.split('\r\n\r\n');
+    if (!/^\s*Content-Type: text\/(plain|html)/im.test(head)) continue;
+    let body = rest.join('\r\n\r\n').replace(/\r\n$/, '');
+    if (/Content-Transfer-Encoding: base64/i.test(head)) body = Buffer.from(body.replace(/\r\n/g, ''), 'base64').toString('utf8');
+    else if (/Content-Transfer-Encoding: quoted-printable/i.test(head)) {
+      const bytes = []; const s = body.replace(/=\r\n/g, '');
+      for (let i = 0; i < s.length; i++) { if (s[i] === '=' && /^[0-9A-Fa-f]{2}$/.test(s.slice(i + 1, i + 3))) { bytes.push(parseInt(s.slice(i + 1, i + 3), 16)); i += 2; } else bytes.push(...Buffer.from(s[i], 'utf8')); }
+      body = Buffer.from(bytes).toString('utf8');
+    }
+    if (/text\/html/i.test(head)) out.html = body; else out.text = body;
+  }
+  return out;
+};

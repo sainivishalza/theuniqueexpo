@@ -99,6 +99,11 @@ export async function renderEmail(
   // "body" can contain a nested phrase ("deadline"): build it first.
   const withDeadline = (v: Vars) => (has("deadline") && vars.date ? { ...v, deadline: t(key("deadline"), v) } : { ...v, deadline: "" });
   const paragraphsFor = (v: Vars): string[] => {
+    // An announcement is the admin's own text: blank lines separate paragraphs, a line break stays a line break.
+    if (kind === "announcement") {
+      const html = v === htmlVars;
+      return String(v.message).split(/\n{2,}/).map((p) => p.trim()).filter(Boolean).map((p) => (html ? p.replace(/\n/g, "<br>") : p));
+    }
     const out: string[] = [t(key("intro"), v)];
     if (has("reason") && vars.reason) out.push(t(key("reason"), v));
     if (has("balance") && vars.balance !== undefined) out.push(t(key("balance"), v));
@@ -230,4 +235,42 @@ export function notifyDocumentRejected(userId: number, documentKey: string, reas
 export async function sendTestEmail(to: string, locale: EmailLocale, name: string): Promise<{ ok: boolean; error?: string }> {
   const mail = await renderEmail(locale, "test", name, {}, { url: SITE_URL });
   return sendMail({ to, kind: "test", ...mail }, { ignoreEnabled: true });
+}
+
+// ----- announcements from an admin -----
+
+export interface AnnouncementTexts {
+  subject: Record<EmailLocale, string>;
+  message: Record<EmailLocale, string>;
+}
+
+export interface AnnouncementResult {
+  queued: number;
+  withoutEmail: number;
+}
+
+// Sends one announcement to the chosen people, each in their own language (English when the admin did not
+// write that language). People without a real e-mail address are skipped. The sending runs in the
+// background, one message at a time with a short pause, so a long list does not hammer the mail server.
+export async function sendAnnouncement(userIds: number[], texts: AnnouncementTexts): Promise<AnnouncementResult> {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    "SELECT id, name, email, status, preferred_locale FROM users WHERE id IN (?) AND role = 'buyer'",
+    [userIds]
+  ).catch(async () => pool.query<RowDataPacket[]>("SELECT id, name, email, status FROM users WHERE id IN (?) AND role = 'buyer'", [userIds]));
+  const people = rows.filter((r) => r.status !== "suspended" && r.email && !isPlaceholderEmail(String(r.email)));
+  const withoutEmail = userIds.length - people.length;
+  (async () => {
+    for (const r of people) {
+      const wanted = asLocale(r.preferred_locale);
+      const locale: EmailLocale = texts.message[wanted]?.trim() && texts.subject[wanted]?.trim() ? wanted : "en";
+      try {
+        const mail = await renderEmail(locale, "announcement", String(r.name || ""), { subject: texts.subject[locale], message: texts.message[locale] }, { url: SITE_URL });
+        await sendMail({ to: String(r.email), kind: "announcement", userId: r.id, ...mail });
+      } catch (err) {
+        console.error("Announcement e-mail failed for user", r.id, err);
+      }
+      await new Promise((res) => setTimeout(res, 150));
+    }
+  })().catch((err) => console.error("Announcement run failed:", err));
+  return { queued: people.length, withoutEmail };
 }

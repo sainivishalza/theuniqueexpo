@@ -1,0 +1,27 @@
+name: Registration reminders
+
+# Every day this asks the live site to send the "please confirm your attendance" e-mails that are due
+# (an approved registration whose confirm-by date is within 2 days and that is not confirmed yet).
+# The site also does this by itself whenever an admin opens the admin home; this workflow makes sure it
+# happens every day even if nobody does.
+#
+# To switch it on: Admin -> Email -> "Daily reminders" -> "Make a reminder key", then add that key as the
+# repository secret REMINDER_KEY (Settings -> Secrets and variables -> Actions). Without the secret this does nothing.
+on:
+  schedule:
+    - cron: "11 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ask the site to send the reminders
+        env:
+          REMINDER_KEY: ${{ secrets.REMINDER_KEY }}
+        run: |
+          if [ -z "$REMINDER_KEY" ]; then echo "REMINDER_KEY is not set: nothing to do."; exit 0; fi
+          code=$(curl -s -o response.json -w "%{http_code}" -X POST -H "x-reminder-key: $REMINDER_KEY" https://theuniqueexpo.com/api/cron/registration-reminders)
+          cat response.json; echo
+          [ "$code" = "200" ]

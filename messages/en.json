@@ -3122,6 +3122,36 @@
         "invalid_document": "Choose a document.",
         "reason_required": "Give the reason the buyers will see (at least 3 letters)."
       }
+    },
+    "announce": {
+      "toggle": "Send e-mail",
+      "title": "E-mail {count} selected buyers",
+      "recipients": "{with} of the {total} selected buyers have a real e-mail address and will get it. The others are skipped.",
+      "noRecipients": "None of the selected buyers has a real e-mail address.",
+      "languages": "Language of the message",
+      "lang": {
+        "en": "English",
+        "ru": "Русский",
+        "zh": "中文"
+      },
+      "subject": "Subject",
+      "message": "Message",
+      "messageHint": "English is required. Russian and Chinese are optional: buyers using those languages get them when written, everyone else gets English. A blank line starts a new paragraph.",
+      "send": "Review and send",
+      "confirmQuestion": "Send this e-mail to {count} buyers now? It cannot be taken back.",
+      "confirmSend": "Yes, send it",
+      "sending": "Sending…",
+      "back": "Back",
+      "done": "Done: the e-mail is being sent to {count} buyers.",
+      "skipped": "{count} buyers have no real e-mail address and were skipped. You can see every message in Admin → Email.",
+      "errors": {
+        "no_buyers": "Select at least one buyer.",
+        "too_many": "Select at most 500 buyers.",
+        "too_long": "The subject or the message is too long.",
+        "english_required": "Write the subject (3 letters or more) and the message (5 letters or more) in English.",
+        "mail_off": "E-mail is switched off. Switch it on in Admin → Email first.",
+        "rate_limited": "You have sent several announcements in the last hour. Please wait a little."
+      }
     }
   },
   "homepageSlideshow": {
@@ -4613,6 +4643,18 @@
       "invalid_input": "Some of the details are too long.",
       "incomplete": "To switch e-mail on, fill in the mail server and the sender e-mail address.",
       "rate_limited": "Too many tests. Please wait a few minutes."
+    },
+    "reminders": {
+      "title": "Daily reminders",
+      "intro": "Buyers whose registration is approved but not confirmed get one e-mail when their confirm-by date is 2 days away or less. This runs by itself whenever you open the admin home (at most every 6 hours). To make sure it also runs on days nobody opens the admin, add a key to GitHub.",
+      "lastRun": "Last run: {time} — {count} e-mails sent.",
+      "neverRun": "It has not run yet.",
+      "makeKey": "Make a reminder key",
+      "newKey": "Your reminder key (shown only now — copy it):",
+      "howTo": "Add it in GitHub: repository Settings → Secrets and variables → Actions → New repository secret, named REMINDER_KEY. The “Registration reminders” workflow then runs every day.",
+      "hasKey": "A key exists. Making a new one replaces it (update the GitHub secret too).",
+      "copy": "Copy",
+      "copied": "Copied"
     }
   },
   "authRecovery": {

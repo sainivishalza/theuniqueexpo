@@ -43,6 +43,9 @@ export default function AdminEmailPage() {
   const [form, setForm] = useState<Settings | null>(null);
   const [password, setPassword] = useState("");
   const [log, setLog] = useState<LogRow[]>([]);
+  const [reminders, setReminders] = useState<{ lastRunAt: string | null; lastCount: number; hasKey: boolean } | null>(null);
+  const [newKey, setNewKey] = useState("");
+  const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState<"" | "save" | "test">("");
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
@@ -54,6 +57,7 @@ export default function AdminEmailPage() {
       const data = await res.json();
       setForm(data.settings);
       setLog(data.log);
+      setReminders(data.reminders ?? null);
     } catch {
       setError(ta("somethingWentWrong"));
     }
@@ -88,6 +92,20 @@ export default function AdminEmailPage() {
       setError(ta("somethingWentWrong"));
     } finally {
       setBusy("");
+    }
+  }
+
+  async function makeKey() {
+    setError("");
+    setCopied(false);
+    try {
+      const res = await fetch("/api/admin/email", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "reminderKey" }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.key) throw new Error();
+      setNewKey(data.key);
+      load();
+    } catch {
+      setError(ta("somethingWentWrong"));
     }
   }
 
@@ -196,11 +214,33 @@ export default function AdminEmailPage() {
           </div>
 
           <div className="rounded-2xl bg-white p-6 shadow-sm">
+            <h2 className="font-bold text-heading">{t("reminders.title")}</h2>
+            <p className="mt-1 text-sm text-gray-600">{t("reminders.intro")}</p>
+            <p className="mt-3 text-sm text-gray-800">
+              {reminders?.lastRunAt ? t("reminders.lastRun", { time: reminders.lastRunAt.slice(0, 16).replace("T", " "), count: reminders.lastCount }) : t("reminders.neverRun")}
+            </p>
+            {reminders?.hasKey && !newKey && <p className="mt-1 text-xs text-gray-600">{t("reminders.hasKey")}</p>}
+            {newKey && (
+              <div className="mt-3 rounded-lg bg-cream-50 p-3 text-sm">
+                <p className="font-semibold text-gray-800">{t("reminders.newKey")}</p>
+                <div className="mt-1 flex flex-wrap items-center gap-2">
+                  <code className="break-all rounded bg-white px-2 py-1 text-xs text-gray-900">{newKey}</code>
+                  <Button type="button" variant="secondaryOutline" size="xs" onClick={() => navigator.clipboard?.writeText(newKey).then(() => setCopied(true)).catch(() => {})}>{copied ? t("reminders.copied") : t("reminders.copy")}</Button>
+                </div>
+                <p className="mt-2 text-xs text-gray-700">{t("reminders.howTo")}</p>
+              </div>
+            )}
+            <div className="mt-4">
+              <Button type="button" variant="secondaryOutline" size="compact" onClick={makeKey}>{t("reminders.makeKey")}</Button>
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-white p-6 shadow-sm">
             <h2 className="font-bold text-heading">{t("logTitle")}</h2>
             {log.length === 0 ? (
               <p className="mt-2 text-sm text-gray-600">{t("logEmpty")}</p>
             ) : (
-              <div className="mt-3 overflow-x-auto">
+              <div className="mt-3 overflow-x-auto" tabIndex={0} role="region" aria-label={t("logTitle")}>
                 <table className="w-full min-w-[34rem] text-left text-sm">
                   <thead>
                     <tr className="text-xs text-gray-600">

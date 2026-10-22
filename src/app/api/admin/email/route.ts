@@ -3,12 +3,13 @@ import { requireAdmin } from "@/lib/auth-server";
 import { checkRateLimit } from "@/lib/server/rate-limit";
 import { getMailSettings, listMailLog, saveMailSettings, validateMailSettings, type MailSettingsInput } from "@/lib/server/mail";
 import { asLocale, sendTestEmail } from "@/lib/server/notifications";
+import { createReminderKey, getReminderStatus } from "@/lib/server/reminders";
 
 // Admin -> Email: what the sending settings are (never the saved password), and the recent sends.
 export async function GET(request: Request) {
   const admin = await requireAdmin(request);
   if (!admin) return NextResponse.json({ error: "Admin access required" }, { status: 401 });
-  return NextResponse.json({ settings: await getMailSettings(), log: await listMailLog(50) }, { headers: { "Cache-Control": "no-store" } });
+  return NextResponse.json({ settings: await getMailSettings(), log: await listMailLog(50), reminders: await getReminderStatus() }, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function PUT(request: Request) {
@@ -42,6 +43,8 @@ export async function POST(request: Request) {
   const limited = await checkRateLimit(`mail-test:${admin.id}`, 10, 10 * 60_000);
   if (!limited.allowed) return NextResponse.json({ error: "Too many tests. Please wait a few minutes.", code: "rate_limited" }, { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } });
   const body = await request.json().catch(() => ({}));
+  // "Make a key" for the nightly reminder job (shown once here; the admin copies it into the GitHub secret).
+  if (body?.action === "reminderKey") return NextResponse.json({ key: await createReminderKey() });
   const result = await sendTestEmail(admin.email, asLocale(body?.locale), admin.name);
   return NextResponse.json(result, { status: result.ok ? 200 : 502 });
 }

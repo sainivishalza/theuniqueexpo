@@ -10,6 +10,7 @@ import {
 import { isValidUploadedDocument } from "@/lib/server/validate-upload";
 import { documentResponse } from "@/lib/server/document-response";
 import { formErrorResponse } from "@/lib/server/buyer-form-api";
+import { notifyDocumentRejected } from "@/lib/server/notifications";
 
 // An admin can open any document that exists, shown to buyers or hidden.
 async function isKnownDocument(value: string): Promise<boolean> {
@@ -74,6 +75,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
 
   try {
     await setDocumentReview(Number(userId), type, body.status, note);
+    if (body.status === "rejected") notifyDocumentRejected(Number(userId), type, note);
   } catch (err) {
     return formErrorResponse(err);
   }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyUserPassword, signSessionToken, setSessionCookie } from "@/lib/auth-server";
 import { checkLoginRateLimit, resetLoginRateLimit } from "@/lib/server/rate-limit";
+import { detectLocale, rememberLocale } from "@/lib/server/notifications";
 
 export async function POST(request: Request) {
   try {
@@ -27,6 +28,7 @@ export async function POST(request: Request) {
     }
     await resetLoginRateLimit(request, email);
 
+    rememberLocale(user.id, detectLocale(request));
     const token = signSessionToken(user);
     const response = NextResponse.json({ user });
     setSessionCookie(response, token);

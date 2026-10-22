@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { BULK_MAX_BUYERS, BULK_MAX_POINTS, isValidClientKey, parsePoints } from "@/lib/wallet";
 import { bulkAdjustWallets } from "@/lib/server/wallet-repo";
+import { notifyPointsReceived } from "@/lib/server/notifications";
 import { limitOrNull, readJson, requireWalletAdmin, text, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
 
 // Gives the same number of points to several buyers at once (a welcome bonus, a thank-you).
@@ -22,7 +23,10 @@ export async function POST(request: Request) {
     const userIds = raw.filter((id): id is number => typeof id === "number" && Number.isSafeInteger(id) && id > 0);
     if (userIds.length !== raw.length) return walletFail("invalid_input");
     const result = await bulkAdjustWallets(auth.admin.id, userIds, amount, note, body.key);
-    return NextResponse.json({ ...result, amount });
+    for (const id of result.credited) notifyPointsReceived(id, amount, note);
+    const { credited: _credited, ...visible } = result;
+    void _credited;
+    return NextResponse.json({ ...visible, amount });
   } catch (err) {
     return walletErrorResponse(err);
   }

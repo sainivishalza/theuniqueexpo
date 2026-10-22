@@ -77,6 +77,17 @@ export async function deleteUser(id: number) {
   await pool.query("DELETE FROM users WHERE id = ?", [id]);
 }
 
+// Also records when the password changed, which ends every session signed before this moment (see
+// signedBeforePasswordChange in auth-server.ts). Before migration 061 has run only the hash is saved.
 export async function setUserPasswordHash(id: number, passwordHash: string) {
-  await pool.query<ResultSetHeader>("UPDATE users SET password_hash = ? WHERE id = ?", [passwordHash, id]);
+  try {
+    await pool.query<ResultSetHeader>("UPDATE users SET password_hash = ?, password_changed_at = ? WHERE id = ?", [
+      passwordHash,
+      Math.floor(Date.now() / 1000),
+      id,
+    ]);
+  } catch (err) {
+    if ((err as { code?: string }).code !== "ER_BAD_FIELD_ERROR") throw err;
+    await pool.query<ResultSetHeader>("UPDATE users SET password_hash = ? WHERE id = ?", [passwordHash, id]);
+  }
 }

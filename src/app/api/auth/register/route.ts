@@ -3,6 +3,7 @@ import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { createUserAccount, setSessionCookie } from "@/lib/auth-server";
 import { rateLimitOrNull } from "@/lib/server/rate-limit";
+import { detectLocale, rememberLocale } from "@/lib/server/notifications";
 import { isValidPartnerId, createReferral } from "@/lib/server/partner-referrals-repo";
 
 // "admin" is deliberately excluded -- it's a UserRole (for session/UI typing)
@@ -53,6 +54,7 @@ export async function POST(request: Request) {
       }
     }
 
+    rememberLocale(user.id, detectLocale(request));
     const response = NextResponse.json({ user });
     setSessionCookie(response, token);
     return response;

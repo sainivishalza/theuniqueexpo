@@ -685,6 +685,10 @@
       "myAccount": {
         "title": "My account",
         "description": "Change your own sign-in password"
+      },
+      "email": {
+        "title": "Email",
+        "description": "Set up the mail server: password reset links and notifications"
       }
     },
     "attention": {
@@ -3649,6 +3653,14 @@
     "postBuyRequest": {
       "title": "Post a Buy Request",
       "description": "Describe the product you want to source and receive quotes from verified manufacturers and suppliers in China."
+    },
+    "forgotPassword": {
+      "title": "Forgot password | The Unique Expo",
+      "description": "Get a link by e-mail to choose a new password for your The Unique Expo account."
+    },
+    "resetPassword": {
+      "title": "Choose a new password | The Unique Expo",
+      "description": "Choose a new password for your The Unique Expo account."
     }
   },
   "whatsappButton": {
@@ -4418,5 +4430,205 @@
     "menu": "Account & password",
     "adminCardTitle": "My account",
     "adminCardDescription": "Change your own sign-in password"
+  },
+  "emails": {
+    "greeting": "Hello {name},",
+    "signature": "The Unique Expo team",
+    "footer": "You are receiving this e-mail because you have an account on The Unique Expo. Please do not reply to this message.",
+    "openSite": "Open the website",
+    "passwordReset": {
+      "subject": "Reset your password",
+      "intro": "We received a request to reset the password of your account.",
+      "body": "Use the button below to choose a new password. The link works once and expires in {minutes} minutes.",
+      "button": "Choose a new password",
+      "ignore": "If you did not ask for this, you can ignore this e-mail: your password stays the same."
+    },
+    "passwordChanged": {
+      "subject": "Your password was changed",
+      "intro": "The password of your account was just changed.",
+      "body": "If this was you, there is nothing more to do. If it was not you, reset your password at once with “Forgot password” on the sign-in page and contact us.",
+      "button": "Go to sign in"
+    },
+    "registrationApproved": {
+      "subject": "Your registration for {expo} is approved",
+      "intro": "Good news: your registration for {expo} is approved.",
+      "body": "Please confirm that you will attend{deadline} and add your arrival details on your registrations page.",
+      "deadline": ", before {date}",
+      "button": "Open my registrations"
+    },
+    "registrationRejected": {
+      "subject": "About your registration for {expo}",
+      "intro": "We could not approve your registration for {expo}.",
+      "body": "If you think this is a mistake, please contact us and we will look at it again.",
+      "button": "Open my registrations"
+    },
+    "documentRejected": {
+      "subject": "Please upload your {document} again",
+      "intro": "Your {document} could not be accepted.",
+      "reason": "Reason: {reason}",
+      "body": "Please upload a new, clear file on your profile page.",
+      "button": "Open my profile"
+    },
+    "pointsReceived": {
+      "subject": "You received {points} points",
+      "intro": "{points} points were added to your wallet.",
+      "reason": "Reason: {reason}",
+      "balance": "Your balance is now {balance} points.",
+      "button": "Open my wallet"
+    },
+    "topupApproved": {
+      "subject": "Your top-up was approved",
+      "intro": "Your top-up was approved and {points} points were added to your wallet.",
+      "button": "Open my wallet",
+      "body": "Thank you!"
+    },
+    "topupRejected": {
+      "subject": "Your top-up was not approved",
+      "intro": "We could not approve your top-up request.",
+      "reason": "Note: {reason}",
+      "body": "If you think this is a mistake, please contact us.",
+      "button": "Open my wallet"
+    },
+    "withdrawalPaid": {
+      "subject": "Your withdrawal was paid",
+      "intro": "Your withdrawal of {points} points was paid out.",
+      "reason": "Reference: {reason}",
+      "body": "Thank you for using The Unique Expo.",
+      "button": "Open my wallet"
+    },
+    "withdrawalRejected": {
+      "subject": "Your withdrawal was not paid",
+      "intro": "We could not pay your withdrawal of {points} points. The points are back in your wallet.",
+      "reason": "Note: {reason}",
+      "body": "If you have questions, please contact us.",
+      "button": "Open my wallet"
+    },
+    "expenseApproved": {
+      "subject": "Your expense claim was approved",
+      "intro": "Your expense claim was approved and {points} points were added to your wallet.",
+      "body": "Thank you!",
+      "button": "Open my wallet"
+    },
+    "expenseRejected": {
+      "subject": "Your expense claim was not approved",
+      "intro": "We could not approve your expense claim.",
+      "reason": "Note: {reason}",
+      "body": "If you think this is a mistake, please contact us.",
+      "button": "Open my wallet"
+    },
+    "test": {
+      "subject": "Test e-mail from The Unique Expo",
+      "intro": "If you can read this, e-mail sending works.",
+      "body": "This test was sent from Admin → Email.",
+      "button": "Open the website"
+    }
+  },
+  "adminEmail": {
+    "title": "Email",
+    "subtitle": "The mail server the website sends from: password reset links and notifications to buyers.",
+    "settingsTitle": "Sending settings",
+    "statusOn": "E-mail is on",
+    "statusOff": "E-mail is off",
+    "intro": "Fill in the details of an e-mail account or sending service (your hosting e-mail, Brevo, Resend and so on). Until you switch e-mail on, nothing is sent and “Forgot password?” is not shown on the sign-in page.",
+    "host": "Mail server (SMTP host)",
+    "port": "Port",
+    "portHint": "Usually 465 (secure) or 587.",
+    "secure": "Use a secure connection (SSL/TLS)",
+    "secureHint": "Tick for port 465. Leave empty for 587.",
+    "username": "User name",
+    "password": "Password",
+    "passwordSaved": "Saved — leave empty to keep it",
+    "passwordHint": "Stored encrypted. It is never shown again.",
+    "fromName": "Sender name",
+    "fromEmail": "Sender e-mail address",
+    "enable": "Switch e-mail on",
+    "enableHint": "Buyers get reset links and notifications only while this is ticked.",
+    "sendTest": "Send a test e-mail to {email}",
+    "sending": "Sending…",
+    "testHint": "Save your settings first; the test uses the saved settings.",
+    "saved": "Saved.",
+    "testSent": "Test e-mail sent to {email}. Check your inbox (and the spam folder).",
+    "testFailed": "The test e-mail could not be sent: {reason}",
+    "whatTitle": "What the website e-mails",
+    "what": {
+      "forgot": "A link to choose a new password (“Forgot password?”), and a notice when a password was changed.",
+      "registration": "Registration approved or not approved.",
+      "documents": "A document that was rejected, with your reason.",
+      "points": "Points received (added by an admin, a top-up, attending an exhibition), withdrawals paid or not paid, expense claims."
+    },
+    "logTitle": "Recent e-mails",
+    "logEmpty": "Nothing has been sent yet.",
+    "logTime": "Time",
+    "logTo": "To",
+    "logKind": "Message",
+    "logResult": "Result",
+    "sent": "Sent",
+    "failed": "Failed",
+    "kinds": {
+      "passwordReset": "Password reset link",
+      "passwordChanged": "Password changed",
+      "registrationApproved": "Registration approved",
+      "registrationRejected": "Registration not approved",
+      "documentRejected": "Document rejected",
+      "pointsReceived": "Points received",
+      "topupApproved": "Top-up approved",
+      "topupRejected": "Top-up not approved",
+      "withdrawalPaid": "Withdrawal paid",
+      "withdrawalRejected": "Withdrawal not paid",
+      "expenseApproved": "Expense claim approved",
+      "expenseRejected": "Expense claim not approved",
+      "test": "Test e-mail"
+    },
+    "errors": {
+      "invalid_host": "The mail server name is not valid.",
+      "invalid_port": "The port must be a number from 1 to 65535.",
+      "invalid_from": "The sender name or e-mail address is not valid.",
+      "invalid_input": "Some of the details are too long.",
+      "incomplete": "To switch e-mail on, fill in the mail server and the sender e-mail address.",
+      "rate_limited": "Too many tests. Please wait a few minutes."
+    }
+  },
+  "authRecovery": {
+    "show": "Show",
+    "hide": "Hide",
+    "backToSignIn": "Back to sign in",
+    "forgot": {
+      "title": "Forgot your password?",
+      "intro": "Type the e-mail address of your account. We will send you a link to choose a new password.",
+      "email": "E-mail address",
+      "submit": "Send me the link",
+      "sending": "Sending…",
+      "sentTitle": "Check your e-mail",
+      "sentBody": "If there is an account for {email}, we have sent a link to choose a new password.",
+      "sentHint": "The link works for 60 minutes. Look in your spam folder if you do not see it.",
+      "unavailable": "Password reset by e-mail is not available right now. Please contact us and we will reset it for you.",
+      "errors": {
+        "invalid_email": "Please enter a valid e-mail address.",
+        "rate_limited": "Too many requests. Please try again in a while.",
+        "generic": "We could not send the link. Please try again."
+      }
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "intro": "Type your new password twice.",
+      "new": "New password",
+      "confirm": "Confirm new password",
+      "hint": "At least {min} characters. Use something you do not use anywhere else.",
+      "submit": "Save new password",
+      "saving": "Saving…",
+      "success": "Your password has been changed. You can now sign in with it.",
+      "signIn": "Go to sign in",
+      "invalidTitle": "This link cannot be used",
+      "invalidBody": "It has expired or was already used. Ask for a new link and use it within 60 minutes.",
+      "requestNew": "Send me a new link",
+      "errors": {
+        "weak_password": "The new password must be at least {min} characters.",
+        "too_long": "The new password is too long. Please use a shorter one.",
+        "mismatch": "The new password and its confirmation are not the same.",
+        "invalid_token": "This link has expired or was already used.",
+        "rate_limited": "Too many attempts. Please try again later.",
+        "generic": "We could not change your password. Please try again."
+      }
+    }
   }
 }

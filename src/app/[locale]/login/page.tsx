@@ -20,10 +20,18 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
   const [contact, setContact] = useState<{ contactEmail: string; phone: string } | null>(null);
+  // When the site can send e-mail, "Forgot password?" sends a reset link; otherwise it shows who to ask.
+  const [mailOn, setMailOn] = useState(false);
 
-  // There's no automated email/SMS reset flow yet -- an admin resets a
-  // password on request (see /admin/users) -- so "forgot password" here is
-  // just pointing the account owner at a real human to ask, using whatever
+  useEffect(() => {
+    fetch("/api/auth/forgot-password")
+      .then((r) => r.json())
+      .then((d) => setMailOn(!!d.enabled))
+      .catch(() => {});
+  }, []);
+
+  // Without e-mail an admin resets a password on request (see /admin/users), so "forgot
+  // password" then just points the account owner at a real human to ask, using whatever
   // contact details are already public on the site (no new API needed).
   useEffect(() => {
     if (!showForgot || contact) return;
@@ -90,9 +98,15 @@ export default function LoginPage() {
             </FormField>
             <FormField label={t("password")} htmlFor="password">
               <input id="password" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={fieldClasses()} placeholder={t("passwordPlaceholder")} />
-              <button type="button" onClick={() => setShowForgot(true)} className="mt-1.5 text-xs font-semibold text-emerald-800 hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
-                {t("forgotPassword")}
-              </button>
+              {mailOn ? (
+                <Link href="/forgot-password" className="mt-1.5 inline-block text-xs font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
+                  {t("forgotPassword")}
+                </Link>
+              ) : (
+                <button type="button" onClick={() => setShowForgot(true)} className="mt-1.5 text-xs font-semibold text-emerald-800 hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
+                  {t("forgotPassword")}
+                </button>
+              )}
             </FormField>
             <Button type="submit" disabled={loading} variant="primary" size="blockMd">
               {loading ? t("signingIn") : t("signIn")}

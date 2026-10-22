@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isValidClientKey, parseSignedPoints } from "@/lib/wallet";
 import { adjustWallet, setWalletFrozen } from "@/lib/server/wallet-repo";
 import { getWalletDetail } from "@/lib/server/wallet-admin-repo";
+import { notifyPointsReceived } from "@/lib/server/notifications";
 import { positiveId, readJson, requireWalletAdmin, text, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
 
 // One buyer's wallet with its full statement.
@@ -32,7 +33,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ use
       const delta = parseSignedPoints(body.amount);
       if (delta === null) return walletFail("invalid_amount");
       if (!isValidClientKey(body.key)) return walletFail("invalid_input");
-      return NextResponse.json(await adjustWallet(auth.admin.id, userId, delta, text(body.note, 200), body.key));
+      const note = text(body.note, 200);
+      const result = await adjustWallet(auth.admin.id, userId, delta, note, body.key);
+      if (delta > 0 && !result.replayed) notifyPointsReceived(userId, delta, note, result.balance);
+      return NextResponse.json(result);
     }
     if (body.action === "freeze" || body.action === "unfreeze") {
       await setWalletFrozen(userId, body.action === "freeze");

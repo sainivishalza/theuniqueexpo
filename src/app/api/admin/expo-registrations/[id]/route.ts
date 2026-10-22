@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getExhibitionBySlugOrId } from "@/lib/server/exhibitions-repo";
 import { defaultConfirmBy, getRegistrationById, setRegistrationStatus } from "@/lib/server/expo-registrations-repo";
+import { notifyRegistrationDecision } from "@/lib/server/notifications";
 import { isRegistrationStatus, isValidDateOnly } from "@/lib/registration-lifecycle";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -44,6 +45,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   }
 
   await setRegistrationStatus(Number(id), status, deadline);
+  if ((status === "approved" || status === "rejected") && registration.status !== status) notifyRegistrationDecision(Number(id), status === "approved", deadline);
   const updated = await getRegistrationById(Number(id));
   return NextResponse.json({
     ok: true,

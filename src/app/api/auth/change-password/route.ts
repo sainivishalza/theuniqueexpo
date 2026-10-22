@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
-import { getSessionUser } from "@/lib/auth-server";
+import { getSessionUser, setSessionCookie, signSessionToken } from "@/lib/auth-server";
+import { notifyPasswordChanged } from "@/lib/server/notifications";
 import { checkRateLimit, peekRateLimit, resetRateLimit } from "@/lib/server/rate-limit";
 import { setUserPasswordHash } from "@/lib/server/users-repo";
 import { MIN_PASSWORD_LENGTH, passwordProblem } from "@/lib/password";
@@ -17,7 +18,8 @@ function fail(code: string, status: number, headers?: Record<string, string>) {
 // A signed-in person changes their own password: they must give the current one again (so a
 // session left open on a shared computer cannot be used to take over the account), type the new
 // one twice, and the new one must be different and long enough. Wrong current passwords are
-// counted (6 in 10 minutes, then a pause); correct ones are not. The person stays signed in here.
+// counted (6 in 10 minutes, then a pause); correct ones are not. The person stays signed in on this
+// device; any other signed-in device is signed out.
 export async function POST(request: Request) {
   const user = await getSessionUser(request);
   if (!user) return fail("unauthorized", 401);
@@ -48,5 +50,9 @@ export async function POST(request: Request) {
 
   await setUserPasswordHash(user.id, await bcrypt.hash(next, 12));
   await resetRateLimit(key);
-  return NextResponse.json({ success: true, minLength: MIN_PASSWORD_LENGTH });
+  // Every other signed-in device is ended by the change; this one gets a fresh session.
+  const response = NextResponse.json({ success: true, minLength: MIN_PASSWORD_LENGTH });
+  setSessionCookie(response, signSessionToken(user));
+  notifyPasswordChanged(user.id, request);
+  return response;
 }

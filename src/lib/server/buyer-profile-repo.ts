@@ -677,8 +677,8 @@ export async function bulkReviewDocuments(
   action: "verify" | "reject",
   documentKey: string | null,
   note: string
-): Promise<number> {
-  if (userIds.length === 0) return 0;
+): Promise<{ changed: number; rejectedUserIds: number[] }> {
+  if (userIds.length === 0) return { changed: 0, rejectedUserIds: [] };
   let changed = 0;
 
   if (action === "verify") {
@@ -698,23 +698,30 @@ export async function bulkReviewDocuments(
       );
       changed += r.affectedRows;
     }
-    return changed;
+    return { changed, rejectedUserIds: [] };
   }
 
   if (!documentKey) throw new FormError("not_found", 404);
   if (isBuiltinDocument(documentKey)) {
     const column = DOCUMENT_COLUMNS[documentKey];
+    const where = `user_id IN (?) AND ${column} IS NOT NULL AND ${column} <> '' AND ${DOCUMENT_STATUS_COLUMNS[documentKey]} <> 'rejected'`;
+    // Who is about to be rejected (they are told by e-mail), taken before the update changes the statuses.
+    const [who] = await pool.query<RowDataPacket[]>(`SELECT user_id FROM buyer_profiles WHERE ${where}`, [userIds]);
     const [r] = await pool.query<ResultSetHeader>(
       `UPDATE buyer_profiles SET ${DOCUMENT_STATUS_COLUMNS[documentKey]} = 'rejected', ${DOCUMENT_NOTE_COLUMNS[documentKey]} = ?
-       WHERE user_id IN (?) AND ${column} IS NOT NULL AND ${column} <> '' AND ${DOCUMENT_STATUS_COLUMNS[documentKey]} <> 'rejected'`,
+       WHERE ${where}`,
       [note, userIds]
     );
-    return r.affectedRows;
+    return { changed: r.affectedRows, rejectedUserIds: who.map((w) => Number(w.user_id)) };
   }
   await requireCustomDocument(documentKey);
+  const [who] = await pool.query<RowDataPacket[]>(
+    "SELECT user_id FROM buyer_custom_documents WHERE item_key = ? AND user_id IN (?) AND status <> 'rejected'",
+    [documentKey, userIds]
+  );
   const [r] = await pool.query<ResultSetHeader>(
     "UPDATE buyer_custom_documents SET status = 'rejected', note = ? WHERE item_key = ? AND user_id IN (?) AND status <> 'rejected'",
     [note, documentKey, userIds]
   );
-  return r.affectedRows;
+  return { changed: r.affectedRows, rejectedUserIds: who.map((w) => Number(w.user_id)) };
 }

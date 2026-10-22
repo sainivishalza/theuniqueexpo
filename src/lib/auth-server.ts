@@ -24,6 +24,7 @@ interface SessionTokenPayload {
   id: number;
   email: string;
   role: string;
+  iat?: number;
 }
 
 export function signSessionToken(user: Pick<SessionUser, "id" | "email" | "role">): string {
@@ -112,6 +113,32 @@ export async function verifyUserPassword(identifier: string, password: string): 
   return null;
 }
 
+// The account row a session token points at, with the time its password last changed (unix seconds,
+// null if never). Before migration 061 has run the column does not exist: the lookup then simply
+// goes without it, so nobody is signed out in the gap between the new code and the migration.
+export async function loadSessionRow(id: number): Promise<(RowDataPacket & { password_changed_at: number | null }) | null> {
+  let rows: RowDataPacket[];
+  try {
+    [rows] = await pool.query<RowDataPacket[]>(
+      "SELECT id, name, email, role, country, status, password_changed_at FROM users WHERE id = ?",
+      [id]
+    );
+  } catch (err) {
+    if ((err as { code?: string }).code !== "ER_BAD_FIELD_ERROR") throw err;
+    [rows] = await pool.query<RowDataPacket[]>("SELECT id, name, email, role, country, status FROM users WHERE id = ?", [id]);
+  }
+  const row = rows[0];
+  if (!row) return null;
+  return Object.assign(row, { password_changed_at: row.password_changed_at == null ? null : Number(row.password_changed_at) });
+}
+
+// A password change (by the person, by "Forgot password", or by an admin) ends every session that
+// was signed before it; the device that made the change is given a fresh one.
+export function signedBeforePasswordChange(iat: number | undefined, changedAt: number | null): boolean {
+  if (changedAt === null) return false;
+  return typeof iat !== "number" || iat < changedAt;
+}
+
 export async function getSessionUser(request: Request): Promise<SessionUser | null> {
   try {
     const cookieHeader = request.headers.get("cookie") || "";
@@ -119,15 +146,12 @@ export async function getSessionUser(request: Request): Promise<SessionUser | nu
     if (!tokenMatch) return null;
 
     const decoded = jwt.verify(tokenMatch[1], JWT_SECRET) as SessionTokenPayload;
-    const [rows] = await pool.query<RowDataPacket[]>(
-      "SELECT id, name, email, role, country, status FROM users WHERE id = ?",
-      [decoded.id]
-    );
-    const row = rows[0];
+    const row = await loadSessionRow(decoded.id);
     if (!row) return null;
     // Suspending a user invalidates their existing session immediately on
     // their next request, not just future login attempts.
     if (row.status === "suspended") return null;
+    if (signedBeforePasswordChange(decoded.iat, row.password_changed_at)) return null;
     return { id: row.id, name: row.name, email: row.email, role: row.role, country: row.country };
   } catch {
     return null;

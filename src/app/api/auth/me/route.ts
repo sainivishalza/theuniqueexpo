@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import type { RowDataPacket } from "mysql2/promise";
-import pool from "@/lib/db";
-import { JWT_SECRET } from "@/lib/auth-server";
+import { JWT_SECRET, loadSessionRow, signedBeforePasswordChange } from "@/lib/auth-server";
 
 interface DecodedToken {
   id: number;
+  iat?: number;
 }
 
 // "Not signed in" is a normal answer for anonymous visitors, so it is a 200
@@ -19,16 +18,12 @@ export async function GET(request: Request) {
     }
 
     const decoded = jwt.verify(tokenMatch[1], JWT_SECRET) as DecodedToken;
-    const [users] = await pool.query<RowDataPacket[]>(
-      "SELECT id, name, email, role, country FROM users WHERE id = ?",
-      [decoded.id]
-    );
-
-    if (users.length === 0) {
+    const row = await loadSessionRow(decoded.id);
+    if (!row || signedBeforePasswordChange(decoded.iat, row.password_changed_at)) {
       return NextResponse.json({ user: null });
     }
 
-    return NextResponse.json({ user: users[0] });
+    return NextResponse.json({ user: { id: row.id, name: row.name, email: row.email, role: row.role, country: row.country } });
   } catch {
     return NextResponse.json({ user: null });
   }

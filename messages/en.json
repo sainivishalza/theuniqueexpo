@@ -42,7 +42,10 @@
     "partnerWithUs": "Partner With Us",
     "more": "More",
     "planABusinessTrip": "Plan a Trip",
-    "search": "Search the site"
+    "search": "Search the site",
+    "walletAria": "My wallet: {points} points",
+    "walletMenu": "My wallet",
+    "walletPoints": "{points} points"
   },
   "footer": {
     "newsletterTitle": "Stay Updated",
@@ -410,7 +413,20 @@
       }
     },
     "registrationNumber": "Your registration number",
-    "registrationNumberHint": "Quote it whenever you contact us."
+    "registrationNumberHint": "Quote it whenever you contact us.",
+    "wallet": {
+      "title": "My rewards wallet",
+      "points": "points",
+      "worth": "≈ ¥{amount} (1 point = 1 RMB)",
+      "topUp": "Top up",
+      "send": "Send",
+      "withdraw": "Withdraw",
+      "history": "History",
+      "frozen": "This wallet is frozen. Please contact us.",
+      "pending": "{points} points are waiting to be paid out.",
+      "chipAria": "My wallet: {points} points",
+      "open": "Open my wallet"
+    }
   },
   "exhibitorDashboard": {
     "title": "Exhibitor Dashboard",
@@ -2908,7 +2924,31 @@
       "rejectedReason": "Rejected: {reason}"
     },
     "registrationNumber": "Your registration number",
-    "registrationNumberHint": "Quote it whenever you contact us."
+    "registrationNumberHint": "Quote it whenever you contact us.",
+    "password": {
+      "title": "Change password",
+      "intro": "Choose a new password for your account. You will stay signed in on this device.",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Confirm new password",
+      "hint": "At least {min} characters. Use something you do not use anywhere else.",
+      "show": "Show",
+      "hide": "Hide",
+      "submit": "Change password",
+      "saving": "Saving…",
+      "success": "Your password has been changed. Use the new one the next time you sign in.",
+      "errors": {
+        "currentMissing": "Please type your current password.",
+        "wrong_password": "The current password is not correct.",
+        "weak_password": "The new password must be at least {min} characters.",
+        "too_long": "The new password is too long. Please use a shorter one.",
+        "mismatch": "The new password and its confirmation are not the same.",
+        "same_password": "The new password must be different from the current one.",
+        "rate_limited": "Too many wrong attempts. Please wait a few minutes and try again.",
+        "unauthorized": "Please sign in again.",
+        "generic": "We could not change your password. Please try again."
+      }
+    }
   },
   "adminBuyerProfiles": {
     "backToAdmin": "← Back to Admin",

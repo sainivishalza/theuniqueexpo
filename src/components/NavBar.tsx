@@ -8,6 +8,9 @@ import { Link } from "@/i18n/navigation";
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
+import { formatNumber } from "@/lib/format";
+import { useWalletBalance } from "@/lib/client/wallet-balance";
+import WalletChip from "@/components/wallet/WalletChip";
 import type { NavSections } from "@/lib/server/nav-sections";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
@@ -67,6 +70,8 @@ function MoreMenu({ label, items }: { label: string; items: { label: string; hre
 
 export default function NavBar({ sections }: { sections: NavSections }) {
   const { user, logout } = useAuth();
+  // A signed-in buyer's wallet balance is always in view: next to the menu button on a phone, and in the bar on a laptop.
+  const wallet = useWalletBalance(!!user && user.role === "buyer");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileGroupOpen, setMobileGroupOpen] = useState<string | null>(null);
   const t = useTranslations("nav");
@@ -140,6 +145,7 @@ export default function NavBar({ sections }: { sections: NavSections }) {
           </Button>
           {user ? (
             <>
+              {wallet && <WalletChip balance={wallet.balance} ariaLabel={t("walletAria", { points: formatNumber(wallet.balance) })} />}
               <Link href="/messages" className={NAV_LINK_CLASS}>
                 {t("messages")}
               </Link>
@@ -173,6 +179,7 @@ export default function NavBar({ sections }: { sections: NavSections }) {
 
         {/* Mobile search + hamburger */}
         <div className="min-[1400px]:hidden flex items-center gap-1">
+        {wallet && <WalletChip balance={wallet.balance} ariaLabel={t("walletAria", { points: formatNumber(wallet.balance) })} />}
         <Link href="/search" aria-label={t("search")} className="p-2 text-gray-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" /></svg>
         </Link>
@@ -263,6 +270,16 @@ export default function NavBar({ sections }: { sections: NavSections }) {
 
           {user ? (
             <div className="pt-2 border-t border-gray-100">
+              {wallet && (
+                <Link
+                  href="/dashboard/buyer/wallet"
+                  onClick={() => setMobileOpen(false)}
+                  className="mb-1 flex items-center justify-between gap-3 rounded-xl bg-gold-400 px-4 py-3 text-emerald-950 shadow-sm hover:bg-gold-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900"
+                >
+                  <span className="font-bold">💰 {t("walletMenu")}</span>
+                  <span className="text-lg font-extrabold tabular-nums">{t("walletPoints", { points: formatNumber(wallet.balance) })}</span>
+                </Link>
+              )}
               <Link href="/messages" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("messages")}</Link>
               <Link href="/dashboard" className="block py-2.5 text-sm font-medium text-gray-700 hover:text-emerald-900" onClick={() => setMobileOpen(false)}>{t("dashboard")}</Link>
               <button onClick={() => { logout(); setMobileOpen(false); }} className="block py-2.5 text-sm font-medium text-red-500 hover:text-red-700">{t("logout")}</button>

@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { formatNumber } from "@/lib/format";
 import { formatInstantDateTime } from "@/lib/date-format";
 import { useBuyerForm } from "@/lib/client/buyer-form";
+import { useWalletBalance } from "@/lib/client/wallet-balance";
 import { overallStatus } from "@/lib/buyer-form";
 import { useAuth } from "@/lib/auth-context";
 import { Link } from "@/i18n/navigation";
@@ -52,6 +53,7 @@ export default function BuyerDashboard() {
   const [buyerNumber, setBuyerNumber] = useState("");
   const [docs, setDocs] = useState<DocState | null>(null);
   const [news, setNews] = useState<NewsItem[]>([]);
+  const wallet = useWalletBalance(!!user);
   // The documents an admin has set up (Admin -> Buyer form settings), in order.
   const form = useBuyerForm(!!user);
   useEffect(() => {
@@ -90,6 +92,34 @@ export default function BuyerDashboard() {
               )}
             </div>
           </div>
+          {/* Wallet */}
+          <section aria-labelledby="home-wallet-title" className="mt-8 overflow-hidden rounded-3xl bg-gradient-to-br from-gold-400 via-amber-300 to-yellow-200 p-5 text-emerald-950 shadow-xl sm:p-7">
+            <div className="flex flex-wrap items-center justify-between gap-5">
+              <div className="min-w-0">
+                <h2 id="home-wallet-title" className="text-sm font-bold sm:text-base"><span aria-hidden="true">💰 </span>{t("wallet.title")}</h2>
+                <p className="mt-1 flex items-baseline gap-2">
+                  <span className="text-4xl font-extrabold tabular-nums sm:text-5xl">{wallet ? formatNumber(wallet.balance) : "—"}</span>
+                  <span className="text-base font-bold">{t("wallet.points")}</span>
+                </p>
+                {wallet && <p className="mt-0.5 text-sm font-medium">{t("wallet.worth", { amount: formatNumber(wallet.balance) })}</p>}
+                {wallet?.frozen && <p role="status" className="mt-2 inline-block rounded-lg bg-red-100 px-2.5 py-1 text-xs font-bold text-red-900">{t("wallet.frozen")}</p>}
+                {wallet && wallet.pendingWithdrawal > 0 && <p className="mt-2 text-xs font-semibold">{t("wallet.pending", { points: formatNumber(wallet.pendingWithdrawal) })}</p>}
+              </div>
+              <div className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:grid-cols-4">
+                {[
+                  { href: "/dashboard/buyer/wallet/topup", icon: "➕", label: t("wallet.topUp") },
+                  { href: "/dashboard/buyer/wallet/send", icon: "📤", label: t("wallet.send") },
+                  { href: "/dashboard/buyer/wallet/withdraw", icon: "🏦", label: t("wallet.withdraw") },
+                  { href: "/dashboard/buyer/wallet", icon: "🧾", label: t("wallet.history") },
+                ].map((a) => (
+                  <Link key={a.href} href={a.href} className="flex items-center justify-center gap-1.5 rounded-xl bg-white/90 px-3 py-2.5 text-sm font-bold text-emerald-900 shadow-sm hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900">
+                    <span aria-hidden="true">{a.icon}</span>
+                    {a.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
           {/* Stats */}
           <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
             {[

@@ -15,6 +15,8 @@ export interface ShellItem {
   group?: string;
   /** A number to show next to the label (how many requests are waiting); hidden when 0 or missing. */
   count?: number;
+  /** Short text shown next to the label (for example a wallet balance); hidden when missing. */
+  meta?: string;
 }
 
 export interface ShellGroup {
@@ -34,6 +36,8 @@ interface Props {
   searchPlaceholder?: string;
   /** Extra links offered while the visitor types (e.g. "Find buyer TUE0012"). */
   searchLinks?: (query: string) => ShellItem[];
+  /** Shown in the phone top bar next to the role pill (for example the wallet balance). */
+  headerExtra?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -48,7 +52,7 @@ function isActive(pathname: string, href: string, homeHref: string): boolean {
 // The frame around the admin and dashboard areas: a list of features down the left
 // side on a laptop; on a phone a top bar that opens a full-screen menu with a search
 // box and a two-column grid of buttons.
-export default function AppShell({ areaLabel, badge, items, groups = [], homeHref, searchPlaceholder, searchLinks, children }: Props) {
+export default function AppShell({ areaLabel, badge, items, groups = [], homeHref, searchPlaceholder, searchLinks, headerExtra, children }: Props) {
   const t = useTranslations("common");
   const locale = useLocale();
   const pathname = usePathname();
@@ -210,6 +214,7 @@ export default function AppShell({ areaLabel, badge, items, groups = [], homeHre
                         <span aria-hidden="true" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-base">{item.icon}</span>
                         <span className="min-w-0 leading-tight [overflow-wrap:anywhere]">{item.label}</span>
                         {item.count ? <span className="ml-auto shrink-0 rounded-full bg-gold-400 px-2 py-0.5 text-[11px] font-bold text-emerald-950" aria-label={t("shell.waiting", { count: item.count })}>{item.count}</span> : null}
+                        {item.meta ? <span className="ml-auto shrink-0 rounded-full bg-gold-400 px-2 py-0.5 text-[11px] font-bold tabular-nums text-emerald-950">{item.meta}</span> : null}
                       </Link>
                     </li>
                   );
@@ -245,6 +250,7 @@ export default function AppShell({ areaLabel, badge, items, groups = [], homeHre
               <p className="text-xs font-medium leading-none text-white/65">{areaLabel}</p>
               <p className="truncate pt-0.5 font-semibold leading-tight">{current?.label ?? t("shell.dashboard")}</p>
             </div>
+            {headerExtra}
             {roleBadge}
           </div>
         </header>
@@ -297,6 +303,7 @@ export default function AppShell({ areaLabel, badge, items, groups = [], homeHre
                             <span aria-hidden="true" className="text-lg leading-none">{item.icon}</span>
                             <span className="min-w-0 leading-tight [overflow-wrap:anywhere]">{item.label}</span>
                             {item.count ? <span className="ml-auto shrink-0 rounded-full bg-gold-400 px-2 py-0.5 text-[11px] font-bold text-emerald-950" aria-label={t("shell.waiting", { count: item.count })}>{item.count}</span> : null}
+                        {item.meta ? <span className="ml-auto shrink-0 rounded-full bg-gold-400 px-2 py-0.5 text-[11px] font-bold tabular-nums text-emerald-950">{item.meta}</span> : null}
                           </Link>
                         </li>
                       );

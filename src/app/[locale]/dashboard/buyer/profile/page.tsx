@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { useBuyerForm } from "@/lib/client/buyer-form";
+import ChangePasswordCard from "../../_components/ChangePasswordCard";
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
@@ -180,6 +181,9 @@ export default function BuyerProfilePage() {
           </Link>
           <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
           <p className="mt-1 text-emerald-200/80">{t("subtitle")}</p>
+          <a href="#change-password" className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-white/30 px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-400">
+            🔑 {t("password.title")}
+          </a>
           {buyerNumber && (
             <p className="mt-4 inline-block rounded-xl bg-white/10 px-4 py-2 text-white">
               <span className="text-sm text-emerald-100">{t("registrationNumber")}: </span>
@@ -332,6 +336,8 @@ export default function BuyerProfilePage() {
               })}
             </div>
           </div>
+
+          <ChangePasswordCard />
         </div>
       </section>
     </div>

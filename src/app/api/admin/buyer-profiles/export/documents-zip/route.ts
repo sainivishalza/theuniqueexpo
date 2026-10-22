@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getBuyerProfilesForExport } from "@/lib/server/buyer-profile-repo";
 import { buildBuyersDocumentsZip } from "@/lib/server/buyer-profile-export";
+import { getActiveFormItems } from "@/lib/server/buyer-form-repo";
 
 const MAX_USER_IDS = 500;
 
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
   if (userIds.length > MAX_USER_IDS) return NextResponse.json({ error: `Select at most ${MAX_USER_IDS} buyers per export` }, { status: 400 });
 
   const rows = await getBuyerProfilesForExport(userIds);
-  const buffer = await buildBuyersDocumentsZip(rows);
+  const buffer = await buildBuyersDocumentsZip(rows, await getActiveFormItems());
   const date = new Date().toISOString().slice(0, 10);
 
   return new NextResponse(new Uint8Array(buffer), {

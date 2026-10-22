@@ -26,4 +26,5 @@ export const TEXT_COLUMN_ORDER = [
   "gender",
   "purchaseIntention",
   "otherPurchaseIntention",
+  "rewardPoints",
 ] as const;

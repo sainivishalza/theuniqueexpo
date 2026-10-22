@@ -270,6 +270,7 @@
       "viewSite": "查看网站",
       "logout": "退出登录",
       "language": "语言",
+      "waiting": "{count} 项待处理",
       "findBuyers": "查找买家:“{query}”",
       "findUsers": "查找用户:“{query}”",
       "areas": {
@@ -317,6 +318,18 @@
       "upload": "上传文件",
       "allDone": "所有文件均已上传并通过审核，谢谢。",
       "count": "已上传 {done}/{total}"
+    },
+    "news": {
+      "title": "积分动态",
+      "openWallet": "打开我的钱包",
+      "topup": "您的充值已通过：+{points} 积分",
+      "attendance": "您获得了参展积分：+{points} 积分",
+      "expense": "您的费用申请已通过：+{points} 积分",
+      "adjustment": "团队为您增加了积分：+{points} 积分",
+      "refund": "积分已退回您的钱包：+{points} 积分",
+      "withdrawal_paid": "您提现的 {points} 积分已支付",
+      "withdrawal_rejected": "您提现的 {points} 积分未支付，积分已退回钱包",
+      "reason": "原因：{reason}"
     },
     "quickActions": "快捷操作",
     "actions": {
@@ -637,6 +650,10 @@
       "rewardsWallet": {
         "title": "奖励积分钱包",
         "description": "买家积分：充值、提现、费用申请、钱包与规则。"
+      },
+      "buyerForm": {
+        "title": "买家表单设置",
+        "description": "选择买家上传的文件并添加额外问题，无需开发人员。"
       }
     }
   },
@@ -2829,6 +2846,8 @@
     "title": "我的资料",
     "subtitle": "保持您的公司信息和证件资料最新",
     "loginRequired": "请登录以查看您的资料。",
+    "extraInfo": "补充信息",
+    "customInvalid": "部分填写内容无效，请检查后重试。",
     "saveFailed": "保存资料失败",
     "saveSuccess": "资料已保存",
     "uploadFailed": "文件上传失败",
@@ -2879,7 +2898,8 @@
       "visaPage": "签证页",
       "cantonFairCard": "广交会证件",
       "buyerPhoto": "买家照片",
-      "invoiceOrderList": "发票 / 订单清单"
+      "invoiceOrderList": "发票 / 订单清单",
+      "latestEntryStamp": "最近入境章照片"
     },
     "docReviewStatus": {
       "pending": "待审核",
@@ -2936,6 +2956,7 @@
     "noFile": "无文件",
     "selectPlaceholder": "请选择...",
     "fields": {
+      "rewardPoints": "奖励积分",
       "companyName": "公司名称",
       "nationality": "国籍",
       "passportNumber": "护照号码",
@@ -2978,7 +2999,8 @@
       "visaPage": "签证页",
       "cantonFairCard": "广交会证件",
       "buyerPhoto": "买家照片",
-      "invoiceOrderList": "发票 / 订单清单"
+      "invoiceOrderList": "发票 / 订单清单",
+      "latestEntryStamp": "最近入境章照片"
     },
     "expoPlaceholder": "选择展会...",
     "noExpoOptions": "暂无展会——请先在“采购商展会”中添加",
@@ -2986,13 +3008,32 @@
     "profileSaved": "已保存。",
     "rewardPointsShort": "{points} 积分",
     "openWallet": "打开奖励积分钱包",
+    "bulk": {
+      "toggle": "发放积分",
+      "title": "向所选的 {count} 位买家发放积分",
+      "amountLabel": "每位买家的积分",
+      "limitHint": "整数，每人最多 {max}。",
+      "reasonLabel": "原因（会显示在每位买家的记录中）",
+      "summary": "{count} 位买家 × {amount} 积分 = 共 {total} 积分",
+      "confirm": "发放积分",
+      "giving": "正在发放…",
+      "done": "已向 {added} 位买家各发放 {amount} 积分。",
+      "someFailed": "有 {failed} 位买家未能发放。"
+    },
+    "filterByPoints": "按积分筛选",
+    "pointsFilter": {
+      "all": "全部积分",
+      "has": "有积分",
+      "none": "无积分",
+      "top": "积分从高到低"
+    },
     "filterByExpo": "按展会筛选",
     "allExpos": "全部展会",
     "filterByDocuments": "按文件筛选",
     "docFilter": {
       "all": "全部文件",
       "missingAny": "缺少文件",
-      "complete": "7 项已全部上传",
+      "complete": "文件已全部上传",
       "missingOne": "缺少：{name}",
       "pendingReview": "待审核",
       "actionNeeded": "需买家重新上传"
@@ -3007,7 +3048,8 @@
       "found": "已选择 {count} 位买家。",
       "notFound": "未找到买家:{list}"
     },
-    "exportAlwaysIncluded": "注册编号、姓名和账号邮箱始终包含在内。"
+    "exportAlwaysIncluded": "注册编号、姓名和账号邮箱始终包含在内。",
+    "extraInfo": "补充信息"
   },
   "homepageSlideshow": {
     "previous": "上一张照片",
@@ -4007,6 +4049,15 @@
       "pointsSetup": "积分设置",
       "settings": "设置"
     },
+    "export": {
+      "withdrawals": "下载这些提现申请（Excel）",
+      "movements": "下载积分变动记录（Excel）",
+      "from": "开始日期",
+      "to": "结束日期",
+      "rangeHint": "日期留空则包含全部。文件中的时间为 UTC。",
+      "working": "正在准备…",
+      "failed": "无法下载文件，请重试。"
+    },
     "loading": "加载中…",
     "saving": "保存中…",
     "save": "保存",
@@ -4200,6 +4251,62 @@
       "article": "文章",
       "magazine": "杂志",
       "video": "视频"
+    }
+  },
+  "adminBuyerForm": {
+    "title": "买家表单设置",
+    "subtitle": "选择买家需要上传哪些文件、回答哪些额外问题。更改会立即在所有地方生效：买家页面、管理员表格、筛选以及 Excel 和 ZIP 下载。",
+    "howItWorks": "内置文件可以重命名、调整顺序、隐藏或设为可选。您添加的文件和问题单独保存。隐藏不会删除买家已提交的内容，只是不再显示和导出。",
+    "documentsTitle": "文件",
+    "documentsHint": "买家上传的文件（图片或 PDF）。此处的顺序就是各处的顺序。",
+    "fieldsTitle": "额外问题",
+    "fieldsHint": "买家在资料中填写的补充信息，显示在标准公司信息之后。",
+    "addDocument": "添加文件",
+    "addField": "添加问题",
+    "emptyFields": "暂无内容。",
+    "nameEn": "英文名称",
+    "nameRu": "俄文名称",
+    "nameZh": "中文名称",
+    "nameHint": "英文必填。俄文或中文留空时，将显示英文名称。",
+    "requiredLabel": "计入“已验证”",
+    "requiredHint": "只有所有必填文件都已上传并审核，买家才算“已验证”。可选文件会显示，但不影响状态。",
+    "typeLabel": "回答类型",
+    "types": {
+      "text": "短文本",
+      "longtext": "长文本",
+      "date": "日期",
+      "choice": "从列表选择"
+    },
+    "optionsHint": "每行一个选项。各语言行数相同、顺序一致；俄文或中文留空则显示英文。",
+    "optionsEn": "英文选项",
+    "optionsRu": "俄文选项",
+    "optionsZh": "中文选项",
+    "optionsChangeNote": "修改选项的措辞不会改变买家已选的内容；他们之前的回答保持原样。",
+    "badgeBuiltin": "内置",
+    "badgeAdded": "您添加的",
+    "badgeHidden": "已隐藏",
+    "badgeRequired": "必填",
+    "badgeOptional": "可选",
+    "edit": "编辑",
+    "hide": "隐藏",
+    "show": "显示",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "deleteConfirm": "删除“{name}”？此操作无法撤销。",
+    "deleteBlocked": "买家已填写，因此只能隐藏。",
+    "added": "已添加。",
+    "saved": "已保存。",
+    "deleted": "已删除。",
+    "loadFailed": "无法加载设置，请刷新页面。",
+    "notReady": "此页面所需的数据库更新尚未应用，请几分钟后再试。",
+    "errors": {
+      "invalid_input": "部分信息缺失或无效。需要名称；列表至少需要两个不同的选项。",
+      "options_mismatch": "俄文和中文选项的行数必须与英文一致（或留空）。",
+      "limit": "已达到可添加项目的上限。",
+      "in_use": "买家已填写，无法删除，请改为隐藏。",
+      "builtin": "内置项目无法删除，请改为隐藏。",
+      "not_found": "该项目已不存在，请刷新页面。",
+      "not_ready": "此页面所需的数据库更新尚未应用，请几分钟后再试。"
     }
   }
 }

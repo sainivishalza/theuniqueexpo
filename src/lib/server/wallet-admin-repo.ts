@@ -58,6 +58,16 @@ export async function getOverview(): Promise<Overview> {
   };
 }
 
+// Just the number of requests waiting for an admin (for the menu), without the heavier ledger check.
+export async function getWaitingCount(): Promise<number> {
+  const [[r]] = await pool.query<RowDataPacket[]>(
+    `SELECT (SELECT COUNT(*) FROM wallet_topups WHERE status = 'pending')
+          + (SELECT COUNT(*) FROM wallet_withdrawals WHERE status = 'pending')
+          + (SELECT COUNT(*) FROM wallet_expense_claims WHERE status = 'pending') AS n`
+  );
+  return Number(r.n);
+}
+
 const TOPUP_STATUSES = ["pending", "approved", "rejected", "cancelled"];
 
 export async function listTopups(status: string, q: string, page: number) {

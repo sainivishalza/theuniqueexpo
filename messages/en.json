@@ -270,6 +270,7 @@
       "viewSite": "View site",
       "logout": "Log out",
       "language": "Language",
+      "waiting": "{count} waiting",
       "findBuyers": "Find buyers matching “{query}”",
       "findUsers": "Find users matching “{query}”",
       "areas": {
@@ -317,6 +318,18 @@
       "upload": "Upload documents",
       "allDone": "All documents are uploaded and checked. Thank you.",
       "count": "{done} of {total} uploaded"
+    },
+    "news": {
+      "title": "Rewards news",
+      "openWallet": "Open my wallet",
+      "topup": "Your top-up was approved: +{points} points",
+      "attendance": "You earned attendance points: +{points} points",
+      "expense": "Your expense claim was approved: +{points} points",
+      "adjustment": "Points added by our team: +{points} points",
+      "refund": "Points returned to your wallet: +{points} points",
+      "withdrawal_paid": "Your withdrawal of {points} points was paid",
+      "withdrawal_rejected": "Your withdrawal of {points} points was not paid; the points are back in your wallet",
+      "reason": "Reason: {reason}"
     },
     "quickActions": "Quick Actions",
     "actions": {
@@ -637,6 +650,10 @@
       "rewardsWallet": {
         "title": "Rewards Wallet",
         "description": "Buyers' points: top-ups, withdrawals, expense claims, wallets and rules."
+      },
+      "buyerForm": {
+        "title": "Buyer form settings",
+        "description": "Choose the documents buyers upload and add extra questions, without a developer."
       }
     }
   },
@@ -2829,6 +2846,8 @@
     "title": "My Profile",
     "subtitle": "Keep your company info and documents up to date",
     "loginRequired": "Please log in to view your profile.",
+    "extraInfo": "Additional information",
+    "customInvalid": "Some of your answers are not valid. Please check them and try again.",
     "saveFailed": "Could not save your profile",
     "saveSuccess": "Profile saved",
     "uploadFailed": "Could not upload file",
@@ -2879,7 +2898,8 @@
       "visaPage": "Visa Page",
       "cantonFairCard": "Canton Fair Card",
       "buyerPhoto": "Buyer Photo",
-      "invoiceOrderList": "Invoice / Order List"
+      "invoiceOrderList": "Invoice / Order List",
+      "latestEntryStamp": "Latest Entry Stamp Photo"
     },
     "docReviewStatus": {
       "pending": "Pending review",
@@ -2936,6 +2956,7 @@
     "noFile": "No file",
     "selectPlaceholder": "Select...",
     "fields": {
+      "rewardPoints": "Reward Points",
       "companyName": "Company Name",
       "nationality": "Nationality",
       "passportNumber": "Passport Number",
@@ -2978,7 +2999,8 @@
       "visaPage": "Visa Page",
       "cantonFairCard": "Canton Fair Card",
       "buyerPhoto": "Buyer Photo",
-      "invoiceOrderList": "Invoice / Order List"
+      "invoiceOrderList": "Invoice / Order List",
+      "latestEntryStamp": "Latest Entry Stamp Photo"
     },
     "expoPlaceholder": "Select expos...",
     "noExpoOptions": "No expos yet -- add some in Buyer Expos",
@@ -2986,13 +3008,32 @@
     "profileSaved": "Saved.",
     "rewardPointsShort": "{points} points",
     "openWallet": "Open Rewards Wallet",
+    "bulk": {
+      "toggle": "Give points",
+      "title": "Give points to {count} selected buyer(s)",
+      "amountLabel": "Points for each buyer",
+      "limitHint": "Whole numbers, up to {max} each.",
+      "reasonLabel": "Reason (shown in each buyer's history)",
+      "summary": "{count} buyer(s) × {amount} points = {total} points in total",
+      "confirm": "Give points",
+      "giving": "Adding…",
+      "done": "Added {amount} points to {added} buyer(s).",
+      "someFailed": "{failed} buyer(s) could not be credited."
+    },
+    "filterByPoints": "Filter by reward points",
+    "pointsFilter": {
+      "all": "All points",
+      "has": "Has points",
+      "none": "No points",
+      "top": "Most points first"
+    },
     "filterByExpo": "Filter by expo",
     "allExpos": "All expos",
     "filterByDocuments": "Filter by documents",
     "docFilter": {
       "all": "All documents",
       "missingAny": "Missing a document",
-      "complete": "All 7 uploaded",
+      "complete": "All documents uploaded",
       "missingOne": "Missing: {name}",
       "pendingReview": "Awaiting review",
       "actionNeeded": "Needs the buyer to re-upload"
@@ -3007,7 +3048,8 @@
       "found": "{count, plural, one {# buyer selected.} other {# buyers selected.}}",
       "notFound": "No buyer with: {list}"
     },
-    "exportAlwaysIncluded": "The registration number, name and account email are always included."
+    "exportAlwaysIncluded": "The registration number, name and account email are always included.",
+    "extraInfo": "Additional information"
   },
   "homepageSlideshow": {
     "previous": "Previous photo",
@@ -4007,6 +4049,15 @@
       "pointsSetup": "Points setup",
       "settings": "Settings"
     },
+    "export": {
+      "withdrawals": "Download these withdrawals (Excel)",
+      "movements": "Download point movements (Excel)",
+      "from": "From date",
+      "to": "To date",
+      "rangeHint": "Leave the dates empty to include everything. Times in the file are UTC.",
+      "working": "Preparing…",
+      "failed": "Could not download the file. Please try again."
+    },
     "loading": "Loading…",
     "saving": "Saving…",
     "save": "Save",
@@ -4200,6 +4251,62 @@
       "article": "Articles",
       "magazine": "Magazine",
       "video": "Videos"
+    }
+  },
+  "adminBuyerForm": {
+    "title": "Buyer form settings",
+    "subtitle": "Choose which documents buyers upload and which extra questions they answer. Changes show everywhere straight away: the buyer's pages, the admin table, filters, and the Excel and ZIP downloads.",
+    "howItWorks": "The built-in documents can be renamed, reordered, hidden or made optional. Documents and questions you add are stored separately. Hiding something keeps what buyers already gave; it just stops being shown and exported.",
+    "documentsTitle": "Documents",
+    "documentsHint": "Files a buyer uploads (images or PDF). Order here is the order everywhere.",
+    "fieldsTitle": "Extra questions",
+    "fieldsHint": "Additional information a buyer fills in on their profile, shown after the standard company details.",
+    "addDocument": "Add a document",
+    "addField": "Add a question",
+    "emptyFields": "Nothing here yet.",
+    "nameEn": "Name in English",
+    "nameRu": "Name in Russian",
+    "nameZh": "Name in Chinese",
+    "nameHint": "English is required. If Russian or Chinese is left empty, the English name is shown.",
+    "requiredLabel": "Required for Verified",
+    "requiredHint": "A buyer counts as Verified only when every required document is uploaded and checked. Optional documents are shown but do not hold that back.",
+    "typeLabel": "Type of answer",
+    "types": {
+      "text": "Short text",
+      "longtext": "Long text",
+      "date": "Date",
+      "choice": "Choose from a list"
+    },
+    "optionsHint": "One choice per line. Write the same number of lines in each language, in the same order; leave Russian or Chinese empty to show English.",
+    "optionsEn": "Choices in English",
+    "optionsRu": "Choices in Russian",
+    "optionsZh": "Choices in Chinese",
+    "optionsChangeNote": "Changing the wording of a choice does not change what buyers already chose; their old answer stays as it was saved.",
+    "badgeBuiltin": "Built-in",
+    "badgeAdded": "Added by you",
+    "badgeHidden": "Hidden",
+    "badgeRequired": "Required",
+    "badgeOptional": "Optional",
+    "edit": "Edit",
+    "hide": "Hide",
+    "show": "Show",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "deleteConfirm": "Delete “{name}”? This cannot be undone.",
+    "deleteBlocked": "Buyers have already filled this in, so it can only be hidden.",
+    "added": "Added.",
+    "saved": "Saved.",
+    "deleted": "Deleted.",
+    "loadFailed": "Could not load the settings. Please refresh the page.",
+    "notReady": "The database update for this page has not been applied yet. Try again in a few minutes.",
+    "errors": {
+      "invalid_input": "Some details are missing or not valid. A name is needed, and a list needs at least two different choices.",
+      "options_mismatch": "Russian and Chinese choices must have the same number of lines as English (or be left empty).",
+      "limit": "You have reached the limit of items you can add.",
+      "in_use": "Buyers have already filled this in, so it cannot be deleted. Hide it instead.",
+      "builtin": "Built-in items cannot be deleted. Hide them instead.",
+      "not_found": "That item no longer exists. Please refresh the page.",
+      "not_ready": "The database update for this page has not been applied yet. Try again in a few minutes."
     }
   }
 }

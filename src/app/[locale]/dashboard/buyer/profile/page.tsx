@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
+import { useBuyerForm } from "@/lib/client/buyer-form";
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
@@ -40,10 +41,12 @@ interface BuyerProfile {
   visaExpireDate: string;
   hasDocument: Record<string, boolean>;
   documentReview: Record<string, DocReview>;
+  // Answers to the extra information fields an admin added, by field key.
+  custom: Record<string, string>;
   updatedAt: number;
 }
 
-type ProfileFieldKey = Exclude<keyof BuyerProfile, "hasDocument" | "documentReview" | "updatedAt">;
+type ProfileFieldKey = Exclude<keyof BuyerProfile, "hasDocument" | "documentReview" | "custom" | "updatedAt">;
 
 interface FieldDef {
   key: ProfileFieldKey;
@@ -79,8 +82,6 @@ const FIELDS: FieldDef[] = [
   { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];
-// Same order as the admin Buyer Profiles screen and the downloads.
-const DOC_FIELDS = ["passportFront", "visaPage", "businessLicense", "businessCard", "buyerPhoto", "cantonFairCard", "invoiceOrderList"] as const;
 
 const DOC_STATUS_BADGE: Record<DocReviewStatus, string> = {
   pending: "bg-amber-50 text-amber-700",
@@ -100,6 +101,8 @@ export default function BuyerProfilePage() {
   const [uploadingField, setUploadingField] = useState<string | null>(null);
   const [docVersion, setDocVersion] = useState(0);
   const [buyerNumber, setBuyerNumber] = useState("");
+  // The documents and extra fields an admin has set up (Admin -> Buyer form settings).
+  const form = useBuyerForm(!!user);
 
   useEffect(() => {
     if (!user) return;
@@ -125,7 +128,7 @@ export default function BuyerProfilePage() {
         body: JSON.stringify(profile),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || t("saveFailed"));
+      if (!res.ok) throw new Error(data.code === "invalid_input" ? t("customInvalid") : data.error || t("saveFailed"));
       setProfile(data.profile);
       setSaved(true);
     } catch (err) {
@@ -255,16 +258,49 @@ export default function BuyerProfilePage() {
             </Button>
           </div>
 
+          {form.ready && form.fields.length > 0 && (
+            <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
+              <h2 className="font-bold text-heading">{t("extraInfo")}</h2>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {form.fields.map((item) => {
+                  const id = `bp-custom-${item.key}`;
+                  const value = profile.custom?.[item.key] ?? "";
+                  const set = (v: string) => setProfile({ ...profile, custom: { ...profile.custom, [item.key]: v } });
+                  const common = "w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none";
+                  return (
+                    <div key={item.key} className={item.fieldType === "longtext" ? "sm:col-span-2" : undefined}>
+                      <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">{form.label(item)}</label>
+                      {item.fieldType === "longtext" ? (
+                        <textarea id={id} value={value} maxLength={2000} rows={3} onChange={(e) => set(e.target.value)} className={common} />
+                      ) : item.fieldType === "date" ? (
+                        <input id={id} type="date" value={value} onChange={(e) => set(e.target.value)} className={common} />
+                      ) : item.fieldType === "choice" ? (
+                        <select id={id} value={value} onChange={(e) => set(e.target.value)} className={common}>
+                          <option value="">{t("selectPlaceholder")}</option>
+                          {item.options.en.map((opt) => <option key={opt} value={opt}>{form.choice(item, opt)}</option>)}
+                        </select>
+                      ) : (
+                        <input id={id} type="text" value={value} maxLength={300} onChange={(e) => set(e.target.value)} className={common} />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <Button onClick={handleSave} disabled={saving} variant="save" size="compact">{saving ? ta("saving") : ta("save")}</Button>
+            </div>
+          )}
+
           <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
             <h2 className="font-bold text-heading">{t("documents")}</h2>
             <p className="text-xs text-gray-500">{t("documentsHint")}</p>
             <div className="grid sm:grid-cols-3 gap-4">
-              {DOC_FIELDS.map((field) => {
+              {form.documents.map((item) => {
+                const field = item.key;
                 const review = profile.documentReview[field];
                 return (
                 <div key={field} className="rounded-xl border border-gray-200 p-3">
                   <div className="flex items-center justify-between mb-2 gap-2">
-                    <p className="text-xs font-semibold text-gray-600">{t(`docFields.${field}`)}</p>
+                    <p className="text-xs font-semibold text-gray-600">{form.label(item)}</p>
                     {profile.hasDocument[field] && review && (
                       <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${DOC_STATUS_BADGE[review.status]}`}>
                         {t(`docReviewStatus.${review.status}`)}
@@ -274,7 +310,7 @@ export default function BuyerProfilePage() {
                   {profile.hasDocument[field] ? (
                     <img
                       src={`/api/buyer-profile/documents/${field}?v=${docVersion}`}
-                      alt={t(`docFields.${field}`)}
+                      alt={form.label(item)}
                       className="h-24 w-full object-contain rounded-lg bg-cream-50 mb-2"
                     />
                   ) : (
@@ -285,7 +321,7 @@ export default function BuyerProfilePage() {
                   )}
                   <input
                     type="file"
-                    aria-label={t(`docFields.${field}`)}
+                    aria-label={form.label(item)}
                     accept="image/*,application/pdf"
                     disabled={uploadingField === field}
                     onChange={(e) => handleDocUpload(field, e.target.files?.[0] || null)}

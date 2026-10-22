@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { errorKey, walletApi } from "@/lib/client/wallet-client";
+import { downloadWalletFile, errorKey, walletApi } from "@/lib/client/wallet-client";
 import Badge, { type BadgeTone } from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 
@@ -133,5 +133,25 @@ export function ImageViewer({ src, alt }: { src: string; alt: string }) {
     <a href={src} download="document.pdf" className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-emerald-800 hover:bg-cream-50">
       📄 {t("downloadPdf")}
     </a>
+  );
+}
+
+// A button that downloads an Excel file from an admin export and says when it fails.
+export function DownloadExcel({ path, fallbackName, label }: { path: string; fallbackName: string; label: string }) {
+  const t = useTranslations("adminWallet");
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+  async function run() {
+    setBusy(true);
+    setFailed(false);
+    const res = await downloadWalletFile(path, fallbackName);
+    setBusy(false);
+    if (!res.ok) setFailed(true);
+  }
+  return (
+    <span className="inline-flex flex-wrap items-center gap-2">
+      <Button type="button" variant="secondaryOutline" size="compact" disabled={busy} onClick={run}>{busy ? t("export.working") : label}</Button>
+      {failed && <span role="alert" className="text-sm text-red-700">{t("export.failed")}</span>}
+    </span>
   );
 }

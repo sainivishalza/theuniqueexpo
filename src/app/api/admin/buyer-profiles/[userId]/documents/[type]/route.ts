@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import {
-  DOCUMENT_FIELDS,
-  type DocumentField,
+  documentAccess,
   type DocumentReviewStatus,
   getBuyerDocument,
   setBuyerDocument,
   setDocumentReview,
 } from "@/lib/server/buyer-profile-repo";
 import { isValidUploadedDocument, isAllowedImageContentType } from "@/lib/server/validate-upload";
+import { formErrorResponse } from "@/lib/server/buyer-form-api";
 
-function isDocumentField(value: string): value is DocumentField {
-  return (DOCUMENT_FIELDS as readonly string[]).includes(value);
+// An admin can open any document that exists, shown to buyers or hidden.
+async function isKnownDocument(value: string): Promise<boolean> {
+  return (await documentAccess(value)).exists;
 }
 
 const REVIEW_STATUSES: readonly DocumentReviewStatus[] = ["pending", "verified", "rejected"];
@@ -24,7 +25,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
   if (!admin) return NextResponse.json({ error: "Admin access required" }, { status: 401 });
 
   const { userId, type } = await params;
-  if (!isDocumentField(type)) return NextResponse.json({ error: "Unknown document type" }, { status: 404 });
+  if (!(await isKnownDocument(type))) return NextResponse.json({ error: "Unknown document type" }, { status: 404 });
 
   const value = await getBuyerDocument(Number(userId), type);
   if (!value) return NextResponse.json({ error: "No document uploaded" }, { status: 404 });
@@ -51,7 +52,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ user
   if (!admin) return NextResponse.json({ error: "Admin access required" }, { status: 401 });
 
   const { userId, type } = await params;
-  if (!isDocumentField(type)) return NextResponse.json({ error: "Unknown document type" }, { status: 404 });
+  if (!(await isKnownDocument(type))) return NextResponse.json({ error: "Unknown document type" }, { status: 404 });
 
   const body = await request.json().catch(() => null);
   const value = body?.value;
@@ -59,7 +60,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ user
     return NextResponse.json({ error: "Invalid file -- must be an image or PDF under 8MB" }, { status: 400 });
   }
 
-  await setBuyerDocument(Number(userId), type, value);
+  try {
+    await setBuyerDocument(Number(userId), type, value);
+  } catch (err) {
+    return formErrorResponse(err);
+  }
   return NextResponse.json({ success: true });
 }
 
@@ -71,7 +76,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
   if (!admin) return NextResponse.json({ error: "Admin access required" }, { status: 401 });
 
   const { userId, type } = await params;
-  if (!isDocumentField(type)) return NextResponse.json({ error: "Unknown document type" }, { status: 404 });
+  if (!(await isKnownDocument(type))) return NextResponse.json({ error: "Unknown document type" }, { status: 404 });
 
   const body = await request.json().catch(() => null);
   if (!body || !isReviewStatus(body.status)) {
@@ -79,6 +84,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
   }
   const note = typeof body.note === "string" ? body.note.slice(0, 500) : "";
 
-  await setDocumentReview(Number(userId), type, body.status, note);
+  try {
+    await setDocumentReview(Number(userId), type, body.status, note);
+  } catch (err) {
+    return formErrorResponse(err);
+  }
   return NextResponse.json({ success: true });
 }

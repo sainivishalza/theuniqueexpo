@@ -240,7 +240,7 @@ export default function AdminBuyerFormPage() {
             {items.map((item, index) => (
               <li key={item.key} className="py-3">
                 <div className="flex flex-wrap items-center gap-3">
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-[10rem] flex-1">
                     <p className={`break-words font-semibold ${item.active ? "text-gray-900" : "text-gray-500"}`}>{itemLabel(item, locale)}</p>
                     <p className="mt-0.5 flex flex-wrap gap-1.5 text-[11px] font-semibold">
                       <span className="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{item.builtin ? t("badgeBuiltin") : t("badgeAdded")}</span>

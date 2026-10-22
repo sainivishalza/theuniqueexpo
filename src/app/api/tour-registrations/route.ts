@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
+import { isTwoStepOn } from "@/lib/server/totp";
 import { getSessionUser, createUserAccount, verifyUserPassword, setSessionCookie, type SessionUser } from "@/lib/auth-server";
 import { getTourBySlugOrId } from "@/lib/server/tours-repo";
 import { createTourRegistration, findExistingTourRegistration } from "@/lib/server/tour-registrations-repo";
@@ -55,7 +56,8 @@ async function handlePost(request: Request): Promise<NextResponse> {
         );
       }
       const verified = await verifyUserPassword(trimmedEmail, password);
-      if (!verified) {
+      // An admin with two-step sign-in on cannot be "signed in" by a password alone here.
+      if (!verified || (verified.role === "admin" && (await isTwoStepOn(verified.id)))) {
         return NextResponse.json(
           { error: "An account with this email already exists. Please sign in first.", accountExists: true },
           { status: 401 }

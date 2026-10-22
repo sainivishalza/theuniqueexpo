@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { parsePoints } from "@/lib/wallet";
 import { getWalletSettings, getWalletTextSettings, saveWalletSettings } from "@/lib/server/wallet-repo";
 import { isValidUploadedImage } from "@/lib/server/validate-upload";
@@ -44,6 +45,7 @@ export async function PUT(request: Request) {
       companyWechatQr: wechat,
       companyBankDetails: text(body.companyBankDetails, 1500),
     });
+    logAdminAction(request, auth.admin, "wallet_settings_saved", { targetType: "settings", details: `transfers ${body.transfersEnabled ? "on" : "off"}, withdrawals ${body.withdrawalsEnabled ? "on" : "off"}` });
     return NextResponse.json({ success: true });
   } catch (err) {
     return walletErrorResponse(err);

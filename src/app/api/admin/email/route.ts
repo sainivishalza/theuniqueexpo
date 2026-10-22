@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { checkRateLimit } from "@/lib/server/rate-limit";
 import { getMailSettings, listMailLog, saveMailSettings, validateMailSettings, type MailSettingsInput } from "@/lib/server/mail";
@@ -33,6 +34,8 @@ export async function PUT(request: Request) {
   const problem = validateMailSettings(input);
   if (problem) return NextResponse.json({ error: problem, code: problem }, { status: 400 });
   await saveMailSettings(input);
+  // Never the password: only that the settings were saved, and whether sending is on.
+  logAdminAction(request, admin, "mail_settings_saved", { targetType: "settings", details: `${input.enabled ? "on" : "off"}, ${input.host}${input.password !== undefined ? ", password changed" : ""}` });
   return NextResponse.json({ settings: await getMailSettings() });
 }
 
@@ -44,7 +47,10 @@ export async function POST(request: Request) {
   if (!limited.allowed) return NextResponse.json({ error: "Too many tests. Please wait a few minutes.", code: "rate_limited" }, { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } });
   const body = await request.json().catch(() => ({}));
   // "Make a key" for the nightly reminder job (shown once here; the admin copies it into the GitHub secret).
-  if (body?.action === "reminderKey") return NextResponse.json({ key: await createReminderKey() });
+  if (body?.action === "reminderKey") {
+    logAdminAction(request, admin, "reminder_key_made", { targetType: "settings" });
+    return NextResponse.json({ key: await createReminderKey() });
+  }
   const result = await sendTestEmail(admin.email, asLocale(body?.locale), admin.name);
   return NextResponse.json(result, { status: result.ok ? 200 : 502 });
 }

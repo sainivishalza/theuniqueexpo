@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { isValidClientKey, parseSignedPoints } from "@/lib/wallet";
 import { adjustWallet, setWalletFrozen } from "@/lib/server/wallet-repo";
 import { getWalletDetail } from "@/lib/server/wallet-admin-repo";
@@ -36,10 +37,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ use
       const note = text(body.note, 200);
       const result = await adjustWallet(auth.admin.id, userId, delta, note, body.key);
       if (delta > 0 && !result.replayed) notifyPointsReceived(userId, delta, note, result.balance);
+      if (!result.replayed) logAdminAction(request, auth.admin, "points_adjusted", { targetType: "wallet", targetId: userId, details: `${delta > 0 ? "+" : ""}${delta} points: ${note}` });
       return NextResponse.json(result);
     }
     if (body.action === "freeze" || body.action === "unfreeze") {
       await setWalletFrozen(userId, body.action === "freeze");
+      logAdminAction(request, auth.admin, body.action === "freeze" ? "wallet_frozen" : "wallet_unfrozen", { targetType: "wallet", targetId: userId });
       return NextResponse.json({ success: true });
     }
     return walletFail("invalid_input");

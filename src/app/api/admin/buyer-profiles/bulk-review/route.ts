@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { bulkReviewDocuments, documentAccess } from "@/lib/server/buyer-profile-repo";
 import { formErrorResponse } from "@/lib/server/buyer-form-api";
@@ -36,6 +37,10 @@ export async function POST(request: Request) {
   try {
     const { changed, rejectedUserIds } = await bulkReviewDocuments(userIds, action, documentKey, note);
     for (const id of rejectedUserIds) notifyDocumentRejected(id, documentKey as string, note);
+    logAdminAction(request, admin, action === "verify" ? "documents_bulk_verified" : "documents_bulk_rejected", {
+      targetType: "user",
+      details: `${changed} documents of ${userIds.length} buyers${documentKey ? ` (${documentKey})` : ""}${note ? `: ${note}` : ""}`,
+    });
     return NextResponse.json({ changed, buyers: userIds.length });
   } catch (err) {
     return formErrorResponse(err);

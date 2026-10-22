@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { parsePoints } from "@/lib/wallet";
 import { reviewExpenseClaim } from "@/lib/server/wallet-repo";
 import { getExpenseReceipts } from "@/lib/server/wallet-admin-repo";
@@ -33,10 +34,12 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       if (points === null) return walletFail("invalid_amount");
       await reviewExpenseClaim(auth.admin.id, id, { approve: true, points, adminNote: text(body.note, 500) });
       notifyWalletRequest("wallet_expense_claims", id, "expenseApproved", { points });
+      logAdminAction(request, auth.admin, "expense_approved", { targetType: "expense", targetId: id, details: `${points} points` });
     } else if (body.action === "reject") {
       const note = text(body.note, 500);
       await reviewExpenseClaim(auth.admin.id, id, { approve: false, adminNote: note });
       notifyWalletRequest("wallet_expense_claims", id, "expenseRejected", { reason: note });
+      logAdminAction(request, auth.admin, "expense_rejected", { targetType: "expense", targetId: id, details: note });
     } else {
       return walletFail("invalid_input");
     }

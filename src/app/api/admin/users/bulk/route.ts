@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { requireAdmin, createUserAccount } from "@/lib/auth-server";
@@ -143,9 +144,11 @@ export async function POST(request: Request) {
     }
   }
 
+  const createdCount = results.filter((r) => r.status === "created").length;
+  logAdminAction(request, admin, "users_bulk_created", { targetType: "user", details: `${createdCount} created as ${role}, ${results.length - createdCount} failed` });
   return NextResponse.json({
     results,
-    createdCount: results.filter((r) => r.status === "created").length,
-    failedCount: results.filter((r) => r.status === "failed").length,
+    createdCount,
+    failedCount: results.length - createdCount,
   });
 }

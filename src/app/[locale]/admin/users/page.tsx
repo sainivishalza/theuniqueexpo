@@ -20,6 +20,8 @@ interface AdminUser {
   createdAt: number;
   // TUE0001 ... for buyers; empty for other roles.
   buyerNumber: string;
+  // An admin who signs in with a code from an authenticator app too.
+  twoStep?: boolean;
 }
 
 const ROLES = ["buyer", "exhibitor", "partner", "admin"];
@@ -118,6 +120,22 @@ export default function AdminUsersPage() {
     }
   }
 
+  async function handleTurnOffTwoStep(id: number, name: string) {
+    if (!confirm(t("confirmTurnOffTwoStep", { name }))) return;
+    setUpdatingId(id);
+    setError("");
+    try {
+      const res = await fetch(`/api/admin/users/${id}/two-step`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || t("turnOffTwoStepFailed"));
+      setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, twoStep: false } : u)));
+    } catch (err) {
+      setError(errorMessage(err, ta("somethingWentWrong")));
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
   async function handleDelete(id: number, name: string) {
     if (!confirm(t("confirmDelete", { name }))) return;
     setUpdatingId(id);
@@ -206,6 +224,7 @@ export default function AdminUsersPage() {
                             {u.buyerNumber && <div className="text-xs font-bold tracking-wide text-emerald-700">{u.buyerNumber}</div>}
                             <div className="font-semibold text-gray-900">{u.name}</div>
                             <div className="text-xs text-gray-500">{isPlaceholderEmail(u.email) ? t("noEmail") : u.email}</div>
+                            {u.twoStep && <div className="mt-0.5 text-xs font-semibold text-emerald-800">🔐 {t("twoStepOn")}</div>}
                           </td>
                           <td className="px-6 py-4">
                             <select
@@ -237,6 +256,16 @@ export default function AdminUsersPage() {
                             >
                               {t("resetPassword")}
                             </Button>
+                            {u.twoStep && !isSelf && (
+                              <Button
+                                onClick={() => handleTurnOffTwoStep(u.id, u.name)}
+                                disabled={busy}
+                                variant="ghost"
+                                size="xs"
+                              >
+                                {t("turnOffTwoStep")}
+                              </Button>
+                            )}
                             <Button
                               onClick={() => handleDelete(u.id, u.name)}
                               disabled={busy || isSelf}

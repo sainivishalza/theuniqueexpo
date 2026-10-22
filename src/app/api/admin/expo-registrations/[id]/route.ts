@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { getExhibitionBySlugOrId } from "@/lib/server/exhibitions-repo";
 import { defaultConfirmBy, getRegistrationById, setRegistrationStatus } from "@/lib/server/expo-registrations-repo";
@@ -47,6 +48,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   await setRegistrationStatus(Number(id), status, deadline);
   if ((status === "approved" || status === "rejected") && registration.status !== status) notifyRegistrationDecision(Number(id), status === "approved", deadline);
   const updated = await getRegistrationById(Number(id));
+  if (registration.status !== status) logAdminAction(request, admin, "expo_registration_status", { targetType: "expo_registration", targetId: id, details: `${registration.status} → ${status}` });
   return NextResponse.json({
     ok: true,
     status: updated?.status,

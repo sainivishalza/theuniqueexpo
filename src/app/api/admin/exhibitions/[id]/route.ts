@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { isDuplicateEntryError } from "@/lib/db";
 import { updateExhibition, deleteExhibition } from "@/lib/server/exhibitions-repo";
@@ -24,6 +25,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
   try {
     await updateExhibition(Number(id), body);
+    logAdminAction(request, admin, "exhibition_updated", { targetType: "exhibition", targetId: id, details: String(body.title ?? "") });
     return NextResponse.json({ ok: true });
   } catch (err) {
     if (isDuplicateEntryError(err)) {
@@ -40,5 +42,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
   const { id } = await params;
   await deleteExhibition(Number(id));
+  logAdminAction(request, admin, "exhibition_deleted", { targetType: "exhibition", targetId: id });
   return NextResponse.json({ ok: true });
 }

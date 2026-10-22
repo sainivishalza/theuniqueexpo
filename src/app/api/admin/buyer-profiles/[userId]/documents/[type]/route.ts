@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import {
   documentAccess,
@@ -54,6 +55,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ user
   } catch (err) {
     return formErrorResponse(err);
   }
+  logAdminAction(request, admin, "document_uploaded", { targetType: "user", targetId: userId, details: type });
   return NextResponse.json({ success: true });
 }
 
@@ -79,5 +81,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
   } catch (err) {
     return formErrorResponse(err);
   }
+  logAdminAction(request, admin, `document_${body.status}`, { targetType: "user", targetId: userId, details: note ? `${type}: ${note}` : type });
   return NextResponse.json({ success: true });
 }

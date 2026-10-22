@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { isMailEnabled } from "@/lib/server/mail";
 import { checkRateLimit } from "@/lib/server/rate-limit";
@@ -34,5 +35,7 @@ export async function POST(request: Request) {
   const limited = await checkRateLimit(`announce:${admin.id}`, 5, 60 * 60_000);
   if (!limited.allowed) return NextResponse.json({ error: "rate_limited", code: "rate_limited" }, { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } });
 
-  return NextResponse.json(await sendAnnouncement(userIds, texts));
+  const result = await sendAnnouncement(userIds, texts);
+  logAdminAction(request, admin, "announcement_sent", { targetType: "user", details: `${userIds.length} buyers: ${texts.subject.en}` });
+  return NextResponse.json(result);
 }

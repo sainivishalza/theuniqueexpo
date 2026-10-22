@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { getTourRegistrationById, updateTourRegistrationStatus } from "@/lib/server/tour-registrations-repo";
 
@@ -24,5 +25,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   }
 
   await updateTourRegistrationStatus(Number(id), status);
+  logAdminAction(request, admin, "tour_registration_status", { targetType: "tour_registration", targetId: id, details: status });
   return NextResponse.json({ ok: true });
 }

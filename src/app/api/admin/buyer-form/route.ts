@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { createFormItem, formItemInUse, formTablesReady, getFormItems } from "@/lib/server/buyer-form-repo";
 import { formErrorResponse } from "@/lib/server/buyer-form-api";
@@ -36,6 +37,7 @@ export async function POST(request: Request) {
       fieldType: body.fieldType,
       options: body.options && typeof body.options === "object" ? body.options : undefined,
     });
+    logAdminAction(request, admin, body.kind === "document" ? "buyer_form_document_added" : "buyer_form_field_added", { targetType: "buyer_form", targetId: item.key });
     return NextResponse.json({ item });
   } catch (err) {
     return formErrorResponse(err);

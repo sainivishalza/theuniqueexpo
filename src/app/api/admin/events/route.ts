@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { isDuplicateEntryError } from "@/lib/db";
 import { listEvents, createEvent } from "@/lib/server/events-repo";
@@ -31,6 +32,7 @@ export async function POST(request: Request) {
 
   try {
     const id = await createEvent(body);
+    logAdminAction(request, admin, "event_created", { targetType: "event", targetId: id, details: String(body.title ?? "") });
     return NextResponse.json({ id }, { status: 201 });
   } catch (err) {
     if (isDuplicateEntryError(err)) {

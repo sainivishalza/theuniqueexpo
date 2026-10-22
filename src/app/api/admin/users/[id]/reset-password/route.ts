@@ -1,4 +1,5 @@
 import { randomInt } from "node:crypto";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { requireAdmin } from "@/lib/auth-server";
@@ -36,6 +37,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const password = generatePassword();
   const passwordHash = await bcrypt.hash(password, 12);
   await setUserPasswordHash(targetId, passwordHash);
+  logAdminAction(request, admin, "user_password_reset", { targetType: "user", targetId, details: target.email });
 
   return NextResponse.json({ password });
 }

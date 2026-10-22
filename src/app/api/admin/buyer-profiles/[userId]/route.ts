@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { getUserById } from "@/lib/server/users-repo";
 import { getBuyerProfileOrEmpty, upsertBuyerProfileFields } from "@/lib/server/buyer-profile-repo";
@@ -73,5 +74,6 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
     await setBuyerExpoIds(targetId, body.expoIds.map(Number));
   }
   const profile = await getBuyerProfileOrEmpty(targetId);
+  logAdminAction(request, admin, "buyer_profile_edited", { targetType: "user", targetId, details: target.email });
   return NextResponse.json({ profile });
 }

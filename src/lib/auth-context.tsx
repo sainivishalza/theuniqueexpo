@@ -15,10 +15,21 @@ export interface MockUser {
   country: string;
 }
 
+/** The second sign-in step was refused; `code` is `wrong_code`, `expired` or `rate_limited`. */
+export class SecondStepError extends Error {
+  code: string;
+  constructor(code: string) {
+    super(code);
+    this.code = code;
+  }
+}
+
 interface AuthContextValue {
   user: MockUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  /** Signs in. For an admin with two-step sign-in on, resolves with the pass to give to `loginWithCode`. */
+  login: (email: string, password: string) => Promise<{ challenge: string } | null>;
+  loginWithCode: (challenge: string, code: string) => Promise<{ usedRecoveryCode: boolean }>;
   register: (name: string, email: string, password: string, role: UserRole, country: string, ref?: string) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: MockUser | null) => void;
@@ -49,7 +60,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Login failed");
+    if (data.needsSecondStep) return { challenge: data.challenge as string };
     setUser(data.user);
+    return null;
+  }, []);
+
+  const loginWithCode = useCallback(async (challenge: string, code: string) => {
+    const res = await fetch("/api/auth/login/totp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ challenge, code }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new SecondStepError(data.code || "failed");
+    setUser(data.user);
+    return { usedRecoveryCode: !!data.usedRecoveryCode };
   }, []);
 
   const register = useCallback(async (name: string, email: string, password: string, role: UserRole, country: string, ref?: string) => {
@@ -69,8 +94,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user, loading, login, register, logout, setUser }),
-    [user, loading, login, register, logout]
+    () => ({ user, loading, login, loginWithCode, register, logout, setUser }),
+    [user, loading, login, loginWithCode, register, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

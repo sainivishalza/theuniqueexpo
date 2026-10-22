@@ -6,9 +6,11 @@ import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { useBuyerForm } from "@/lib/client/buyer-form";
+import ChangePasswordCard from "../../_components/ChangePasswordCard";
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
+import DocumentLightbox from "../../_components/DocumentLightbox";
 
 type DocReviewStatus = "pending" | "verified" | "rejected";
 
@@ -92,6 +94,7 @@ const DOC_STATUS_BADGE: Record<DocReviewStatus, string> = {
 export default function BuyerProfilePage() {
   const t = useTranslations("buyerProfile");
   const ta = useTranslations("adminCommon");
+  const tp = useTranslations("accountPassword");
   const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<BuyerProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -100,6 +103,8 @@ export default function BuyerProfilePage() {
   const [saved, setSaved] = useState(false);
   const [uploadingField, setUploadingField] = useState<string | null>(null);
   const [docVersion, setDocVersion] = useState(0);
+  // The document whose photo is open full-screen.
+  const [viewing, setViewing] = useState<string | null>(null);
   const [buyerNumber, setBuyerNumber] = useState("");
   // The documents and extra fields an admin has set up (Admin -> Buyer form settings).
   const form = useBuyerForm(!!user);
@@ -180,6 +185,9 @@ export default function BuyerProfilePage() {
           </Link>
           <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
           <p className="mt-1 text-emerald-200/80">{t("subtitle")}</p>
+          <a href="#change-password" className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-white/30 px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-400">
+            🔑 {tp("title")}
+          </a>
           {buyerNumber && (
             <p className="mt-4 inline-block rounded-xl bg-white/10 px-4 py-2 text-white">
               <span className="text-sm text-emerald-100">{t("registrationNumber")}: </span>
@@ -308,11 +316,21 @@ export default function BuyerProfilePage() {
                     )}
                   </div>
                   {profile.hasDocument[field] ? (
-                    <img
-                      src={`/api/buyer-profile/documents/${field}?v=${docVersion}`}
-                      alt={form.label(item)}
-                      className="h-24 w-full object-contain rounded-lg bg-cream-50 mb-2"
-                    />
+                    <button
+                      type="button"
+                      onClick={() => setViewing(field)}
+                      aria-label={t("enlarge", { name: form.label(item) })}
+                      className="group relative mb-2 block w-full cursor-zoom-in rounded-lg bg-cream-50 outline-offset-2 ring-1 ring-transparent hover:ring-emerald-500"
+                    >
+                      <img
+                        src={`/api/buyer-profile/documents/${field}?v=${docVersion}`}
+                        alt=""
+                        className="h-24 w-full object-contain rounded-lg"
+                      />
+                      <span className="absolute bottom-1 right-1 rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] font-semibold text-white shadow group-hover:bg-emerald-700">
+                        🔍 {t("enlargeShort")}
+                      </span>
+                    </button>
                   ) : (
                     <div className="h-24 w-full flex items-center justify-center rounded-lg bg-cream-50 text-xs text-gray-500 mb-2">{t("noFile")}</div>
                   )}
@@ -332,8 +350,24 @@ export default function BuyerProfilePage() {
               })}
             </div>
           </div>
+
+          <ChangePasswordCard />
         </div>
       </section>
+
+      {viewing && (() => {
+        const item = form.documents.find((d) => d.key === viewing);
+        const review = profile?.documentReview[viewing];
+        return (
+          <DocumentLightbox
+            src={`/api/buyer-profile/documents/${viewing}?v=${docVersion}`}
+            title={item ? form.label(item) : viewing}
+            statusLabel={review ? t(`docReviewStatus.${review.status}`) : undefined}
+            statusClass={review ? DOC_STATUS_BADGE[review.status] : undefined}
+            onClose={() => setViewing(null)}
+          />
+        );
+      })()}
     </div>
   );
 }

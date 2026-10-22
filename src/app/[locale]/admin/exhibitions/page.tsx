@@ -335,7 +335,7 @@ export default function AdminExhibitionsPage() {
                     className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                   <div className="flex items-center gap-3">
-                    <label className="relative cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+                    <label className="relative cursor-pointer rounded-xl px-4 py-2 text-xs font-bold gradient-brand text-white hover:opacity-90 shadow-sm transition-opacity focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                       {t("uploadPosterImage")}
                       <input
                         type="file"
@@ -380,7 +380,7 @@ export default function AdminExhibitionsPage() {
                 </div>
               )}
               {form.galleryImages.length < MAX_GALLERY_IMAGES && (
-                <label className="relative cursor-pointer inline-block rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+                <label className="relative cursor-pointer inline-block rounded-xl px-4 py-2 text-xs font-bold gradient-brand text-white hover:opacity-90 shadow-sm transition-opacity focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                   {galleryUploading ? t("uploading") : t("addPhotos")}
                   <input
                     type="file"
@@ -494,9 +494,9 @@ export default function AdminExhibitionsPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button href={`/exhibitions/${expo.slug}`} variant="ghost" size="xs">{t("view")}</Button>
-                <Button href={`/admin/exhibitions/${expo.slug}/registrations`} variant="ghost" size="xs">{t("registrations")}</Button>
+                <Button href={`/admin/exhibitions/${expo.slug}/registrations`} variant="tint" size="xs">{t("registrations")}</Button>
                 <Button href={`/admin/exhibitions/${expo.slug}/registration-form`} variant="ghost" size="xs">{t("registrationForm")}</Button>
-                <Button onClick={() => openEdit(expo)} variant="ghost" size="xs">{t("editButton")}</Button>
+                <Button onClick={() => openEdit(expo)} variant="save" size="xs">{t("editButton")}</Button>
                 <Button onClick={() => handleDelete(expo.id)} disabled={deletingId === expo.id} variant="ghostDanger" size="xs">
                   {deletingId === expo.id ? t("deleting") : ta("delete")}
                 </Button>

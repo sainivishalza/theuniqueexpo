@@ -310,7 +310,7 @@ export default function AdminBlogPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 {post.published && <Button href={`/blog/${post.slug}`} variant="ghost" size="xs">{t("view")}</Button>}
-                <Button onClick={() => openEdit(post)} variant="ghost" size="xs">{t("editButton")}</Button>
+                <Button onClick={() => openEdit(post)} variant="save" size="xs">{t("editButton")}</Button>
                 <Button onClick={() => handleDelete(post.id)} disabled={deletingId === post.id} variant="ghostDanger" size="xs">
                   {deletingId === post.id ? t("deleting") : ta("delete")}
                 </Button>

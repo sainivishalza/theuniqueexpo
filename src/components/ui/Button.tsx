@@ -16,7 +16,8 @@ export type ButtonVariant =
   | "dashedAdd"
   | "gradientFlat"
   | "ghost"
-  | "ghostDanger";
+  | "ghostDanger"
+  | "tint";
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   // Amber-on-navy pill -- the site's one primary CTA color, used sparingly
@@ -68,6 +69,8 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   ghost: "border border-gray-200 text-gray-700 hover:bg-cream-50",
   // Destructive secondary action on a light background -- admin row delete.
   ghostDanger: "border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50",
+  // Important but not the main action (an admin row's "Registrations"): light green so it stands out from the grey ghost buttons.
+  tint: "border border-emerald-600 bg-emerald-50 text-emerald-900 font-semibold hover:bg-emerald-100 disabled:opacity-50",
 };
 
 export type ButtonSize = "md" | "sm" | "block" | "blockSm" | "blockMd" | "blockLg" | "inline" | "compact" | "wide" | "xs";

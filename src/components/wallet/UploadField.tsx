@@ -62,7 +62,7 @@ export default function UploadField({
           pick(e.target.files?.[0]);
           e.target.value = "";
         }}
-        className="block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+        className="block w-full text-sm text-gray-700"
       />
       {value && (
         <div className="mt-2 flex items-center gap-3">

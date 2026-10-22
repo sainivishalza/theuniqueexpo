@@ -233,7 +233,7 @@ export default function AdminMagazinePage() {
                   {form.coverImage && <img src={form.coverImage} alt={ta("preview")} className="absolute inset-0 w-full h-full object-cover" />}
                 </div>
                 <div className="flex-1 space-y-2">
-                  <label className="relative cursor-pointer inline-block rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+                  <label className="relative cursor-pointer inline-block rounded-xl px-4 py-2 text-xs font-bold gradient-brand text-white hover:opacity-90 shadow-sm transition-opacity focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                     {t("uploadCover")}
                     <input type="file" accept="image/*" className="sr-only" onChange={(e) => handleCoverFile(e.target.files?.[0] || null)} />
                   </label>
@@ -286,7 +286,7 @@ export default function AdminMagazinePage() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button onClick={() => openEdit(issue)} variant="ghost" size="xs">{t("editButton")}</Button>
+                <Button onClick={() => openEdit(issue)} variant="save" size="xs">{t("editButton")}</Button>
                 <Button onClick={() => handleDelete(issue.id)} disabled={deletingId === issue.id} variant="ghostDanger" size="xs">
                   {deletingId === issue.id ? t("deleting") : ta("delete")}
                 </Button>

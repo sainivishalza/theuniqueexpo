@@ -190,7 +190,7 @@ export default function AdminChinaTravelPage() {
                           className="w-full rounded-lg border border-gray-200 px-3 py-1.5 text-xs"
                         />
                         <div className="flex items-center gap-3">
-                          <label className="relative cursor-pointer rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+                          <label className="relative cursor-pointer rounded-lg px-3 py-1.5 text-xs font-bold gradient-brand text-white hover:opacity-90 shadow-sm transition-opacity focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                             {t("uploadPhoto")}
                             <input
                               type="file"

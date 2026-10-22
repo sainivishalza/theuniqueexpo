@@ -42,7 +42,10 @@
     "partnerWithUs": "合作伙伴",
     "more": "更多",
     "planABusinessTrip": "规划行程",
-    "search": "站内搜索"
+    "search": "站内搜索",
+    "walletAria": "我的钱包：{points} 积分",
+    "walletMenu": "我的钱包",
+    "walletPoints": "{points} 积分"
   },
   "footer": {
     "newsletterTitle": "获取最新资讯",
@@ -410,7 +413,20 @@
       }
     },
     "registrationNumber": "您的注册编号",
-    "registrationNumberHint": "联系我们时请提供此编号。"
+    "registrationNumberHint": "联系我们时请提供此编号。",
+    "wallet": {
+      "title": "我的奖励积分钱包",
+      "points": "积分",
+      "worth": "≈ ¥{amount}（1 积分 = 1 元人民币）",
+      "topUp": "充值",
+      "send": "转账",
+      "withdraw": "提现",
+      "history": "记录",
+      "frozen": "此钱包已被冻结，请联系我们。",
+      "pending": "{points} 积分正等待支付。",
+      "chipAria": "我的钱包：{points} 积分",
+      "open": "打开我的钱包"
+    }
   },
   "exhibitorDashboard": {
     "title": "展商控制台",
@@ -527,7 +543,16 @@
     "email": "邮箱",
     "date": "日期",
     "confirmDelete": "确定要删除吗?",
-    "somethingWentWrong": "出了点问题"
+    "somethingWentWrong": "出了点问题",
+    "viewer": {
+      "zoomIn": "放大",
+      "zoomOut": "缩小",
+      "reset": "重置",
+      "close": "关闭",
+      "openFile": "打开文件",
+      "hint": "双指缩放或滚动缩放，双击放大或还原",
+      "enlarge": "放大"
+    }
   },
   "adminHome": {
     "accessDenied": "访问被拒绝",
@@ -654,6 +679,10 @@
       "buyerForm": {
         "title": "买家表单设置",
         "description": "选择买家上传的文件并添加额外问题，无需开发人员。"
+      },
+      "myAccount": {
+        "title": "我的账户",
+        "description": "修改您自己的登录密码"
       }
     }
   },
@@ -2908,7 +2937,9 @@
       "rejectedReason": "已驳回:{reason}"
     },
     "registrationNumber": "您的注册编号",
-    "registrationNumberHint": "联系我们时请提供此编号。"
+    "registrationNumberHint": "联系我们时请提供此编号。",
+    "enlarge": "点击放大：{name}",
+    "enlargeShort": "放大"
   },
   "adminBuyerProfiles": {
     "backToAdmin": "← 返回管理后台",
@@ -4308,5 +4339,35 @@
       "not_found": "该项目已不存在，请刷新页面。",
       "not_ready": "此页面所需的数据库更新尚未应用，请几分钟后再试。"
     }
+  },
+  "accountPassword": {
+    "title": "修改密码",
+    "intro": "为您的账户设置新密码。您在此设备上将保持登录。",
+    "current": "当前密码",
+    "new": "新密码",
+    "confirm": "确认新密码",
+    "hint": "至少 {min} 个字符。请勿使用在其他地方用过的密码。",
+    "show": "显示",
+    "hide": "隐藏",
+    "submit": "修改密码",
+    "saving": "正在保存…",
+    "success": "密码已修改。下次登录请使用新密码。",
+    "errors": {
+      "currentMissing": "请输入当前密码。",
+      "wrong_password": "当前密码不正确。",
+      "weak_password": "新密码至少需要 {min} 个字符。",
+      "too_long": "新密码太长，请使用较短的密码。",
+      "mismatch": "两次输入的新密码不一致。",
+      "same_password": "新密码不能与当前密码相同。",
+      "rate_limited": "错误次数过多，请几分钟后再试。",
+      "unauthorized": "请重新登录。",
+      "generic": "无法修改密码，请重试。"
+    },
+    "backToDashboard": "← 返回控制台",
+    "pageTitle": "我的账户",
+    "pageSubtitle": "用只有您知道的密码保护您的账户。",
+    "menu": "账户与密码",
+    "adminCardTitle": "我的账户",
+    "adminCardDescription": "修改您自己的登录密码"
   }
 }

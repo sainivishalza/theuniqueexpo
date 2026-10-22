@@ -323,7 +323,7 @@ export default function AdminToursPage() {
                     className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   />
                   <div className="flex items-center gap-3">
-                    <label className="relative cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+                    <label className="relative cursor-pointer rounded-xl px-4 py-2 text-xs font-bold gradient-brand text-white hover:opacity-90 shadow-sm transition-opacity focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                       {t("uploadPhoto")}
                       <input
                         type="file"
@@ -368,7 +368,7 @@ export default function AdminToursPage() {
                 </div>
               )}
               {form.galleryImages.length < MAX_GALLERY_IMAGES && (
-                <label className="relative cursor-pointer inline-block rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+                <label className="relative cursor-pointer inline-block rounded-xl px-4 py-2 text-xs font-bold gradient-brand text-white hover:opacity-90 shadow-sm transition-opacity focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                   {galleryUploading ? t("uploading") : t("addPhotos")}
                   <input
                     type="file"
@@ -482,9 +482,9 @@ export default function AdminToursPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button href={`/tours/${tour.slug}`} variant="ghost" size="xs">{t("view")}</Button>
-                <Button href={`/admin/tours/${tour.slug}/registrations`} variant="ghost" size="xs">{t("registrations")}</Button>
+                <Button href={`/admin/tours/${tour.slug}/registrations`} variant="tint" size="xs">{t("registrations")}</Button>
                 <Button href={`/admin/tours/${tour.slug}/registration-form`} variant="ghost" size="xs">{t("registrationForm")}</Button>
-                <Button onClick={() => openEdit(tour)} variant="ghost" size="xs">{t("editButton")}</Button>
+                <Button onClick={() => openEdit(tour)} variant="save" size="xs">{t("editButton")}</Button>
                 <Button onClick={() => handleDelete(tour.id)} disabled={deletingId === tour.id} variant="ghostDanger" size="xs">
                   {deletingId === tour.id ? t("deleting") : ta("delete")}
                 </Button>

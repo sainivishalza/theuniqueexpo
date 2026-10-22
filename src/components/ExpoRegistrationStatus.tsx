@@ -152,7 +152,7 @@ export default function ExpoRegistrationStatus({ exhibitionSlug, fallback = null
           </div>
           <div>
             <span className="block text-sm font-medium text-gray-700 mb-1">{t("confirm.ticket")}</span>
-            <label className="cursor-pointer inline-block rounded-[var(--radius-button)] border border-gray-700 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+            <label className="cursor-pointer inline-block rounded-[var(--radius-button)] px-3 py-1.5 text-xs font-bold gradient-brand text-white hover:opacity-90 shadow-sm focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
               {ticket ? t("confirm.replaceFile") : t("confirm.chooseFile")}
               <input type="file" accept="image/*,application/pdf" className="sr-only" onChange={(e) => handleTicket(e.target.files?.[0] || null)} />
             </label>

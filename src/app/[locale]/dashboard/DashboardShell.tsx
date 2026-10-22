@@ -4,6 +4,9 @@ import { useTranslations } from "next-intl";
 import AppShell, { type ShellItem } from "@/components/AppShell";
 import { useAuth } from "@/lib/auth-context";
 import { shellAppliesTo } from "@/lib/app-shell";
+import { formatNumber } from "@/lib/format";
+import { useWalletBalance } from "@/lib/client/wallet-balance";
+import WalletChip from "@/components/wallet/WalletChip";
 
 // The signed-in customer's frame: a list of their tools down the left on a laptop,
 // the menu on a phone. Links to public pages (exhibitions, messages, ...) simply
@@ -12,7 +15,10 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const tb = useTranslations("buyerDashboard");
   const te = useTranslations("exhibitorDashboard");
   const tc = useTranslations("common");
+  const tp = useTranslations("accountPassword");
   const { user, loading } = useAuth();
+  // A buyer sees their wallet balance in the phone top bar and next to "Rewards Wallet" in the menu.
+  const wallet = useWalletBalance(!!user && user.role === "buyer");
   if (loading || !user || !shellAppliesTo("dashboard", user)) return <>{children}</>;
 
   const role = user.role;
@@ -24,12 +30,13 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       { key: "home", href: homeHref, label: tc("shell.dashboard"), icon: "🏠" },
       { key: "myProfile", href: "/dashboard/buyer/profile", label: tb("actions.myProfile.title"), icon: "🪪", group: "account" },
       { key: "myRegistrations", href: "/dashboard/buyer/registrations", label: tb("actions.myRegistrations.title"), icon: "🎫", group: "account" },
-      { key: "myWallet", href: "/dashboard/buyer/wallet", label: tb("actions.myWallet.title"), icon: "💰", group: "account" },
+      { key: "myWallet", href: "/dashboard/buyer/wallet", label: tb("actions.myWallet.title"), icon: "💰", group: "account", meta: wallet ? formatNumber(wallet.balance) : undefined },
       { key: "browseExhibitions", href: "/exhibitions", label: tb("actions.browseExhibitions.title"), icon: "🎯", group: "explore" },
       { key: "savedExhibitions", href: "/favorites", label: tb("actions.savedExhibitions.title"), icon: "❤️", group: "explore" },
       { key: "messages", href: "/messages", label: tb("actions.messages.title"), icon: "💬", group: "explore" },
       { key: "postBuyRequest", href: "/marketplace/new", label: tb("actions.postBuyRequest.title"), icon: "📋", group: "explore" },
       { key: "marketplace", href: "/marketplace", label: tb("actions.marketplace.title"), icon: "🛒", group: "explore" },
+      { key: "account", href: "/dashboard/account", label: tp("menu"), icon: "🔑", group: "account" },
     ];
   } else if (role === "exhibitor") {
     homeHref = "/dashboard/exhibitor";
@@ -37,10 +44,14 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       { key: "home", href: homeHref, label: tc("shell.dashboard"), icon: "🏠" },
       { key: "browseExhibitions", href: "/exhibitions", label: te("browseExhibitions"), icon: "🎯", group: "explore" },
       { key: "messages", href: "/messages", label: tb("actions.messages.title"), icon: "💬", group: "explore" },
+      { key: "account", href: "/dashboard/account", label: tp("menu"), icon: "🔑", group: "account" },
     ];
   } else {
     homeHref = "/dashboard/partner";
-    items = [{ key: "home", href: homeHref, label: tc("shell.dashboard"), icon: "🏠" }];
+    items = [
+      { key: "home", href: homeHref, label: tc("shell.dashboard"), icon: "🏠" },
+      { key: "account", href: "/dashboard/account", label: tp("menu"), icon: "🔑", group: "account" },
+    ];
   }
 
   return (
@@ -53,6 +64,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         { key: "explore", label: tc("shell.groups.explore") },
       ]}
       homeHref={homeHref}
+      headerExtra={wallet ? <WalletChip balance={wallet.balance} ariaLabel={tb("wallet.chipAria", { points: formatNumber(wallet.balance) })} /> : undefined}
     >
       {children}
     </AppShell>

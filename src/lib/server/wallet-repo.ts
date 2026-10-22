@@ -250,6 +250,21 @@ export interface WalletSummary {
   settings: WalletSettings;
 }
 
+// Just the balance, for the wallet pill and the card on the buyer's home. Unlike getWalletSummary it
+// never creates a wallet: a buyer who has not opened their wallet yet simply has 0 points, so merely
+// signing in does not give every buyer a wallet row (a user with a wallet cannot be deleted).
+export async function getWalletBalance(userId: number): Promise<{ balance: number; frozen: boolean; pendingWithdrawal: number } | null> {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    `SELECT COALESCE(w.balance, 0) AS balance, COALESCE(w.frozen, 0) AS frozen,
+            (SELECT COALESCE(SUM(points), 0) FROM wallet_withdrawals WHERE user_id = u.id AND status = 'pending') AS pending_withdrawal
+     FROM users u LEFT JOIN wallets w ON w.user_id = u.id WHERE u.id = ? AND u.role = 'buyer'`,
+    [userId]
+  );
+  const r = rows[0];
+  if (!r) return null;
+  return { balance: Number(r.balance), frozen: !!r.frozen, pendingWithdrawal: Number(r.pending_withdrawal) };
+}
+
 export async function getWalletSummary(userId: number): Promise<WalletSummary | null> {
   await ensureWallet(userId);
   const [rows] = await pool.query<RowDataPacket[]>(

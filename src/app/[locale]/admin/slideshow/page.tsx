@@ -228,7 +228,7 @@ export default function AdminSlideshowPage() {
           <div className="flex items-center justify-between flex-wrap gap-3">
             <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
             <div className="flex items-center gap-2">
-              <label className="relative cursor-pointer rounded-full px-5 py-2.5 text-sm border-2 border-white/30 text-white backdrop-blur-sm hover:bg-white/10 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-white focus-within:outline-offset-2">
+              <label className="relative cursor-pointer rounded-full px-5 py-2.5 text-sm font-bold gradient-brand text-white shadow-sm hover:opacity-90 transition-opacity focus-within:outline focus-within:outline-2 focus-within:outline-white focus-within:outline-offset-2">
                 {t("bulkUpload")}
                 <input
                   type="file"
@@ -268,7 +268,7 @@ export default function AdminSlideshowPage() {
                   {form.image && <img src={form.image} alt={ta("preview")} className="absolute inset-0 w-full h-full object-cover" />}
                 </div>
                 <div className="flex items-center gap-3">
-                  <label className="relative cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+                  <label className="relative cursor-pointer rounded-xl px-4 py-2 text-xs font-bold gradient-brand text-white hover:opacity-90 shadow-sm transition-opacity focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                     {t("uploadPhoto")}
                     <input
                       type="file"
@@ -328,7 +328,7 @@ export default function AdminSlideshowPage() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button onClick={() => openEdit(photo)} variant="ghost" size="xs">{t("editButton")}</Button>
+                <Button onClick={() => openEdit(photo)} variant="save" size="xs">{t("editButton")}</Button>
                 <Button onClick={() => handleDelete(photo.id)} disabled={deletingId === photo.id} variant="ghostDanger" size="xs">
                   {deletingId === photo.id ? t("deleting") : ta("delete")}
                 </Button>

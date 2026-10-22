@@ -499,7 +499,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
                     ) : (
                       <div className="h-20 w-full flex items-center justify-center mb-2 rounded-[var(--radius-button)] bg-cream-50 text-sm text-gray-500">{t("fileAttached")}</div>
                     ))}
-                    <label className="relative cursor-pointer inline-block rounded-[var(--radius-button)] border border-gray-700 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+                    <label className="relative cursor-pointer inline-block rounded-[var(--radius-button)] px-3 py-1.5 text-xs font-bold gradient-brand text-white hover:opacity-90 shadow-sm focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                       {value ? t("replaceFile") : t("chooseFile")}
                       <input type="file" aria-label={`${label}: ${value ? t("replaceFile") : t("chooseFile")}`} accept="image/*,application/pdf" className="sr-only" onChange={(e) => handleFile(key, e.target.files?.[0] || null)} />
                     </label>
@@ -608,7 +608,7 @@ function CustomField({
       ) : (
         <div className="h-20 w-full flex items-center justify-center mb-2 rounded-[var(--radius-button)] bg-cream-50 text-sm text-gray-500">{t("fileAttached")}</div>
       ))}
-      <label className="relative cursor-pointer inline-block rounded-[var(--radius-button)] border border-gray-700 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-cream-50 focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+      <label className="relative cursor-pointer inline-block rounded-[var(--radius-button)] px-3 py-1.5 text-xs font-bold gradient-brand text-white hover:opacity-90 shadow-sm focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
         {fileValue ? t("replaceFile") : t("chooseFile")}
         <input type="file" aria-label={`${field.label}: ${fileValue ? t("replaceFile") : t("chooseFile")}`} accept="image/*,application/pdf" className="sr-only" onChange={(e) => onFile(e.target.files?.[0] || null)} />
       </label>

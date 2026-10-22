@@ -18,6 +18,7 @@ interface Referral {
 
 export default function PartnerDashboard() {
   const t = useTranslations("partnerDashboard");
+  const tp = useTranslations("accountPassword");
   const locale = useLocale();
   const tc = useTranslations("common");
   const { user } = useAuth();
@@ -74,6 +75,14 @@ export default function PartnerDashboard() {
 
       <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
+          <Card href="/dashboard/account" shadow="sm" className="mb-8 p-5 flex items-center gap-4">
+            <div className="w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-xl">🔑</div>
+            <div>
+              <h3 className="font-bold text-heading">{tp("title")}</h3>
+              <p className="text-sm text-gray-500 mt-1">{tp("pageSubtitle")}</p>
+            </div>
+          </Card>
+
           {/* Referral Link */}
           <Card shadow="sm" className="p-8 mb-8">
             <h2 className="text-xl font-bold text-heading mb-2">{t("referralLinkTitle")}</h2>

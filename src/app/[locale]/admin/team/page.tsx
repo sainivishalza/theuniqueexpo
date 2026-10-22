@@ -214,7 +214,7 @@ export default function AdminTeamPage() {
                 </div>
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center gap-3">
-                    <label className="relative cursor-pointer rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-cream-50 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
+                    <label className="relative cursor-pointer rounded-xl px-4 py-2 text-xs font-bold gradient-brand text-white hover:opacity-90 shadow-sm transition-opacity focus-within:outline focus-within:outline-2 focus-within:outline-emerald-900 focus-within:outline-offset-2">
                       {t("uploadPhoto")}
                       <input
                         type="file"
@@ -263,7 +263,7 @@ export default function AdminTeamPage() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button onClick={() => openEdit(member)} variant="ghost" size="xs">{t("editButton")}</Button>
+                <Button onClick={() => openEdit(member)} variant="save" size="xs">{t("editButton")}</Button>
                 <Button onClick={() => handleDelete(member.id)} disabled={deletingId === member.id} variant="ghostDanger" size="xs">
                   {deletingId === member.id ? t("deleting") : ta("delete")}
                 </Button>

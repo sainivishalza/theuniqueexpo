@@ -21,7 +21,9 @@ const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
  let wd=await p.evaluate(()=>({sw:document.documentElement.scrollWidth,vw:innerWidth})); ok(wd.sw<=wd.vw+1,'no sideways overflow on the wallet page',wd);
  await p.goto(BASE+'/en/dashboard/buyer',{waitUntil:'networkidle'}); wd=await p.evaluate(()=>({sw:document.documentElement.scrollWidth,vw:innerWidth})); ok(wd.sw<=wd.vw+1,'no sideways overflow on the home page',wd);
  console.log('\n== the public website header while signed in');
- await p.goto(BASE+'/en',{waitUntil:'networkidle'}); const pc=p.locator('nav a[aria-label^="My wallet"]:visible').first(); await pc.waitFor({timeout:10000}); ok(await pc.isVisible()&&/1,250/.test(await pc.innerText()),'phone: the site header has the wallet pill next to the menu button');
+ await p.goto(BASE+'/en',{waitUntil:'networkidle'}); await p.waitForSelector('#mobile-nav-menu, button[aria-label="Open menu"]'); await sleep(800);
+ ok(await p.locator('nav a[aria-label^="My wallet"]:visible').count()===0,'phone: the site header bar does not carry the pill (it left no room for the menu button)');
+ { const bx=await p.getByRole('button',{name:/Open menu/}).first().boundingBox(); ok(bx&&bx.x>=0&&bx.x+bx.width<=375,'phone: the menu button is fully on the screen',bx); }
  await p.getByRole('button',{name:/Open menu/}).first().click(); const row=p.locator('#mobile-nav-menu a',{hasText:'My wallet'}); ok(await row.isVisible()&&/1,250 points/.test(await row.innerText()),'phone: the menu has a gold "My wallet — 1,250 points" row',(await row.innerText()).replace(/\n/g,' '));
  wd=await p.evaluate(()=>({sw:document.documentElement.scrollWidth,vw:innerWidth})); ok(wd.sw<=wd.vw+1,'no sideways overflow on the home page of the website',wd); await p.screenshot({path:SHOTS+'/wallet_site_phone.png'}); await c.close();
  c=await mk(u.bT,{width:1500,height:900}); p=await c.newPage(); await p.goto(BASE+'/en',{waitUntil:'networkidle'}); const dc=p.locator('nav a[aria-label^="My wallet"]:visible').first(); await dc.waitFor({timeout:10000}); ok(await dc.isVisible()&&/1,250/.test(await dc.innerText()),'laptop: the site header shows the pill'); await p.screenshot({path:SHOTS+'/wallet_site_laptop.png',clip:{x:0,y:0,width:1500,height:90}}); await c.close();
@@ -40,5 +42,14 @@ const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
    await p.evaluate(axeSrc); const v=await p.evaluate(async()=>(await window.axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}})).violations.map(x=>x.id+':'+x.nodes.length)); ok(v.length===0,loc+': dashboard axe 0 violations',v); await c.close(); }
  c=await mk(u.bT,{width:1360,height:1000}); p=await c.newPage(); await p.goto(BASE+'/en/dashboard/buyer',{waitUntil:'networkidle'}); await p.waitForSelector('#home-wallet-title'); await p.evaluate(axeSrc); let v=await p.evaluate(async()=>(await window.axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}})).violations.map(x=>x.id+':'+x.nodes.length)); ok(v.length===0,'en: dashboard axe 0 violations (gold card contrast included)',v);
  await p.goto(BASE+'/en',{waitUntil:'networkidle'}); await p.locator('nav a[aria-label^="My wallet"]:visible').first().waitFor(); await p.evaluate(axeSrc); v=await p.evaluate(async()=>(await window.axe.run(document.querySelector('nav'),{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}})).violations.map(x=>x.id+':'+x.nodes.length)); ok(v.length===0,'en: site header axe 0 violations',v); await c.close();
- await br.close(); done();
+  console.log('\n== the menu buttons stay on the screen (big balance, every language, phone widths)');
+ sql(`UPDATE wallets SET balance=12345678 WHERE user_id=${u.bId}`);
+ { const wide=[]; for (const loc of ['en','ru','zh']) for (const pth of ['','/dashboard/buyer','/exhibitions']) for (const w of [320,360,375,390,414,700]) {
+     const cc=await mk(u.bT,{width:w,height:800},true); const pp=await cc.newPage(); await pp.goto(BASE+'/'+loc+pth,{waitUntil:'networkidle'}); await sleep(700);
+     const r=await pp.evaluate(()=>{const out=[]; for(const sel of ['button[aria-label*="menu" i]','nav a[aria-label^="My wallet"]','header a[aria-label^="My wallet"]']) for(const x of document.querySelectorAll(sel)){ const b=x.getBoundingClientRect(); if(b.width>0) out.push([sel.slice(0,20),Math.round(b.left),Math.round(b.right)]); } return {vw:innerWidth,out}; });
+     for(const o of r.out) if(o[2]>r.vw+0.5||o[1]<-0.5) wide.push(`${loc}${pth||'/'}@${w}:${o.join(',')}`); await cc.close(); }
+   ok(wide.length===0,'menu button and wallet pill are fully on the screen at 320-700px in en/ru/zh',wide.slice(0,6)); }
+ sql(`UPDATE wallets SET balance=1250 WHERE user_id=${u.bId}`); // put it back: the ledger must still add up for the other tests
+ await br.close();
+ done();
 })();

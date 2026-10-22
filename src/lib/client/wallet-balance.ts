@@ -22,7 +22,7 @@ export function useWalletBalance(enabled: boolean): WalletBalance | null {
       return;
     }
     let live = true;
-    fetch("/api/wallet")
+    fetch("/api/wallet/balance")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (live && data && typeof data.balance === "number") {

@@ -13,7 +13,7 @@ const REGISTER_LIMIT = 5;
 const REGISTER_WINDOW_MS = 60 * 60 * 1000;
 
 export async function POST(request: Request) {
-  const limited = rateLimitOrNull(request, "register", REGISTER_LIMIT, REGISTER_WINDOW_MS);
+  const limited = await rateLimitOrNull(request, "register", REGISTER_LIMIT, REGISTER_WINDOW_MS);
   if (limited) return limited;
 
   try {

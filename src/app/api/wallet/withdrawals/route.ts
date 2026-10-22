@@ -37,7 +37,7 @@ export async function POST(request: Request) {
   const invalid = validateWithdrawalDetails(details, (value) => isValidUploadedImage(value, MAX_WALLET_IMAGE_BYTES));
   if (invalid) return walletFail(invalid);
 
-  const limited = limitOrNull(auth.user.id, "withdraw", 10, 60 * 60 * 1000);
+  const limited = await limitOrNull(auth.user.id, "withdraw", 10, 60 * 60 * 1000);
   if (limited) return limited;
   const wrong = await checkPassword(auth.user.id, body.password);
   if (wrong) return wrong;

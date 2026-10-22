@@ -20,7 +20,7 @@ const TOPICS_OPTIONS = [
 // partnership, not the individual-affiliate Partner Program. No login
 // required.
 export async function POST(request: Request) {
-  const limited = rateLimitOrNull(request, "partner-inquiries", LEAD_FORM_LIMIT, LEAD_FORM_WINDOW_MS);
+  const limited = await rateLimitOrNull(request, "partner-inquiries", LEAD_FORM_LIMIT, LEAD_FORM_WINDOW_MS);
   if (limited) return limited;
 
   try {

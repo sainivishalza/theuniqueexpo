@@ -10,7 +10,7 @@ const KEY = /^[A-Za-z0-9_]{1,40}$/;
 export async function PATCH(request: Request, { params }: { params: Promise<{ key: string }> }) {
   const admin = await requireAdmin(request);
   if (!admin) return NextResponse.json({ error: "Admin access required" }, { status: 401 });
-  const limited = limitOrNull(admin.id, "buyer-form", 60, 60_000);
+  const limited = await limitOrNull(admin.id, "buyer-form", 60, 60_000);
   if (limited) return limited;
   const { key } = await params;
   if (!KEY.test(key)) return NextResponse.json({ error: "not_found", code: "not_found" }, { status: 404 });

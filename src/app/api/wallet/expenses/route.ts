@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     exhibitionId = body.exhibitionId;
   }
 
-  const limited = limitOrNull(auth.user.id, "expense", 20, 24 * 60 * 60 * 1000);
+  const limited = await limitOrNull(auth.user.id, "expense", 20, 24 * 60 * 60 * 1000);
   if (limited) return limited;
   try {
     const result = await createExpenseClaim(auth.user.id, {

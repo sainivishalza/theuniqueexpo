@@ -67,8 +67,8 @@ export async function requireWalletAdmin(request: Request): Promise<AdminResult>
 }
 
 // Per-person limit (not per address): returns a ready 429, or null when allowed.
-export function limitOrNull(userId: number, name: string, limit: number, windowMs: number): NextResponse | null {
-  const result = checkRateLimit(`wallet:${name}:${userId}`, limit, windowMs);
+export async function limitOrNull(userId: number, name: string, limit: number, windowMs: number): Promise<NextResponse | null> {
+  const result = await checkRateLimit(`wallet:${name}:${userId}`, limit, windowMs);
   return result.allowed ? null : walletFail("rate_limited", 429, { "Retry-After": String(result.retryAfterSeconds) });
 }
 
@@ -80,18 +80,18 @@ const PASSWORD_WINDOW_MS = 10 * 60 * 1000;
 // check for ten minutes.
 export async function checkPassword(userId: number, password: unknown): Promise<NextResponse | null> {
   const key = `wallet-password:${userId}`;
-  const blocked = peekRateLimit(key, PASSWORD_ATTEMPTS);
+  const blocked = await peekRateLimit(key, PASSWORD_ATTEMPTS);
   if (!blocked.allowed) return walletFail("rate_limited", 429, { "Retry-After": String(blocked.retryAfterSeconds) });
   // Only wrong passwords count towards the limit.
-  const wrong = () => {
-    checkRateLimit(key, PASSWORD_ATTEMPTS, PASSWORD_WINDOW_MS);
+  const wrong = async () => {
+    await checkRateLimit(key, PASSWORD_ATTEMPTS, PASSWORD_WINDOW_MS);
     return walletFail("wrong_password");
   };
-  if (typeof password !== "string" || password === "" || password.length > 200) return wrong();
+  if (typeof password !== "string" || password === "" || password.length > 200) return await wrong();
   const [rows] = await pool.query<RowDataPacket[]>("SELECT password_hash FROM users WHERE id = ?", [userId]);
   const hash = rows[0]?.password_hash as string | undefined;
-  if (!hash || !(await bcrypt.compare(password, hash))) return wrong();
-  resetRateLimit(key);
+  if (!hash || !(await bcrypt.compare(password, hash))) return await wrong();
+  await resetRateLimit(key);
   return null;
 }
 

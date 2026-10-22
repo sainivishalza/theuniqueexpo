@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   const tourId = body.tourId;
   if (typeof tourId !== "number" || !Number.isSafeInteger(tourId) || tourId <= 0) return walletFail("invalid_input");
   if (!isValidClientKey(body.key)) return walletFail("invalid_input");
-  const limited = limitOrNull(auth.user.id, "purchase", 20, 60 * 60 * 1000);
+  const limited = await limitOrNull(auth.user.id, "purchase", 20, 60 * 60 * 1000);
   if (limited) return limited;
   try {
     const result = await buyTourWithPoints(auth.user.id, tourId, body.key);

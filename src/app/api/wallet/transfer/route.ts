@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   const buyerNo = typeof toRaw.number === "string" ? parseBuyerNumber(toRaw.number) : null;
   if (!code && !buyerNo) return walletFail("recipient_not_found");
 
-  const limited = limitOrNull(auth.user.id, "transfer", 30, 60 * 60 * 1000);
+  const limited = await limitOrNull(auth.user.id, "transfer", 30, 60 * 60 * 1000);
   if (limited) return limited;
   const wrong = await checkPassword(auth.user.id, body.password);
   if (wrong) return wrong;

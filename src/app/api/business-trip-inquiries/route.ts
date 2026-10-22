@@ -16,7 +16,7 @@ const NEEDS_OPTIONS = [
 // no login required. Powers the full /plan-business-trip form as well as
 // the lighter "Get Local Assistance" modal.
 export async function POST(request: Request) {
-  const limited = rateLimitOrNull(request, "business-trip-inquiries", LEAD_FORM_LIMIT, LEAD_FORM_WINDOW_MS);
+  const limited = await rateLimitOrNull(request, "business-trip-inquiries", LEAD_FORM_LIMIT, LEAD_FORM_WINDOW_MS);
   if (limited) return limited;
 
   try {

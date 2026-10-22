@@ -55,7 +55,7 @@ async function handlePost(request: Request): Promise<NextResponse> {
       // Same password check as /api/auth/login -- draws from the same
       // per-IP bucket so this can't be used to brute-force a password
       // without ever touching the rate-limited login endpoint.
-      const { allowed, retryAfterSeconds } = checkLoginRateLimit(request, trimmedEmail);
+      const { allowed, retryAfterSeconds } = await checkLoginRateLimit(request, trimmedEmail);
       if (!allowed) {
         return NextResponse.json(
           { error: "Too many attempts. Please try again later." },
@@ -69,7 +69,7 @@ async function handlePost(request: Request): Promise<NextResponse> {
           { status: 401 }
         );
       }
-      resetLoginRateLimit(request, trimmedEmail);
+      await resetLoginRateLimit(request, trimmedEmail);
       user = verified;
     } else {
       if (password.length < 6) {

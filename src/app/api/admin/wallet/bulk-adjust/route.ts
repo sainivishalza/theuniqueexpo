@@ -8,7 +8,7 @@ import { limitOrNull, readJson, requireWalletAdmin, text, walletErrorResponse, w
 export async function POST(request: Request) {
   const auth = await requireWalletAdmin(request);
   if (auth.response) return auth.response;
-  const limited = limitOrNull(auth.admin.id, "bulk-adjust", 20, 60_000);
+  const limited = await limitOrNull(auth.admin.id, "bulk-adjust", 20, 60_000);
   if (limited) return limited;
   const body = await readJson(request);
   if (!body) return walletFail("invalid_input");

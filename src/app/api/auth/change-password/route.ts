@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   if (!user) return fail("unauthorized", 401);
 
   const key = `change-password:${user.id}`;
-  const blocked = peekRateLimit(key, ATTEMPTS);
+  const blocked = await peekRateLimit(key, ATTEMPTS);
   if (!blocked.allowed) return fail("rate_limited", 429, { "Retry-After": String(blocked.retryAfterSeconds) });
 
   const body = await request.json().catch(() => null);
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
   const [rows] = await pool.query<RowDataPacket[]>("SELECT password_hash FROM users WHERE id = ?", [user.id]);
   const hash = rows[0]?.password_hash as string | undefined;
   if (!hash || !(await bcrypt.compare(current, hash))) {
-    checkRateLimit(key, ATTEMPTS, WINDOW_MS);
+    await checkRateLimit(key, ATTEMPTS, WINDOW_MS);
     return fail("wrong_password", 403);
   }
 
@@ -47,6 +47,6 @@ export async function POST(request: Request) {
   if (next === current) return fail("same_password", 400);
 
   await setUserPasswordHash(user.id, await bcrypt.hash(next, 12));
-  resetRateLimit(key);
+  await resetRateLimit(key);
   return NextResponse.json({ success: true, minLength: MIN_PASSWORD_LENGTH });
 }

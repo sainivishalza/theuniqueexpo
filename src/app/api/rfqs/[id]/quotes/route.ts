@@ -12,7 +12,7 @@ const QUOTES_READ_LIMIT = 60;
 const QUOTES_READ_WINDOW_MS = 60 * 1000;
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const limited = rateLimitOrNull(request, "rfq-quotes-read", QUOTES_READ_LIMIT, QUOTES_READ_WINDOW_MS);
+  const limited = await rateLimitOrNull(request, "rfq-quotes-read", QUOTES_READ_LIMIT, QUOTES_READ_WINDOW_MS);
   if (limited) return limited;
 
   const { id } = await params;

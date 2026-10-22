@@ -686,6 +686,17 @@
         "title": "我的账户",
         "description": "修改您自己的登录密码"
       }
+    },
+    "attention": {
+      "title": "需要您处理",
+      "allClear": "目前没有待处理的事项。",
+      "loading": "正在检查待处理事项…",
+      "registrations": "{count} 个展会报名待审批",
+      "tourRegistrations": "{count} 个旅游团报名待审批",
+      "topups": "{count} 笔积分充值待核对",
+      "withdrawals": "{count} 笔提现待支付",
+      "expenses": "{count} 份费用申请待审核",
+      "documents": "{count} 份买家文档待审核"
     }
   },
   "adminSubsidies": {
@@ -3069,7 +3080,8 @@
       "complete": "文件已全部上传",
       "missingOne": "缺少：{name}",
       "pendingReview": "待审核",
-      "actionNeeded": "需买家重新上传"
+      "actionNeeded": "需买家重新上传",
+      "waitingReview": "有待审核文档"
     },
     "manageExpos": "编辑展会列表",
     "noEmail": "无邮箱（用手机号/护照号登录）",
@@ -3082,7 +3094,30 @@
       "notFound": "未找到买家:{list}"
     },
     "exportAlwaysIncluded": "注册编号、姓名和账号邮箱始终包含在内。",
-    "extraInfo": "补充信息"
+    "extraInfo": "补充信息",
+    "review": {
+      "toggle": "审核文档",
+      "title": "为 {count} 位买家审核文档",
+      "actionLabel": "您想做什么？",
+      "verify": "通过所有待审核文档",
+      "verifyHint": "所有已上传且仍待审核的文档将变为已通过。",
+      "reject": "驳回一份文档",
+      "rejectHint": "上传该文档的买家会在其个人资料中看到您的原因，并可重新上传。",
+      "documentLabel": "文档",
+      "reasonLabel": "买家将看到的原因",
+      "reasonPlaceholder": "例如：照片模糊",
+      "confirmVerify": "通过文档",
+      "confirmReject": "驳回文档",
+      "working": "处理中…",
+      "done": "完成：已更新 {changed} 份文档。",
+      "errors": {
+        "no_buyers": "请至少选择一位买家。",
+        "too_many": "最多选择 500 位买家。",
+        "invalid_action": "请选择操作。",
+        "invalid_document": "请选择文档。",
+        "reason_required": "请填写买家将看到的原因（至少 3 个字符）。"
+      }
+    }
   },
   "homepageSlideshow": {
     "previous": "上一张照片",

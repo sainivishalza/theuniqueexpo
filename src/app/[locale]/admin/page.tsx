@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Card from "@/components/ui/Card";
 import { ADMIN_SECTIONS } from "@/lib/admin-nav";
+import AttentionPanel from "./AttentionPanel";
 
 export default function AdminPage() {
   const t = useTranslations("adminHome");
@@ -85,6 +86,10 @@ export default function AdminPage() {
           </div>
         </div>
       </section>
+
+      <div className="bg-cream-50">
+        <AttentionPanel />
+      </div>
 
       <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6 grid gap-5 sm:grid-cols-2">

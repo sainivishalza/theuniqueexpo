@@ -686,6 +686,17 @@
         "title": "My account",
         "description": "Change your own sign-in password"
       }
+    },
+    "attention": {
+      "title": "Needs your attention",
+      "allClear": "Nothing is waiting for you right now.",
+      "loading": "Checking what is waiting…",
+      "registrations": "{count, plural, one {# exhibition registration waits for approval} other {# exhibition registrations wait for approval}}",
+      "tourRegistrations": "{count, plural, one {# tour registration waits for approval} other {# tour registrations wait for approval}}",
+      "topups": "{count, plural, one {# points top-up to check} other {# points top-ups to check}}",
+      "withdrawals": "{count, plural, one {# withdrawal to pay} other {# withdrawals to pay}}",
+      "expenses": "{count, plural, one {# expense claim to review} other {# expense claims to review}}",
+      "documents": "{count, plural, one {# buyer document to review} other {# buyer documents to review}}"
     }
   },
   "adminSubsidies": {
@@ -3069,7 +3080,8 @@
       "complete": "All documents uploaded",
       "missingOne": "Missing: {name}",
       "pendingReview": "Awaiting review",
-      "actionNeeded": "Needs the buyer to re-upload"
+      "actionNeeded": "Needs the buyer to re-upload",
+      "waitingReview": "Has a document to review"
     },
     "manageExpos": "Edit expo list",
     "noEmail": "No email (signs in with phone / passport)",
@@ -3082,7 +3094,30 @@
       "notFound": "No buyer with: {list}"
     },
     "exportAlwaysIncluded": "The registration number, name and account email are always included.",
-    "extraInfo": "Additional information"
+    "extraInfo": "Additional information",
+    "review": {
+      "toggle": "Review documents",
+      "title": "Review documents for {count} buyers",
+      "actionLabel": "What do you want to do?",
+      "verify": "Verify all waiting documents",
+      "verifyHint": "Every uploaded document that is still waiting for review becomes verified.",
+      "reject": "Reject one document",
+      "rejectHint": "The buyers who uploaded it see your reason on their profile and can upload a new one.",
+      "documentLabel": "Document",
+      "reasonLabel": "Reason the buyers will see",
+      "reasonPlaceholder": "For example: the photo is blurry",
+      "confirmVerify": "Verify documents",
+      "confirmReject": "Reject document",
+      "working": "Working…",
+      "done": "Done: {changed} documents updated.",
+      "errors": {
+        "no_buyers": "Select at least one buyer.",
+        "too_many": "Select at most 500 buyers.",
+        "invalid_action": "Choose what to do.",
+        "invalid_document": "Choose a document.",
+        "reason_required": "Give the reason the buyers will see (at least 3 letters)."
+      }
+    }
   },
   "homepageSlideshow": {
     "previous": "Previous photo",

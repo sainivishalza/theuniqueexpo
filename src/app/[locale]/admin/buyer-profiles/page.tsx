@@ -10,6 +10,7 @@ import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import { formatNumber } from "@/lib/format";
 import BulkPointsDialog from "./BulkPointsDialog";
+import BulkReviewDialog from "./BulkReviewDialog";
 import { TEXT_COLUMN_ORDER } from "@/lib/buyer-profile-columns";
 import { useBuyerForm } from "@/lib/client/buyer-form";
 import { documentsComplete, type FormItem } from "@/lib/buyer-form";
@@ -175,6 +176,7 @@ function matchesDocFilter(row: AdminBuyerProfileRow, filter: string, docs: FormI
   const uploaded = docs.filter((d) => row.documents[d.key]?.uploaded).length;
   if (filter === "missing_any") return uploaded < docs.length;
   if (filter === "complete") return documentsComplete(row.documents, docs);
+  if (filter === "waiting_review") return docs.some((d) => row.documents[d.key]?.uploaded && row.documents[d.key]?.status === "pending");
   if (filter === "pending_review" || filter === "action_needed") return row.verificationStatus === filter;
   if (filter.startsWith("missing:")) return !row.documents[filter.slice(8)]?.uploaded;
   return true;
@@ -291,8 +293,14 @@ export default function AdminBuyerProfilesPage() {
   const [search, setSearch] = useState("");
   const [expoFilter, setExpoFilter] = useState("");
   const [docFilter, setDocFilter] = useState("");
+  // "?docs=waiting_review" (from "Needs your attention" on the admin home) opens with that filter on.
+  useEffect(() => {
+    const wanted = new URLSearchParams(window.location.search).get("docs");
+    if (wanted === "waiting_review" || wanted === "pending_review" || wanted === "action_needed") setDocFilter(wanted);
+  }, []);
   const [pointsFilter, setPointsFilter] = useState("");
   const [bulkOpen, setBulkOpen] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
   const [expoOptions, setExpoOptions] = useState<ExpoOption[]>([]);
   const [error, setError] = useState("");
 
@@ -664,6 +672,7 @@ export default function AdminBuyerProfilesPage() {
               <option value="">{t("docFilter.all")}</option>
               <option value="missing_any">{t("docFilter.missingAny")}</option>
               <option value="complete">{t("docFilter.complete")}</option>
+              <option value="waiting_review">{t("docFilter.waitingReview")}</option>
               <option value="pending_review">{t("docFilter.pendingReview")}</option>
               <option value="action_needed">{t("docFilter.actionNeeded")}</option>
               {docItems.map((d) => (
@@ -690,6 +699,7 @@ export default function AdminBuyerProfilesPage() {
                   {exporting === "zip" ? ta("loading") : t("exportZip")}
                 </Button>
                 <Button onClick={() => setBulkOpen(true)} variant="secondaryOutline" size="xs">{t("bulk.toggle")}</Button>
+                <Button onClick={() => setReviewOpen(true)} variant="secondaryOutline" size="xs">{t("review.toggle")}</Button>
                 <button type="button" onClick={() => setSelected(new Set())} className="text-xs text-emerald-700 hover:text-emerald-900 underline">
                   {t("clearSelection")}
                 </button>
@@ -1084,6 +1094,15 @@ export default function AdminBuyerProfilesPage() {
       )}
 
       {bulkOpen && <BulkPointsDialog userIds={Array.from(selected)} onClose={() => setBulkOpen(false)} onDone={() => loadRows()} />}
+      {reviewOpen && (
+        <BulkReviewDialog
+          userIds={Array.from(selected)}
+          documents={docItems}
+          documentLabel={(item) => form.label(item)}
+          onClose={() => setReviewOpen(false)}
+          onDone={() => loadRows()}
+        />
+      )}
       {exportPickerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setExportPickerOpen(false)}>
           <div className="absolute inset-0 bg-black/40" />

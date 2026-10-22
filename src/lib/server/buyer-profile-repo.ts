@@ -12,6 +12,7 @@ import {
   getCustomDocumentData,
   getCustomDocumentStates,
   getCustomValues,
+  formTablesReady,
   getFormItems,
   setCustomDocument,
   setCustomDocumentReview,
@@ -666,4 +667,54 @@ export async function setDocumentReview(
     `UPDATE buyer_profiles SET ${statusColumn} = ?, ${noteColumn} = ? WHERE user_id = ?`,
     [status, note, userId]
   );
+}
+
+// Admin: review documents for many buyers at once. "verify" marks every uploaded document still
+// waiting for review as verified; "reject" marks one chosen document as rejected, with the reason the
+// buyer sees on their profile, for those buyers who uploaded it. Returns how many documents changed.
+export async function bulkReviewDocuments(
+  userIds: number[],
+  action: "verify" | "reject",
+  documentKey: string | null,
+  note: string
+): Promise<number> {
+  if (userIds.length === 0) return 0;
+  let changed = 0;
+
+  if (action === "verify") {
+    for (const field of DOCUMENT_FIELDS) {
+      const column = DOCUMENT_COLUMNS[field];
+      const [r] = await pool.query<ResultSetHeader>(
+        `UPDATE buyer_profiles SET ${DOCUMENT_STATUS_COLUMNS[field]} = 'verified'
+         WHERE user_id IN (?) AND ${column} IS NOT NULL AND ${column} <> '' AND ${DOCUMENT_STATUS_COLUMNS[field]} = 'pending'`,
+        [userIds]
+      );
+      changed += r.affectedRows;
+    }
+    if (await formTablesReady()) {
+      const [r] = await pool.query<ResultSetHeader>(
+        "UPDATE buyer_custom_documents SET status = 'verified' WHERE user_id IN (?) AND status = 'pending'",
+        [userIds]
+      );
+      changed += r.affectedRows;
+    }
+    return changed;
+  }
+
+  if (!documentKey) throw new FormError("not_found", 404);
+  if (isBuiltinDocument(documentKey)) {
+    const column = DOCUMENT_COLUMNS[documentKey];
+    const [r] = await pool.query<ResultSetHeader>(
+      `UPDATE buyer_profiles SET ${DOCUMENT_STATUS_COLUMNS[documentKey]} = 'rejected', ${DOCUMENT_NOTE_COLUMNS[documentKey]} = ?
+       WHERE user_id IN (?) AND ${column} IS NOT NULL AND ${column} <> '' AND ${DOCUMENT_STATUS_COLUMNS[documentKey]} <> 'rejected'`,
+      [note, userIds]
+    );
+    return r.affectedRows;
+  }
+  await requireCustomDocument(documentKey);
+  const [r] = await pool.query<ResultSetHeader>(
+    "UPDATE buyer_custom_documents SET status = 'rejected', note = ? WHERE item_key = ? AND user_id IN (?) AND status <> 'rejected'",
+    [note, documentKey, userIds]
+  );
+  return r.affectedRows;
 }

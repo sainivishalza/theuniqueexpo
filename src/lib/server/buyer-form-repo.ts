@@ -224,7 +224,9 @@ export async function moveFormItem(key: string, direction: "up" | "down"): Promi
     await conn.beginTransaction();
     // Positions are not unique in the database, so give the whole list fresh 10-step positions first.
     const order = same.map((i) => i.key);
-    [order[index], order[order.indexOf(other.key)]] = [other.key, key];
+    const otherIndex = direction === "up" ? index - 1 : index + 1;
+    order[index] = other.key;
+    order[otherIndex] = key;
     for (let n = 0; n < order.length; n++) await conn.query("UPDATE buyer_form_items SET position = ? WHERE item_key = ?", [(n + 1) * 10, order[n]]);
     await conn.commit();
   } catch (err) {

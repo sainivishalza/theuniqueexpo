@@ -34,6 +34,7 @@ const AXE=async(p)=>{ await p.evaluate(axeSrc); return p.evaluate(async()=>(awai
  const before=a.documents; sql(`UPDATE buyer_profiles SET doc_visa_page_status='verified' WHERE user_id=${u2.bId}`); a=await (await fetch(BASE+'/api/admin/attention',{headers:H(u.aT)})).json(); ok(a.documents===before-1,'and goes down when one is verified',[before,a.documents]);
  console.log('\n== screens');
  const b=await require('./helpers/browser.js').launch(); const mk=async(t,vp={width:1360,height:1000})=>{const c=await b.newContext({viewport:vp}); await c.addCookies([{name:'token',value:t,url:BASE}]); return c;};
+ sql(`UPDATE buyer_profiles SET doc_visa_page_status='pending' WHERE user_id=${u.bId}`); // something must be waiting for the link to appear
  let c=await mk(u.aT); let p=await c.newPage(); await p.goto(BASE+'/en/admin',{waitUntil:'networkidle'}); await p.getByRole('heading',{name:'Needs your attention'}).waitFor(); await sleep(800);
  const panelText=await p.locator('#attention-title').locator('..').innerText(); ok(/to review|waits? for|to check|to pay/.test(panelText)||/Nothing is waiting/.test(panelText),'the panel shows what waits or says all clear',panelText);
  const docLink=p.locator('#attention-title').locator('..').getByRole('link',{name:/buyer documents? to review/}); await docLink.waitFor({timeout:10000}).catch(()=>{}); ok(await docLink.count()===1,'a documents link is listed');

@@ -84,7 +84,7 @@ const reset=()=>sql(`DELETE FROM buyer_custom_documents; DELETE FROM buyer_custo
  const row=wb.worksheets[0].getRow(2).values.slice(1); ok(row[3]==='Set by admin'&&row[4]==='Textiles'&&row[5]==='2026-11-02','answers are in the right columns',row.slice(3,6));
  ok(wb.worksheets[0].getImages().length>=3,'the new document photo is embedded too');
  rx=await A('/api/admin/buyer-profiles/export/documents-zip','POST',{userIds:[u.bId]}); fs.writeFileSync(ZIPFILE,Buffer.from(await rx.arrayBuffer()));
- const names=require('node:child_process').execSync('unzip -Z1 /tmp/claude-0/fa.zip',{encoding:'utf8'}).trim().split('\n').map(l=>l.replace(/^[^/]*\//,'').replace(/\.[a-z]+$/,'')); console.log('   zip:',names.join(' | '));
+ const names=require('node:child_process').execSync('unzip -Z1 '+ZIPFILE,{encoding:'utf8'}).trim().split('\n').map(l=>l.replace(/^[^/]*\//,'').replace(/\.[a-z]+$/,'')); console.log('   zip:',names.join(' | '));
  ok(names.length===9&&names[7]==='8 - Company Registration Certificate'&&names[8]==='9 - Latest Entry Stamp Photo'&&names[1]==='2 - Visa Page (any page with a visa)','ZIP: nine files numbered in the set order, with the new names',names);
  rx=await A('/api/admin/buyer-profiles/export/excel','POST',{userIds:[u.bId],fields:['name','c_unknown999']}); wb=new ExcelJS.Workbook(); await wb.xlsx.load(Buffer.from(await rx.arrayBuffer())); ok(wb.worksheets[0].getRow(1).values.slice(1).join()==='Buyer Registration No.,Name','an unknown column in the request is ignored');
  console.log('\n== deleting');

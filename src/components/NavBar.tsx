@@ -104,7 +104,7 @@ export default function NavBar({ sections }: { sections: NavSections }) {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-gray-200">
-      <div className="mx-auto max-w-7xl px-6 flex items-center justify-between gap-4 h-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 flex items-center justify-between gap-4 h-16">
         {/* Logo */}
         <Link href="/" className="group shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-4 rounded-sm">
           <Logo />
@@ -179,7 +179,9 @@ export default function NavBar({ sections }: { sections: NavSections }) {
 
         {/* Mobile search + hamburger */}
         <div className="min-[1400px]:hidden flex items-center gap-1">
-        {wallet && <WalletChip balance={wallet.balance} ariaLabel={t("walletAria", { points: formatNumber(wallet.balance) })} />}
+        {/* Not in the bar on a phone (below 640px): logo, pill, search and menu do not fit side by
+            side and the menu button was pushed off the screen. The balance is the gold row in the menu. */}
+        {wallet && <WalletChip balance={wallet.balance} className="hidden sm:inline-flex" ariaLabel={t("walletAria", { points: formatNumber(wallet.balance) })} />}
         <Link href="/search" aria-label={t("search")} className="p-2 text-gray-600 hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" /></svg>
         </Link>

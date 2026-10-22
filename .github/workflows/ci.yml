@@ -67,7 +67,9 @@ jobs:
           done
 
       - name: Build the site
-        run: npm run build
+        # The site loads its fonts from Google while it builds; an occasional bad answer from there
+        # fails a build that is fine, so one retry is allowed.
+        run: npm run build || (echo "build failed once, retrying" && sleep 20 && npm run build)
 
       - name: Start the site
         run: |

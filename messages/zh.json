@@ -769,6 +769,10 @@
       "health": {
         "title": "运行状况与备份",
         "description": "报名、发送失败的邮件以及最近备份的时间。"
+      },
+      "errors": {
+        "title": "错误",
+        "description": "网站遇到的问题及其发生频率。"
       }
     },
     "attention": {
@@ -5091,7 +5095,8 @@
       "groupInvite": "同事邀请",
       "scheduledReport": "定时报表",
       "dailyHealth": "每日运行状况报告",
-      "adminSignIn": "管理员新登录提醒"
+      "adminSignIn": "管理员新登录提醒",
+      "errorAlert": "网站新错误提醒"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -5334,7 +5339,9 @@
       "health_email_setting_changed": "修改了每日运行状况邮件设置",
       "health_email_sent_now": "向自己发送了运行状况邮件",
       "email_bounce_cleared": "清除了退信地址标记",
-      "two_step_required_changed": "修改了是否要求所有管理员使用两步验证"
+      "two_step_required_changed": "修改了是否要求所有管理员使用两步验证",
+      "error_resolved": "将网站错误标记为已解决",
+      "error_reopened": "重新打开了网站错误"
     }
   },
   "notificationsPage": {
@@ -6119,7 +6126,9 @@
       "rate_limited": "过去一小时发送次数过多，请稍后再试。",
       "send_failed": "邮件发送失败，请检查邮件设置。",
       "failed": "操作失败，请重试。"
-    }
+    },
+    "issueErrors": "过去 24 小时网站报告了 {n} 个错误。",
+    "errorsReported": "网站报告的错误"
   },
   "adminBounces": {
     "title": "退信的邮箱地址",
@@ -6154,5 +6163,27 @@
     "none": "暂无记录。",
     "place": "网络 {network}",
     "seen": "最近 {last}，首次 {first}，共 {count} 次登录"
+  },
+  "adminErrors": {
+    "title": "网站错误",
+    "subtitle": "网站上出了什么问题，以及出现的频率。",
+    "back": "← 返回管理后台",
+    "how": "网站会报告服务器和访客浏览器中的错误。相同的错误合并为一行并计数。出现新错误时会给管理员发邮件（多个错误合并为一封）。修复后请标记为已解决；只有再次发生才会重新出现。",
+    "showResolved": "同时显示已解决的错误",
+    "none": "没有错误报告。一切正常。",
+    "loadFailed": "无法加载列表。",
+    "source": {
+      "server": "服务器",
+      "client": "浏览器"
+    },
+    "times": "{count} 次，最近 {last}，首次 {first}",
+    "where": "位置：{path}",
+    "isResolved": "已标记为已解决",
+    "details": "详情",
+    "hideDetails": "收起详情",
+    "resolve": "标记为已解决",
+    "reopen": "重新打开",
+    "resolvedNote": "已标记为已解决。",
+    "reopenedNote": "已重新打开。"
   }
 }

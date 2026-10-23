@@ -4,6 +4,7 @@ import pool from "@/lib/db";
 import { decryptSecret, encryptSecret, isMailEnabled } from "@/lib/server/mail";
 import { notifyUser } from "@/lib/server/notifications";
 import { runRetention } from "@/lib/server/data-retention";
+import { sendErrorAlerts } from "@/lib/server/error-log";
 import { runDailyHealth } from "@/lib/server/health-report";
 import { runScheduledExports } from "@/lib/server/scheduled-exports";
 import { sendDocumentExpiryAlerts, sendSavedExhibitionAlerts } from "@/lib/server/registration-alerts";
@@ -94,6 +95,8 @@ export async function runDailyAlerts(): Promise<{ promoted: number; saved: numbe
       console.error("Data retention failed:", err);
       return 0;
     });
+  // New errors that were not told to the admins yet (normally they are told a minute after they happen).
+  await sendErrorAlerts().catch((err) => console.error("Error alerts failed:", err));
   // The daily health report goes to the admins (only when e-mail is on and the report is switched on).
   const health = await runDailyHealth().catch((err) => {
     console.error("Daily health e-mail failed:", err);

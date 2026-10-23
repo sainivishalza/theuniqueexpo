@@ -31,7 +31,7 @@ interface LogRow {
 
 const KINDS = [
   "passwordReset", "passwordChanged", "registrationReceived", "registrationWaitlisted", "waitlistPlaceOpened", "registrationApproved", "registrationRejected", "tourRegistrationApproved", "tourRegistrationRejected", "documentRejected", "pointsReceived",
-  "topupApproved", "topupRejected", "withdrawalPaid", "withdrawalRejected", "expenseApproved", "expenseRejected", "confirmEmail", "confirmEmailChange", "emailChanged", "registrationReminder", "registrationStartsSoon", "scheduledReport", "dailyHealth", "adminSignIn", "savedRegistrationOpened", "savedRegistrationClosing", "passportExpiring", "visaExpiring", "groupInvite", "announcement", "test",
+  "topupApproved", "topupRejected", "withdrawalPaid", "withdrawalRejected", "expenseApproved", "expenseRejected", "confirmEmail", "confirmEmailChange", "emailChanged", "registrationReminder", "registrationStartsSoon", "scheduledReport", "dailyHealth", "adminSignIn", "errorAlert", "savedRegistrationOpened", "savedRegistrationClosing", "passportExpiring", "visaExpiring", "groupInvite", "announcement", "test",
 ];
 
 // Admin -> Email: the mail server the website sends from, a test button, and what was sent lately.

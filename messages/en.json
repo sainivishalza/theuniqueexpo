@@ -127,7 +127,15 @@
       "registerBy": "Register by {date}",
       "opensOn": "Registration opens on {date}",
       "closedOn": "Registration closed on {date}"
-    }
+    },
+    "from": "From",
+    "to": "To",
+    "clearDates": "Clear dates",
+    "viewLabel": "How to show the list",
+    "viewGrid": "All together",
+    "viewMonths": "By month",
+    "subscribe": "Add all exhibitions to my calendar",
+    "subscribeHelp": "It updates by itself when exhibitions are added or change."
   },
   "toursPage": {
     "title": "Tours",

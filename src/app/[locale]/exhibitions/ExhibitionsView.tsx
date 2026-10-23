@@ -42,6 +42,10 @@ export default function ExhibitionsView({
   const [industry, setIndustry] = useState("All");
   const [city, setCity] = useState("All");
   const [dateFilter, setDateFilter] = useState(initialView === "past" || initialView === "all" ? initialView : "upcoming");
+  // Only exhibitions that overlap the days chosen here (YYYY-MM-DD; empty = no limit), and a list grouped by month.
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [view, setView] = useState<"grid" | "months">("grid");
 
   const industries = useMemo(() => [...new Set(exhibitions.map((e) => e.industry))].sort(), [exhibitions]);
   const cities = useMemo(() => [...new Set(exhibitions.map((e) => e.city))].sort(), [exhibitions]);
@@ -56,6 +60,8 @@ export default function ExhibitionsView({
   const filtered = searched.filter((e) => {
     if (industry !== "All" && e.industry !== industry) return false;
     if (city !== "All" && e.city !== city) return false;
+    if (from && e.endDate < from) return false;
+    if (to && e.startDate > to) return false;
     if (dateFilter === "upcoming" && new Date(e.endDate) < new Date()) return false;
     if (dateFilter === "past" && new Date(e.endDate) >= new Date()) return false;
     return true;
@@ -67,83 +73,18 @@ export default function ExhibitionsView({
   // While searching, the archive lists only the past exhibitions that match the words typed.
   const pastExhibitions = searched.filter((e) => new Date(e.endDate) < new Date());
 
-  return (
-    <div>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-[var(--color-hero-bg)] py-20">
-        <div className="absolute inset-0 opacity-15">
-          <Image
-            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&h=600&fit=crop&q=80"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-        </div>
-        <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
-          <h1 className="text-4xl md:text-5xl font-extrabold">{t("title")}</h1>
-          <p className="mt-3 text-lg text-gray-300 max-w-xl">
-            {t("subtitle")}
-          </p>
-        </div>
-      </section>
+  // The same list grouped by the month each exhibition starts in ("2026-03" -> the exhibitions starting then), oldest first.
+  const byMonth = (() => {
+    const groups = new Map<string, Exhibition[]>();
+    for (const e of [...filtered].sort((a, b) => a.startDate.localeCompare(b.startDate))) {
+      const key = e.startDate.slice(0, 7);
+      groups.set(key, [...(groups.get(key) ?? []), e]);
+    }
+    return [...groups.entries()];
+  })();
+  const monthTitle = (key: string) => new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${key}-01T00:00:00Z`));
 
-      {/* Filters */}
-      <section className="border-b border-gray-200 bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-4 flex flex-wrap gap-3 items-center">
-          <SearchBox value={query} onChange={setQuery} compact placeholder={t("searchPlaceholder")} label={t("searchLabel")} className="w-full sm:w-72" />
-          <span className="text-sm font-semibold text-gray-500 mr-2">{t("filter")}</span>
-          <select
-            value={industry}
-            onChange={(e) => setIndustry(e.target.value)}
-            aria-label={t("filterIndustry")}
-            className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none"
-          >
-            <option value="All">{t("allIndustries")}</option>
-            {industries.map((i) => (
-              <option key={i}>{i}</option>
-            ))}
-          </select>
-          <select
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            aria-label={t("filterCity")}
-            className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none"
-          >
-            <option value="All">{t("allCities")}</option>
-            {cities.map((c) => (
-              <option key={c}>{c}</option>
-            ))}
-          </select>
-          <div className="flex rounded-[var(--radius-button)] border border-gray-700 overflow-hidden">
-            {["all", "upcoming", "past"].map((f) => (
-              <button
-                key={f}
-                onClick={() => setDateFilter(f)}
-                className={`px-4 py-2 text-sm font-medium capitalize transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${
-                  dateFilter === f
-                    ? "bg-gray-900 text-white"
-                    : "bg-white text-gray-600 hover:bg-cream-50"
-                }`}
-              >
-                {dateFilterLabels[f]}
-              </button>
-            ))}
-          </div>
-          <span className="ml-auto text-sm text-gray-500">
-            {t("count", { count: filtered.length })}
-          </span>
-        </div>
-      </section>
-
-      <HowAreYouAttending />
-
-      {/* Exhibition Grid */}
-      <section className="py-12 bg-cream-50">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((expo) => (
+  const renderCard = (expo: Exhibition) => (
               <Card key={expo.id} bordered={false} hoverable={false}>
                 <Link href={`/exhibitions/${expo.slug}`} className="group block">
                   {/* Image */}
@@ -224,8 +165,125 @@ export default function ExhibitionsView({
                   </Button>
                 </div>
               </Card>
+  );
+
+  return (
+    <div>
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-[var(--color-hero-bg)] py-20">
+        <div className="absolute inset-0 opacity-15">
+          <Image
+            src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&h=600&fit=crop&q=80"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
+        <div className="relative z-10 mx-auto max-w-7xl px-6 text-white">
+          <h1 className="text-4xl md:text-5xl font-extrabold">{t("title")}</h1>
+          <p className="mt-3 text-lg text-gray-300 max-w-xl">
+            {t("subtitle")}
+          </p>
+        </div>
+      </section>
+
+      {/* Filters */}
+      <section className="border-b border-gray-200 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-4 flex flex-wrap gap-3 items-center">
+          <SearchBox value={query} onChange={setQuery} compact placeholder={t("searchPlaceholder")} label={t("searchLabel")} className="w-full sm:w-72" />
+          <span className="text-sm font-semibold text-gray-500 mr-2">{t("filter")}</span>
+          <select
+            value={industry}
+            onChange={(e) => setIndustry(e.target.value)}
+            aria-label={t("filterIndustry")}
+            className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none"
+          >
+            <option value="All">{t("allIndustries")}</option>
+            {industries.map((i) => (
+              <option key={i}>{i}</option>
+            ))}
+          </select>
+          <select
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            aria-label={t("filterCity")}
+            className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none"
+          >
+            <option value="All">{t("allCities")}</option>
+            {cities.map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
+          <div className="flex rounded-[var(--radius-button)] border border-gray-700 overflow-hidden">
+            {["all", "upcoming", "past"].map((f) => (
+              <button
+                key={f}
+                onClick={() => setDateFilter(f)}
+                className={`px-4 py-2 text-sm font-medium capitalize transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${
+                  dateFilter === f
+                    ? "bg-gray-900 text-white"
+                    : "bg-white text-gray-600 hover:bg-cream-50"
+                }`}
+              >
+                {dateFilterLabels[f]}
+              </button>
             ))}
           </div>
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            {t("from")}
+            <input type="date" value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-2 py-1.5 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none" />
+          </label>
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            {t("to")}
+            <input type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-2 py-1.5 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none" />
+          </label>
+          {(from || to) && (
+            <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="text-sm font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900">{t("clearDates")}</button>
+          )}
+          <div className="flex rounded-[var(--radius-button)] border border-gray-700 overflow-hidden" role="group" aria-label={t("viewLabel")}>
+            {(["grid", "months"] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                aria-pressed={view === v}
+                onClick={() => setView(v)}
+                className={`px-4 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${view === v ? "bg-gray-900 text-white" : "bg-white text-gray-600 hover:bg-cream-50"}`}
+              >
+                {v === "grid" ? t("viewGrid") : t("viewMonths")}
+              </button>
+            ))}
+          </div>
+          <span className="ml-auto text-sm text-gray-500">
+            {t("count", { count: filtered.length })}
+          </span>
+        </div>
+        <div className="mx-auto max-w-7xl px-6 pb-4 text-sm text-gray-700">
+          <a href={`webcal://theuniqueexpo.com/api/calendar/exhibitions.ics?locale=${locale}`} className="font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900" data-testid="subscribe-calendar">{t("subscribe")}</a>
+          <span className="ml-2 text-gray-600">{t("subscribeHelp")}</span>
+        </div>
+      </section>
+
+      <HowAreYouAttending />
+
+      {/* Exhibition Grid */}
+      <section className="py-12 bg-cream-50">
+        <div className="mx-auto max-w-7xl px-6">
+          {view === "months" ? (
+            <div className="space-y-12" data-testid="exhibitions-by-month">
+              {byMonth.map(([key, items]) => (
+                <section key={key} aria-labelledby={`month-${key}`}>
+                  <h2 id={`month-${key}`} className="mb-4 text-xl font-bold text-heading">{monthTitle(key)}</h2>
+                  <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">{items.map(renderCard)}</div>
+                </section>
+              ))}
+            </div>
+          ) : (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {filtered.map(renderCard)}
+            </div>
+          )}
 
           {dateFilter === "upcoming" && pastExhibitions.length > 0 && (
             <nav aria-labelledby="past-exhibitions-title" className="mt-16 border-t border-gray-200 pt-10">

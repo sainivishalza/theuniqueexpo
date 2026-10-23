@@ -79,6 +79,8 @@ export interface ExpoRegistrationInput {
 
 export interface ExpoRegistration extends Partial<ExpoRegistrationInput> {
   id: string;
+  /** Pending and waiting for a place. */
+  waitlisted?: boolean;
   userId: string;
   // The buyer's registration number (TUE0001); empty when they have none.
   buyerNumber?: string;

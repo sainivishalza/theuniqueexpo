@@ -15,6 +15,8 @@ export type EmailKind =
   | "passwordReset"
   | "passwordChanged"
   | "registrationReceived"
+  | "registrationWaitlisted"
+  | "waitlistPlaceOpened"
   | "registrationApproved"
   | "registrationRejected"
   | "tourRegistrationApproved"

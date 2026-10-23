@@ -65,6 +65,8 @@ export function isValidDateOnly(value: unknown): value is string {
 // those are only ever sent to the admin screen and to the owner's own edit form.
 export interface MyRegistration {
   id: string;
+  /** Pending and waiting for a place (the exhibition has taken all its buyers). */
+  waitlisted?: boolean;
   exhibitionId: number;
   exhibitionSlug: string;
   exhibitionTitle: string;

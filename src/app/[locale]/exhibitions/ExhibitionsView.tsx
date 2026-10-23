@@ -2,7 +2,8 @@
 
 import { useDeferredValue, useMemo, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import RegistrationWindowNote, { hasWindowNote } from "@/components/RegistrationWindowNote";
 import { formatNumber } from "@/lib/format";
 import FavoriteButton from "@/components/FavoriteButton";
 import Badge from "@/components/ui/Badge";
@@ -18,6 +19,9 @@ export interface Exhibition {
   venue: string; city: string; country: string; industry: string; description: string;
   highlights: string[]; exhibitors: number; visitors: string; organizer: string; website: string;
   color: string; image: string; registrationEnabled: boolean;
+  registrationState?: "open" | "opens_later" | "deadline_passed" | "switched_off";
+  registrationOpens?: string | null; registrationCloses?: string | null;
+  registrationDaysToClose?: number | null; registrationDaysToOpen?: number | null;
 }
 
 export default function ExhibitionsView({
@@ -28,6 +32,8 @@ export default function ExhibitionsView({
   initialView: string | null;
 }) {
   const t = useTranslations("exhibitionsPage");
+  const tw = useTranslations("exhibitionsPage.window");
+  const locale = useLocale();
   const dateFilterLabels: Record<string, string> = {
     all: t("allDates"),
     upcoming: t("upcoming"),
@@ -201,6 +207,7 @@ export default function ExhibitionsView({
                     </div>
                   </div>
                 </Link>
+                {hasWindowNote(expo) && <div className="px-5 pb-3"><RegistrationWindowNote info={expo} t={tw} locale={locale} /></div>}
                 <div className="px-5 pb-5 grid grid-cols-2 gap-2">
                   {expo.registrationEnabled && (
                     <Button href={`/exhibitions/${expo.slug}/register`} variant="gradientCta" size="block">

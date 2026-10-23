@@ -119,7 +119,15 @@
     "pastArchiveTitle": "往期展会",
     "pastArchiveSubtitle": "浏览已经举办过的展会。",
     "searchPlaceholder": "搜索展会、城市、行业…",
-    "searchLabel": "搜索展会"
+    "searchLabel": "搜索展会",
+    "window": {
+      "closesToday": "今天是报名截止日",
+      "closesTomorrow": "报名明天截止",
+      "closesIn": "报名将在 {days} 天后截止",
+      "registerBy": "请在 {date} 前报名",
+      "opensOn": "报名将于 {date} 开放",
+      "closedOn": "报名已于 {date} 截止"
+    }
   },
   "toursPage": {
     "title": "旅游",
@@ -1617,7 +1625,15 @@
     "addChinaTravelTitle": "让您的中国之行更精彩",
     "addChinaTravelText": "您的展会参观不必只是两天的展会行程。将商务与旅行结合，在同一次旅程中探索更多中国。",
     "addChinaTravel": "添加中国旅行",
-    "shareByEmail": "通过电子邮件分享"
+    "shareByEmail": "通过电子邮件分享",
+    "window": {
+      "closesToday": "今天是报名截止日",
+      "closesTomorrow": "报名明天截止",
+      "closesIn": "报名将在 {days} 天后截止",
+      "registerBy": "请在 {date} 前报名",
+      "opensOn": "报名将于 {date} 开放",
+      "closedOn": "报名已于 {date} 截止"
+    }
   },
   "expoRegisterPage": {
     "loading": "加载中...",
@@ -1689,7 +1705,15 @@
     "registrationUpdated": "报名信息已更新!",
     "registrationUpdatedHint": "您对<strong>{name}</strong>的修改已保存,我们的团队将审核您的报名。",
     "yourRegistrationFor": "您在{name}的报名",
-    "alreadyRegisteredHint": "您已报名此展会,以下是当前进度。"
+    "alreadyRegisteredHint": "您已报名此展会,以下是当前进度。",
+    "window": {
+      "closesToday": "今天是报名截止日",
+      "closesTomorrow": "报名明天截止",
+      "closesIn": "报名将在 {days} 天后截止",
+      "registerBy": "请在 {date} 前报名",
+      "opensOn": "报名将于 {date} 开放",
+      "closedOn": "报名已于 {date} 截止"
+    }
   },
   "floorPlanPage": {
     "loading": "加载中...",
@@ -5193,7 +5217,15 @@
     "overlapWarning": "{count, plural, other {您勾选的展会中有 # 个与其他展会日期重叠。}}您仍可以全部报名，但无法同时参加。",
     "suggested": "为您推荐",
     "suggestedHistory": "您之前报名过同属“{industry}”行业的其他展会。",
-    "suggestedProfile": "与您的业务相符：{field}。"
+    "suggestedProfile": "与您的业务相符：{field}。",
+    "window": {
+      "closesToday": "今天是报名截止日",
+      "closesTomorrow": "报名明天截止",
+      "closesIn": "报名将在 {days} 天后截止",
+      "registerBy": "请在 {date} 前报名",
+      "opensOn": "报名将于 {date} 开放",
+      "closedOn": "报名已于 {date} 截止"
+    }
   },
   "adminBulkDecision": {
     "selectedCount": "{count, plural, other {已选择 # 条报名}}",

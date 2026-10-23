@@ -119,7 +119,15 @@
     "pastArchiveTitle": "Past exhibitions",
     "pastArchiveSubtitle": "Browse exhibitions that have already taken place.",
     "searchPlaceholder": "Search exhibitions, cities, industries…",
-    "searchLabel": "Search exhibitions"
+    "searchLabel": "Search exhibitions",
+    "window": {
+      "closesToday": "Last day to register: today",
+      "closesTomorrow": "Registration closes tomorrow",
+      "closesIn": "Registration closes in {days} days",
+      "registerBy": "Register by {date}",
+      "opensOn": "Registration opens on {date}",
+      "closedOn": "Registration closed on {date}"
+    }
   },
   "toursPage": {
     "title": "Tours",
@@ -1617,7 +1625,15 @@
     "addChinaTravelTitle": "Make More of Your China Trip",
     "addChinaTravelText": "Your exhibition visit does not have to be only two days at the exhibition. Combine business with travel and discover more of China during the same trip.",
     "addChinaTravel": "Add China Travel",
-    "shareByEmail": "Share by email"
+    "shareByEmail": "Share by email",
+    "window": {
+      "closesToday": "Last day to register: today",
+      "closesTomorrow": "Registration closes tomorrow",
+      "closesIn": "Registration closes in {days} days",
+      "registerBy": "Register by {date}",
+      "opensOn": "Registration opens on {date}",
+      "closedOn": "Registration closed on {date}"
+    }
   },
   "expoRegisterPage": {
     "loading": "Loading...",
@@ -1689,7 +1705,15 @@
     "registrationUpdated": "Registration updated!",
     "registrationUpdatedHint": "Your changes for <strong>{name}</strong> have been saved. Our team will review your registration.",
     "yourRegistrationFor": "Your registration for {name}",
-    "alreadyRegisteredHint": "You have already registered for this exhibition. Here is where it stands."
+    "alreadyRegisteredHint": "You have already registered for this exhibition. Here is where it stands.",
+    "window": {
+      "closesToday": "Last day to register: today",
+      "closesTomorrow": "Registration closes tomorrow",
+      "closesIn": "Registration closes in {days} days",
+      "registerBy": "Register by {date}",
+      "opensOn": "Registration opens on {date}",
+      "closedOn": "Registration closed on {date}"
+    }
   },
   "floorPlanPage": {
     "loading": "Loading...",
@@ -5193,7 +5217,15 @@
     "overlapWarning": "{count, plural, one {# exhibition you ticked takes place on the same days as another one.} other {# exhibitions you ticked take place on the same days as another one.}} You can still register for all of them, but you will not be able to attend both.",
     "suggested": "Suggested for you",
     "suggestedHistory": "You registered for another {industry} exhibition.",
-    "suggestedProfile": "Matches your business: {field}."
+    "suggestedProfile": "Matches your business: {field}.",
+    "window": {
+      "closesToday": "Last day to register: today",
+      "closesTomorrow": "Registration closes tomorrow",
+      "closesIn": "Registration closes in {days} days",
+      "registerBy": "Register by {date}",
+      "opensOn": "Registration opens on {date}",
+      "closedOn": "Registration closed on {date}"
+    }
   },
   "adminBulkDecision": {
     "selectedCount": "{count, plural, one {# registration selected} other {# registrations selected}}",

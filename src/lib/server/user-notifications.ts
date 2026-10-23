@@ -6,6 +6,8 @@ import pool from "@/lib/db";
 
 export type NotificationKind =
   | "registrationReceived"
+  | "registrationWaitlisted"
+  | "waitlistPlaceOpened"
   | "registrationApproved"
   | "registrationRejected"
   | "registrationReminder"
@@ -24,7 +26,7 @@ export type NotificationKind =
   | "announcement";
 
 export const NOTIFICATION_KINDS: readonly string[] = [
-  "registrationReceived", "registrationApproved", "registrationRejected", "registrationReminder", "registrationStartsSoon", "tourRegistrationApproved", "tourRegistrationRejected", "documentRejected", "pointsReceived",
+  "registrationReceived", "registrationWaitlisted", "waitlistPlaceOpened", "registrationApproved", "registrationRejected", "registrationReminder", "registrationStartsSoon", "tourRegistrationApproved", "tourRegistrationRejected", "documentRejected", "pointsReceived",
   "topupApproved", "topupRejected", "withdrawalPaid", "withdrawalRejected", "expenseApproved", "expenseRejected",
   "passwordChanged", "announcement",
 ];

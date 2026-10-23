@@ -1,0 +1,137 @@
+name: Preview
+
+# Screenshots of a change before it is merged, built from the branch on a throwaway database of made-up demo data.
+#
+# Start it by adding the label "preview" to a pull request, or by running this workflow by hand
+# (Actions -> Preview -> Run workflow, with the branch and, if wanted, a pull request number to post the link on).
+# It builds the branch, fills a throwaway database with demo data (scripts/preview-seed.mjs), opens the main pages in a
+# phone-size and a laptop-size browser in English, Russian and Chinese (public pages, a signed-in buyer and a signed-in
+# admin), and keeps the pictures as a download on the run. Nothing is published to the internet: the site only runs
+# inside this job.
+#
+# Nothing here touches the real site, its database or its secrets: the demo database lives and dies with this job,
+# the demo accounts use a password made up for this run, and e-mail is switched off.
+on:
+  pull_request:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch to preview"
+        required: true
+        default: "main"
+      pr:
+        description: "Pull request number to post the link on (optional)"
+        required: false
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number || github.event.inputs.pr || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    # For the label trigger only the "preview" label starts it.
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'preview'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "1"
+          MARIADB_DATABASE: unique_expo_preview
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASSWORD: ""
+      DB_NAME: unique_expo_preview
+      # Only this throwaway copy uses it; made up for this run.
+      JWT_SECRET: preview-${{ github.run_id }}-${{ github.run_attempt }}-not-a-real-secret
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.event.inputs.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Build the database like a deploy does
+        run: |
+          set -e
+          M="mysql --default-character-set=utf8mb4 -h127.0.0.1 -uroot unique_expo_preview"
+          $M < schema.sql
+          $M < schema-admin.sql
+          for f in $(grep '^run_mysql schema-migrations' scripts/hostinger-deploy-remote.sh | awk '{print $2}'); do
+            $M < "$f"
+          done
+
+      - name: Fill it with made-up demo data
+        run: |
+          PW="$(openssl rand -base64 12 | tr -d '/+=' | cut -c1-12)"
+          echo "::add-mask::$PW"
+          echo "PREVIEW_PASSWORD=$PW" >> "$GITHUB_ENV"
+          PREVIEW_PASSWORD="$PW" node scripts/preview-seed.mjs > accounts.txt
+          echo "Demo accounts made: $(grep -c '^ACCOUNT ' accounts.txt)"
+
+      - name: Build the site
+        run: npm run build || (echo "build failed once, retrying" && sleep 20 && npm run build)
+
+      - name: Start the site (inside this job only)
+        run: |
+          nohup npx next start -p 3100 > site.log 2>&1 &
+          for i in $(seq 1 60); do curl -s -o /dev/null http://localhost:3100/api/auth/me && exit 0; sleep 1; done
+          cat site.log; exit 1
+
+      - name: Install the browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Take the screenshots
+        env:
+          PREVIEW_BASE_URL: http://localhost:3100
+          PREVIEW_OUT: ${{ github.workspace }}/preview-screens
+        run: node scripts/preview-shots.mjs
+
+      - name: Keep the screenshots
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-screens
+          path: preview-screens
+          retention-days: 7
+
+      - name: Post the link on the pull request
+        if: github.event.pull_request.number || github.event.inputs.pr
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        with:
+          script: |
+            const number = Number(process.env.PR_NUMBER);
+            if (!Number.isInteger(number) || number <= 0) { core.warning('No valid pull request number: not posting the link.'); return; }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: number,
+              body: `**Screenshots of this change** (demo data, phone and laptop size, English, Russian and Chinese)\n\nDownload: ${process.env.ARTIFACT_URL}\n\nThe run: ${process.env.RUN_URL}\n\nThe pictures are kept for 7 days.`,
+            });
+
+      - name: Keep the site log when something failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-logs
+          path: site.log
+          if-no-files-found: ignore

@@ -761,6 +761,14 @@
       "staffAccess": {
         "title": "Staff roles",
         "description": "Limit an admin account to part of the back office: registrations and buyers, website content, the wallet, or view only."
+      },
+      "dataRetention": {
+        "title": "Data retention",
+        "description": "Delete passport and visa pictures some time after an exhibition is over."
+      },
+      "health": {
+        "title": "Health and backups",
+        "description": "Registrations, failed e-mails and when the last backups were made."
       }
     },
     "attention": {
@@ -3371,7 +3379,8 @@
     "tagFilter": {
       "label": "Tag",
       "all": "Any tag"
-    }
+    },
+    "emailBounced": "E-mail bounced"
   },
   "homepageSlideshow": {
     "previous": "Previous photo",
@@ -5075,7 +5084,8 @@
       "passportExpiring": "Passport expires soon",
       "visaExpiring": "Visa expires too early",
       "groupInvite": "Colleague invitation",
-      "scheduledReport": "Scheduled report"
+      "scheduledReport": "Scheduled report",
+      "dailyHealth": "Daily health report"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -5312,7 +5322,12 @@
       "scheduled_export_sent_now": "Sent a scheduled report now",
       "staff_role_set": "Set an admin's role",
       "document_link_created": "Made a link to share a buyer document",
-      "document_link_revoked": "Stopped a document share link"
+      "document_link_revoked": "Stopped a document share link",
+      "retention_settings_changed": "Changed the data-retention setting",
+      "retention_run": "Deleted old passport and visa pictures",
+      "health_email_setting_changed": "Changed the daily health e-mail setting",
+      "health_email_sent_now": "Sent the health e-mail to themselves",
+      "email_bounce_cleared": "Cleared a bounced e-mail address"
     }
   },
   "notificationsPage": {
@@ -6015,5 +6030,101 @@
       "no_document": "There is no document to share.",
       "failed": "The link could not be made. Please try again."
     }
+  },
+  "adminDataRetention": {
+    "title": "Data retention",
+    "subtitle": "Passport and visa pictures are not kept for ever.",
+    "back": "← Back to Admin",
+    "rulesTitle": "How it works",
+    "rulesWhat": "What is deleted: the passport page, the visa page and the latest entry stamp, from the buyer's profile and from the registrations of exhibitions that are over.",
+    "rulesWhen": "When: after the last exhibition the buyer registered for ended the chosen number of days ago.",
+    "rulesSafe": "Safety: nothing is deleted for a buyer who is registered for an exhibition that is not over (or ended within that time), or whose profile was changed within that time.",
+    "rulesStays": "What stays: business licence, business card, the buyer's photo and all other details. Buyers upload the pictures again when they register for a new exhibition.",
+    "enable": "Delete these pictures automatically (the daily job)",
+    "after": "Delete after the exhibition ended",
+    "days": "{days} days",
+    "saved": "Saved.",
+    "stateOn": "On: the daily job deletes what is due.",
+    "stateOff": "Off: nothing is deleted automatically. Nothing is deleted until you turn this on or press Delete now.",
+    "dueTitle": "Due now (after {days} days)",
+    "due": "{profiles, plural, one {# buyer profile} other {# buyer profiles}} ({files, plural, one {# picture} other {# pictures}}) and {registrations, plural, one {# registration} other {# registrations}} would be cleared.",
+    "dueNone": "Nothing is due.",
+    "deleteNow": "Delete now",
+    "confirmTitle": "Delete these pictures now?",
+    "confirm": "Delete the passport, visa and entry-stamp pictures of {profiles} buyer profiles and {registrations} registrations now?",
+    "cannotUndo": "This cannot be taken back (only the daily database backups still hold them).",
+    "yesDelete": "Yes, delete",
+    "deleting": "Deleting…",
+    "cancel": "Cancel",
+    "done": "Done: {profiles} profiles ({files} pictures) and {registrations} registrations cleared.",
+    "runsTitle": "Recent runs",
+    "runsNone": "Nothing has been deleted yet.",
+    "kind": {
+      "auto": "daily job",
+      "manual": "by an admin"
+    },
+    "run": "{date}, {kind}, after {days} days: {profiles} profiles ({files} pictures) and {registrations} registrations",
+    "unavailable": "Not available yet. It starts working after the next update of the database.",
+    "errors": {
+      "load": "Could not load this page.",
+      "rate_limited": "Too many runs in the last hour. Please wait.",
+      "failed": "That did not work. Please try again."
+    }
+  },
+  "adminHealth": {
+    "title": "Health and backups",
+    "subtitle": "How the site is doing, and whether the database is backed up.",
+    "back": "← Back to Admin",
+    "allFine": "Nothing needs attention",
+    "needsAttention": "Needs attention",
+    "issueNoOffsite": "No off-site backup has been made yet. The only database backups are on the same server as the website.",
+    "issueOldOffsite": "The last off-site backup is {n} days old.",
+    "issueNoDeploy": "No backup made by a deploy is recorded yet.",
+    "issueOldDeploy": "The last backup made by a deploy is {n} days old.",
+    "issueFailedMail": "{n} e-mails failed to send in the last 24 hours.",
+    "issueBacklog": "{n} registrations are waiting for review.",
+    "last24": "The last 24 hours",
+    "newRegistrations": "New registrations",
+    "pending": "Registrations waiting for review",
+    "emailsSent": "E-mails sent",
+    "emailsFailed": "E-mails that failed",
+    "mailOff": "E-mail is switched off.",
+    "openEmail": "Open E-mail settings",
+    "backups": "Database backups",
+    "deployBackup": "Last backup made by a deploy (kept on the server)",
+    "offsiteBackup": "Last off-site backup (encrypted, kept outside the server)",
+    "backupWhen": "{date} ({size}), {days, plural, one {# day} other {# days}} ago",
+    "backupNone": "None recorded yet",
+    "mb": "{n} MB",
+    "kb": "{n} KB",
+    "backupHelp": "The off-site copy is made every night by a GitHub workflow once it is set up (see HOSTINGER-DEPLOY.md, “Off-site backups”).",
+    "emailTitle": "Daily health e-mail",
+    "emailEnable": "E-mail this report to every admin once a day",
+    "lastSent": "Last sent on {date}.",
+    "neverSent": "Not sent yet.",
+    "sendNow": "Send it to me now",
+    "sending": "Sending…",
+    "sentToYou": "Sent to {email}.",
+    "saved": "Saved.",
+    "errors": {
+      "load": "Could not load this page.",
+      "mail_off": "E-mail is switched off.",
+      "rate_limited": "Too many sends in the last hour. Please wait.",
+      "send_failed": "The e-mail could not be sent. Check the E-mail settings.",
+      "failed": "That did not work. Please try again."
+    }
+  },
+  "adminBounces": {
+    "title": "Addresses that bounced",
+    "intro": "When an e-mail cannot be delivered, the other mail server sends a notice back. The website reads those notices (every few hours, once the “Mail bounces” workflow is set up) and lists the addresses here.",
+    "none": "No bounced addresses.",
+    "kind": {
+      "hard": "Does not exist",
+      "soft": "Temporary problem"
+    },
+    "times": "{count, plural, one {Bounced # time} other {Bounced # times}}, last on {date}",
+    "stopped": "The website no longer e-mails this address (except sign-in mails) until you clear it.",
+    "clear": "Clear",
+    "cleared": "{email} will be e-mailed again."
   }
 }

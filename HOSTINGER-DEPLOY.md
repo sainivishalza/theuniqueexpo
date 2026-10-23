@@ -66,3 +66,22 @@ pm2 startup
 - If port 3000 is occupied, try `-p 8080`
 - Check logs: `pm2 logs theuniqueexpo`
 - Restart: `pm2 restart theuniqueexpo`
+
+## Off-site backups
+
+The deploy backups (`~/theuniqueexpo-backup-*.sql`) sit on the same server as the site. The workflow
+`.github/workflows/offsite-backup.yml` makes a second copy every night **outside** the server: it dumps the database over SSH,
+**encrypts** it (so passport pictures in it cannot be read by anyone who can see the repository), and keeps it as a download on
+the workflow run for 14 days. Admin → Health shows when the last one was made.
+
+Set it up once (on your own computer, not on the server):
+
+1. Install [age](https://github.com/FiloSottile/age) (`brew install age`, `apt install age`, or `winget install FiloSottile.age`).
+2. Make a key pair: `age-keygen -o theuniqueexpo-backup-key.txt`. It prints `Public key: age1...`.
+3. In GitHub → Settings → Secrets and variables → Actions, add a repository secret **`BACKUP_AGE_PUBLIC_KEY`** with the `age1...` public key.
+4. Keep `theuniqueexpo-backup-key.txt` (the private key) somewhere safe and **not** on the server or in the repository, for example in a password manager. Without it a backup cannot be opened; with it anyone can read every backup.
+5. Run the workflow once by hand (Actions → Off-site backup → Run workflow) and check Admin → Health.
+
+To restore: download the artifact `database-backup-encrypted` from a run, then
+`age -d -i theuniqueexpo-backup-key.txt theuniqueexpo-YYYYMMDD-HHMMSS.sql.gz.age | gunzip > backup.sql`, copy `backup.sql` to the
+server and use `scripts/restore-backup.sh backup.sql` (it makes a safety copy first and asks for the database name).

@@ -41,6 +41,8 @@ export const ADMIN_SECTIONS: AdminSection[] = [
   { key: "faqManagement", href: "/admin/faq", icon: "❓", color: "from-rose-500 to-pink-600", group: "content" },
   { key: "staffAccess", href: "/admin/staff-access", icon: "🛡️", color: "from-slate-600 to-gray-700", group: "settings" },
   { key: "myAccount", href: "/admin/account", icon: "🔑", color: "from-slate-500 to-gray-600", group: "settings" },
+  { key: "health", href: "/admin/health", icon: "🩺", color: "from-emerald-500 to-teal-600", group: "settings" },
+  { key: "dataRetention", href: "/admin/data-retention", icon: "🧹", color: "from-slate-500 to-gray-700", group: "settings" },
   { key: "scheduledExports", href: "/admin/scheduled-exports", icon: "🗓️", color: "from-sky-500 to-indigo-600", group: "settings" },
   { key: "email", href: "/admin/email", icon: "✉️", color: "from-sky-500 to-blue-600", group: "settings" },
   { key: "activity", href: "/admin/activity", icon: "🕵️", color: "from-slate-500 to-gray-700", group: "settings" },

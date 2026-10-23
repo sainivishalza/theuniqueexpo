@@ -761,6 +761,14 @@
       "staffAccess": {
         "title": "员工角色",
         "description": "把管理员账户限制在后台的一部分：登记与买家、网站内容、钱包，或仅查看。"
+      },
+      "dataRetention": {
+        "title": "数据保留",
+        "description": "展会结束一段时间后自动删除护照和签证照片。"
+      },
+      "health": {
+        "title": "运行状况与备份",
+        "description": "报名、发送失败的邮件以及最近备份的时间。"
       }
     },
     "attention": {
@@ -3371,7 +3379,8 @@
     "tagFilter": {
       "label": "标签",
       "all": "任意标签"
-    }
+    },
+    "emailBounced": "邮件被退回"
   },
   "homepageSlideshow": {
     "previous": "上一张照片",
@@ -5075,7 +5084,8 @@
       "passportExpiring": "护照即将到期",
       "visaExpiring": "签证到期过早",
       "groupInvite": "同事邀请",
-      "scheduledReport": "定时报表"
+      "scheduledReport": "定时报表",
+      "dailyHealth": "每日运行状况报告"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -5312,7 +5322,12 @@
       "scheduled_export_sent_now": "立即发送了定时报表",
       "staff_role_set": "设置了管理员角色",
       "document_link_created": "创建了采购商文件分享链接",
-      "document_link_revoked": "停用了文件分享链接"
+      "document_link_revoked": "停用了文件分享链接",
+      "retention_settings_changed": "修改了数据保留设置",
+      "retention_run": "删除了过期的护照和签证照片",
+      "health_email_setting_changed": "修改了每日运行状况邮件设置",
+      "health_email_sent_now": "向自己发送了运行状况邮件",
+      "email_bounce_cleared": "清除了退信地址标记"
     }
   },
   "notificationsPage": {
@@ -6015,5 +6030,101 @@
       "no_document": "没有可分享的文件。",
       "failed": "无法生成链接，请重试。"
     }
+  },
+  "adminDataRetention": {
+    "title": "数据保留",
+    "subtitle": "护照和签证照片不会永久保存。",
+    "back": "← 返回管理后台",
+    "rulesTitle": "运作方式",
+    "rulesWhat": "删除内容：采购商资料和已结束展会的报名中的护照页、签证页和最近入境章。",
+    "rulesWhen": "时间：采购商报名的最后一场展会结束后，经过所选天数。",
+    "rulesSafe": "安全保障：如果采购商报名了尚未结束（或在该期限内结束）的展会，或其资料在该期限内有过修改，则不会删除。",
+    "rulesStays": "保留内容：营业执照、名片、采购商照片及其他所有信息。采购商报名新展会时需重新上传照片。",
+    "enable": "自动删除这些照片（每日任务）",
+    "after": "展会结束后多久删除",
+    "days": "{days} 天",
+    "saved": "已保存。",
+    "stateOn": "已开启：每日任务会删除到期的内容。",
+    "stateOff": "已关闭：不会自动删除。在你开启或点击“立即删除”之前不会删除任何内容。",
+    "dueTitle": "现已到期（{days} 天后）",
+    "due": "将清理 {profiles} 个采购商资料（{files} 张照片）和 {registrations} 条报名。",
+    "dueNone": "没有到期内容。",
+    "deleteNow": "立即删除",
+    "confirmTitle": "现在删除这些照片？",
+    "confirm": "现在删除 {profiles} 个采购商资料和 {registrations} 条报名中的护照、签证和入境章照片？",
+    "cannotUndo": "此操作无法撤销（仅每日数据库备份中仍有这些照片）。",
+    "yesDelete": "是，删除",
+    "deleting": "删除中…",
+    "cancel": "取消",
+    "done": "完成：已清理 {profiles} 个资料（{files} 张照片）和 {registrations} 条报名。",
+    "runsTitle": "最近运行",
+    "runsNone": "尚未删除任何内容。",
+    "kind": {
+      "auto": "每日任务",
+      "manual": "管理员手动"
+    },
+    "run": "{date}，{kind}，{days} 天后：{profiles} 个资料（{files} 张照片），{registrations} 条报名",
+    "unavailable": "暂不可用，数据库下次更新后即可使用。",
+    "errors": {
+      "load": "无法加载此页面。",
+      "rate_limited": "过去一小时运行次数过多，请稍后再试。",
+      "failed": "操作失败，请重试。"
+    }
+  },
+  "adminHealth": {
+    "title": "运行状况与备份",
+    "subtitle": "网站运行情况，以及数据库是否已备份。",
+    "back": "← 返回管理后台",
+    "allFine": "没有需要处理的事项",
+    "needsAttention": "需要处理",
+    "issueNoOffsite": "尚未生成异地备份。目前所有数据库备份都与网站在同一台服务器上。",
+    "issueOldOffsite": "最近一次异地备份已是 {n} 天前。",
+    "issueNoDeploy": "尚未记录任何由部署产生的备份。",
+    "issueOldDeploy": "最近一次由部署产生的备份已是 {n} 天前。",
+    "issueFailedMail": "过去 24 小时有 {n} 封邮件发送失败。",
+    "issueBacklog": "有 {n} 条报名等待审核。",
+    "last24": "过去 24 小时",
+    "newRegistrations": "新增报名",
+    "pending": "待审核的报名",
+    "emailsSent": "已发送邮件",
+    "emailsFailed": "发送失败的邮件",
+    "mailOff": "邮件发送已关闭。",
+    "openEmail": "打开邮件设置",
+    "backups": "数据库备份",
+    "deployBackup": "最近一次部署产生的备份（保存在服务器上）",
+    "offsiteBackup": "最近一次异地备份（已加密，保存在服务器之外）",
+    "backupWhen": "{date}（{size}），{days} 天前",
+    "backupNone": "尚无记录",
+    "mb": "{n} MB",
+    "kb": "{n} KB",
+    "backupHelp": "完成设置后，异地备份由 GitHub 工作流每晚自动生成（见 HOSTINGER-DEPLOY.md 中的 “Off-site backups”）。",
+    "emailTitle": "每日运行状况邮件",
+    "emailEnable": "每天向所有管理员发送此报告",
+    "lastSent": "上次发送：{date}。",
+    "neverSent": "尚未发送。",
+    "sendNow": "立即发给我",
+    "sending": "发送中…",
+    "sentToYou": "已发送至 {email}。",
+    "saved": "已保存。",
+    "errors": {
+      "load": "无法加载此页面。",
+      "mail_off": "邮件发送已关闭。",
+      "rate_limited": "过去一小时发送次数过多，请稍后再试。",
+      "send_failed": "邮件发送失败，请检查邮件设置。",
+      "failed": "操作失败，请重试。"
+    }
+  },
+  "adminBounces": {
+    "title": "退信的邮箱地址",
+    "intro": "邮件无法送达时，对方邮件服务器会退回通知。网站会读取这些通知（“Mail bounces”工作流设置好后每隔几小时一次），并在此列出相关地址。",
+    "none": "没有退信地址。",
+    "kind": {
+      "hard": "地址无效",
+      "soft": "临时问题"
+    },
+    "times": "退信 {count} 次，最近一次 {date}",
+    "stopped": "在你清除标记之前，网站不会再向此地址发送邮件（登录相关邮件除外）。",
+    "clear": "清除",
+    "cleared": "将恢复向 {email} 发送邮件。"
   }
 }

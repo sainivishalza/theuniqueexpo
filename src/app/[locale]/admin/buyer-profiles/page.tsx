@@ -318,6 +318,14 @@ export default function AdminBuyerProfilesPage() {
   const [error, setError] = useState("");
 
   const [openId, setOpenId] = useState<number | null>(null);
+  // Addresses that bounced for good: those buyers are marked in the list (an e-mail to them cannot arrive).
+  const [bouncedEmails, setBouncedEmails] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    fetch("/api/admin/email-bounces?summary=1")
+      .then((r) => (r.ok ? r.json() : { hard: [] }))
+      .then((d) => setBouncedEmails(new Set((d.hard ?? []).map((e: string) => e.toLowerCase()))))
+      .catch(() => {});
+  }, []);
   const [detail, setDetail] = useState<BuyerProfileDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -854,6 +862,7 @@ export default function AdminBuyerProfilesPage() {
                               </div>
                               <div className="font-semibold text-gray-900">{r.name}</div>
                               <div className="text-xs text-gray-500">{isPlaceholderEmail(r.email) ? t("noEmail") : r.email}</div>
+                              {bouncedEmails.has(r.email.toLowerCase()) && <div className="mt-0.5"><span className="rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-semibold text-red-800" data-testid="email-bounced">{t("emailBounced")}</span></div>}
                             </div>
                           </div>
                         </td>

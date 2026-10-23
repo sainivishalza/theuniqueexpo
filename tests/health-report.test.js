@@ -13,6 +13,8 @@ const num = (q) => Number(sql(q));
   const u = await mkUsers('hl');
   const st = Date.now(), h = bcrypt.hashSync('pass1234', 10);
   sql('DELETE FROM mail_settings');
+  // the site remembers its mail settings for a few seconds: switch them off through the API so e-mail is really off now
+  await fetch(BASE + '/api/admin/email', { method: 'PUT', headers: H(u.aT), body: JSON.stringify({ enabled: false, host: '127.0.0.1', port: 2539, secure: false, username: 'm', password: 'x', fromName: 'The Unique Expo', fromEmail: 'noreply@theuniqueexpo.test' }) });
   sql('DELETE FROM backup_log');
   sql("UPDATE health_settings SET enabled=1, last_sent_on=NULL WHERE id=1");
 

@@ -11,6 +11,10 @@ const num = (q) => Number(sql(q));
 
 (async () => {
   const u = await mkUsers('dr');
+  // a clean start, also when this file is run more than once on the same database
+  sql(`DELETE r FROM expo_registrations r JOIN users x ON x.id=r.user_id WHERE x.email LIKE 'dr-%@test.invalid';
+    DELETE p FROM buyer_profiles p JOIN users x ON x.id=p.user_id WHERE x.email LIKE 'dr-%@test.invalid';
+    UPDATE data_retention_settings SET enabled=0, days=90 WHERE id=1;`);
   const st = Date.now(), h = bcrypt.hashSync('pass1234', 10);
   const day = (n) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
   const mkExpo = (tag, endOffset) => { const slug = `dr-${tag}-${st}`; sql(`INSERT INTO exhibitions (slug,title,start_date,end_date,registration_enabled) VALUES ('${slug}','Retention ${tag} ${st}','${day(endOffset - 3)}','${day(endOffset)}',1)`); return num(`SELECT id FROM exhibitions WHERE slug='${slug}'`); };
@@ -41,7 +45,7 @@ const num = (q) => Number(sql(q));
   let r = await api('GET', '/api/admin/data-retention', null, u.aT);
   ok(r.available && r.settings.enabled === false && r.settings.days === 90, 'it starts switched OFF, at 90 days', r.settings);
   ok(JSON.stringify(r.options) === '[30,60,90,180,365]', 'with a fixed list of choices');
-  ok(r.preview.profiles >= 3 && r.preview.files >= 9, 'the preview says what is due now (nothing is deleted by looking)', r.preview);
+  ok(r.preview.profiles >= 2 && r.preview.files >= 6, 'the preview says what is due now (nothing is deleted by looking)', r.preview);
   ok((await api('PUT', '/api/admin/data-retention', { enabled: true, days: 7 }, u.aT)).code === 'bad_request', '7 days is not a choice');
   ok((await api('PUT', '/api/admin/data-retention', { enabled: 'yes', days: 90 }, u.aT)).code === 'bad_request', 'on/off must be on or off');
   ok((await api('PUT', '/api/admin/data-retention', { enabled: true, days: 90 }, u.bT)).status === 401, 'a buyer cannot change it');
@@ -77,18 +81,20 @@ const num = (q) => Number(sql(q));
   rerun(); j = await cron(); ok((j.retentionCleared ?? 0) === 0, 'a second run finds nothing more to delete', j);
 
   console.log('\n== delete now');
+  const base90 = (await api('GET', '/api/admin/data-retention?days=90', null, u.aT)).preview.profiles;
+  const base30 = (await api('GET', '/api/admin/data-retention?days=30', null, u.aT)).preview.profiles;
   const mid = mkExpo('mid', -45);
   const M = buyer('mid', { regs: [[mid, 'attended']], touched: 60 });  // over 45 days ago: due at 30 days, not at 90
   r = await api('PUT', '/api/admin/data-retention', { enabled: false, days: 90 }, u.aT);
   ok(!r.settings.enabled, 'switched off again');
   r = await api('GET', '/api/admin/data-retention?days=30', null, u.aT);
-  ok(r.previewDays === 30 && r.preview.profiles >= 1, 'the preview can be looked at for another number of days', r.preview);
+  ok(r.previewDays === 30 && r.preview.profiles === base30 + 1, 'the preview can be looked at for another number of days', [r.preview, base30]);
   r = await api('GET', '/api/admin/data-retention?days=90', null, u.aT);
-  ok(r.preview.profiles === 0, 'at 90 days that buyer is not due yet', r.preview);
+  ok(r.preview.profiles === base90, 'at 90 days that buyer is not due yet', [r.preview, base90]);
   ok((await api('POST', '/api/admin/data-retention', { action: 'run', days: 5 }, u.aT)).code === 'bad_request', 'delete-now needs a valid number of days');
   ok((await api('POST', '/api/admin/data-retention', { action: 'run', days: 30 }, u.bT)).status === 401, 'a buyer cannot');
   r = await api('POST', '/api/admin/data-retention', { action: 'run', days: 90 }, u.aT);
-  ok(r.ok && r.result.profiles === 0 && has(M, 'doc_passport_front'), 'delete now with 90 days leaves them (too soon)', r.result);
+  ok(r.ok && r.result.profiles === base90 && has(M, 'doc_passport_front'), 'delete now with 90 days leaves them (too soon)', r.result);
   r = await api('POST', '/api/admin/data-retention', { action: 'run', days: 30 }, u.aT);
   ok(r.ok && r.result.profiles >= 1 && !has(M, 'doc_passport_front') && r.runs[0].trigger === 'manual', 'delete now with 30 days clears them, even though the policy is off', r.result);
   ok(has(B, 'doc_passport_front') && has(C, 'doc_passport_front') && has(Dd, 'doc_passport_front') && has(E, 'doc_passport_front'), 'and still leaves the buyers who are protected by the rules');

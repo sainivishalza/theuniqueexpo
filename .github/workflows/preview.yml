@@ -57,7 +57,7 @@ jobs:
       # Only this throwaway copy uses it; made up for this run.
       JWT_SECRET: preview-${{ github.run_id }}-${{ github.run_attempt }}-not-a-real-secret
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.event.inputs.ref }}
       - uses: actions/setup-node@v4

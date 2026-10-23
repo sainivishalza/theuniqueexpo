@@ -1,6 +1,6 @@
 // The daily health e-mail and Admin -> Health: numbers, backup status, the on/off switch, the daily job, the screen.
 const bcrypt = require('bcryptjs');
-const { BASE, sql, ok, done, mkUsers } = require('./helpers/common.js');
+const { BASE, sql, ok, done, mkUsers, onlyAdmins } = require('./helpers/common.js');
 const { launch, axeViolations } = require('./helpers/browser.js');
 const smtp = require('./helpers/fake-smtp.js');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -77,6 +77,8 @@ const num = (q) => Number(sql(q));
   ok(/failed to send/.test(d.text), 'and what needs attention comes first');
 
   console.log('\n== the daily job');
+  const restoreAdmins = onlyAdmins([u.m.a]); // the job e-mails the first 20 admins; make this one of them
+  process.on('exit', restoreAdmins);
   const key = (await (await fetch(BASE + '/api/admin/email', { method: 'POST', headers: H(u.aT), body: JSON.stringify({ action: 'reminderKey' }) })).json()).key;
   const rerun = () => sql('UPDATE mail_settings SET reminders_last_run_at=NULL WHERE id=1');
   const cron = () => fetch(BASE + '/api/cron/registration-reminders', { method: 'POST', headers: { 'x-reminder-key': key, 'x-forwarded-for': ipn() } }).then((x) => x.json());
@@ -98,6 +100,7 @@ const num = (q) => Number(sql(q));
     ok((j.healthSent ?? 0) === 0 && srv.messages.length === n2, 'a second run on the same day sends nothing');
   } else ok((j.healthSent ?? 0) === 0, 'before 05:00 UTC the job waits', j);
 
+  restoreAdmins();
   console.log('\n== roles');
   const reviewer = await mkUsers('hlr');
   await api('PUT', '/api/admin/staff-access', { userId: num(`SELECT id FROM users WHERE email='${reviewer.m.a}'`), preset: 'reviewer' }, u.aT);
@@ -120,7 +123,7 @@ const num = (q) => Number(sql(q));
     await c.addCookies([{ name: 'token', value: u.aT, url: BASE }]);
     const p = await c.newPage(); await p.goto(`${BASE}/en/admin/health`, { waitUntil: 'domcontentloaded' });
     await p.getByTestId('health-email').waitFor();
-    await p.getByLabel('E-mail this report to every admin once a day').uncheck();
+    await p.getByLabel('E-mail this report to every admin once a day').click();
     await p.getByRole('status').filter({ hasText: 'Saved.' }).waitFor();
     ok(num('SELECT enabled FROM health_settings WHERE id=1') === 0, 'the switch on the screen is saved');
     const n3 = srv.messages.length;

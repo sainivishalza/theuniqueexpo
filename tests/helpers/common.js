@@ -44,3 +44,13 @@ exports.connect = () => require('mysql2/promise').createConnection({
   user: DB.user, password: DB.password, database: DB.name,
   ...(process.env.TEST_DB_SOCKET ? { socketPath: process.env.TEST_DB_SOCKET } : { host: DB.host || '127.0.0.1' }),
 });
+
+// Only these admin accounts are "active" until the returned function is called. The daily jobs that e-mail "every admin" are
+// limited to the first 20 admins, and a long test run has made far more than that, so a test that checks such an e-mail first
+// sets the others aside.
+exports.onlyAdmins = (emails) => {
+  const list = emails.map((e) => `'${e}'`).join(',');
+  const ids = exports.sql(`SELECT id FROM users WHERE role='admin' AND status<>'suspended' AND email NOT IN (${list})`).split('\n').filter(Boolean);
+  if (ids.length > 0) exports.sql(`UPDATE users SET status='suspended' WHERE id IN (${ids.join(',')})`);
+  return () => { if (ids.length > 0) exports.sql(`UPDATE users SET status='active' WHERE id IN (${ids.join(',')})`); };
+};

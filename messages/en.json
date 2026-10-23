@@ -745,6 +745,10 @@
       "ticketCheck": {
         "title": "Check tickets",
         "description": "Scan a buyer's e-ticket QR code at the entrance to see who it is and let them in."
+      },
+      "insights": {
+        "title": "Reports",
+        "description": "Registrations per day, by country and by exhibition, and how far they get from registered to attended."
       }
     },
     "attention": {
@@ -5259,7 +5263,9 @@
       "expo_registrations_bulk_status": "Approved or rejected several exhibition registrations",
       "admin_email_changed": "Changed their own e-mail address",
       "announcement_template_saved": "Saved an announcement text",
-      "announcement_template_deleted": "Deleted a saved announcement text"
+      "announcement_template_deleted": "Deleted a saved announcement text",
+      "tour_registrations_bulk_status": "Changed several tour registrations at once",
+      "event_registrations_bulk_status": "Changed several event registrations at once"
     }
   },
   "notificationsPage": {
@@ -5609,6 +5615,83 @@
       "checked_in": "Checked in. Welcome!",
       "already_checked_in": "This ticket was already used.",
       "not_confirmed": "This registration has not confirmed attendance."
+    }
+  },
+  "adminInsights": {
+    "title": "Reports",
+    "subtitle": "How registrations are coming in, where from, and how far they get.",
+    "back": "← Back to Admin",
+    "period": "Period",
+    "lastDays": "Last {days} days",
+    "exhibition": "Exhibition",
+    "allExhibitions": "All exhibitions",
+    "failed": "The numbers could not be loaded. Please try again.",
+    "total": "{count} registrations in this period.",
+    "perDay": "Registrations per day",
+    "perWeek": "Registrations per week",
+    "none": "No registrations in this period.",
+    "busiest": "Busiest: {count} ({label}).",
+    "showNumbers": "Show the numbers",
+    "date": "Date",
+    "registrations": "Registrations",
+    "funnel": "How far registrations get",
+    "funnelNote": "Registrations made in this period. “Attended” counts people who were checked in.",
+    "steps": {
+      "registered": "Registered",
+      "approved": "Approved",
+      "confirmed": "Confirmed attendance",
+      "attended": "Attended"
+    },
+    "ofPrevious": "{percent} of the step before",
+    "ofAll": "{percent} of all",
+    "byCountry": "By country",
+    "otherCountries": "Other or unknown",
+    "byExhibition": "By exhibition",
+    "byExhibitionNote": "The ten most registered for in this period.",
+    "approvedAttended": "{approved} approved · {attended} attended"
+  },
+  "adminBulkOther": {
+    "selected": "{count, plural, one {# registration selected} other {# registrations selected}}",
+    "apply": "{action} selected",
+    "question": "{action} {count, plural, one {# registration} other {# registrations}}?",
+    "yes": "Yes, do it",
+    "back": "Back",
+    "working": "Working…",
+    "clear": "Clear selection",
+    "done": "Done: {updated} changed, {unchanged} were already like that.",
+    "errors": {
+      "none": "Select at least one registration.",
+      "too_many": "Select at most 200 registrations at a time.",
+      "invalid_status": "That change is not possible."
+    },
+    "actions": {
+      "approved": "Approve",
+      "rejected": "Reject",
+      "confirmed": "Confirm",
+      "cancelled": "Cancel"
+    }
+  },
+  "adminSavedViews": {
+    "toggle": "Saved views ({count})",
+    "pick": "Saved views",
+    "choose": "Apply a saved view…",
+    "none": "No saved views yet",
+    "delete": "Delete this view",
+    "deleteQuestion": "Delete it for good?",
+    "deleteYes": "Yes, delete",
+    "deleteKeep": "Keep it",
+    "saveAs": "Save the current filters as",
+    "save": "Save",
+    "hint": "A view keeps the search words and filters as they are now. Your views are private and follow you to any device.",
+    "saved": "Saved as “{name}”.",
+    "updated": "“{name}” was updated.",
+    "deleted": "The view was deleted.",
+    "errors": {
+      "bad_name": "Give it a name of up to 80 characters.",
+      "bad_filters": "These filters could not be saved.",
+      "limit": "You have reached the limit of 30 saved views for this list. Delete one first.",
+      "unavailable": "Saved views are not available yet. Please try again in a few minutes.",
+      "failed": "That did not work. Please try again."
     }
   }
 }

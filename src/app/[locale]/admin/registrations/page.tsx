@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { fieldClasses } from "@/components/ui/FormField";
 import { formatDateOnly } from "@/lib/client/registration-format";
 import { REGISTRATION_STATUSES } from "@/lib/registration-lifecycle";
+import SavedViews from "../SavedViews";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import SearchBox from "@/components/search/ListSearch";
@@ -196,6 +197,22 @@ export default function AdminAllRegistrationsPage() {
 
       <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-4">
+            <SavedViews
+              page="registrations"
+              filters={{ exhibition, status, country, q: typed, sort }}
+              onApply={(f) => {
+                setExhibition(f.exhibition ?? "");
+                setStatus(f.status === "expired" || (REGISTRATION_STATUSES as readonly string[]).includes(f.status ?? "") ? f.status : "all");
+                setCountry(f.country ?? "");
+                setTyped(f.q ?? "");
+                setQuery(f.q ?? "");
+                setSort(f.sort === "oldest" ? "oldest" : "newest");
+                setPage(1);
+                setSelected(new Set());
+              }}
+            />
+          </div>
           <div className="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <label htmlFor={ids.expo} className="mb-1.5 block text-sm font-medium text-gray-700">{t("exhibitionLabel")}</label>

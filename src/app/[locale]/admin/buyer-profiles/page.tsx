@@ -12,6 +12,7 @@ import { formatNumber } from "@/lib/format";
 import BulkPointsDialog from "./BulkPointsDialog";
 import BulkReviewDialog from "./BulkReviewDialog";
 import AnnounceDialog from "./AnnounceDialog";
+import SavedViews from "../SavedViews";
 import { TEXT_COLUMN_ORDER } from "@/lib/buyer-profile-columns";
 import { useBuyerForm } from "@/lib/client/buyer-form";
 import { documentsComplete, type FormItem } from "@/lib/buyer-form";
@@ -651,6 +652,16 @@ export default function AdminBuyerProfilesPage() {
 
           {/* The admin menu's search sends "?q=..." here to open the list already filtered. */}
           <UrlSearchSync onChange={setSearch} />
+          <SavedViews
+            page="buyer-profiles"
+            filters={{ search, expo: expoFilter, docs: docFilter, points: pointsFilter }}
+            onApply={(f) => {
+              setSearch(f.search ?? "");
+              setExpoFilter(f.expo ?? "");
+              setDocFilter(f.docs ?? "");
+              setPointsFilter(f.points ?? "");
+            }}
+          />
           <div className="flex flex-wrap items-center gap-3">
             <input
               type="text"

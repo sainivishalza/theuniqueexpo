@@ -154,6 +154,7 @@ run_mysql schema-migrations/068-registration-window-waitlist.sql
 run_mysql schema-migrations/069-passport-expiry.sql
 run_mysql schema-migrations/070-group-invites.sql
 run_mysql schema-migrations/071-announcement-templates.sql
+run_mysql schema-migrations/072-admin-saved-views.sql
 
 # Every deploy saves a full copy of the database (uploaded documents included) and
 # nothing ever removed them, so they would slowly fill this account's disk. Keep the

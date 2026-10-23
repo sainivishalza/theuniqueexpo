@@ -7,6 +7,7 @@ import { errorMessage } from "@/lib/format";
 import type { CustomFormField } from "@/lib/custom-registration-form";
 import { isValidUploadedDocument } from "@/lib/server/validate-upload";
 import Card from "@/components/ui/Card";
+import BulkStatusBar, { bulkOptions } from "../../../BulkStatusBar";
 import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Tour { id: string; slug: string; title: string; }
@@ -46,6 +47,8 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
   const t = useTranslations("adminTourRegistrations");
   const tr = useTranslations("adminRegistrationsCommon");
   const ta = useTranslations("adminCommon");
+  const tb = useTranslations("adminBulkDecision");
+  const tbo = useTranslations("adminBulkOther");
   const { user, loading: authLoading } = useAuth();
   const [tour, setTour] = useState<Tour | null>(null);
   const [registrations, setRegistrations] = useState<RegistrationSummary[]>([]);
@@ -55,6 +58,7 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [detail, setDetail] = useState<RegistrationDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [ticked, setTicked] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -126,10 +130,21 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
             </Card>
           ) : !error && (
             <>
+              <BulkStatusBar
+                endpoint="/api/admin/tour-registrations/bulk-status"
+                ids={Array.from(ticked)}
+                options={bulkOptions(["approved", "rejected"], tbo)}
+                onApplied={(changed, status) => { setRegistrations((prev) => prev.map((r) => (changed.includes(r.id) ? { ...r, status } : r))); setTicked(new Set()); }}
+                onClear={() => setTicked(new Set())}
+              />
               <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />
               {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
               <div className={`bg-white rounded-2xl shadow-sm max-h-[calc(100vh-6rem)] overflow-auto ${search.active && search.shown === 0 ? "hidden" : ""}`}>
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
+                <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 w-10">
+                  <input type="checkbox" aria-label={tb("selectAll")} checked={search.results.length > 0 && search.results.every((r) => ticked.has(r.id))}
+                    onChange={() => setTicked((prev) => (search.results.every((r) => prev.has(r.id)) ? new Set() : new Set(search.results.map((r) => r.id))))} className="h-4 w-4 rounded border-gray-300" />
+                </th>
                 <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600">{t("traveler")}</th>
                 <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600">{ta("status")}</th>
                 <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600">{ta("date")}</th>
@@ -137,6 +152,10 @@ export default function AdminTourRegistrationsPage({ params }: { params: Promise
               </tr></thead><tbody className="divide-y divide-gray-100">
                 {search.results.map((r) => (
                   <tr key={r.id} className="hover:bg-cream-50">
+                    <td className="px-6 py-4">
+                      <input type="checkbox" checked={ticked.has(r.id)} onChange={() => setTicked((prev) => { const next = new Set(prev); if (next.has(r.id)) next.delete(r.id); else next.add(r.id); return next; })}
+                        aria-label={tb("selectRow", { name: displayName(r, tr("registrationNumber", { id: r.id })) })} className="h-4 w-4 rounded border-gray-300" />
+                    </td>
                     <td className="px-6 py-4 font-medium text-gray-900">{displayName(r, tr("registrationNumber", { id: r.id }))}</td>
                     <td className="px-6 py-4">
                       <select

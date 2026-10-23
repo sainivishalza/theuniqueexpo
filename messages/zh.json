@@ -745,6 +745,10 @@
       "ticketCheck": {
         "title": "验票",
         "description": "在入口扫描买家电子票的二维码，查看身份并放行。"
+      },
+      "insights": {
+        "title": "报表",
+        "description": "按日期、国家和展会统计登记，以及从登记到到场的转化情况。"
       }
     },
     "attention": {
@@ -5259,7 +5263,9 @@
       "expo_registrations_bulk_status": "批量批准或拒绝展会报名",
       "admin_email_changed": "更改了自己的电子邮箱",
       "announcement_template_saved": "保存了公告文本",
-      "announcement_template_deleted": "删除了已保存的公告文本"
+      "announcement_template_deleted": "删除了已保存的公告文本",
+      "tour_registrations_bulk_status": "批量更改了多条旅游登记",
+      "event_registrations_bulk_status": "批量更改了多条活动登记"
     }
   },
   "notificationsPage": {
@@ -5609,6 +5615,83 @@
       "checked_in": "已签到，欢迎！",
       "already_checked_in": "此票已使用。",
       "not_confirmed": "此登记尚未确认出席。"
+    }
+  },
+  "adminInsights": {
+    "title": "报表",
+    "subtitle": "登记的增长情况、来源地，以及转化到哪一步。",
+    "back": "← 返回管理后台",
+    "period": "时间范围",
+    "lastDays": "最近 {days} 天",
+    "exhibition": "展会",
+    "allExhibitions": "所有展会",
+    "failed": "无法加载数据，请重试。",
+    "total": "此期间共 {count} 条登记。",
+    "perDay": "每日登记",
+    "perWeek": "每周登记",
+    "none": "此期间没有登记。",
+    "busiest": "最多：{count}（{label}）。",
+    "showNumbers": "显示数字",
+    "date": "日期",
+    "registrations": "登记数",
+    "funnel": "登记的转化情况",
+    "funnelNote": "此期间提交的登记。“已到场”指已签到的人。",
+    "steps": {
+      "registered": "已登记",
+      "approved": "已通过",
+      "confirmed": "已确认出席",
+      "attended": "已到场"
+    },
+    "ofPrevious": "占上一步的 {percent}",
+    "ofAll": "占全部的 {percent}",
+    "byCountry": "按国家",
+    "otherCountries": "其他或未知",
+    "byExhibition": "按展会",
+    "byExhibitionNote": "此期间登记最多的十个展会。",
+    "approvedAttended": "已通过 {approved} · 已到场 {attended}"
+  },
+  "adminBulkOther": {
+    "selected": "已选择 {count} 条登记",
+    "apply": "{action}所选项",
+    "question": "对 {count} 条登记执行“{action}”？",
+    "yes": "是，执行",
+    "back": "返回",
+    "working": "处理中…",
+    "clear": "取消选择",
+    "done": "完成：{updated} 条已更改，{unchanged} 条原本就是该状态。",
+    "errors": {
+      "none": "请至少选择一条登记。",
+      "too_many": "一次最多选择 200 条登记。",
+      "invalid_status": "无法进行此更改。"
+    },
+    "actions": {
+      "approved": "通过",
+      "rejected": "拒绝",
+      "confirmed": "确认",
+      "cancelled": "取消"
+    }
+  },
+  "adminSavedViews": {
+    "toggle": "已保存的视图（{count}）",
+    "pick": "已保存的视图",
+    "choose": "应用已保存的视图…",
+    "none": "还没有已保存的视图",
+    "delete": "删除此视图",
+    "deleteQuestion": "确定永久删除？",
+    "deleteYes": "是，删除",
+    "deleteKeep": "保留",
+    "saveAs": "将当前筛选保存为",
+    "save": "保存",
+    "hint": "视图会按现在的样子记住搜索词和筛选条件。视图仅您自己可见，在任何设备上都能使用。",
+    "saved": "已保存为“{name}”。",
+    "updated": "“{name}”已更新。",
+    "deleted": "视图已删除。",
+    "errors": {
+      "bad_name": "请输入不超过 80 个字符的名称。",
+      "bad_filters": "无法保存这些筛选条件。",
+      "limit": "此列表已达到 30 个视图的上限，请先删除一个。",
+      "unavailable": "暂时无法使用已保存的视图，请几分钟后重试。",
+      "failed": "操作失败，请重试。"
     }
   }
 }

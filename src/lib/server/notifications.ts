@@ -28,6 +28,8 @@ export type EmailKind =
   | "expenseApproved"
   | "expenseRejected"
   | "confirmEmail"
+  | "confirmEmailChange"
+  | "emailChanged"
   | "registrationReminder"
   | "registrationStartsSoon"
   | "announcement"

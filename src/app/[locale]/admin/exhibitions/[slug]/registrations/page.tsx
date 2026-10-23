@@ -1,5 +1,5 @@
 "use client";
-import { use, useEffect, useMemo, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -9,7 +9,9 @@ import type { CustomFormField } from "@/lib/custom-registration-form";
 import { REGISTRATION_STATUSES, type EffectiveStatus, type RegistrationStatus } from "@/lib/registration-lifecycle";
 import { formatDateOnly, formatDateTime } from "@/lib/client/registration-format";
 import { isValidUploadedDocument } from "@/lib/server/validate-upload";
+import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import BulkDecisionDialog from "@/app/[locale]/admin/BulkDecisionDialog";
 import SearchBox, { SearchEmpty, useListSearch } from "@/components/search/ListSearch";
 
 interface Exhibition { id: string; slug: string; title: string; startDate: string; endDate: string; }
@@ -56,6 +58,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
   const t = useTranslations("adminExhibitionRegistrations");
   const tr = useTranslations("adminRegistrationsCommon");
   const ta = useTranslations("adminCommon");
+  const tb = useTranslations("adminBulkDecision");
   const locale = useLocale();
   const { user, loading: authLoading } = useAuth();
   const [exhibition, setExhibition] = useState<Exhibition | null>(null);
@@ -74,10 +77,12 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
   const [showQr, setShowQr] = useState(false);
   const [qrImage, setQrImage] = useState("");
   const [copied, setCopied] = useState(false);
+  // Rows ticked for a bulk approve / reject.
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulk, setBulk] = useState<"approved" | "rejected" | null>(null);
 
-  useEffect(() => {
-    if (!user || user.role !== "admin") return;
-    fetch(`/api/admin/expo-registrations?exhibition=${encodeURIComponent(slug)}`)
+  const load = useCallback(() => {
+    return fetch(`/api/admin/expo-registrations?exhibition=${encodeURIComponent(slug)}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
@@ -88,7 +93,12 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [user, slug]);
+  }, [slug]);
+
+  useEffect(() => {
+    if (!user || user.role !== "admin") return;
+    load();
+  }, [user, load]);
 
   // The QR code points at the check-in page in the language the admin is using.
   const checkInUrl = useMemo(
@@ -182,8 +192,32 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
     for (const r of registrations) c[r.effectiveStatus] = (c[r.effectiveStatus] || 0) + 1;
     return c;
   }, [registrations]);
+  // A status that no registration has any more (everything pending was just approved) goes back to showing all of them.
+  useEffect(() => {
+    if (filter !== "all" && registrations.length > 0 && !counts[filter]) setFilter("all");
+  }, [filter, counts, registrations.length]);
   const visible = useMemo(() => (filter === "all" ? registrations : registrations.filter((r) => r.effectiveStatus === filter)), [filter, registrations]);
   const search = useListSearch(visible);
+  const ticked = registrations.filter((r) => selected.has(r.id));
+  const shownIds = search.results.map((r) => r.id);
+  const allShownTicked = shownIds.length > 0 && shownIds.every((id) => selected.has(id));
+  function toggleRow(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+  // Ticks (or unticks) the rows the filter and search show now, and leaves the others as they are.
+  function toggleShown() {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (allShownTicked) shownIds.forEach((id) => next.delete(id));
+      else shownIds.forEach((id) => next.add(id));
+      return next;
+    });
+  }
   const filterKeys = [...REGISTRATION_STATUSES.slice(0, 4), "expired", ...REGISTRATION_STATUSES.slice(4)] as string[];
 
   if (authLoading) return null;
@@ -232,7 +266,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                 <button
                   key={k}
                   type="button"
-                  onClick={() => setFilter(k)}
+                  onClick={() => { setFilter(k); setSelected(new Set()); }}
                   aria-pressed={filter === k}
                   className={`rounded-full px-4 py-1.5 text-sm font-semibold border transition-colors ${filter === k ? "border-emerald-900 bg-emerald-900 text-white" : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"}`}
                 >
@@ -243,6 +277,14 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
           )}
 
           {!loading && !error && registrations.length > 0 && <SearchBox value={search.query} onChange={search.setQuery} shown={search.shown} total={search.total} />}
+          {ticked.length > 0 && (
+            <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl bg-emerald-50 px-3 py-2">
+              <span className="text-sm font-semibold text-emerald-800">{tb("selectedCount", { count: ticked.length })}</span>
+              <Button type="button" variant="secondaryOutline" size="xs" onClick={() => setBulk("approved")}>{tb("approve")}</Button>
+              <Button type="button" variant="secondaryOutline" size="xs" onClick={() => setBulk("rejected")}>{tb("reject")}</Button>
+              <button type="button" onClick={() => setSelected(new Set())} className="text-xs text-emerald-700 hover:text-emerald-900 underline">{tb("clear")}</button>
+            </div>
+          )}
           {search.active && search.shown === 0 && <SearchEmpty query={search.query} onClear={() => search.setQuery("")} />}
 
           {!loading && !error && registrations.length === 0 ? (
@@ -254,7 +296,12 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
           ) : !error && (
             <div className={`bg-white rounded-2xl shadow-sm max-h-[calc(100vh-6rem)] overflow-auto ${search.active && search.shown === 0 ? "hidden" : ""}`}>
               <table className="w-full text-sm"><thead className="bg-cream-50 border-b border-gray-100"><tr>
-                <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600">{ta("name")}</th>
+                <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600">
+                  <div className="flex items-center gap-3">
+                    <input type="checkbox" checked={allShownTicked} onChange={toggleShown} className="h-4 w-4 rounded border-gray-300" aria-label={tb("selectAll")} />
+                    {ta("name")}
+                  </div>
+                </th>
                 <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600">{t("type")}</th>
                 <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600">{t("company")}</th>
                 <th className="sticky top-0 z-20 bg-cream-50 shadow-[0_1px_0_0_#e5e7eb] text-left px-6 py-3 font-semibold text-gray-600">{t("contact")}</th>
@@ -266,8 +313,13 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                 {search.results.map((r) => (
                   <tr key={r.id} className="hover:bg-cream-50">
                     <td className="px-6 py-4 font-medium text-gray-900">
+                      <div className="flex items-start gap-3">
+                        <input type="checkbox" checked={selected.has(r.id)} onChange={() => toggleRow(r.id)} className="mt-1 h-4 w-4 shrink-0 rounded border-gray-300" aria-label={tb("selectRow", { name: displayName(r, tr("registrationNumber", { id: r.id })) })} />
+                        <div>
                       {r.buyerNumber && <span className="block text-xs font-bold tracking-wide text-emerald-700">{r.buyerNumber}</span>}
                       {displayName(r, tr("registrationNumber", { id: r.id }))}<br/><span className="text-xs text-gray-500">{r.nationality || "—"}</span>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-6 py-4 capitalize text-gray-700">{r.registrationType || (r.customAnswers ? t("customForm") : "—")}</td>
                     <td className="px-6 py-4 text-gray-500">{r.companyName || "—"}</td>
@@ -306,6 +358,16 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
           )}
         </div>
       </section>
+
+      {bulk && (
+        <BulkDecisionDialog
+          ids={ticked.map((r) => Number(r.id))}
+          decision={bulk}
+          defaultConfirmBy={defaultConfirmBy}
+          onClose={() => { setBulk(null); setSelected(new Set()); }}
+          onDone={() => { load(); }}
+        />
+      )}
 
       {/* Approve: choose the confirm-by date */}
       {approving && (

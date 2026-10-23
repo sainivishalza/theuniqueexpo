@@ -7,7 +7,7 @@
 // their own nested provider that adds them back just for that subtree.
 
 export const ADMIN_NAMESPACES = [
-  "adminAbout", "adminBlogCrud", "adminCommon", "adminCompanyProfile", "adminConsultations",
+  "adminAbout", "adminBlogCrud", "adminBulkDecision", "adminCommon", "adminCompanyProfile", "adminConsultations",
   "adminEventRegistrations", "adminEventsCrud", "adminExhibitionRegForm", "adminExhibitionRegistrations",
   "adminExhibitionsCrud", "adminFaq", "adminHome", "adminHotels", "adminNewsletter", "adminMovingQuotes", "adminPagesIndex",
   "adminPhotoOrganizer",

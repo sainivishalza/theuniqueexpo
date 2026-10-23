@@ -45,28 +45,54 @@ export interface IcsEvent {
   end: string;
   description?: string;
   url?: string;
+  location?: string;
 }
 
-/** The text of the .ics file, or null when the dates are not valid. */
-export function buildIcs(event: IcsEvent, now = new Date()): string | null {
+const stampOf = (now: Date) => `${now.getUTCFullYear()}${pad(now.getUTCMonth() + 1)}${pad(now.getUTCDate())}T${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(now.getUTCSeconds())}Z`;
+
+/** The lines of one VEVENT, or null when the dates are not valid. */
+function eventLines(event: IcsEvent, stamp: string): string[] | null {
   const start = compact(event.start);
   const end = nextDay(event.end >= event.start ? event.end : event.start);
   if (!start || !end) return null;
-  const stamp = `${now.getUTCFullYear()}${pad(now.getUTCMonth() + 1)}${pad(now.getUTCDate())}T${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}${pad(now.getUTCSeconds())}Z`;
-  const lines = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//The Unique Expo//Registration//EN",
-    "CALSCALE:GREGORIAN",
+  return [
     "BEGIN:VEVENT",
     `UID:${event.uid}@theuniqueexpo.com`,
     `DTSTAMP:${stamp}`,
     `DTSTART;VALUE=DATE:${start}`,
     `DTEND;VALUE=DATE:${end}`,
     `SUMMARY:${escapeText(event.title)}`,
+    ...(event.location ? [`LOCATION:${escapeText(event.location)}`] : []),
     ...(event.description ? [`DESCRIPTION:${escapeText(event.description)}`] : []),
     ...(event.url ? [`URL:${event.url}`] : []),
     "END:VEVENT",
+  ];
+}
+
+/** The text of the .ics file, or null when the dates are not valid. */
+export function buildIcs(event: IcsEvent, now = new Date()): string | null {
+  const body = eventLines(event, stampOf(now));
+  if (!body) return null;
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//The Unique Expo//Registration//EN", "CALSCALE:GREGORIAN", ...body, "END:VCALENDAR"];
+  return lines.map(fold).join("\r\n") + "\r\n";
+}
+
+/**
+ * A calendar a phone or computer can SUBSCRIBE to: every event in one file, and a hint to look again every 12 hours so new
+ * and changed exhibitions appear by themselves. Events with invalid dates are left out.
+ */
+export function buildIcsFeed(events: IcsEvent[], calendarName: string, now = new Date()): string {
+  const stamp = stampOf(now);
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//The Unique Expo//Exhibitions//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    `X-WR-CALNAME:${escapeText(calendarName)}`,
+    "REFRESH-INTERVAL;VALUE=DURATION:PT12H",
+    "X-PUBLISHED-TTL:PT12H",
+    ...events.flatMap((e) => eventLines(e, stamp) ?? []),
     "END:VCALENDAR",
   ];
   return lines.map(fold).join("\r\n") + "\r\n";

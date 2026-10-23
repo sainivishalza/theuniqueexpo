@@ -1,0 +1,27 @@
+name: Security audit
+
+# Every Monday (and when started by hand) this checks the libraries the live website uses against the public list of known
+# security problems. If a serious one (high or critical) is found in something the site really runs, this run fails and GitHub
+# e-mails the repository owner. Libraries used only to build or test the site are not checked here: they never run on the server.
+on:
+  schedule:
+    - cron: "41 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Known problems in the libraries the site runs
+        run: |
+          npm ci --ignore-scripts
+          npm audit --omit=dev --audit-level=high

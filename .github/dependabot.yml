@@ -1,0 +1,21 @@
+# Weekly pull requests that update the libraries the website uses (and the GitHub Actions the workflows use), so security
+# fixes arrive without anyone having to remember. Each one runs the normal checks (type check, translations, end-to-end tests)
+# like any other pull request, so a bad update shows up as a red check before anything is merged.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      # Minor and patch updates arrive together in one pull request; major ones come alone so they can be looked at carefully.
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3

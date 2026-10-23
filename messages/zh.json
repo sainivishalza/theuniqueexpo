@@ -127,7 +127,15 @@
       "registerBy": "请在 {date} 前报名",
       "opensOn": "报名将于 {date} 开放",
       "closedOn": "报名已于 {date} 截止"
-    }
+    },
+    "from": "从",
+    "to": "至",
+    "clearDates": "清除日期",
+    "viewLabel": "列表显示方式",
+    "viewGrid": "全部",
+    "viewMonths": "按月份",
+    "subscribe": "将所有展会添加到我的日历",
+    "subscribeHelp": "展会新增或变更时会自动更新。"
   },
   "toursPage": {
     "title": "旅游",

@@ -167,6 +167,7 @@ run_mysql schema-migrations/081-email-bounces.sql
 run_mysql schema-migrations/082-admin-security.sql
 run_mysql schema-migrations/083-error-log.sql
 run_mysql schema-migrations/084-indexes-and-slow-queries.sql
+run_mysql schema-migrations/085-mail-preferences-and-digest.sql
 
 # Writes down that this deploy's backup exists (Admin -> Health shows when the last one was made). Never fails the job.
 BACKUP_BYTES=$(wc -c < "$BACKUP_FILE" | tr -d ' ')

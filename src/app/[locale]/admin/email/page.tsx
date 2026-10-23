@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { fieldClasses } from "@/components/ui/FormField";
 import BouncedAddresses from "./BouncedAddresses";
+import WeeklyDigest from "./WeeklyDigest";
 import Button from "@/components/ui/Button";
 
 interface Settings {
@@ -235,6 +236,8 @@ export default function AdminEmailPage() {
               <Button type="button" variant="secondaryOutline" size="compact" onClick={makeKey}>{t("reminders.makeKey")}</Button>
             </div>
           </div>
+
+          <WeeklyDigest mailOn={!!form?.enabled} />
 
           <BouncedAddresses />
 

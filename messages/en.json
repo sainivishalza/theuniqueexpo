@@ -5035,6 +5035,17 @@
       "intro": "{inviter} from {company} invited you to register for {expo}.",
       "body": "Use the button to open the registration page. If you do not have an account yet, you can create one there with this e-mail address.",
       "button": "Register for the exhibition"
+    },
+    "digest": {
+      "subject": "{count, plural, one {A new exhibition on The Unique Expo} other {# new exhibitions on The Unique Expo}}",
+      "intro": "{count, plural, one {A new exhibition was added this week:} other {# new exhibitions were added this week:}}",
+      "item": "{title}, {dates}, {city}",
+      "button": "See all exhibitions"
+    },
+    "unsubscribe": {
+      "link": "Turn them off",
+      "digest": "You get this weekly e-mail because news about new exhibitions is on in your account. {url}",
+      "savedAlerts": "You get this because alerts about saved exhibitions are on in your account. {url}"
     }
   },
   "adminEmail": {
@@ -5357,7 +5368,9 @@
       "email_bounce_cleared": "Cleared a bounced e-mail address",
       "two_step_required_changed": "Changed whether every admin must use two-step sign-in",
       "error_resolved": "Marked a website error resolved",
-      "error_reopened": "Opened a website error again"
+      "error_reopened": "Opened a website error again",
+      "weekly_digest_setting_changed": "Changed the weekly new-exhibitions e-mail setting",
+      "weekly_digest_preview_sent": "Sent the weekly e-mail preview to themselves"
     }
   },
   "notificationsPage": {
@@ -6260,5 +6273,55 @@
     "opensNewTab": "(opens in a new tab)",
     "contact": "Contact us",
     "helpCenter": "Open the Help Center"
+  },
+  "accountMailPrefs": {
+    "title": "E-mails I get",
+    "intro": "Choose which optional e-mails we send you.",
+    "digest": "New exhibitions, once a week",
+    "digestHelp": "A short list of exhibitions added during the week.",
+    "savedAlerts": "Alerts about exhibitions I saved",
+    "savedAlertsHelp": "When registration opens or is about to close.",
+    "always": "E-mails about your own registrations, documents, wallet and account are always sent, and everything is also shown under Notifications on the website.",
+    "saved": "Saved.",
+    "failed": "That did not work. Please try again."
+  },
+  "unsubscribePage": {
+    "title": "E-mail settings",
+    "invalid": "This link is not valid. You can change your e-mail settings after signing in, under My account.",
+    "digest": {
+      "ask": "Stop the weekly e-mail about new exhibitions?",
+      "button": "Stop the weekly e-mail",
+      "done": "Done. You will not get the weekly e-mail about new exhibitions any more."
+    },
+    "savedAlerts": {
+      "ask": "Stop alerts about exhibitions you saved?",
+      "button": "Stop these alerts",
+      "done": "Done. You will not get e-mails about exhibitions you saved any more."
+    },
+    "again": "You can turn it back on any time in My account.",
+    "settings": "Open my e-mail settings",
+    "keep": "No, keep sending them",
+    "working": "Working…",
+    "failed": "That did not work. Please try again in a few minutes."
+  },
+  "adminDigest": {
+    "title": "Weekly e-mail about new exhibitions",
+    "help": "Once a week, buyers get a short list of exhibitions added since the last one, in their own language, with a link to turn it off. It goes out a hundred or so at a time, and only when something new was added.",
+    "enable": "Send the weekly e-mail to buyers",
+    "saved": "Saved.",
+    "lastBatch": "Last week's e-mail started {date}; sent to {count} so far.",
+    "neverSent": "Nothing has been sent yet.",
+    "mailOff": "E-mail is switched off above, so nothing can be sent yet.",
+    "preview": "Send me a preview",
+    "previewSent": "A preview was sent to {email}.",
+    "errors": {
+      "load": "Could not load the settings.",
+      "failed": "That did not work. Please try again.",
+      "mail_off": "E-mail is switched off.",
+      "nothing_new": "No exhibition was added in the last week, so there is nothing to preview.",
+      "send_failed": "The e-mail could not be sent.",
+      "rate_limited": "Too many previews. Please wait a while.",
+      "unavailable": "Not available yet. Try again after the next update."
+    }
   }
 }

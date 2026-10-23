@@ -7,6 +7,7 @@ import ChangePasswordCard from "../_components/ChangePasswordCard";
 import ChangeEmailCard from "../_components/ChangeEmailCard";
 import SessionsCard from "../_components/SessionsCard";
 import MyDataCard from "../_components/MyDataCard";
+import MailPreferencesCard from "../_components/MailPreferencesCard";
 
 // "My account": where any signed-in customer (buyer, exhibitor or partner) changes their password.
 export default function AccountPage() {
@@ -37,6 +38,7 @@ export default function AccountPage() {
           <div className="space-y-6">
             <ChangePasswordCard />
             <ChangeEmailCard />
+            {user.role === "buyer" && <MailPreferencesCard />}
             <SessionsCard />
             <MyDataCard />
           </div>

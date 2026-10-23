@@ -7,6 +7,7 @@ import { isMailEnabled, sendMail, sendMailInBackground } from "@/lib/server/mail
 import { getFormItems } from "@/lib/server/buyer-form-repo";
 import { fillFields, usesFields } from "@/lib/announcement-fields";
 import { loadPersonFields, valuesFor } from "@/lib/server/announcement-people";
+import { allowsEmail, preferenceForKind, unsubscribeQuery, type MailPreference } from "@/lib/server/mail-preferences";
 import { addNotification, addNotificationForMany, addPersonalNotifications, NOTIFICATION_KINDS, type NotificationKind } from "@/lib/server/user-notifications";
 
 // The e-mails the site sends, in the language the person last used the site in. Each notify...()
@@ -153,6 +154,66 @@ ${paragraphsFor(htmlVars).map((p) => `<p style="margin:0 0 14px">${p}</p>`).join
   return { subject, text, html };
 }
 
+async function emailTranslator(locale: EmailLocale) {
+  const messages = await loadMessages(locale);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return createTranslator({ locale, messages: messages as any, namespace: "emails" }) as unknown as (key: string, values?: Record<string, unknown>) => string;
+}
+
+export interface UnsubscribeParts {
+  text: string;
+  html: string;
+  headers: Record<string, string>;
+}
+
+// The line under an optional e-mail that turns it off in one step (a page that asks first, so a mail scanner opening the
+// link does not unsubscribe anyone), and the headers that let mail programs offer "Unsubscribe" themselves.
+export async function unsubscribeParts(locale: EmailLocale, pref: MailPreference, userId: number): Promise<UnsubscribeParts> {
+  const t = await emailTranslator(locale);
+  const query = unsubscribeQuery(userId, pref);
+  const pageUrl = `${SITE_URL}/${locale}/unsubscribe?${query}`;
+  const line = t(`unsubscribe.${pref}`, { url: pageUrl });
+  const htmlLine = escapeHtml(t(`unsubscribe.${pref}`, { url: "%%URL%%" })).replace("%%URL%%", `<a href="${escapeHtml(pageUrl)}" style="color:#0f766e">${escapeHtml(t("unsubscribe.link"))}</a>`);
+  return {
+    text: line,
+    html: `<p style="margin:0;padding:12px 24px;color:#66746f;font-size:12px;line-height:1.5;text-align:center;font-family:Arial,Helvetica,sans-serif">${htmlLine}</p>`,
+    headers: { "List-Unsubscribe": `<${SITE_URL}/api/unsubscribe?${query}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" },
+  };
+}
+
+export interface DigestItem {
+  title: string;
+  dates: string;
+  city: string;
+  url: string;
+}
+
+// "New exhibitions this week" for one person, in their language.
+export async function renderDigestEmail(locale: EmailLocale, name: string, items: DigestItem[], userId: number): Promise<RenderedEmail & { headers: Record<string, string> }> {
+  const t = await emailTranslator(locale);
+  const unsub = await unsubscribeParts(locale, "digest", userId);
+  const count = items.length;
+  const line = (i: DigestItem) => t("digest.item", { title: i.title, dates: i.dates, city: i.city });
+  const buttonUrl = `${SITE_URL}/${locale}/exhibitions`;
+  const subject = t("digest.subject", { count });
+  const intro = t("digest.intro", { count });
+  const text = [t("greeting", { name }), "", intro, "", ...items.flatMap((i) => [`- ${line(i)}`, `  ${i.url}`]), "", `${t("digest.button")}: ${buttonUrl}`, "", t("signature"), "", unsub.text, "", t("footer")].join("\n");
+  const html = `<!doctype html><html><body style="margin:0;background:#f4f6f5;font-family:Arial,Helvetica,sans-serif;color:#1c2b27">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f5;padding:24px 12px"><tr><td align="center">
+<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden">
+<tr><td style="background:#0b3b33;padding:18px 24px;color:#ffffff;font-size:18px;font-weight:bold">The Unique Expo</td></tr>
+<tr><td style="padding:24px;font-size:15px;line-height:1.55">
+<p style="margin:0 0 14px">${escapeHtml(t("greeting", { name }))}</p>
+<p style="margin:0 0 14px">${escapeHtml(intro)}</p>
+<ul style="margin:0 0 14px;padding-left:20px">${items.map((i) => `<li style="margin:0 0 8px"><a href="${escapeHtml(i.url)}" style="color:#0f766e;font-weight:bold">${escapeHtml(i.title)}</a><br><span style="color:#4b5b56">${escapeHtml(i.dates)}, ${escapeHtml(i.city)}</span></li>`).join("")}</ul>
+<p style="margin:22px 0"><a href="${escapeHtml(buttonUrl)}" style="display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:8px">${escapeHtml(t("digest.button"))}</a></p>
+<p style="margin:0;color:#4b5b56">${escapeHtml(t("signature"))}</p>
+</td></tr>
+<tr><td style="padding:14px 24px;background:#f4f6f5;color:#66746f;font-size:12px;line-height:1.5">${escapeHtml(t("footer"))}</td></tr>
+</table>${unsub.html}</td></tr></table></body></html>`;
+  return { subject, text, html, headers: unsub.headers };
+}
+
 interface Recipient {
   id: number;
   name: string;
@@ -188,9 +249,18 @@ export function notifyUser(
     if (!(await isMailEnabled())) return;
     const who = await loadRecipient(userId);
     if (!who) return;
+    // Alerts about saved exhibitions can be turned off (they stay on the website either way).
+    if (!(await allowsEmail(userId, kind))) return;
     const nowDoing = kind === "passwordReset" || kind === "passwordChanged";
     const locale = nowDoing && requestLocale ? requestLocale : who.locale;
     const mail = await renderEmail(locale, kind, who.name, vars, link);
+    // An optional e-mail ends with the link that turns it off.
+    const pref = preferenceForKind(kind);
+    if (pref) {
+      const unsub = await unsubscribeParts(locale, pref, userId);
+      sendMailInBackground({ to: who.email, kind, userId, subject: mail.subject, text: `${mail.text}\n\n${unsub.text}`, html: mail.html.replace("</body>", `${unsub.html}</body>`), headers: unsub.headers });
+      return;
+    }
     sendMailInBackground({ to: who.email, kind, userId, ...mail });
   })().catch((err) => console.error("Could not prepare e-mail", kind, err));
 }

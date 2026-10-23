@@ -5035,6 +5035,17 @@
       "intro": "来自 {company} 的 {inviter} 邀请您登记参加 {expo}。",
       "body": "点击按钮打开登记页面。如果您还没有账户，可以用此电子邮箱在那里创建。",
       "button": "登记参加展会"
+    },
+    "digest": {
+      "subject": "The Unique Expo 新增 {count} 个展会",
+      "intro": "本周新增了 {count} 个展会：",
+      "item": "{title}，{dates}，{city}",
+      "button": "查看全部展会"
+    },
+    "unsubscribe": {
+      "link": "关闭",
+      "digest": "您收到这封每周邮件，是因为您的账户开启了新展会通知。{url}",
+      "savedAlerts": "您收到这封邮件，是因为您的账户开启了已收藏展会的提醒。{url}"
     }
   },
   "adminEmail": {
@@ -5357,7 +5368,9 @@
       "email_bounce_cleared": "清除了退信地址标记",
       "two_step_required_changed": "修改了是否要求所有管理员使用两步验证",
       "error_resolved": "将网站错误标记为已解决",
-      "error_reopened": "重新打开了网站错误"
+      "error_reopened": "重新打开了网站错误",
+      "weekly_digest_setting_changed": "更改了每周新展会邮件设置",
+      "weekly_digest_preview_sent": "给自己发送了每周邮件预览"
     }
   },
   "notificationsPage": {
@@ -6239,5 +6252,76 @@
     "stateOpensLater": "尚未开放",
     "stateClosed": "已截止",
     "stateOff": "暂不接受注册"
+  },
+  "helpWidget": {
+    "label": "帮助与提问",
+    "title": "需要什么帮助？",
+    "intro": "搜索常见问题，或直接联系我们。",
+    "close": "关闭帮助",
+    "searchLabel": "搜索答案",
+    "searchPlaceholder": "输入您的问题…",
+    "loading": "正在加载答案…",
+    "loadFailed": "无法加载答案，您仍可在下方联系我们。",
+    "common": "常见问题",
+    "results": "找到 {count} 条答案",
+    "none": "没有匹配的答案。请换个说法，或在下方联系我们。",
+    "noAnswersYet": "暂无答案，请在下方联系我们。",
+    "notFound": "没有找到想要的答案？",
+    "whatsapp": "在 WhatsApp 上联系我们",
+    "whatsappAsk": "通过 WhatsApp 发送此问题",
+    "whatsappQuestion": "您好！我对 theuniqueexpo.com 有一个问题：{question}",
+    "opensNewTab": "（在新标签页打开）",
+    "contact": "联系我们",
+    "helpCenter": "打开帮助中心"
+  },
+  "accountMailPrefs": {
+    "title": "我收到的邮件",
+    "intro": "选择您希望收到的可选邮件。",
+    "digest": "每周新展会",
+    "digestHelp": "本周新增展会的简短列表。",
+    "savedAlerts": "已收藏展会的提醒",
+    "savedAlertsHelp": "注册开放或即将截止时提醒。",
+    "always": "关于您的注册、证件、钱包和账户的邮件始终会发送，网站的“通知”中也会显示。",
+    "saved": "已保存。",
+    "failed": "操作失败，请重试。"
+  },
+  "unsubscribePage": {
+    "title": "邮件设置",
+    "invalid": "此链接无效。登录后可在“我的账户”中更改邮件设置。",
+    "digest": {
+      "ask": "要停止每周新展会邮件吗？",
+      "button": "停止每周邮件",
+      "done": "已完成。您将不再收到每周新展会邮件。"
+    },
+    "savedAlerts": {
+      "ask": "要停止已收藏展会的提醒吗？",
+      "button": "停止这些提醒",
+      "done": "已完成。您将不再收到已收藏展会的邮件。"
+    },
+    "again": "您可以随时在“我的账户”中重新开启。",
+    "settings": "打开邮件设置",
+    "keep": "不用，继续发送",
+    "working": "处理中…",
+    "failed": "操作失败，请几分钟后重试。"
+  },
+  "adminDigest": {
+    "title": "每周新展会邮件",
+    "help": "每周一次，买家会收到自上次以来新增展会的简短列表（使用其本人语言，并附关闭链接）。每次约发送一百封，且仅在有新展会时发送。",
+    "enable": "向买家发送每周邮件",
+    "saved": "已保存。",
+    "lastBatch": "上次邮件始于 {date}，目前已发送 {count} 封。",
+    "neverSent": "尚未发送。",
+    "mailOff": "上方的邮件发送已关闭，暂时无法发送。",
+    "preview": "给我发送预览",
+    "previewSent": "预览已发送至 {email}。",
+    "errors": {
+      "load": "无法加载设置。",
+      "failed": "操作失败，请重试。",
+      "mail_off": "邮件发送已关闭。",
+      "nothing_new": "最近一周没有新增展会，无可预览内容。",
+      "send_failed": "邮件发送失败。",
+      "rate_limited": "预览次数过多，请稍候。",
+      "unavailable": "暂不可用，请在下次更新后重试。"
+    }
   }
 }

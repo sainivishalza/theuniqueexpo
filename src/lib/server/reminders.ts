@@ -6,6 +6,7 @@ import { notifyUser } from "@/lib/server/notifications";
 import { runRetention } from "@/lib/server/data-retention";
 import { sendErrorAlerts } from "@/lib/server/error-log";
 import { runDailyHealth } from "@/lib/server/health-report";
+import { runWeeklyDigest } from "@/lib/server/weekly-digest";
 import { runScheduledExports } from "@/lib/server/scheduled-exports";
 import { sendDocumentExpiryAlerts, sendSavedExhibitionAlerts } from "@/lib/server/registration-alerts";
 import { exhibitionsWithWaitlist, promoteFromWaitlist } from "@/lib/server/waitlist";
@@ -73,12 +74,14 @@ export interface ReminderRun {
   retentionCleared?: number;
   /** Admins who got the daily health e-mail. */
   healthSent?: number;
+  /** Buyers who got the weekly new-exhibitions e-mail. */
+  digestSent?: number;
 }
 
 // The alerts that do not need e-mail (they are always shown on the website, and e-mailed too when e-mail is on): people
 // moved up the waiting list, saved exhibitions whose registration opens or closes, passports and visas that expire too
 // early. Each is told once, so running this often is harmless.
-export async function runDailyAlerts(): Promise<{ promoted: number; saved: number; documents: number; reports: number; retention: number; health: number }> {
+export async function runDailyAlerts(): Promise<{ promoted: number; saved: number; documents: number; reports: number; retention: number; health: number; digest: number }> {
   let promoted = 0;
   for (const exhibitionId of await exhibitionsWithWaitlist()) promoted += await promoteFromWaitlist(exhibitionId);
   const saved = await sendSavedExhibitionAlerts();
@@ -102,7 +105,12 @@ export async function runDailyAlerts(): Promise<{ promoted: number; saved: numbe
     console.error("Daily health e-mail failed:", err);
     return 0;
   });
-  return { promoted, saved: saved.opened + saved.closing, documents: documents.passport + documents.visa, reports, retention, health };
+  // The weekly new-exhibitions e-mail to buyers (only when an admin has switched it on).
+  const digest = await runWeeklyDigest().catch((err) => {
+    console.error("Weekly digest failed:", err);
+    return 0;
+  });
+  return { promoted, saved: saved.opened + saved.closing, documents: documents.passport + documents.visa, reports, retention, health, digest };
 }
 
 let lastAlertsRun = 0;
@@ -143,9 +151,9 @@ export async function runRegistrationReminders(options: { force?: boolean } = {}
   const startSent = await sendStartReminders();
   const alerts = await runDailyAlerts().catch((err) => {
     console.error("Daily alerts failed:", err);
-    return { promoted: 0, saved: 0, documents: 0, reports: 0, retention: 0, health: 0 };
+    return { promoted: 0, saved: 0, documents: 0, reports: 0, retention: 0, health: 0, digest: 0 };
   });
-  return { ran: true, sent, startSent, savedSent: alerts.saved, documentSent: alerts.documents, reportsSent: alerts.reports, retentionCleared: alerts.retention, healthSent: alerts.health };
+  return { ran: true, sent, startSent, savedSent: alerts.saved, documentSent: alerts.documents, reportsSent: alerts.reports, retentionCleared: alerts.retention, healthSent: alerts.health, digestSent: alerts.digest };
 }
 
 // Confirmed registrations whose exhibition opens within the week, not yet checked in and not yet reminded.

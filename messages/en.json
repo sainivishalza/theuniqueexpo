@@ -724,6 +724,30 @@
       "failedEmails": "{count, plural, one {# e-mail could not be sent this week} other {# e-mails could not be sent this week}}",
       "twoStepOff": "Your admin account is protected by a password only.",
       "twoStepAction": "Turn on two-step sign-in"
+    },
+    "glance": {
+      "title": "At a glance",
+      "buyers": "Buyers",
+      "newBuyers": "{week} new this week, {month} in 30 days",
+      "registrations": "Exhibition registrations",
+      "newRegistrations": "{week} new this week",
+      "pointsHeld": "Points held by buyers",
+      "pointsHeldNote": "all wallets together",
+      "byStatus": "Registrations by status",
+      "none": "Nothing yet.",
+      "status": {
+        "pending": "Waiting",
+        "approved": "Approved",
+        "confirmed": "Confirmed",
+        "attended": "Attended",
+        "rejected": "Not approved",
+        "cancelled": "Cancelled",
+        "absent": "Absent"
+      },
+      "perWeek": "New buyers per week",
+      "perWeekNote": "The last 8 weeks; the bar on the right is this week.",
+      "weekTitle": "{count, plural, one {# new buyer} other {# new buyers}}, {ago, plural, =0 {this week} one {# week ago} other {# weeks ago}}",
+      "topExhibitions": "Most registrations"
     }
   },
   "adminSubsidies": {

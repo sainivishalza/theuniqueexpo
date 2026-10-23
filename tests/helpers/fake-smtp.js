@@ -28,8 +28,11 @@ exports.decode=(raw)=>{ const [head,...rest]=raw.split('\r\n\r\n'); const body=r
     for(let i=0;i<q.length;i++){ if(q[i]==='='&&/^[0-9A-Fa-f]{2}$/.test(q.slice(i+1,i+3))){ bytes.push(parseInt(q.slice(i+1,i+3),16)); i+=2; } else bytes.push(...Buffer.from(q[i],'utf8')); }
     return Buffer.from(bytes).toString('utf8'); });
   // decode quoted-printable / base64 parts to a searchable string
-  let text=body; if(/Content-Transfer-Encoding: base64/i.test(raw)) text=raw.split(/\r\n\r\n/).map(p=>{try{return Buffer.from(p.replace(/\r\n/g,''),'base64').toString('utf8');}catch{return '';}}).join('\n'); 
-  text=text.replace(/=\r\n/g,'').replace(/(=[0-9A-F]{2})+/g,(m)=>{try{return Buffer.from(m.replace(/=/g,''),'hex').toString('utf8');}catch{return m;}});
+  let text=body;
+  if(/Content-Transfer-Encoding: base64/i.test(raw)) text=raw.split(/\r\n\r\n/).map(p=>{try{return Buffer.from(p.replace(/\r\n/g,''),'base64').toString('utf8');}catch{return '';}}).join('\n');
+  // Quoted-printable is only undone when nothing was base64 (a decoded base64 text keeps its literal "=", e.g. "?token=70Ft..."
+  // which must not be read as the escape "=70").
+  else text=text.replace(/=\r\n/g,'').replace(/(=[0-9A-F]{2})+/g,(m)=>{try{return Buffer.from(m.replace(/=/g,''),'hex').toString('utf8');}catch{return m;}});
   return {subject:dec,text,head};};
 
 // The plain-text and HTML parts of a message, decoded (quoted-printable or base64), for checking what a reader sees.

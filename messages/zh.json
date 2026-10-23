@@ -724,6 +724,30 @@
       "failedEmails": "本周有 {count} 封邮件发送失败",
       "twoStepOff": "您的管理员账户目前仅由密码保护。",
       "twoStepAction": "开启两步验证"
+    },
+    "glance": {
+      "title": "概览",
+      "buyers": "买家",
+      "newBuyers": "本周新增 {week}，30 天内新增 {month}",
+      "registrations": "展会报名",
+      "newRegistrations": "本周新增 {week}",
+      "pointsHeld": "买家持有的积分",
+      "pointsHeldNote": "所有钱包合计",
+      "byStatus": "按状态统计的报名",
+      "none": "暂无数据。",
+      "status": {
+        "pending": "待审核",
+        "approved": "已批准",
+        "confirmed": "已确认",
+        "attended": "已参加",
+        "rejected": "未通过",
+        "cancelled": "已取消",
+        "absent": "缺席"
+      },
+      "perWeek": "每周新增买家",
+      "perWeekNote": "最近 8 周；最右侧为本周。",
+      "weekTitle": "{count, plural, other {# 位新买家}}，{ago, plural, =0 {本周} other {# 周前}}",
+      "topExhibitions": "报名最多的展会"
     }
   },
   "adminSubsidies": {

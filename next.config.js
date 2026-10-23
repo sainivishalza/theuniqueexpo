@@ -1,6 +1,32 @@
 const createNextIntlPlugin = require("next-intl/plugin");
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
+// Public content pages look the same to every visitor (the signed-in state is drawn in the browser), so the CDN in
+// front of the site may keep their HTML for a minute: a busy page then costs the server one render a minute instead
+// of one per visitor. Next itself sends "never cache" for pages that read request headers (this site's layout does),
+// so these rules say it explicitly -- but only for a plain page view: not a navigation payload (rsc / ?_rsc), not for
+// someone signed in (token cookie), not when a query that changes what the page shows is present, and never for the
+// forms, check-in, search, messages, marketplace, dashboards or admin.
+const PUBLIC_SECTIONS = "about|api-documentation|blog|booth-setup-tips|business-tours|careers|china-travel|city-partnerships|contact|cookies|events|exhibition-guide|exhibitions|help|magazine|partner-program|partner-with-us|plan-business-trip|privacy|relocation|services|terms|tours|videos";
+// Query names that change what a page shows (the server reads them): a request that has one is not cached.
+const CONTENT_QUERIES = ["view", "category", "exhibitionSlug", "q"];
+function publicPageCacheRules() {
+  const missing = [
+    { type: "header", key: "rsc" },
+    { type: "header", key: "next-router-prefetch" },
+    { type: "header", key: "next-router-state-tree" },
+    { type: "header", key: "next-router-segment-prefetch" },
+    { type: "query", key: "_rsc" },
+    { type: "cookie", key: "token" },
+    ...CONTENT_QUERIES.map((key) => ({ type: "query", key })),
+  ];
+  const headers = [{ key: "Cache-Control", value: "public, max-age=0, s-maxage=60" }];
+  return [
+    { source: "/:locale(en|ru|zh)", missing, headers },
+    { source: `/:locale(en|ru|zh)/:section(${PUBLIC_SECTIONS})/:rest*`, missing, headers },
+  ];
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Framework/version fingerprinting -- off by default upstream would be
@@ -117,6 +143,7 @@ const nextConfig = {
           },
         ],
       },
+      ...publicPageCacheRules(),
       {
         // Admin pages are auth-gated, client-rendered dashboards -- they must
         // never be served from a long-lived edge/CDN cache, or a redeploy's
@@ -131,6 +158,19 @@ const nextConfig = {
         // Per-exhibition registration is auth-gated and per-user (prefilled
         // from the visitor's own past submissions) -- must never be cached.
         source: "/:locale/exhibitions/:slug/register",
+        headers: [
+          { key: "Cache-Control", value: "no-store, must-revalidate" },
+        ],
+      },
+      {
+        // Venue check-in and the "apply" forms are per-person too.
+        source: "/:locale/exhibitions/:slug/check-in",
+        headers: [
+          { key: "Cache-Control", value: "no-store, must-revalidate" },
+        ],
+      },
+      {
+        source: "/:locale/services/:path*/apply",
         headers: [
           { key: "Cache-Control", value: "no-store, must-revalidate" },
         ],

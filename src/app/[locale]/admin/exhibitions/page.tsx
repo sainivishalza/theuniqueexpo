@@ -1,5 +1,6 @@
 "use client";
 
+import ExhibitionHistory from "./ExhibitionHistory";
 import { useEffect, useId, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
@@ -55,6 +56,7 @@ export default function AdminExhibitionsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [historyFor, setHistoryFor] = useState<Exhibition | null>(null);
   const [showNew, setShowNew] = useState(false);
   const { formRef, scrollToForm } = useFormScroll();
   const [form, setForm] = useState(EMPTY_FORM);
@@ -497,6 +499,7 @@ export default function AdminExhibitionsPage() {
                 <Button href={`/admin/exhibitions/${expo.slug}/registrations`} variant="tint" size="xs">{t("registrations")}</Button>
                 <Button href={`/admin/exhibitions/${expo.slug}/registration-form`} variant="ghost" size="xs">{t("registrationForm")}</Button>
                 <Button onClick={() => openEdit(expo)} variant="save" size="xs">{t("editButton")}</Button>
+                <Button onClick={() => setHistoryFor(expo)} variant="secondaryOutline" size="xs">{t("historyButton")}</Button>
                 <Button onClick={() => handleDelete(expo.id)} disabled={deletingId === expo.id} variant="ghostDanger" size="xs">
                   {deletingId === expo.id ? t("deleting") : ta("delete")}
                 </Button>
@@ -508,6 +511,7 @@ export default function AdminExhibitionsPage() {
           )}
         </div>
       </section>
+      {historyFor && <ExhibitionHistory exhibitionId={historyFor.id} title={historyFor.title} onClose={() => setHistoryFor(null)} onUndone={() => void loadExhibitions()} />}
     </div>
   );
 }

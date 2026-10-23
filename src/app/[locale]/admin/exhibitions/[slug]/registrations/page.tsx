@@ -9,6 +9,7 @@ import type { CustomFormField } from "@/lib/custom-registration-form";
 import { REGISTRATION_STATUSES, type EffectiveStatus, type RegistrationStatus } from "@/lib/registration-lifecycle";
 import { formatDateOnly, formatDateTime } from "@/lib/client/registration-format";
 import { isValidUploadedDocument } from "@/lib/server/validate-upload";
+import RecordNotes from "../../../RecordNotes";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import BulkDecisionDialog from "@/app/[locale]/admin/BulkDecisionDialog";
@@ -471,6 +472,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                   <Detail label={t("lifecycle.cancelledAt")} value={detail.cancelledAt ? formatDateTime(detail.cancelledAt, locale) : "—"} />
                   <Detail label={t("lifecycle.feedback")} value={detail.feedbackRating ? `${"★".repeat(detail.feedbackRating)}${"☆".repeat(5 - detail.feedbackRating)}${detail.feedbackComment ? ` — ${detail.feedbackComment}` : ""}` : "—"} />
                 </div>
+                <div className="mb-6"><RecordNotes type="registration" id={Number(detail.id)} /></div>
                 {detail.docTicket && (
                   <div className="mb-6">
                     <p className="text-xs font-semibold text-gray-500 uppercase mb-2">{t("lifecycle.ticket")}</p>

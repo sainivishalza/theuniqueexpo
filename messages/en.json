@@ -745,6 +745,22 @@
       "ticketCheck": {
         "title": "Check tickets",
         "description": "Scan a buyer's e-ticket QR code at the entrance to see who it is and let them in."
+      },
+      "insights": {
+        "title": "Reports",
+        "description": "Registrations per day, by country and by exhibition, and how far they get from registered to attended."
+      },
+      "duplicates": {
+        "title": "Duplicate buyers",
+        "description": "Find buyers who signed up twice (same passport or phone number) and merge them into one account."
+      },
+      "scheduledExports": {
+        "title": "Scheduled reports",
+        "description": "Excel reports (registrations, withdrawals, points movements) e-mailed to chosen people every day, week or month."
+      },
+      "staffAccess": {
+        "title": "Staff roles",
+        "description": "Limit an admin account to part of the back office: registrations and buyers, website content, the wallet, or view only."
       }
     },
     "attention": {
@@ -785,6 +801,18 @@
       "perWeekNote": "The last 8 weeks; the bar on the right is this week.",
       "weekTitle": "{count, plural, one {# new buyer} other {# new buyers}}, {ago, plural, =0 {this week} one {# week ago} other {# weeks ago}}",
       "topExhibitions": "Most registrations"
+    },
+    "noAccess": {
+      "title": "Your role cannot open this page",
+      "text": "You are signed in with the role “{role}”. Ask an admin with full access if you need more.",
+      "home": "Back to the admin home",
+      "roles": {
+        "full": "Full access",
+        "reviewer": "Registrations and buyers",
+        "content": "Website content",
+        "finance": "Wallet and reports",
+        "viewer": "View only"
+      }
     }
   },
   "adminSubsidies": {
@@ -1604,7 +1632,8 @@
     "deleting": "Deleting...",
     "noExhibitionsYet": "No exhibitions yet. Create one to get started.",
     "galleryPhoto": "Gallery photo {n}",
-    "removePhoto": "Remove photo {n}"
+    "removePhoto": "Remove photo {n}",
+    "historyButton": "History"
   },
   "adminPagesIndex": {
     "title": "Website Pages",
@@ -3332,6 +3361,16 @@
         "nobody": "No buyers match this choice.",
         "tooMany": "That is more than {max} buyers. Narrow the group down."
       }
+    },
+    "assigneeFilter": {
+      "label": "Looked after by",
+      "all": "Anyone",
+      "me": "Me",
+      "none": "Nobody"
+    },
+    "tagFilter": {
+      "label": "Tag",
+      "all": "Any tag"
     }
   },
   "homepageSlideshow": {
@@ -5035,7 +5074,8 @@
       "savedRegistrationClosing": "Saved exhibition: registration closes soon",
       "passportExpiring": "Passport expires soon",
       "visaExpiring": "Visa expires too early",
-      "groupInvite": "Colleague invitation"
+      "groupInvite": "Colleague invitation",
+      "scheduledReport": "Scheduled report"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -5259,7 +5299,18 @@
       "expo_registrations_bulk_status": "Approved or rejected several exhibition registrations",
       "admin_email_changed": "Changed their own e-mail address",
       "announcement_template_saved": "Saved an announcement text",
-      "announcement_template_deleted": "Deleted a saved announcement text"
+      "announcement_template_deleted": "Deleted a saved announcement text",
+      "tour_registrations_bulk_status": "Changed several tour registrations at once",
+      "event_registrations_bulk_status": "Changed several event registrations at once",
+      "internal_note_added": "Added an internal note",
+      "internal_tags_set": "Changed internal tags",
+      "internal_assigned": "Assigned a record to an admin",
+      "exhibition_change_undone": "Undid a change to an exhibition",
+      "buyers_merged": "Merged two buyer accounts",
+      "scheduled_export_saved": "Saved a scheduled report",
+      "scheduled_export_deleted": "Deleted a scheduled report",
+      "scheduled_export_sent_now": "Sent a scheduled report now",
+      "staff_role_set": "Set an admin's role"
     }
   },
   "notificationsPage": {
@@ -5609,6 +5660,332 @@
       "checked_in": "Checked in. Welcome!",
       "already_checked_in": "This ticket was already used.",
       "not_confirmed": "This registration has not confirmed attendance."
+    }
+  },
+  "adminInsights": {
+    "title": "Reports",
+    "subtitle": "How registrations are coming in, where from, and how far they get.",
+    "back": "← Back to Admin",
+    "period": "Period",
+    "lastDays": "Last {days} days",
+    "exhibition": "Exhibition",
+    "allExhibitions": "All exhibitions",
+    "failed": "The numbers could not be loaded. Please try again.",
+    "total": "{count} registrations in this period.",
+    "perDay": "Registrations per day",
+    "perWeek": "Registrations per week",
+    "none": "No registrations in this period.",
+    "busiest": "Busiest: {count} ({label}).",
+    "showNumbers": "Show the numbers",
+    "date": "Date",
+    "registrations": "Registrations",
+    "funnel": "How far registrations get",
+    "funnelNote": "Registrations made in this period. “Attended” counts people who were checked in.",
+    "steps": {
+      "registered": "Registered",
+      "approved": "Approved",
+      "confirmed": "Confirmed attendance",
+      "attended": "Attended"
+    },
+    "ofPrevious": "{percent} of the step before",
+    "ofAll": "{percent} of all",
+    "byCountry": "By country",
+    "otherCountries": "Other or unknown",
+    "byExhibition": "By exhibition",
+    "byExhibitionNote": "The ten most registered for in this period.",
+    "approvedAttended": "{approved} approved · {attended} attended"
+  },
+  "adminBulkOther": {
+    "selected": "{count, plural, one {# registration selected} other {# registrations selected}}",
+    "apply": "{action} selected",
+    "question": "{action} {count, plural, one {# registration} other {# registrations}}?",
+    "yes": "Yes, do it",
+    "back": "Back",
+    "working": "Working…",
+    "clear": "Clear selection",
+    "done": "Done: {updated} changed, {unchanged} were already like that.",
+    "errors": {
+      "none": "Select at least one registration.",
+      "too_many": "Select at most 200 registrations at a time.",
+      "invalid_status": "That change is not possible."
+    },
+    "actions": {
+      "approved": "Approve",
+      "rejected": "Reject",
+      "confirmed": "Confirm",
+      "cancelled": "Cancel"
+    }
+  },
+  "adminSavedViews": {
+    "toggle": "Saved views ({count})",
+    "pick": "Saved views",
+    "choose": "Apply a saved view…",
+    "none": "No saved views yet",
+    "delete": "Delete this view",
+    "deleteQuestion": "Delete it for good?",
+    "deleteYes": "Yes, delete",
+    "deleteKeep": "Keep it",
+    "saveAs": "Save the current filters as",
+    "save": "Save",
+    "hint": "A view keeps the search words and filters as they are now. Your views are private and follow you to any device.",
+    "saved": "Saved as “{name}”.",
+    "updated": "“{name}” was updated.",
+    "deleted": "The view was deleted.",
+    "errors": {
+      "bad_name": "Give it a name of up to 80 characters.",
+      "bad_filters": "These filters could not be saved.",
+      "limit": "You have reached the limit of 30 saved views for this list. Delete one first.",
+      "unavailable": "Saved views are not available yet. Please try again in a few minutes.",
+      "failed": "That did not work. Please try again."
+    }
+  },
+  "adminRecordNotes": {
+    "title": "Internal notes",
+    "private": "Only the team sees this. Buyers never do.",
+    "loading": "Loading…",
+    "assignedTo": "Looked after by",
+    "nobody": "Nobody",
+    "you": "you",
+    "assigned": "Assigned.",
+    "unassigned": "No longer assigned.",
+    "tags": "Tags",
+    "tagsPlaceholder": "e.g. vip, visa problem",
+    "tagsHint": "Separate tags with commas (up to 10, each up to 30 characters).",
+    "saveTags": "Save tags",
+    "tagsSaved": "Tags saved.",
+    "addNote": "Add a note",
+    "saveNote": "Add note",
+    "noteAdded": "Note added.",
+    "noteDeleted": "Note deleted.",
+    "noNotes": "No notes yet.",
+    "notesList": "Notes",
+    "deleteNote": "Delete my note",
+    "unknownAdmin": "An admin",
+    "errors": {
+      "load": "Could not load the notes.",
+      "bad_note": "A note needs 1 to 2000 characters.",
+      "bad_tags": "Use up to 10 tags of up to 30 characters.",
+      "bad_admin": "Choose one of the admins.",
+      "not_found": "This record no longer exists.",
+      "failed": "That did not work. Please try again."
+    }
+  },
+  "adminExhibitions": {
+    "historyButton": "History"
+  },
+  "adminExhibitionHistory": {
+    "title": "History of {name}",
+    "intro": "Each change to the text of this exhibition is kept, so a mistake can be undone. Pictures are not part of the history.",
+    "empty": "No changes have been made since history was switched on.",
+    "list": "Changes, newest first",
+    "kindEdit": "Edited",
+    "kindUndo": "Undone",
+    "unknownAdmin": "An admin",
+    "changed": "Changed:",
+    "undo": "Undo this change",
+    "undoQuestion": "Put the earlier text back?",
+    "undoYes": "Yes, undo it",
+    "undoKeep": "Keep as it is",
+    "working": "Working…",
+    "undone": "Done. The earlier text is back. This undo is in the list too.",
+    "fields": {
+      "slug": "Web address (slug)",
+      "title": "Title",
+      "start_date": "Start date",
+      "end_date": "End date",
+      "venue": "Venue",
+      "city": "City",
+      "country": "Country",
+      "industry": "Industry",
+      "description": "Description",
+      "highlights": "Highlights",
+      "description_ru": "Description (Russian)",
+      "description_zh": "Description (Chinese)",
+      "highlights_ru": "Highlights (Russian)",
+      "highlights_zh": "Highlights (Chinese)",
+      "exhibitors": "Exhibitors",
+      "visitors": "Visitors",
+      "organizer": "Organizer",
+      "website": "Website",
+      "color": "Colour"
+    },
+    "errors": {
+      "load": "Could not load the history.",
+      "not_found": "That change no longer exists.",
+      "slug_taken": "The earlier web address is now used by another exhibition, so this cannot be undone.",
+      "nothing_to_undo": "The exhibition already looks like that.",
+      "failed": "That did not work. Please try again."
+    }
+  },
+  "adminDuplicates": {
+    "title": "Duplicate buyers",
+    "subtitle": "Buyers who signed up more than once.",
+    "back": "← Back to Admin",
+    "howItWorks": "Accounts are listed together when they share a passport number or a phone number. Choose the account that stays, then merge the others into it. Nothing is merged until you confirm.",
+    "none": "No duplicates found. No two active buyers share a passport or phone number.",
+    "samePassport": "Same passport number: {value}",
+    "samePhone": "Same phone number: {value}",
+    "chooseKeep": "Choose the account that stays",
+    "keepThis": "Keep {name}",
+    "willStay": "Stays",
+    "mergeInto": "Merge into the account that stays",
+    "facts": "Signed up {date} · {registrations} registrations · {points} points",
+    "confirmTitle": "Merge {merged} into {kept}?",
+    "willMove": "Exhibition registrations move over: {moving}. Where both registered for the same exhibition ({clash}), the one that got further is kept.",
+    "willMoveOther": "Tour and event registrations: {tours}. Saved exhibitions: {favorites}. Website notices move too.",
+    "willMovePoints": "Points balance: {points} move to the account that stays.",
+    "willFill": "Gaps in the kept profile (details and documents) are filled from the other account.",
+    "willSuspend": "The other account is suspended and loses its passport and phone number, so signing in by those finds the kept account.",
+    "staysBehind": "Payments, top-ups, messages and the points history of the other account stay with it.",
+    "pendingMoney": "The other account still has {count} top-ups, withdrawals or expense claims waiting. Finish those first.",
+    "cannotUndo": "This cannot be taken back.",
+    "yesMerge": "Yes, merge",
+    "merging": "Merging…",
+    "cancel": "Cancel",
+    "merged": "Merged {merged} into {kept}.",
+    "errors": {
+      "load": "Could not load the list.",
+      "invalid": "Choose two different buyer accounts.",
+      "pending_money": "The other account still has money waiting. Finish those first.",
+      "wallet_frozen": "The other account's wallet is frozen. Unfreeze it first.",
+      "already_merged": "One of these accounts was already merged.",
+      "rate_limited": "Too many merges in the last hour. Please wait.",
+      "failed": "The merge did not work. Nothing was changed except possibly the points; please check and try again."
+    }
+  },
+  "adminScheduledExports": {
+    "title": "Scheduled reports",
+    "subtitle": "An Excel file sent to the people you choose, every day, week or month.",
+    "back": "← Back to Admin",
+    "mailOff": "E-mail is switched off, so nothing is sent until you switch it on.",
+    "openEmail": "Open the e-mail settings",
+    "newReport": "New report",
+    "editReport": "Change this report",
+    "name": "Name of the report",
+    "what": "What to send",
+    "kinds": {
+      "registrations": "Exhibition registrations",
+      "withdrawals": "Withdrawal requests (to pay)",
+      "movements": "Points movements of the last 7 days"
+    },
+    "exhibition": "Exhibition",
+    "allExhibitions": "All exhibitions",
+    "status": {
+      "sent": "sent",
+      "sending": "sending",
+      "failed": "failed",
+      "partly_failed": "some addresses failed",
+      "too_large": "too large to attach"
+    },
+    "anyStatus": "Any status",
+    "withdrawalStatus": "Requests that are",
+    "withdrawalStatuses": {
+      "pending": "Waiting to be paid",
+      "paid": "Paid",
+      "rejected": "Rejected",
+      "all": "All of them"
+    },
+    "how": "How often",
+    "frequencies": {
+      "daily": "Every day",
+      "weekly": "Every week",
+      "monthly": "Every month"
+    },
+    "weekday": "On",
+    "weekdays": {
+      "0": "Sunday",
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday"
+    },
+    "monthDay": "On day of the month",
+    "recipients": "Send to (e-mail addresses)",
+    "recipientsHint": "One per line or separated by commas. Up to 10.",
+    "enabled": "Switched on",
+    "timeNote": "Reports go out the first time the daily check runs on or after the chosen day (UTC). A new report starts from its next day.",
+    "create": "Add the report",
+    "saveChanges": "Save changes",
+    "created": "The report was added. The first one goes out on its next day.",
+    "updated": "The report was saved.",
+    "paused": "The report is paused.",
+    "resumed": "The report is switched on again.",
+    "deleted": "The report was deleted.",
+    "sentNow": "“{name}” was sent.",
+    "yourReports": "Your reports",
+    "none": "No scheduled reports yet.",
+    "pausedBadge": "Paused",
+    "to": "To:",
+    "last": "Last sent {when} ({status})",
+    "neverSent": "Not sent yet",
+    "sendNow": "Send now",
+    "pause": "Pause",
+    "resume": "Switch on",
+    "edit": "Change",
+    "delete": "Delete",
+    "deleteQuestion": "Delete it for good?",
+    "deleteYes": "Yes, delete",
+    "deleteKeep": "Keep it",
+    "errors": {
+      "load": "Could not load the reports.",
+      "bad_name": "Give the report a name of up to 100 characters.",
+      "bad_kind": "Choose what to send.",
+      "bad_frequency": "Choose how often.",
+      "bad_day": "Choose a valid day.",
+      "bad_recipients": "Enter 1 to 10 valid e-mail addresses.",
+      "limit": "You have reached the limit of 20 reports. Delete one first.",
+      "unavailable": "Scheduled reports are not available yet. Please try again in a few minutes.",
+      "mail_off": "E-mail is switched off. Switch it on in Admin → Email first.",
+      "rate_limited": "Too many sends in the last hour. Please wait.",
+      "not_found": "That report no longer exists.",
+      "failed": "That did not work. Please try again."
+    }
+  },
+  "adminStaffAccess": {
+    "title": "Staff roles",
+    "subtitle": "Who may do what in the back office.",
+    "back": "← Back to Admin",
+    "fullOnly": "Only an admin with full access can manage staff roles.",
+    "rolesHeading": "The roles",
+    "note": "Every admin that has no role set has full access. A limited role can only open the pages and use the actions listed for it; anything not listed needs full access. People cannot change their own role.",
+    "admin": "Admin",
+    "role": "Role",
+    "you": "you",
+    "suspended": "Suspended",
+    "ownRole": "You cannot change your own role.",
+    "roleOf": "Role of {name}",
+    "saved": "{name} now has the role “{role}”.",
+    "roles": {
+      "full": {
+        "name": "Full access",
+        "text": "Everything in the admin, including staff roles, users, e-mail settings and merging buyers."
+      },
+      "reviewer": {
+        "name": "Registrations and buyers",
+        "text": "Registrations (exhibitions, tours, events), buyer profiles and documents, announcements, ticket check, notes and reports. No wallet, users, e-mail or website content."
+      },
+      "content": {
+        "name": "Website content",
+        "text": "Exhibitions, tours, events, articles, pages, pictures and hotels. No buyers, registrations or wallet."
+      },
+      "finance": {
+        "name": "Wallet and reports",
+        "text": "The rewards wallet (top-ups, withdrawals, expenses, adjustments), scheduled reports and the registration lists."
+      },
+      "viewer": {
+        "name": "View only",
+        "text": "Can look at registrations, exhibitions and the reports, but cannot change anything."
+      }
+    },
+    "errors": {
+      "load": "Could not load the staff list.",
+      "bad_request": "Choose an admin and a role.",
+      "own_role": "You cannot change your own role.",
+      "not_admin": "That account is not an admin.",
+      "unavailable": "Roles are not available yet. Please try again in a few minutes.",
+      "failed": "That did not work. Please try again."
     }
   }
 }

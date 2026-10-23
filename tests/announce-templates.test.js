@@ -120,6 +120,7 @@ const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'tok
   await dlg.getByLabel('Message', { exact: true }).evaluate((el) => el.setSelectionRange(5, 5));
   await dlg.getByRole('button', { name: 'Insert {name}' }).click();
   ok((await dlg.getByLabel('Message', { exact: true }).inputValue()) === 'Dear {name}, welcome to .', 'a field goes in where the cursor is', await dlg.getByLabel('Message', { exact: true }).inputValue());
+  await sleep(400); // the dialog puts the cursor after the inserted field on the next frame; do not move it before that
   await dlg.getByLabel('Message', { exact: true }).evaluate((el) => el.setSelectionRange(el.value.length - 1, el.value.length - 1));
   await dlg.getByRole('button', { name: 'Insert {exhibition}' }).click();
   ok((await dlg.getByLabel('Message', { exact: true }).inputValue()) === 'Dear {name}, welcome to {exhibition}.', 'and another after it');

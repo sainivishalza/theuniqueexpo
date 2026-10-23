@@ -142,6 +142,8 @@ export interface OutgoingMail {
   html: string;
   kind: string;
   userId?: number | null;
+  /** Files to attach (the scheduled Excel reports). */
+  attachments?: { filename: string; content: Buffer; contentType: string }[];
 }
 
 function shortError(err: unknown): string {
@@ -185,6 +187,7 @@ export async function sendMail(mail: OutgoingMail, options: { ignoreEnabled?: bo
       subject: mail.subject,
       text: mail.text,
       html: mail.html,
+      attachments: mail.attachments,
     });
     await logMail(mail, "sent");
     return { ok: true };

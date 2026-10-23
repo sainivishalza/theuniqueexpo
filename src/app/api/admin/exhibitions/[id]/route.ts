@@ -3,6 +3,7 @@ import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
 import { isDuplicateEntryError } from "@/lib/db";
 import { updateExhibition, deleteExhibition } from "@/lib/server/exhibitions-repo";
+import { readSnapshot, recordChange } from "@/lib/server/exhibition-history";
 import { slugify } from "@/lib/slugify";
 import { isValidImageField, isValidImageFieldArray } from "@/lib/server/validate-upload";
 
@@ -24,7 +25,13 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   }
 
   try {
+    const before = await readSnapshot(Number(id));
     await updateExhibition(Number(id), body);
+    // What was changed is remembered, so a mistaken edit can be undone from the exhibition's History.
+    if (before) {
+      const after = await readSnapshot(Number(id));
+      if (after) await recordChange(Number(id), before, after, { id: admin.id, name: admin.name });
+    }
     logAdminAction(request, admin, "exhibition_updated", { targetType: "exhibition", targetId: id, details: String(body.title ?? "") });
     return NextResponse.json({ ok: true });
   } catch (err) {

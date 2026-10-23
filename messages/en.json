@@ -1608,7 +1608,8 @@
     "deleting": "Deleting...",
     "noExhibitionsYet": "No exhibitions yet. Create one to get started.",
     "galleryPhoto": "Gallery photo {n}",
-    "removePhoto": "Remove photo {n}"
+    "removePhoto": "Remove photo {n}",
+    "historyButton": "History"
   },
   "adminPagesIndex": {
     "title": "Website Pages",
@@ -5278,7 +5279,8 @@
       "event_registrations_bulk_status": "Changed several event registrations at once",
       "internal_note_added": "Added an internal note",
       "internal_tags_set": "Changed internal tags",
-      "internal_assigned": "Assigned a record to an admin"
+      "internal_assigned": "Assigned a record to an admin",
+      "exhibition_change_undone": "Undid a change to an exhibition"
     }
   },
   "notificationsPage": {
@@ -5735,6 +5737,53 @@
       "bad_tags": "Use up to 10 tags of up to 30 characters.",
       "bad_admin": "Choose one of the admins.",
       "not_found": "This record no longer exists.",
+      "failed": "That did not work. Please try again."
+    }
+  },
+  "adminExhibitions": {
+    "historyButton": "History"
+  },
+  "adminExhibitionHistory": {
+    "title": "History of {name}",
+    "intro": "Each change to the text of this exhibition is kept, so a mistake can be undone. Pictures are not part of the history.",
+    "empty": "No changes have been made since history was switched on.",
+    "list": "Changes, newest first",
+    "kindEdit": "Edited",
+    "kindUndo": "Undone",
+    "unknownAdmin": "An admin",
+    "changed": "Changed:",
+    "undo": "Undo this change",
+    "undoQuestion": "Put the earlier text back?",
+    "undoYes": "Yes, undo it",
+    "undoKeep": "Keep as it is",
+    "working": "Working…",
+    "undone": "Done. The earlier text is back. This undo is in the list too.",
+    "fields": {
+      "slug": "Web address (slug)",
+      "title": "Title",
+      "start_date": "Start date",
+      "end_date": "End date",
+      "venue": "Venue",
+      "city": "City",
+      "country": "Country",
+      "industry": "Industry",
+      "description": "Description",
+      "highlights": "Highlights",
+      "description_ru": "Description (Russian)",
+      "description_zh": "Description (Chinese)",
+      "highlights_ru": "Highlights (Russian)",
+      "highlights_zh": "Highlights (Chinese)",
+      "exhibitors": "Exhibitors",
+      "visitors": "Visitors",
+      "organizer": "Organizer",
+      "website": "Website",
+      "color": "Colour"
+    },
+    "errors": {
+      "load": "Could not load the history.",
+      "not_found": "That change no longer exists.",
+      "slug_taken": "The earlier web address is now used by another exhibition, so this cannot be undone.",
+      "nothing_to_undo": "The exhibition already looks like that.",
       "failed": "That did not work. Please try again."
     }
   }

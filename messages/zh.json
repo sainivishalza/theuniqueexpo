@@ -1608,7 +1608,8 @@
     "deleting": "删除中...",
     "noExhibitionsYet": "暂无展会,创建一个开始吧。",
     "galleryPhoto": "图库照片 {n}",
-    "removePhoto": "删除照片 {n}"
+    "removePhoto": "删除照片 {n}",
+    "historyButton": "历史"
   },
   "adminPagesIndex": {
     "title": "网站页面",
@@ -5278,7 +5279,8 @@
       "event_registrations_bulk_status": "批量更改了多条活动登记",
       "internal_note_added": "添加了内部备注",
       "internal_tags_set": "更改了内部标签",
-      "internal_assigned": "指派了负责人"
+      "internal_assigned": "指派了负责人",
+      "exhibition_change_undone": "撤销了展会的一次更改"
     }
   },
   "notificationsPage": {
@@ -5735,6 +5737,53 @@
       "bad_tags": "最多 10 个标签，每个最多 30 个字符。",
       "bad_admin": "请选择一位管理员。",
       "not_found": "此记录已不存在。",
+      "failed": "操作失败，请重试。"
+    }
+  },
+  "adminExhibitions": {
+    "historyButton": "历史"
+  },
+  "adminExhibitionHistory": {
+    "title": "{name} 的历史",
+    "intro": "本展会文字内容的每次更改都会保留，因此误操作可以撤销。图片不在历史记录内。",
+    "empty": "开启历史记录以来还没有更改。",
+    "list": "更改记录（最新在前）",
+    "kindEdit": "已编辑",
+    "kindUndo": "已撤销",
+    "unknownAdmin": "管理员",
+    "changed": "已更改：",
+    "undo": "撤销此更改",
+    "undoQuestion": "恢复之前的文字？",
+    "undoYes": "是，撤销",
+    "undoKeep": "保持现状",
+    "working": "处理中…",
+    "undone": "完成。之前的文字已恢复。这次撤销也在列表中。",
+    "fields": {
+      "slug": "网址（slug）",
+      "title": "标题",
+      "start_date": "开始日期",
+      "end_date": "结束日期",
+      "venue": "场馆",
+      "city": "城市",
+      "country": "国家",
+      "industry": "行业",
+      "description": "描述",
+      "highlights": "亮点",
+      "description_ru": "描述（俄语）",
+      "description_zh": "描述（中文）",
+      "highlights_ru": "亮点（俄语）",
+      "highlights_zh": "亮点（中文）",
+      "exhibitors": "参展商",
+      "visitors": "观众",
+      "organizer": "主办方",
+      "website": "网站",
+      "color": "颜色"
+    },
+    "errors": {
+      "load": "无法加载历史记录。",
+      "not_found": "该更改已不存在。",
+      "slug_taken": "之前的网址现已被其他展会使用，无法撤销。",
+      "nothing_to_undo": "展会已经是这个样子。",
       "failed": "操作失败，请重试。"
     }
   }

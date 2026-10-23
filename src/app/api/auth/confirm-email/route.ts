@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAdminAction } from "@/lib/server/audit-log";
 import { checkRateLimit, getClientIp } from "@/lib/server/rate-limit";
 import { confirmEmailAddition, isEmailLinkValid } from "@/lib/server/email-change";
 
@@ -18,5 +19,9 @@ export async function POST(request: Request) {
   const token = typeof body?.token === "string" ? body.token : "";
   const result = await confirmEmailAddition(token);
   if (!result.ok) return NextResponse.json({ error: result.code, code: result.code }, { status: 400 });
+  // An admin changing their own address is written to the activity log.
+  if (result.changed && result.role === "admin") {
+    logAdminAction(request, { id: result.userId, name: result.name }, "admin_email_changed", { targetType: "user", targetId: result.userId, details: `${result.previousEmail} → ${result.email}` });
+  }
   return NextResponse.json({ success: true, email: result.email });
 }

@@ -4693,6 +4693,19 @@
       "intro": "{expo} starts on {date} and you are registered.",
       "body": "Have your passport ready and scan the QR code at the venue to check in. You can add the dates to your calendar from the exhibition page.",
       "button": "Open the exhibition page"
+    },
+    "confirmEmailChange": {
+      "subject": "Confirm your new e-mail address",
+      "intro": "You asked to use this e-mail address for your The Unique Expo account.",
+      "body": "Open the link below to confirm it. The link works once and expires in {minutes} minutes. Until you do, you keep signing in with your current address.",
+      "button": "Confirm new e-mail address",
+      "ignore": "If you did not ask for this, ignore this e-mail: nothing will change."
+    },
+    "emailChanged": {
+      "subject": "The e-mail address of your account was changed",
+      "intro": "The e-mail address of your The Unique Expo account was changed to {email}.",
+      "body": "From now on you sign in with the new address, and messages go there. If this was not you, contact us at once.",
+      "button": "Go to sign in"
     }
   },
   "adminEmail": {
@@ -4756,7 +4769,9 @@
       "tourRegistrationApproved": "Tour registration approved",
       "tourRegistrationRejected": "Tour registration not approved",
       "registrationReceived": "Registration received",
-      "registrationStartsSoon": "Exhibition starts soon"
+      "registrationStartsSoon": "Exhibition starts soon",
+      "confirmEmailChange": "Confirm a new e-mail address",
+      "emailChanged": "E-mail address changed"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -4823,7 +4838,7 @@
     },
     "confirm": {
       "title": "Confirm your e-mail address",
-      "intro": "Press the button to attach this e-mail address to your account.",
+      "intro": "Press the button to use this e-mail address for your account.",
       "button": "Confirm e-mail address",
       "working": "Confirming…",
       "success": "Your e-mail address is confirmed.",
@@ -4977,7 +4992,8 @@
       "blog_post_deleted": "Deleted a blog post",
       "site_page_saved": "Saved a website page",
       "signed_out_everywhere": "Signed out of all other devices",
-      "expo_registrations_bulk_status": "Approved or rejected several exhibition registrations"
+      "expo_registrations_bulk_status": "Approved or rejected several exhibition registrations",
+      "admin_email_changed": "Changed their own e-mail address"
     }
   },
   "notificationsPage": {
@@ -5248,5 +5264,29 @@
     "missing": "Still missing:",
     "hint": "Add these once and every registration uses them, so you are not asked again.",
     "completeProfile": "Complete my profile"
+  },
+  "accountChangeEmail": {
+    "title": "Change my e-mail address",
+    "current": "Your current address: {email}",
+    "intro": "Type the new address and your password. We send a link to the new address, and your address changes when you open it. Until then you keep signing in with the current one.",
+    "newEmail": "New e-mail address",
+    "password": "Account password (to confirm)",
+    "submit": "Send the confirmation link",
+    "sending": "Sending…",
+    "sentTitle": "Check your new e-mail",
+    "sentBody": "If {email} can be used, we have sent a link to confirm it. The link works for 60 minutes; look in the spam folder too. Your address changes when you open the link.",
+    "mailOff": "E-mail sending is not set up on the site yet, so a confirmation link cannot be sent.",
+    "setUpEmail": "Set up e-mail",
+    "errors": {
+      "missing": "Please type the new address and your password.",
+      "invalid_email": "Please enter a valid e-mail address.",
+      "same_email": "That is already your e-mail address.",
+      "wrong_password": "That password is not right.",
+      "rate_limited": "Too many tries. Please wait a while and try again.",
+      "mail_off": "E-mail is not available right now. Please try again later.",
+      "no_email": "Your account has no e-mail address yet. Add one from your profile page.",
+      "unavailable": "This is not available for a few minutes. Please try again shortly.",
+      "generic": "We could not send the link. Please try again."
+    }
   }
 }

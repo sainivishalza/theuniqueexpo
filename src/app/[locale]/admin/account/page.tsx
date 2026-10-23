@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import ChangePasswordCard from "../../dashboard/_components/ChangePasswordCard";
+import ChangeEmailCard from "../../dashboard/_components/ChangeEmailCard";
 import TwoStepCard from "./TwoStepCard";
 import SessionsCard from "../../dashboard/_components/SessionsCard";
 
@@ -35,6 +36,7 @@ export default function AdminAccountPage() {
         <div className="mx-auto max-w-3xl px-6">
           <div className="space-y-6">
             <ChangePasswordCard />
+            <ChangeEmailCard />
             <TwoStepCard />
             <SessionsCard />
           </div>

@@ -4693,6 +4693,19 @@
       "intro": "{expo} 将于 {date} 开幕，您已报名。",
       "body": "请准备好护照，并在展馆扫描二维码签到。您可以在展会页面把日期添加到日历。",
       "button": "打开展会页面"
+    },
+    "confirmEmailChange": {
+      "subject": "请确认您的新电子邮箱",
+      "intro": "您请求将此邮箱用于您的 The Unique Expo 账户。",
+      "body": "请打开下方链接确认。链接只能使用一次，{minutes} 分钟后失效。在此之前，您仍使用当前邮箱登录。",
+      "button": "确认新邮箱",
+      "ignore": "如果不是您本人操作，请忽略此邮件：不会有任何更改。"
+    },
+    "emailChanged": {
+      "subject": "您账户的电子邮箱已更改",
+      "intro": "您的 The Unique Expo 账户邮箱已更改为 {email}。",
+      "body": "今后请使用新邮箱登录，邮件也会发送到新邮箱。如果这不是您本人操作，请立即联系我们。",
+      "button": "前往登录"
     }
   },
   "adminEmail": {
@@ -4756,7 +4769,9 @@
       "tourRegistrationApproved": "旅游报名已通过",
       "tourRegistrationRejected": "旅游报名未通过",
       "registrationReceived": "已收到报名",
-      "registrationStartsSoon": "展会即将开幕"
+      "registrationStartsSoon": "展会即将开幕",
+      "confirmEmailChange": "确认新邮箱",
+      "emailChanged": "邮箱已更改"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -4823,7 +4838,7 @@
     },
     "confirm": {
       "title": "确认您的邮箱地址",
-      "intro": "点击按钮，将此邮箱地址绑定到您的账户。",
+      "intro": "点击按钮，将此邮箱用于您的账户。",
       "button": "确认邮箱地址",
       "working": "确认中…",
       "success": "您的邮箱地址已确认。",
@@ -4977,7 +4992,8 @@
       "blog_post_deleted": "删除博客文章",
       "site_page_saved": "保存网站页面",
       "signed_out_everywhere": "退出所有其他设备",
-      "expo_registrations_bulk_status": "批量批准或拒绝展会报名"
+      "expo_registrations_bulk_status": "批量批准或拒绝展会报名",
+      "admin_email_changed": "更改了自己的电子邮箱"
     }
   },
   "notificationsPage": {
@@ -5248,5 +5264,29 @@
     "missing": "还缺少：",
     "hint": "只需添加一次，之后每次报名都会使用这些信息，不会再次询问。",
     "completeProfile": "完善我的资料"
+  },
+  "accountChangeEmail": {
+    "title": "更改我的电子邮箱",
+    "current": "您当前的邮箱：{email}",
+    "intro": "输入新的邮箱和您的密码。我们会向新邮箱发送一个链接，您打开链接后邮箱才会更改。在此之前，您仍使用当前邮箱登录。",
+    "newEmail": "新的电子邮箱",
+    "password": "账户密码（用于确认）",
+    "submit": "发送确认链接",
+    "sending": "发送中…",
+    "sentTitle": "请查收新邮箱",
+    "sentBody": "如果 {email} 可以使用，我们已向它发送了确认链接。链接 60 分钟内有效，也请查看垃圾邮件文件夹。您打开链接后邮箱才会更改。",
+    "mailOff": "网站尚未设置邮件发送，因此无法发送确认链接。",
+    "setUpEmail": "设置邮件",
+    "errors": {
+      "missing": "请输入新邮箱和您的密码。",
+      "invalid_email": "请输入有效的电子邮箱。",
+      "same_email": "这已经是您的邮箱了。",
+      "wrong_password": "密码不正确。",
+      "rate_limited": "尝试次数过多，请稍后再试。",
+      "mail_off": "邮件功能暂时不可用，请稍后再试。",
+      "no_email": "您的账户还没有邮箱，请在个人资料页面添加。",
+      "unavailable": "此功能几分钟内暂不可用，请稍后再试。",
+      "generic": "无法发送链接，请重试。"
+    }
   }
 }

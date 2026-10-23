@@ -14,6 +14,7 @@ import BulkReviewDialog from "./BulkReviewDialog";
 import AnnounceDialog from "./AnnounceDialog";
 import SavedViews from "../SavedViews";
 import RecordNotes from "../RecordNotes";
+import DocumentShare from "./DocumentShare";
 import { TEXT_COLUMN_ORDER } from "@/lib/buyer-profile-columns";
 import { useBuyerForm } from "@/lib/client/buyer-form";
 import { documentsComplete, type FormItem } from "@/lib/buyer-form";
@@ -1085,6 +1086,7 @@ export default function AdminBuyerProfilesPage() {
                             onChange={(e) => handleDocUpload(field, e.target.files?.[0] || null)}
                             className="w-full text-xs mb-1.5"
                           />
+                          {detail.hasDocument[field] && <DocumentShare userId={openId} docKey={field} docLabel={form.label(item)} />}
                           {detail.hasDocument[field] && (
                             <>
                               <select

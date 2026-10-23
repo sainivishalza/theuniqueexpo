@@ -427,7 +427,24 @@
         "confirmed": "Attendance confirmed. Scan the QR code at the venue to check in.",
         "feedback": "Share your feedback about the exhibition."
       },
-      "yourRegistrations": "Your registrations"
+      "yourRegistrations": "Your registrations",
+      "cancelMany": {
+        "hint": "Tick the registrations you want to cancel.",
+        "select": "Select {title}",
+        "selectedCount": "{count, plural, one {# registration selected} other {# registrations selected}}",
+        "cancelSelected": "{count, plural, one {Cancel # registration} other {Cancel # registrations}}",
+        "clear": "Clear",
+        "title": "{count, plural, one {Cancel # registration?} other {Cancel # registrations?}}",
+        "body": "You give up your place at these exhibitions. You can register again later while registration is open.",
+        "confirm": "{count, plural, one {Yes, cancel it} other {Yes, cancel them}}",
+        "keep": "Keep them",
+        "working": "Cancelling…",
+        "done": "{count, plural, =0 {Nothing was cancelled.} one {# registration cancelled.} other {# registrations cancelled.}}",
+        "notCancelled": "{count, plural, one {# could not be cancelled: it has already been reviewed or can no longer be changed.} other {# could not be cancelled: they have already been reviewed or can no longer be changed.}}",
+        "close": "Close",
+        "error": "Something went wrong. Please try again.",
+        "rateLimited": "Too many attempts. Please try again later."
+      }
     },
     "registrationNumber": "Your registration number",
     "registrationNumberHint": "Quote it whenever you contact us.",

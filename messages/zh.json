@@ -427,7 +427,24 @@
         "confirmed": "已确认参加。请在现场扫描二维码签到。",
         "feedback": "请分享您对展会的反馈。"
       },
-      "yourRegistrations": "您的报名"
+      "yourRegistrations": "您的报名",
+      "cancelMany": {
+        "hint": "勾选您想取消的报名。",
+        "select": "选择 {title}",
+        "selectedCount": "{count, plural, other {已选择 # 条报名}}",
+        "cancelSelected": "{count, plural, other {取消 # 条报名}}",
+        "clear": "清除",
+        "title": "{count, plural, other {取消 # 条报名？}}",
+        "body": "您将放弃这些展会的名额。报名开放期间，您之后可以重新报名。",
+        "confirm": "是，取消",
+        "keep": "保留",
+        "working": "取消中…",
+        "done": "{count, plural, =0 {没有取消任何报名。} other {已取消 # 条报名。}}",
+        "notCancelled": "{count, plural, other {# 条无法取消：已经审核或不能再更改。}}",
+        "close": "关闭",
+        "error": "出了点问题，请重试。",
+        "rateLimited": "尝试次数过多，请稍后再试。"
+      }
     },
     "registrationNumber": "您的注册编号",
     "registrationNumberHint": "联系我们时请提供此编号。",

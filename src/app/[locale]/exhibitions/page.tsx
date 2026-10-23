@@ -8,9 +8,9 @@ export default async function ExhibitionsPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ view?: string }>;
+  searchParams: Promise<{ view?: string; industry?: string }>;
 }) {
-  const [{ locale }, { view }] = await Promise.all([params, searchParams]);
+  const [{ locale }, { view, industry }] = await Promise.all([params, searchParams]);
   const rows = await listExhibitions(locale);
   const exhibitions: Exhibition[] = rows.map((r) => ({
     id: r.id,
@@ -38,5 +38,5 @@ export default async function ExhibitionsPage({
     registrationDaysToClose: r.registrationDaysToClose,
     registrationDaysToOpen: r.registrationDaysToOpen,
   }));
-  return <ExhibitionsView exhibitions={exhibitions} initialView={view ?? null} />;
+  return <ExhibitionsView exhibitions={exhibitions} initialView={view ?? null} initialIndustry={industry ?? null} />;
 }

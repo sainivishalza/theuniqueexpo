@@ -6,6 +6,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
+import { friendlyCount, getSiteStats, showable } from "@/lib/server/site-stats";
 import { getFaqItems } from "@/lib/server/faq-content-repo";
 import { translateContent } from "@/lib/server/content-translations";
 import { listTeamMembers } from "@/lib/server/team-members-repo";
@@ -22,20 +23,14 @@ const FEATURED_COUNT = 6;
 // revalidate in the background instead of hitting the DB on every request.
 export const revalidate = 60;
 
-const INDUSTRY_KEYS = [
-  { key: "electronics", icon: "🔌", count: 200 },
-  { key: "digitalTrade", icon: "💻", count: 120 },
-  { key: "lighting", icon: "💡", count: 75 },
-  { key: "furniture", icon: "🪑", count: 90 },
-  { key: "manufacturing", icon: "🏭", count: 110 },
-  { key: "energy", icon: "⚡", count: 80 },
-  { key: "tradeInvestment", icon: "🤝", count: 150 },
-  { key: "healthBeauty", icon: "💄", count: 65 },
-  { key: "logistics", icon: "📦", count: 60 },
-  { key: "hospitality", icon: "🏨", count: 70 },
-  { key: "toysGifts", icon: "🧸", count: 65 },
-  { key: "agriculture", icon: "🚜", count: 55 },
+// A small picture for an industry, chosen by a word in its name (the industries themselves come from the exhibitions).
+const INDUSTRY_ICONS: [RegExp, string][] = [
+  [/electronic|digital|tech|smart|software|ai\b/i, "🔌"], [/light|led/i, "💡"], [/furnitur|home|decor/i, "🪑"], [/machin|manufactur|industr|hardware|tool/i, "🏭"],
+  [/energy|solar|power|battery/i, "⚡"], [/trade|invest|general/i, "🤝"], [/beauty|health|medic|cosmetic/i, "💄"], [/logist|transport|shipping/i, "📦"],
+  [/hotel|hospital|food|restaurant/i, "🏨"], [/toy|gift|stationery|craft/i, "🧸"], [/agri|farm/i, "🚜"], [/textile|garment|fashion|cloth|fabric/i, "🧵"],
+  [/auto|vehicle|car\b/i, "🚗"], [/build|construct|material|ceramic/i, "🏗️"], [/packag|print/i, "📦"],
 ];
+const industryIcon = (name: string) => INDUSTRY_ICONS.find(([re]) => re.test(name))?.[1] ?? "🏷️";
 
 export default async function Home() {
   // getFaqItems() doesn't depend on locale/translations, so it doesn't need
@@ -68,17 +63,25 @@ export default async function Home() {
   };
   const faqSchemaJson = JSON.stringify(faqSchema).replace(/</g, "\\u003c");
 
+  // Every figure is counted from the database; one that is still small is left out (see site-stats.ts).
+  const site = await getSiteStats();
   const stats = [
-    { value: "20+", label: t("stats.exhibitions") },
-    { value: "15,000+", label: t("stats.exhibitors") },
-    { value: "500K+", label: t("stats.visitors") },
-    { value: "15+", label: t("stats.markets") },
+    ...(showable(site, "exhibitions") ? [{ value: friendlyCount(site.exhibitions, locale), label: t("stats.exhibitions") }] : []),
+    ...(showable(site, "buyers") ? [{ value: friendlyCount(site.buyers, locale), label: t("stats.buyers") }] : []),
+    ...(showable(site, "buyerCountries") ? [{ value: friendlyCount(site.buyerCountries, locale), label: t("stats.countries") }] : []),
+    ...(showable(site, "exhibitors") ? [{ value: friendlyCount(site.exhibitors, locale), label: t("stats.exhibitors") }] : []),
   ];
 
-  const industries = INDUSTRY_KEYS.map((ind) => ({
-    ...ind,
-    name: t(`industries.${ind.key}`),
-  }));
+  // The industries of the upcoming exhibitions, with how many exhibitions each has (names as the exhibitions write them, so the link filters correctly).
+  const industryCounts = new Map<string, number>();
+  for (const e of exhibitions.filter((x) => new Date(x.endDate) >= now)) {
+    const name = (e.industry || "").trim();
+    if (name) industryCounts.set(name, (industryCounts.get(name) ?? 0) + 1);
+  }
+  const industries = [...industryCounts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 12)
+    .map(([name, count]) => ({ name, count, icon: industryIcon(name) }));
 
   return (
     <main>
@@ -126,7 +129,7 @@ export default async function Home() {
 
           {/* Stats bar -- financial-report style: a thin top rule, a large
               serif figure, a small tracked-out label. No cards, no icons. */}
-          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className={`mt-20 grid grid-cols-2 gap-8 ${stats.length >= 4 ? "md:grid-cols-4" : stats.length === 3 ? "md:grid-cols-3" : stats.length === 2 ? "md:grid-cols-2" : "md:grid-cols-1"}`}>
             {stats.map((stat) => (
               <div key={stat.label} className="border-t border-white/20 pt-4">
                 <div className="text-3xl md:text-5xl font-extrabold font-[family-name:var(--font-heading)] text-cream-50">{stat.value}</div>
@@ -236,7 +239,8 @@ export default async function Home() {
 
       <HowAreYouAttending />
 
-      {/* ── Industry Categories ── */}
+      {/* ── Industry Categories (from the upcoming exhibitions) ── */}
+      {industries.length > 0 && (
       <section className="py-20 bg-white">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-14">
@@ -258,12 +262,13 @@ export default async function Home() {
               >
                 <div className="text-4xl mb-3">{ind.icon}</div>
                 <div className="text-sm font-bold text-gray-900">{ind.name}</div>
-                <div className="text-xs text-gray-500 mt-1">{ind.count}+ events</div>
+                <div className="text-xs text-gray-500 mt-1">{t("industryCount", { count: ind.count })}</div>
               </Link>
             ))}
           </div>
         </div>
       </section>
+      )}
 
       {/* ── How It Works ── */}
       <section className="py-20 bg-cream-50">

@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useSiteStats } from "@/lib/client/site-stats";
+import { friendlyCount, showable } from "@/lib/site-stats-format";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { SecondStepError, useAuth } from "@/lib/auth-context";
@@ -12,6 +14,13 @@ import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 export default function LoginPage() {
   const t = useTranslations("loginPage");
+  const locale = useLocale();
+  // Real figures only (counted from the database); one that is still small is left out.
+  const site = useSiteStats();
+  const tiles = site ? [
+    ...(showable(site, "exhibitions") ? [{ value: friendlyCount(site.exhibitions, locale), label: t("stats.exhibitions") }] : []),
+    ...(showable(site, "tours") ? [{ value: friendlyCount(site.tours, locale), label: t("stats.tours") }] : []),
+  ] : [];
   const { login, loginWithCode } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -108,11 +117,11 @@ export default function LoginPage() {
           <Logo size="large" tone="onDark" />
           <h1 className="text-4xl font-extrabold mt-8 mb-4 leading-tight">{t("heroTitleLine1")}<br/>{t("heroTitleLine2")}<br/>{t("heroTitleLine3")}</h1>
           <p className="text-emerald-100 text-lg max-w-md">{t("heroSubtitle")}</p>
-          <div className="mt-10 grid grid-cols-3 gap-6">
-            <div><div className="text-3xl font-extrabold">20+</div><div className="text-sm text-emerald-200">{t("stats.exhibitions")}</div></div>
-            <div><div className="text-3xl font-extrabold">5</div><div className="text-sm text-emerald-200">{t("stats.tours")}</div></div>
-            <div><div className="text-3xl font-extrabold">6</div><div className="text-sm text-emerald-200">{t("stats.services")}</div></div>
-          </div>
+          {tiles.length > 0 && (
+            <div className="mt-10 grid grid-cols-3 gap-6" data-testid="site-figures">
+              {tiles.map((x) => <div key={x.label}><div className="text-3xl font-extrabold">{x.value}</div><div className="text-sm text-emerald-200">{x.label}</div></div>)}
+            </div>
+          )}
         </div>
       </div>
 

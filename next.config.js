@@ -9,7 +9,7 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 // forms, check-in, search, messages, marketplace, dashboards or admin.
 const PUBLIC_SECTIONS = "about|api-documentation|blog|booth-setup-tips|business-tours|careers|china-travel|city-partnerships|contact|cookies|events|exhibition-guide|exhibitions|help|magazine|partner-program|partner-with-us|plan-business-trip|privacy|relocation|services|terms|tours|videos";
 // Query names that change what a page shows (the server reads them): a request that has one is not cached.
-const CONTENT_QUERIES = ["view", "category", "exhibitionSlug", "q", "industry"];
+const CONTENT_QUERIES = ["view", "category", "exhibitionSlug", "q", "industry", "slugs"];
 function publicPageCacheRules() {
   const missing = [
     { type: "header", key: "rsc" },

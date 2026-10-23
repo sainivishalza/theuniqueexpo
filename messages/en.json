@@ -6213,5 +6213,31 @@
     "reopen": "Open again",
     "resolvedNote": "Marked resolved.",
     "reopenedNote": "Opened again."
+  },
+  "exhibitionsCompare": {
+    "title": "Compare exhibitions",
+    "subtitle": "The exhibitions you ticked, side by side.",
+    "back": "← Back to exhibitions",
+    "pick": "Compare {title}",
+    "pickShort": "Compare",
+    "chosen": "{count} of {max} chosen",
+    "pickMore": "Tick one more to compare.",
+    "clear": "Clear",
+    "compare": "Compare",
+    "needTwo": "Choose at least {min} and at most {max} exhibitions on the list to compare them.",
+    "pickSome": "Choose exhibitions",
+    "dates": "Dates",
+    "city": "City",
+    "venue": "Venue",
+    "industry": "Industry",
+    "organizer": "Organiser",
+    "exhibitors": "Exhibitors",
+    "visitors": "Visitors",
+    "registration": "Registration",
+    "highlights": "Highlights",
+    "stateOpen": "Open",
+    "stateOpensLater": "Not open yet",
+    "stateClosed": "Closed",
+    "stateOff": "Not taking registrations"
   }
 }

@@ -6213,5 +6213,31 @@
     "reopen": "重新打开",
     "resolvedNote": "已标记为已解决。",
     "reopenedNote": "已重新打开。"
+  },
+  "exhibitionsCompare": {
+    "title": "展会对比",
+    "subtitle": "并排查看您勾选的展会。",
+    "back": "← 返回展会列表",
+    "pick": "对比 {title}",
+    "pickShort": "对比",
+    "chosen": "已选 {count} / {max}",
+    "pickMore": "再勾选一个即可对比。",
+    "clear": "清除",
+    "compare": "对比",
+    "needTwo": "请在列表中勾选 {min} 至 {max} 个展会进行对比。",
+    "pickSome": "选择展会",
+    "dates": "日期",
+    "city": "城市",
+    "venue": "场馆",
+    "industry": "行业",
+    "organizer": "主办方",
+    "exhibitors": "参展商",
+    "visitors": "观众",
+    "registration": "注册",
+    "highlights": "亮点",
+    "stateOpen": "开放注册",
+    "stateOpensLater": "尚未开放",
+    "stateClosed": "已截止",
+    "stateOff": "暂不接受注册"
   }
 }

@@ -13,6 +13,7 @@ import HowAreYouAttending from "@/components/HowAreYouAttending";
 import Button from "@/components/ui/Button";
 import SearchBox from "@/components/search/ListSearch";
 import { filterByQuery } from "@/lib/search";
+import { COMPARE_MAX, COMPARE_MIN, compareHref } from "@/lib/compare";
 
 export interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -36,6 +37,7 @@ export default function ExhibitionsView({
 }) {
   const t = useTranslations("exhibitionsPage");
   const tw = useTranslations("exhibitionsPage.window");
+  const tc = useTranslations("exhibitionsCompare");
   const locale = useLocale();
   const dateFilterLabels: Record<string, string> = {
     all: t("allDates"),
@@ -49,6 +51,9 @@ export default function ExhibitionsView({
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [view, setView] = useState<"grid" | "months">("grid");
+  // Exhibitions ticked for the side-by-side page (in the order ticked).
+  const [picked, setPicked] = useState<string[]>([]);
+  const togglePick = (slug: string) => setPicked((p) => (p.includes(slug) ? p.filter((x) => x !== slug) : p.length < COMPARE_MAX ? [...p, slug] : p));
 
   const industries = useMemo(() => [...new Set(exhibitions.map((e) => e.industry))].sort(), [exhibitions]);
   const cities = useMemo(() => [...new Set(exhibitions.map((e) => e.city))].sort(), [exhibitions]);
@@ -167,6 +172,17 @@ export default function ExhibitionsView({
                     {t("planMyTrip")}
                   </Button>
                 </div>
+                <label className={`mx-5 mb-5 flex items-center gap-2 text-sm font-medium text-gray-900 ${!picked.includes(expo.slug) && picked.length >= COMPARE_MAX ? "opacity-60" : "cursor-pointer"}`}>
+                  <input
+                    type="checkbox"
+                    className="h-5 w-5 accent-emerald-800"
+                    checked={picked.includes(expo.slug)}
+                    disabled={!picked.includes(expo.slug) && picked.length >= COMPARE_MAX}
+                    onChange={() => togglePick(expo.slug)}
+                    aria-label={tc("pick", { title: expo.title })}
+                  />
+                  {tc("pickShort")}
+                </label>
               </Card>
   );
 
@@ -312,6 +328,23 @@ export default function ExhibitionsView({
           )}
         </div>
       </section>
+
+      {picked.length > 0 && (
+        <div className="fixed bottom-5 left-4 right-24 z-30 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-[var(--radius-card)] bg-emerald-950 px-4 py-3 text-white shadow-xl sm:left-6 sm:right-28 sm:max-w-xl" data-testid="compare-bar">
+          <p role="status" className="text-sm font-semibold">
+            {tc("chosen", { count: picked.length, max: COMPARE_MAX })}
+            {picked.length < COMPARE_MIN && <span className="block text-xs font-normal text-emerald-100">{tc("pickMore")}</span>}
+          </p>
+          <div className="ml-auto flex items-center gap-3">
+            <button type="button" onClick={() => setPicked([])} className="text-sm font-semibold underline underline-offset-2">{tc("clear")}</button>
+            {picked.length >= COMPARE_MIN ? (
+              <Link href={compareHref(picked)} className="rounded-[var(--radius-button)] bg-white px-4 py-2 text-sm font-bold text-emerald-950 hover:bg-emerald-50">{tc("compare")}</Link>
+            ) : (
+              <span aria-disabled="true" className="rounded-[var(--radius-button)] bg-white/20 px-4 py-2 text-sm font-bold text-white">{tc("compare")}</span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

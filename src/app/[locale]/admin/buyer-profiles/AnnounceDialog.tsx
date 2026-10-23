@@ -18,16 +18,20 @@ interface Template { id: number; name: string; subject: Langs; message: Langs }
 export default function AnnounceDialog({
   userIds,
   withEmail,
+  group = false,
   onClose,
 }: {
   userIds: number[];
   /** How many of the selected buyers have a real e-mail address. */
   withEmail: number;
+  /** Announce to a group chosen here (an exhibition, a registration status, a country) instead of the ticked buyers. */
+  group?: boolean;
   onClose: () => void;
 }) {
   const t = useTranslations("adminBuyerProfiles.announce");
+  const tr = useTranslations("adminRegistrationsCommon");
   const ta = useTranslations("adminCommon");
-  const ids = { title: useId(), subject: useId(), message: useId(), load: useId(), name: useId() };
+  const ids = { title: useId(), subject: useId(), message: useId(), load: useId(), name: useId(), expo: useId(), status: useId(), country: useId() };
   const [lang, setLang] = useState<Lang>("en");
   const [subject, setSubject] = useState<Record<Lang, string>>({ en: "", ru: "", zh: "" });
   const [message, setMessage] = useState<Record<Lang, string>>({ en: "", ru: "", zh: "" });
@@ -46,8 +50,18 @@ export default function AnnounceDialog({
   const [templateBusy, setTemplateBusy] = useState(false);
   const [sample, setSample] = useState<Record<Lang, FieldValues> | null>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
+  // Group mode: who is chosen, what could be chosen, and how many buyers that reaches.
+  const [options, setOptions] = useState<{ exhibitions: { id: number; title: string; registrations: number }[]; countries: string[] } | null>(null);
+  const [expoId, setExpoId] = useState("");
+  const [regStatus, setRegStatus] = useState("any");
+  const [country, setCountry] = useState("");
+  const [reach, setReach] = useState<{ count: number; withEmail: number; firstId: number | null; tooMany: boolean } | null>(null);
+  const groupSegment = { exhibitionId: expoId ? Number(expoId) : null, status: regStatus, country };
+  const total = group ? reach?.count ?? 0 : userIds.length;
+  const emailCount = group ? reach?.withEmail ?? 0 : withEmail;
+  const blocked = group && (!reach || reach.tooMany);
 
-  const ready = subject.en.trim().length >= 3 && message.en.trim().length >= 5 && userIds.length > 0 && !busy && !result;
+  const ready = subject.en.trim().length >= 3 && message.en.trim().length >= 5 && total > 0 && !blocked && !busy && !result;
 
   useEffect(() => {
     fetch("/api/auth/forgot-password")
@@ -61,13 +75,38 @@ export default function AnnounceDialog({
       .then((r) => (r.ok ? r.json() : { templates: [] }))
       .then((d) => setTemplates(d.templates ?? []))
       .catch(() => {});
-    fetch("/api/admin/buyer-profiles/announce/sample", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ userIds }) })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => setSample(d?.values ?? null))
-      .catch(() => {});
+    if (group) {
+      fetch("/api/admin/buyer-profiles/announce/segment").then((r) => (r.ok ? r.json() : null)).then((d) => setOptions(d)).catch(() => {});
+    } else {
+      fetch("/api/admin/buyer-profiles/announce/sample", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ userIds }) })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => setSample(d?.values ?? null))
+        .catch(() => {});
+    }
     // Only the first selected buyer is used, so this runs once per dialog.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Group mode: count who the choice reaches whenever it changes, and take the preview from the first of them.
+  useEffect(() => {
+    if (!group) return;
+    let stale = false;
+    setReach(null);
+    fetch("/api/admin/buyer-profiles/announce/segment", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ segment: { exhibitionId: expoId ? Number(expoId) : null, status: regStatus, country } }) })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (stale || !d) return;
+        setReach(d);
+        if (d.firstId) {
+          fetch("/api/admin/buyer-profiles/announce/sample", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ userIds: [d.firstId] }) })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((v) => { if (!stale) setSample(v?.values ?? null); })
+            .catch(() => {});
+        } else setSample(null);
+      })
+      .catch(() => {});
+    return () => { stale = true; };
+  }, [group, expoId, regStatus, country]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -151,7 +190,7 @@ export default function AnnounceDialog({
       const res = await fetch("/api/admin/buyer-profiles/announce", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userIds, subject, message }),
+        body: JSON.stringify(group ? { segment: groupSegment, subject, message } : { userIds, subject, message }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -171,7 +210,7 @@ export default function AnnounceDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => !busy && onClose()}>
       <div className="absolute inset-0 bg-black/40" />
       <div role="dialog" aria-modal="true" aria-labelledby={ids.title} className="relative max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <h2 id={ids.title} className="text-xl font-bold text-heading">{t("title", { count: userIds.length })}</h2>
+        <h2 id={ids.title} className="text-xl font-bold text-heading">{group ? t("group.title") : t("title", { count: userIds.length })}</h2>
         {result ? (
           <div className="mt-4 space-y-3">
             <p role="status" className="font-semibold text-emerald-800">{t("done", { count: result.notified })}</p>
@@ -182,8 +221,40 @@ export default function AnnounceDialog({
           </div>
         ) : (
           <div className="mt-4 space-y-4">
+            {group && (
+              <div className="rounded-lg border border-gray-200 p-3 space-y-3" data-testid="announce-group">
+                <p className="text-sm font-semibold text-heading">{t("group.who")}</p>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div>
+                    <label htmlFor={ids.expo} className="mb-1.5 block text-sm font-medium text-gray-700">{t("group.exhibition")}</label>
+                    <select id={ids.expo} value={expoId} onChange={(e) => setExpoId(e.target.value)} className={fieldClasses()}>
+                      <option value="">{t("group.anyExhibition")}</option>
+                      {(options?.exhibitions ?? []).map((x) => <option key={x.id} value={x.id}>{x.title} ({x.registrations})</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor={ids.status} className="mb-1.5 block text-sm font-medium text-gray-700">{t("group.status")}</label>
+                    <select id={ids.status} value={regStatus} onChange={(e) => setRegStatus(e.target.value)} className={fieldClasses()}>
+                      <option value="any">{t("group.anyStatus")}</option>
+                      <option value="none">{t("group.notRegistered")}</option>
+                      {["pending", "approved", "confirmed", "attended", "rejected", "cancelled", "absent"].map((st) => <option key={st} value={st}>{tr(`statuses.${st}`)}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor={ids.country} className="mb-1.5 block text-sm font-medium text-gray-700">{t("group.country")}</label>
+                    <select id={ids.country} value={country} onChange={(e) => setCountry(e.target.value)} className={fieldClasses()}>
+                      <option value="">{t("group.anyCountry")}</option>
+                      {(options?.countries ?? []).map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <p role="status" data-testid="announce-reach" className={`text-sm font-semibold ${reach && (reach.count === 0 || reach.tooMany) ? "text-amber-800" : "text-emerald-800"}`}>
+                  {!reach ? t("group.counting") : reach.tooMany ? t("group.tooMany", { max: 3000 }) : reach.count === 0 ? t("group.nobody") : t("group.reach", { count: reach.count, with: reach.withEmail })}
+                </p>
+              </div>
+            )}
             <p className="rounded-lg bg-cream-50 px-3 py-2 text-sm text-gray-800">
-              {mailOn === false ? t("mailOff") : withEmail > 0 ? t("recipients", { with: withEmail, total: userIds.length }) : t("noRecipients")}
+              {mailOn === false ? t("mailOff") : emailCount > 0 ? t("recipients", { with: emailCount, total }) : t("noRecipients")}
             </p>
             <div className="rounded-lg border border-gray-200 p-3 space-y-3" data-testid="announce-templates">
               <div>
@@ -257,7 +328,7 @@ export default function AnnounceDialog({
             {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
             {confirming ? (
               <div className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
-                <p className="font-semibold">{t("confirmQuestion", { count: userIds.length })}</p>
+                <p className="font-semibold">{t("confirmQuestion", { count: total })}</p>
                 <div className="mt-3 flex flex-wrap gap-3">
                   <Button type="button" variant="save" size="compact" disabled={busy} onClick={send}>{busy ? t("sending") : t("confirmSend")}</Button>
                   <Button type="button" variant="secondaryOutline" size="compact" disabled={busy} onClick={() => setConfirming(false)}>{t("back")}</Button>

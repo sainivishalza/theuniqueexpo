@@ -3315,6 +3315,22 @@
         "hint": "{name} 是买家姓名，{number} 是其登记编号，{exhibition} 是其已登记的最近一场展会（没有则为“您的展会”）。每位买家收到各自填好的版本。",
         "unknown": "以下不是字段，将按原样发送：{fields}",
         "previewFor": "第一位所选买家的预览（{name}）"
+      },
+      "groupToggle": "向一组买家发公告",
+      "group": {
+        "title": "向一组买家发公告",
+        "who": "发送对象",
+        "exhibition": "已登记的展会",
+        "anyExhibition": "任意展会",
+        "status": "登记情况",
+        "anyStatus": "任意登记",
+        "notRegistered": "未登记",
+        "country": "国家",
+        "anyCountry": "任意国家",
+        "counting": "正在统计…",
+        "reach": "将发送给 {count} 位买家，其中 {with} 位有真实邮箱。",
+        "nobody": "没有符合此选择的买家。",
+        "tooMany": "超过 {max} 位买家，请缩小范围。"
       }
     }
   },

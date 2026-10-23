@@ -1,0 +1,116 @@
+// Announcing to a group (an exhibition, a registration status, a country) without ticking rows.
+const bcrypt = require('bcryptjs');
+const { BASE, sql, ok, done, mkUsers, connect } = require('./helpers/common.js');
+const smtp = require('./helpers/fake-smtp.js');
+const { launch, axeViolations } = require('./helpers/browser.js');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const ipn = () => '198.22.' + Math.floor(Math.random() * 256) + '.' + (Math.floor(Math.random() * 250) + 2);
+const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'token=' + t, 'x-forwarded-for': ipn(), ...extra });
+
+(async () => {
+  sql('DELETE FROM mail_settings');
+  const db = await connect();
+  const u = await mkUsers('sg');
+  const srv = await smtp.start(2536);
+  const settings = { enabled: true, host: '127.0.0.1', port: 2536, secure: false, username: 'm', password: 'x', fromName: 'The Unique Expo', fromEmail: 'noreply@theuniqueexpo.test' };
+  await fetch(BASE + '/api/admin/email', { method: 'PUT', headers: H(u.aT), body: JSON.stringify(settings) }); await sleep(200);
+  const st = Date.now(), h = bcrypt.hashSync('pass1234', 10);
+  const day = (n) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10);
+  const Z = `Zland${st}`, Y = `Yland${st}`;
+  const mkExpo = async (tag) => { const slug = `sg-${tag}-${st}`; await db.query('INSERT INTO exhibitions (slug,title,start_date,end_date,registration_enabled) VALUES (?,?,?,?,1)', [slug, `Group Expo ${tag} ${st}`, day(30), day(32)]); const [[r]] = await db.query('SELECT id FROM exhibitions WHERE slug=?', [slug]); return { id: r.id, title: `Group Expo ${tag} ${st}` }; };
+  const E1 = await mkExpo('one'), E2 = await mkExpo('two');
+  const mk = (tag, o = {}) => {
+    const email = o.email || `sg-${tag}-${st}@test.invalid`;
+    sql(`INSERT INTO users (name,email,password_hash,role,country,status) VALUES ('Group ${tag}','${email}','${h}','${o.role || 'buyer'}','${o.accountCountry || ''}','${o.status || 'active'}')`);
+    const id = Number(sql(`SELECT id FROM users WHERE email='${email}'`));
+    if (o.nationality) sql(`INSERT INTO buyer_profiles (user_id, nationality) VALUES (${id},'${o.nationality}') ON DUPLICATE KEY UPDATE nationality='${o.nationality}'`);
+    return { id, email };
+  };
+  const reg = (b, x, status) => sql(`INSERT INTO expo_registrations (exhibition_id,user_id,status) VALUES (${x.id},${b.id},'${status}')`);
+  const b1 = mk('b1', { nationality: Z }), b2 = mk('b2', { nationality: Z }), b3 = mk('b3', { accountCountry: Y }), b4 = mk('b4', { nationality: Z.toLowerCase() });
+  const b5 = mk('b5', { nationality: Z, status: 'suspended' }), b6 = mk('b6', { nationality: Z, role: 'exhibitor' }), b7 = mk('b7', { nationality: Z, email: `phone-1399${String(st).slice(-7)}@noemail.invalid` }), b8 = mk('b8', { nationality: Z });
+  reg(b1, E1, 'approved'); reg(b2, E1, 'pending'); reg(b3, E1, 'approved'); reg(b5, E1, 'approved'); reg(b6, E1, 'approved'); reg(b7, E1, 'approved'); reg(b8, E1, 'cancelled'); reg(b8, E2, 'confirmed');
+  const seg = (body, t = u.aT) => fetch(BASE + '/api/admin/buyer-profiles/announce/segment', { method: 'POST', headers: H(t), body: JSON.stringify(body) }).then(async (r) => ({ status: r.status, ...(await r.json()) }));
+  const count = async (exhibitionId, status, country) => seg({ segment: { exhibitionId, status, country } });
+
+  console.log('\n== what can be chosen, and who it reaches');
+  let r = await fetch(BASE + '/api/admin/buyer-profiles/announce/segment', { headers: H(u.bT) }); ok(r.status === 401, 'a buyer cannot ask for the choices');
+  ok((await seg({ segment: { status: 'any' } }, u.bT)).status === 401, 'nor for a count');
+  const opts = await (await fetch(BASE + '/api/admin/buyer-profiles/announce/segment', { headers: H(u.aT) })).json();
+  ok(opts.exhibitions.some((x) => x.id === E1.id && x.registrations === 7) && opts.exhibitions.some((x) => x.id === E2.id && x.registrations === 1), 'the exhibitions are listed with how many registrations they have', opts.exhibitions.find((x) => x.id === E1.id));
+  ok(opts.countries.some((c) => c.toLowerCase() === Z.toLowerCase()) && opts.countries.includes(Y), 'and the countries (the profile\'s nationality, else the account\'s country)');
+  for (const bad of [{ status: 'nonsense' }, { exhibitionId: -1 }, { exhibitionId: 'abc' }, { country: 5 }]) { const x = await seg({ segment: bad }); ok(x.status === 400 && x.code === 'bad_segment', `a bad choice ${JSON.stringify(bad)} is refused`, x); }
+  ok((await seg({})).status === 400, 'no choice at all is refused');
+  let x = await count(E1.id, 'any', Z);
+  ok(x.count === 4 && x.withEmail === 3 && x.firstId, 'registered for exhibition one from Zland (any status): b1, b2, b7 and b8 (cancelled still counts); b5 is suspended, b6 is an exhibitor', x);
+  x = await count(E1.id, 'approved', Z); ok(x.count === 2 && x.withEmail === 1, 'approved only: b1 and b7 (b7 has no real e-mail address)', x);
+  x = await count(E1.id, 'approved', ''); ok(x.count >= 3, 'approved with any country includes b3 as well', x);
+  x = await count(E1.id, 'approved', Y); ok(x.count === 1, 'the account country is used when the profile has none', x);
+  x = await count(E1.id, 'approved', Z.toUpperCase()); ok(x.count === 2, 'a country matches in any letter case', x);
+  x = await count(E1.id, 'none', Z); ok(x.count === 1 && x.firstId === b4.id, 'not registered for exhibition one: only b4 (b8 cancelled, but did register)', x);
+  x = await count(E2.id, 'confirmed', Z); ok(x.count === 1 && x.firstId === b8.id, 'another exhibition, another status', x);
+  x = await count(null, 'confirmed', Z); ok(x.count === 1, 'any exhibition: confirmed somewhere');
+  x = await count(null, 'none', Z); ok(x.count === 1 && x.firstId === b4.id, 'any exhibition, not registered anywhere: b4');
+  x = await count(null, 'any', Z); ok(x.count === 5, 'the whole country: b1, b2, b4, b7 and b8 (the exhibitor and the suspended account are left out)', x);
+  x = await count(E1.id, 'rejected', Z); ok(x.count === 0 && x.firstId === null, 'nobody: zero');
+
+  console.log('\n== sending to a group');
+  const send = (body) => fetch(BASE + '/api/admin/buyer-profiles/announce', { method: 'POST', headers: H(u.aT), body: JSON.stringify(body) });
+  const texts = { subject: { en: 'Hello {name}', ru: '', zh: '' }, message: { en: 'News for {name} about the exhibition.', ru: '', zh: '' } };
+  r = await send({ segment: { exhibitionId: E1.id, status: 'rejected', country: Z }, ...texts }); ok(r.status === 400 && (await r.json()).code === 'no_buyers', 'a group with nobody in it is refused');
+  r = await send({ segment: { status: 'bogus' }, ...texts }); ok(r.status === 400 && (await r.json()).code === 'bad_segment', 'a bad group is refused');
+  const n0 = srv.messages.length;
+  r = await send({ segment: { exhibitionId: E1.id, status: 'approved', country: Z }, userIds: [b4.id], ...texts }); let j = await r.json();
+  ok(r.status === 200 && j.notified === 2 && j.queued === 1, 'approved from Zland: two can read it, one is e-mailed (the group wins over any ticked rows)', j);
+  for (let i = 0; i < 40 && srv.messages.length < n0 + 1; i++) await sleep(150);
+  await sleep(400);
+  const mails = srv.messages.slice(n0).map((m) => ({ to: m.to.join().toLowerCase(), ...smtp.decode(m.raw) }));
+  ok(mails.length === 1 && mails[0].to.includes(b1.email) && mails[0].subject === 'Hello Group b1', 'one e-mail, to b1, with their own name filled in', mails);
+  const notice = (b) => sql(`SELECT COUNT(*) FROM user_notifications WHERE user_id=${b.id} AND kind='announcement'`);
+  ok(notice(b1) === '1' && notice(b7) === '1', 'b1 and b7 have the notice on the website');
+  ok([b2, b3, b4, b5, b6, b8].every((b) => notice(b) === '0'), 'nobody else does');
+  ok(/Group Expo|group:/.test(sql("SELECT details FROM admin_audit_log WHERE action='announcement_sent' ORDER BY id DESC LIMIT 1")) && sql("SELECT details FROM admin_audit_log WHERE action='announcement_sent' ORDER BY id DESC LIMIT 1").includes(`exhibition ${E1.id}, status approved, country ${Z}`), 'the activity log says which group');
+
+  console.log('\n== the dialog');
+  sql('UPDATE rate_limits SET hits=0');
+  const br = await launch();
+  const open = async (loc, vp) => { const c = await br.newContext({ viewport: vp, extraHTTPHeaders: { 'x-forwarded-for': ipn() } }); await c.addCookies([{ name: 'token', value: u.aT, url: BASE }]); const p = await c.newPage(); await p.goto(`${BASE}/${loc}/admin/buyer-profiles`, { waitUntil: 'networkidle' }); return [c, p]; };
+  let [c, p] = await open('en', { width: 375, height: 900 });
+  await p.getByRole('button', { name: 'Announce to a group' }).click();
+  const dlg = p.getByRole('dialog'); await dlg.waitFor();
+  ok(/Announce to a group of buyers/.test(await dlg.innerText()), 'the button opens the dialog with no rows ticked');
+  await dlg.getByLabel('Registered for').selectOption(String(E1.id));
+  await dlg.getByLabel('Registration').selectOption('approved');
+  await dlg.getByLabel('Country').selectOption(Z);
+  await dlg.getByText('This reaches 2 buyers; 1 have a real e-mail address.').waitFor(); ok(true, 'it counts who the choice reaches');
+  await dlg.getByLabel('Registration').selectOption('rejected');
+  await dlg.getByText('No buyers match this choice.').waitFor();
+  ok(await dlg.getByRole('button', { name: 'Review and send' }).isDisabled(), 'an empty group cannot be sent');
+  await dlg.getByLabel('Registration').selectOption('approved');
+  await dlg.getByText('This reaches 2 buyers').waitFor();
+  await dlg.getByLabel('Subject', { exact: true }).fill('Hello {name}');
+  await dlg.getByLabel('Message', { exact: true }).fill('Hi {name}, one more thing.');
+  const prev = dlg.getByTestId('announce-preview'); await prev.waitFor();
+  ok((await prev.innerText()).includes('Hi Group b1, one more thing.'), 'the preview shows the first buyer of the group', await prev.innerText());
+  ok(await dlg.getByRole('button', { name: 'Review and send' }).isEnabled(), 'sending is possible once English is written');
+  ok(await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'no sideways overflow at 375px');
+  let vio = await axeViolations(p); ok(vio.length === 0, 'axe 0', vio);
+  await dlg.getByRole('button', { name: 'Review and send' }).click();
+  ok(/Send this announcement to 2 buyers now/.test(await dlg.innerText()), 'the confirmation names the number of buyers');
+  await dlg.getByRole('button', { name: 'Yes, send it' }).click(); await dlg.getByRole('status').last().waitFor({ timeout: 10000 });
+  ok(/2 buyers can now read it/.test(await dlg.innerText()), 'and the result');
+  ok(notice(b1) === '2' && notice(b7) === '2', 'both got the second announcement');
+  await c.close();
+  for (const [loc, btn, lbl] of [['ru', 'Объявление для группы', 'Страна'], ['zh', '向一组买家发公告', '国家']]) {
+    [c, p] = await open(loc, { width: 375, height: 900 });
+    await p.getByRole('button', { name: btn }).click(); const dl = p.getByRole('dialog'); await dl.waitFor();
+    await dl.getByLabel(lbl).waitFor(); await dl.getByTestId('announce-reach').getByText(/\d/).waitFor();
+    vio = await axeViolations(p); ok(vio.length === 0, `${loc}: axe 0`, vio);
+    await c.close();
+  }
+  await br.close(); await srv.close(); await db.end();
+  sql(`DELETE FROM expo_registrations WHERE exhibition_id IN (SELECT id FROM exhibitions WHERE slug LIKE 'sg-%-${st}')`);
+  sql(`DELETE FROM exhibitions WHERE slug LIKE 'sg-%-${st}'`);
+  sql(`DELETE FROM users WHERE email LIKE 'sg-%-${st}@test.invalid' OR email='phone-1399${String(st).slice(-7)}@noemail.invalid'`);
+  done();
+})().catch((e) => { console.error(e); process.exit(1); });

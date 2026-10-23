@@ -3315,6 +3315,22 @@
         "hint": "{name} is the buyer's name, {number} their registration number, {exhibition} the next exhibition they are registered for (or “your exhibition”). Each buyer gets their own filled-in copy.",
         "unknown": "These are not fields and will be sent as typed: {fields}",
         "previewFor": "Preview for the first selected buyer ({name})"
+      },
+      "groupToggle": "Announce to a group",
+      "group": {
+        "title": "Announce to a group of buyers",
+        "who": "Who gets it",
+        "exhibition": "Registered for",
+        "anyExhibition": "Any exhibition",
+        "status": "Registration",
+        "anyStatus": "Any registration",
+        "notRegistered": "Not registered",
+        "country": "Country",
+        "anyCountry": "Any country",
+        "counting": "Counting…",
+        "reach": "This reaches {count} buyers; {with} have a real e-mail address.",
+        "nobody": "No buyers match this choice.",
+        "tooMany": "That is more than {max} buyers. Narrow the group down."
       }
     }
   },

@@ -749,6 +749,10 @@
       "insights": {
         "title": "Reports",
         "description": "Registrations per day, by country and by exhibition, and how far they get from registered to attended."
+      },
+      "duplicates": {
+        "title": "Duplicate buyers",
+        "description": "Find buyers who signed up twice (same passport or phone number) and merge them into one account."
       }
     },
     "attention": {
@@ -5280,7 +5284,8 @@
       "internal_note_added": "Added an internal note",
       "internal_tags_set": "Changed internal tags",
       "internal_assigned": "Assigned a record to an admin",
-      "exhibition_change_undone": "Undid a change to an exhibition"
+      "exhibition_change_undone": "Undid a change to an exhibition",
+      "buyers_merged": "Merged two buyer accounts"
     }
   },
   "notificationsPage": {
@@ -5785,6 +5790,42 @@
       "slug_taken": "The earlier web address is now used by another exhibition, so this cannot be undone.",
       "nothing_to_undo": "The exhibition already looks like that.",
       "failed": "That did not work. Please try again."
+    }
+  },
+  "adminDuplicates": {
+    "title": "Duplicate buyers",
+    "subtitle": "Buyers who signed up more than once.",
+    "back": "← Back to Admin",
+    "howItWorks": "Accounts are listed together when they share a passport number or a phone number. Choose the account that stays, then merge the others into it. Nothing is merged until you confirm.",
+    "none": "No duplicates found. No two active buyers share a passport or phone number.",
+    "samePassport": "Same passport number: {value}",
+    "samePhone": "Same phone number: {value}",
+    "chooseKeep": "Choose the account that stays",
+    "keepThis": "Keep {name}",
+    "willStay": "Stays",
+    "mergeInto": "Merge into the account that stays",
+    "facts": "Signed up {date} · {registrations} registrations · {points} points",
+    "confirmTitle": "Merge {merged} into {kept}?",
+    "willMove": "Exhibition registrations move over: {moving}. Where both registered for the same exhibition ({clash}), the one that got further is kept.",
+    "willMoveOther": "Tour and event registrations: {tours}. Saved exhibitions: {favorites}. Website notices move too.",
+    "willMovePoints": "Points balance: {points} move to the account that stays.",
+    "willFill": "Gaps in the kept profile (details and documents) are filled from the other account.",
+    "willSuspend": "The other account is suspended and loses its passport and phone number, so signing in by those finds the kept account.",
+    "staysBehind": "Payments, top-ups, messages and the points history of the other account stay with it.",
+    "pendingMoney": "The other account still has {count} top-ups, withdrawals or expense claims waiting. Finish those first.",
+    "cannotUndo": "This cannot be taken back.",
+    "yesMerge": "Yes, merge",
+    "merging": "Merging…",
+    "cancel": "Cancel",
+    "merged": "Merged {merged} into {kept}.",
+    "errors": {
+      "load": "Could not load the list.",
+      "invalid": "Choose two different buyer accounts.",
+      "pending_money": "The other account still has money waiting. Finish those first.",
+      "wallet_frozen": "The other account's wallet is frozen. Unfreeze it first.",
+      "already_merged": "One of these accounts was already merged.",
+      "rate_limited": "Too many merges in the last hour. Please wait.",
+      "failed": "The merge did not work. Nothing was changed except possibly the points; please check and try again."
     }
   }
 }

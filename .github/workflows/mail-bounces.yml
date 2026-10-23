@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Read the mailbox and hand the bounces to the website
         env:
           BOUNCE_IMAP_HOST: ${{ secrets.BOUNCE_IMAP_HOST }}

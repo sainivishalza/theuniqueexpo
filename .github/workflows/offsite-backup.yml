@@ -67,7 +67,7 @@ jobs:
           echo "BACKUP_NAME=theuniqueexpo-$STAMP.sql.gz.age" >> "$GITHUB_ENV"
 
       - name: Keep the encrypted copy
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: database-backup-encrypted
           path: theuniqueexpo-*.sql.gz.age

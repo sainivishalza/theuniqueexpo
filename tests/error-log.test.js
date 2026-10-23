@@ -1,5 +1,5 @@
 // Error monitoring: errors from visitors' browsers and from the server are grouped, listed for admins, e-mailed as a digest.
-const { BASE, sql, ok, done, mkUsers } = require('./helpers/common.js');
+const { BASE, sql, ok, done, mkUsers, onlyAdmins } = require('./helpers/common.js');
 const { launch, axeViolations } = require('./helpers/browser.js');
 const smtp = require('./helpers/fake-smtp.js');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -69,6 +69,8 @@ const num = (q) => Number(sql(q));
   ok(r.report.errors >= 3 && r.report.issues.some((i) => /errors? w(as|ere) reported/.test(i)), 'Admin → Health shows how many and lists it as something to look at', r.report.errors);
 
   console.log('\n== the e-mail digest');
+  const restoreAdmins = onlyAdmins([u.m.a]); // the digest goes to the first 20 admins; make this one of them
+  process.on('exit', restoreAdmins);
   sql('UPDATE error_log SET alerted_at=NULL');
   const srv = await smtp.start(2542);
   const put = (b) => fetch(BASE + '/api/admin/email', { method: 'PUT', headers: H(u.aT), body: JSON.stringify(b) });
@@ -99,6 +101,7 @@ const num = (q) => Number(sql(q));
   await sleep(300);
   ok(num("SELECT COUNT(*) FROM error_log WHERE message LIKE 'Another new error%' AND alerted_at IS NULL") === 1 && srv.messages.length === before, 'with e-mail off nothing is sent and it is kept for later');
 
+  restoreAdmins();
   console.log('\n== the screen (en / ru / zh, 375 px)');
   const br = await launch();
   for (const locale of ['en', 'ru', 'zh']) {

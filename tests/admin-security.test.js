@@ -84,7 +84,7 @@ const totp = (secret, step) => { const c = Buffer.alloc(8); c.writeBigUInt64BE(B
     const [c, p] = await ctxFor(A.aT, 'en', '/admin/staff-access');
     const rule = p.getByTestId('two-step-rule'); await rule.waitFor();
     ok(await rule.getByLabel('Require two-step sign-in for every admin').isChecked(), 'the staff page shows the rule as on');
-    await rule.getByLabel('Require two-step sign-in for every admin').uncheck();
+    await rule.getByLabel('Require two-step sign-in for every admin').click();
     await rule.getByRole('status').filter({ hasText: 'No longer required' }).waitFor();
     ok(num('SELECT require_two_step FROM admin_security_settings WHERE id=1') === 0, 'switching it off on the screen saves it');
     ok((await api('GET', '/api/admin/insights', null, B.aT)).status === 200, 'and B can use the admin again');

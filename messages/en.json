@@ -5310,7 +5310,9 @@
       "scheduled_export_saved": "Saved a scheduled report",
       "scheduled_export_deleted": "Deleted a scheduled report",
       "scheduled_export_sent_now": "Sent a scheduled report now",
-      "staff_role_set": "Set an admin's role"
+      "staff_role_set": "Set an admin's role",
+      "document_link_created": "Made a link to share a buyer document",
+      "document_link_revoked": "Stopped a document share link"
     }
   },
   "notificationsPage": {
@@ -5986,6 +5988,32 @@
       "not_admin": "That account is not an admin.",
       "unavailable": "Roles are not available yet. Please try again in a few minutes.",
       "failed": "That did not work. Please try again."
+    }
+  },
+  "adminDocShare": {
+    "open": "Share link",
+    "title": "Share this document",
+    "warning": "Anyone who has the link can see this document, without signing in, until the link expires or you stop it.",
+    "howLong": "The link works for",
+    "hours": "{hours, plural, one {# hour} other {# hours}}",
+    "days": "{days, plural, one {# day} other {# days}}",
+    "make": "Make a link",
+    "making": "Making…",
+    "newLink": "The new link (shown once). Copy it now:",
+    "linkField": "The link",
+    "copy": "Copy",
+    "copied": "Copied.",
+    "active": "Active links",
+    "none": "No active links.",
+    "row": "Made by {name}, works until {date}, opened {views, plural, one {# time} other {# times}}",
+    "revoke": "Stop",
+    "revoked": "The link was stopped.",
+    "close": "Close",
+    "errors": {
+      "limit": "This document already has 5 active links. Stop one first.",
+      "rate_limited": "Too many links in the last hour. Please wait.",
+      "no_document": "There is no document to share.",
+      "failed": "The link could not be made. Please try again."
     }
   }
 }

@@ -5310,7 +5310,9 @@
       "scheduled_export_saved": "保存了定时报表",
       "scheduled_export_deleted": "删除了定时报表",
       "scheduled_export_sent_now": "立即发送了定时报表",
-      "staff_role_set": "设置了管理员角色"
+      "staff_role_set": "设置了管理员角色",
+      "document_link_created": "创建了采购商文件分享链接",
+      "document_link_revoked": "停用了文件分享链接"
     }
   },
   "notificationsPage": {
@@ -5986,6 +5988,32 @@
       "not_admin": "该账户不是管理员。",
       "unavailable": "暂时无法使用角色，请几分钟后重试。",
       "failed": "操作失败，请重试。"
+    }
+  },
+  "adminDocShare": {
+    "open": "分享链接",
+    "title": "分享此文件",
+    "warning": "任何拿到链接的人无需登录即可查看此文件，直到链接过期或被你停用。",
+    "howLong": "链接有效期",
+    "hours": "{hours} 小时",
+    "days": "{days} 天",
+    "make": "生成链接",
+    "making": "生成中…",
+    "newLink": "新链接（只显示一次），请现在复制：",
+    "linkField": "链接",
+    "copy": "复制",
+    "copied": "已复制。",
+    "active": "有效链接",
+    "none": "没有有效链接。",
+    "row": "由 {name} 创建，有效至 {date}，已打开 {views} 次",
+    "revoke": "停用",
+    "revoked": "链接已停用。",
+    "close": "关闭",
+    "errors": {
+      "limit": "此文件已有 5 个有效链接，请先停用一个。",
+      "rate_limited": "过去一小时生成的链接过多，请稍后再试。",
+      "no_document": "没有可分享的文件。",
+      "failed": "无法生成链接，请重试。"
     }
   }
 }

@@ -3176,7 +3176,7 @@
     "announce": {
       "toggle": "Send e-mail",
       "title": "E-mail {count} selected buyers",
-      "recipients": "{with} of the {total} selected buyers have a real e-mail address and will get it. The others are skipped.",
+      "recipients": "{with} of the {total} selected buyers have a real e-mail address and will get it by e-mail. Everyone selected can also read it under Notifications on the website.",
       "noRecipients": "None of the selected buyers has a real e-mail address.",
       "languages": "Language of the message",
       "lang": {
@@ -3193,7 +3193,7 @@
       "sending": "Sending…",
       "back": "Back",
       "done": "Done: the e-mail is being sent to {count} buyers.",
-      "skipped": "{count} buyers have no real e-mail address and were skipped. You can see every message in Admin → Email.",
+      "skipped": "{count} buyers have no real e-mail address, so no e-mail was sent to them; they can read it under Notifications on the website. You can see every e-mail in Admin → Email.",
       "errors": {
         "no_buyers": "Select at least one buyer.",
         "too_many": "Select at most 500 buyers.",
@@ -4923,6 +4923,80 @@
       "blog_post_deleted": "Deleted a blog post",
       "site_page_saved": "Saved a website page",
       "signed_out_everywhere": "Signed out of all other devices"
+    }
+  },
+  "notificationsPage": {
+    "menu": "Notifications",
+    "title": "Notifications",
+    "subtitle": "What the site has told you: approvals, documents sent back, points and announcements.",
+    "loading": "Loading…",
+    "loadFailed": "The notifications could not be loaded. Please try again.",
+    "emptyTitle": "Nothing yet",
+    "emptyBody": "When something happens to your registrations, documents or points, you will see it here.",
+    "unreadCount": "{count, plural, one {# unread notification} other {# unread notifications}}",
+    "allRead": "You have read everything.",
+    "markAll": "Mark all as read",
+    "markRead": "Mark as read",
+    "open": "Open",
+    "new": "New",
+    "older": "Show older",
+    "extra": {
+      "reason": "Reason: {text}",
+      "reference": "Payment reference: {text}"
+    },
+    "kinds": {
+      "other": {
+        "title": "Notification"
+      },
+      "registrationApproved": {
+        "title": "Registration approved",
+        "body": "Your registration for {expo} was approved. Please confirm your attendance.",
+        "bodyDeadline": "Your registration for {expo} was approved. Please confirm your attendance by {date}."
+      },
+      "registrationRejected": {
+        "title": "Registration not approved",
+        "body": "Your registration for {expo} was not approved."
+      },
+      "registrationReminder": {
+        "title": "Please confirm your attendance",
+        "body": "Confirm your attendance for {expo} before {date}, or your place may be given to someone else."
+      },
+      "documentRejected": {
+        "title": "A document needs your attention",
+        "body": "{document} was sent back. Please upload it again."
+      },
+      "pointsReceived": {
+        "title": "Points received",
+        "body": "You received {points} points."
+      },
+      "topupApproved": {
+        "title": "Top-up approved",
+        "body": "Your top-up was approved: {points} points were added to your wallet."
+      },
+      "topupRejected": {
+        "title": "Top-up not approved",
+        "body": "Your top-up request was not approved."
+      },
+      "withdrawalPaid": {
+        "title": "Withdrawal paid",
+        "body": "Your withdrawal of {points} points was paid."
+      },
+      "withdrawalRejected": {
+        "title": "Withdrawal not paid",
+        "body": "Your withdrawal of {points} points was not paid. The points are back in your wallet."
+      },
+      "expenseApproved": {
+        "title": "Expense claim approved",
+        "body": "Your expense claim was approved: {points} points were added to your wallet."
+      },
+      "expenseRejected": {
+        "title": "Expense claim not approved",
+        "body": "Your expense claim was not approved."
+      },
+      "passwordChanged": {
+        "title": "Password changed",
+        "body": "The password of your account was changed. If this was not you, please contact us at once."
+      }
     }
   }
 }

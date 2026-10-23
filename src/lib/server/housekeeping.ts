@@ -5,6 +5,7 @@ import { checkRateLimit } from "@/lib/server/rate-limit";
 // database does not keep personal details (e-mail addresses, IP addresses) longer than it has to.
 //   e-mail log          180 days     (who was e-mailed what, to answer "did my mail go out?")
 //   admin activity log  2 years
+//   website notifications  180 days
 //   used / expired links  1 day after they stop working (password reset, change of e-mail)
 // Started by the admin home and by the daily reminder call; never delays or fails either.
 
@@ -14,6 +15,7 @@ export const ACTIVITY_LOG_DAYS = 730;
 const STATEMENTS = [
   `DELETE FROM email_log WHERE created_at < DATE_SUB(NOW(), INTERVAL ${EMAIL_LOG_DAYS} DAY)`,
   `DELETE FROM admin_audit_log WHERE created_at < DATE_SUB(NOW(), INTERVAL ${ACTIVITY_LOG_DAYS} DAY)`,
+  "DELETE FROM user_notifications WHERE created_at < DATE_SUB(NOW(), INTERVAL 180 DAY)",
   "DELETE FROM password_resets WHERE expires_at < (UNIX_TIMESTAMP() - 86400) * 1000",
   "DELETE FROM email_changes WHERE expires_at < (UNIX_TIMESTAMP() - 86400) * 1000",
 ];

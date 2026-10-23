@@ -6,6 +6,8 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Card from "@/components/ui/Card";
 import { ADMIN_SECTIONS } from "@/lib/admin-nav";
+import { useStaffPreset } from "@/lib/client/staff-role";
+import { canOpenAdminPage } from "@/lib/staff-access";
 import AttentionPanel from "./AttentionPanel";
 import GlancePanel from "./GlancePanel";
 
@@ -13,11 +15,12 @@ export default function AdminPage() {
   const t = useTranslations("adminHome");
   const ta = useTranslations("adminCommon");
   const { user } = useAuth();
+  const { preset } = useStaffPreset(!!user && user.role === "admin");
   const [stats, setStats] = useState({ exhibitions: 0, openRfqs: 0, hotelBookings: 0, totalRfqs: 0 });
   const [statsLoading, setStatsLoading] = useState(true);
 
   useEffect(() => {
-    if (!user || user.role !== "admin") return;
+    if (!user || user.role !== "admin" || preset !== "full") return;
     Promise.all([
       fetch("/api/exhibitions").then((r) => r.json()),
       fetch("/api/rfqs").then((r) => r.json()),
@@ -37,7 +40,7 @@ export default function AdminPage() {
         });
       })
       .finally(() => setStatsLoading(false));
-  }, [user]);
+  }, [user, preset]);
 
   if (!user || user.role !== "admin") {
     return (
@@ -53,7 +56,7 @@ export default function AdminPage() {
     );
   }
 
-  const sections = ADMIN_SECTIONS.map((s) => ({
+  const sections = ADMIN_SECTIONS.filter((s) => canOpenAdminPage(preset, s.href)).map((s) => ({
     ...s,
     title: t(`sections.${s.key}.title`),
     description: t(`sections.${s.key}.description`),
@@ -77,14 +80,14 @@ export default function AdminPage() {
               <p className="mt-1 text-emerald-200/80">{t("subtitle")}</p>
             </div>
           </div>
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {preset === "full" && <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
             {statCards.map((s) => (
               <div key={s.label} className="rounded-xl bg-white/10 backdrop-blur-sm p-4 border border-white/10">
                 <div className="text-sm text-white/80 mb-1">{s.icon} {s.label}</div>
                 <div className="text-2xl font-extrabold text-white">{statsLoading ? "…" : s.value}</div>
               </div>
             ))}
-          </div>
+          </div>}
         </div>
       </section>
 

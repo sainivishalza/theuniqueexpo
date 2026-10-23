@@ -757,6 +757,10 @@
       "scheduledExports": {
         "title": "定时报表",
         "description": "每天、每周或每月把 Excel 报表（登记、提现、积分变动）通过电子邮件发给指定的人。"
+      },
+      "staffAccess": {
+        "title": "员工角色",
+        "description": "把管理员账户限制在后台的一部分：登记与买家、网站内容、钱包，或仅查看。"
       }
     },
     "attention": {
@@ -797,6 +801,18 @@
       "perWeekNote": "最近 8 周；最右侧为本周。",
       "weekTitle": "{count, plural, other {# 位新买家}}，{ago, plural, =0 {本周} other {# 周前}}",
       "topExhibitions": "报名最多的展会"
+    },
+    "noAccess": {
+      "title": "您的角色无法打开此页面",
+      "text": "您当前的角色是“{role}”。如需更多权限，请联系拥有完全权限的管理员。",
+      "home": "返回管理后台首页",
+      "roles": {
+        "full": "完全权限",
+        "reviewer": "登记与买家",
+        "content": "网站内容",
+        "finance": "钱包与报表",
+        "viewer": "仅查看"
+      }
     }
   },
   "adminSubsidies": {
@@ -5293,7 +5309,8 @@
       "buyers_merged": "合并了两个买家账户",
       "scheduled_export_saved": "保存了定时报表",
       "scheduled_export_deleted": "删除了定时报表",
-      "scheduled_export_sent_now": "立即发送了定时报表"
+      "scheduled_export_sent_now": "立即发送了定时报表",
+      "staff_role_set": "设置了管理员角色"
     }
   },
   "notificationsPage": {
@@ -5923,6 +5940,51 @@
       "mail_off": "邮件发送已关闭。请先在“管理后台 → 邮件”中开启。",
       "rate_limited": "一小时内发送次数过多，请稍候。",
       "not_found": "该报表已不存在。",
+      "failed": "操作失败，请重试。"
+    }
+  },
+  "adminStaffAccess": {
+    "title": "员工角色",
+    "subtitle": "谁可以在后台做什么。",
+    "back": "← 返回管理后台",
+    "fullOnly": "只有拥有完全权限的管理员才能管理员工角色。",
+    "rolesHeading": "角色",
+    "note": "没有设置角色的管理员拥有完全权限。受限角色只能打开为其列出的页面和操作；未列出的需要完全权限。不能更改自己的角色。",
+    "admin": "管理员",
+    "role": "角色",
+    "you": "您",
+    "suspended": "已停用",
+    "ownRole": "不能更改自己的角色。",
+    "roleOf": "{name} 的角色",
+    "saved": "{name} 现在的角色是“{role}”。",
+    "roles": {
+      "full": {
+        "name": "完全权限",
+        "text": "后台的一切，包括员工角色、用户、邮件设置和合并买家。"
+      },
+      "reviewer": {
+        "name": "登记与买家",
+        "text": "登记（展会、旅游、活动）、买家资料和证件、公告、验票、备注和报表。无钱包、用户、邮件和网站内容。"
+      },
+      "content": {
+        "name": "网站内容",
+        "text": "展会、旅游、活动、文章、页面、图片和酒店。无买家、登记和钱包。"
+      },
+      "finance": {
+        "name": "钱包与报表",
+        "text": "积分钱包（充值、提现、费用、调整）、定时报表和登记列表。"
+      },
+      "viewer": {
+        "name": "仅查看",
+        "text": "可以查看登记、展会和报表，但不能更改任何内容。"
+      }
+    },
+    "errors": {
+      "load": "无法加载员工列表。",
+      "bad_request": "请选择管理员和角色。",
+      "own_role": "不能更改自己的角色。",
+      "not_admin": "该账户不是管理员。",
+      "unavailable": "暂时无法使用角色，请几分钟后重试。",
       "failed": "操作失败，请重试。"
     }
   }

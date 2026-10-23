@@ -159,6 +159,7 @@ run_mysql schema-migrations/073-admin-notes-tags.sql
 run_mysql schema-migrations/074-exhibition-versions.sql
 run_mysql schema-migrations/075-buyer-merges.sql
 run_mysql schema-migrations/076-scheduled-exports.sql
+run_mysql schema-migrations/077-staff-access.sql
 
 # Every deploy saves a full copy of the database (uploaded documents included) and
 # nothing ever removed them, so they would slowly fill this account's disk. Keep the

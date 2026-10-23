@@ -757,6 +757,10 @@
       "scheduledExports": {
         "title": "Scheduled reports",
         "description": "Excel reports (registrations, withdrawals, points movements) e-mailed to chosen people every day, week or month."
+      },
+      "staffAccess": {
+        "title": "Staff roles",
+        "description": "Limit an admin account to part of the back office: registrations and buyers, website content, the wallet, or view only."
       }
     },
     "attention": {
@@ -797,6 +801,18 @@
       "perWeekNote": "The last 8 weeks; the bar on the right is this week.",
       "weekTitle": "{count, plural, one {# new buyer} other {# new buyers}}, {ago, plural, =0 {this week} one {# week ago} other {# weeks ago}}",
       "topExhibitions": "Most registrations"
+    },
+    "noAccess": {
+      "title": "Your role cannot open this page",
+      "text": "You are signed in with the role “{role}”. Ask an admin with full access if you need more.",
+      "home": "Back to the admin home",
+      "roles": {
+        "full": "Full access",
+        "reviewer": "Registrations and buyers",
+        "content": "Website content",
+        "finance": "Wallet and reports",
+        "viewer": "View only"
+      }
     }
   },
   "adminSubsidies": {
@@ -5293,7 +5309,8 @@
       "buyers_merged": "Merged two buyer accounts",
       "scheduled_export_saved": "Saved a scheduled report",
       "scheduled_export_deleted": "Deleted a scheduled report",
-      "scheduled_export_sent_now": "Sent a scheduled report now"
+      "scheduled_export_sent_now": "Sent a scheduled report now",
+      "staff_role_set": "Set an admin's role"
     }
   },
   "notificationsPage": {
@@ -5923,6 +5940,51 @@
       "mail_off": "E-mail is switched off. Switch it on in Admin → Email first.",
       "rate_limited": "Too many sends in the last hour. Please wait.",
       "not_found": "That report no longer exists.",
+      "failed": "That did not work. Please try again."
+    }
+  },
+  "adminStaffAccess": {
+    "title": "Staff roles",
+    "subtitle": "Who may do what in the back office.",
+    "back": "← Back to Admin",
+    "fullOnly": "Only an admin with full access can manage staff roles.",
+    "rolesHeading": "The roles",
+    "note": "Every admin that has no role set has full access. A limited role can only open the pages and use the actions listed for it; anything not listed needs full access. People cannot change their own role.",
+    "admin": "Admin",
+    "role": "Role",
+    "you": "you",
+    "suspended": "Suspended",
+    "ownRole": "You cannot change your own role.",
+    "roleOf": "Role of {name}",
+    "saved": "{name} now has the role “{role}”.",
+    "roles": {
+      "full": {
+        "name": "Full access",
+        "text": "Everything in the admin, including staff roles, users, e-mail settings and merging buyers."
+      },
+      "reviewer": {
+        "name": "Registrations and buyers",
+        "text": "Registrations (exhibitions, tours, events), buyer profiles and documents, announcements, ticket check, notes and reports. No wallet, users, e-mail or website content."
+      },
+      "content": {
+        "name": "Website content",
+        "text": "Exhibitions, tours, events, articles, pages, pictures and hotels. No buyers, registrations or wallet."
+      },
+      "finance": {
+        "name": "Wallet and reports",
+        "text": "The rewards wallet (top-ups, withdrawals, expenses, adjustments), scheduled reports and the registration lists."
+      },
+      "viewer": {
+        "name": "View only",
+        "text": "Can look at registrations, exhibitions and the reports, but cannot change anything."
+      }
+    },
+    "errors": {
+      "load": "Could not load the staff list.",
+      "bad_request": "Choose an admin and a role.",
+      "own_role": "You cannot change your own role.",
+      "not_admin": "That account is not an admin.",
+      "unavailable": "Roles are not available yet. Please try again in a few minutes.",
       "failed": "That did not work. Please try again."
     }
   }

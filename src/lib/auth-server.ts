@@ -4,6 +4,8 @@ import type { NextResponse } from "next/server";
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
 import { normalizeLoginPhone, normalizePassportNumber } from "@/lib/login-id";
+import { canCallAdminApi } from "@/lib/staff-access";
+import { getStaffPreset } from "@/lib/server/staff-access";
 import { assignBuyerNumberQuietly } from "@/lib/server/buyer-numbers";
 
 const envSecret = process.env.JWT_SECRET;
@@ -161,5 +163,15 @@ export async function getSessionUser(request: Request): Promise<SessionUser | nu
 export async function requireAdmin(request: Request): Promise<SessionUser | null> {
   const user = await getSessionUser(request);
   if (!user || user.role !== "admin") return null;
+  // A staff role limits an admin to part of the back office (no role set = full access, as it always was).
+  const preset = await getStaffPreset(user.id);
+  if (preset !== "full" && !canCallAdminApi(preset, request.method, new URL(request.url).pathname)) return null;
   return user;
+}
+
+/** For the few places that must be full access only (managing staff, merging accounts): the signed-in admin, if they have it. */
+export async function requireFullAdmin(request: Request): Promise<SessionUser | null> {
+  const user = await getSessionUser(request);
+  if (!user || user.role !== "admin") return null;
+  return (await getStaffPreset(user.id)) === "full" ? user : null;
 }

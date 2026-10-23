@@ -72,8 +72,9 @@ const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'tok
   // with e-mail switched off the dialog says so and the announcement is published on the website only
   await put({ ...settings, enabled: false }); await sleep(250); sql('UPDATE rate_limits SET hits=0');
   c = await ctxFor(u.aT); p = await c.newPage(); await p.goto(BASE + '/en/admin/buyer-profiles', { waitUntil: 'networkidle' });
-  await p.getByPlaceholder(/Search by registration no/).fill('an-'); await sleep(1200);
-  const rows2 = p.locator('tbody tr').filter({ hasText: `-${st}@test.invalid` }); await rows2.first().locator('input[type=checkbox]').check();
+  await p.getByPlaceholder(/Search by registration no/).fill(`an-en-${st}`); await sleep(1200);
+  // a specific buyer: the list order of accounts made in the same second is not fixed
+  const rows2 = p.locator('tbody tr').filter({ hasText: `an-en-${st}@test.invalid` }); await rows2.first().locator('input[type=checkbox]').check();
   await p.getByRole('button', { name: 'Send announcement' }).click(); const dlg2 = p.getByRole('dialog'); await dlg2.waitFor();
   await dlg2.getByText(/E-mail is switched off/).waitFor(); ok(true, 'with e-mail off the dialog says no e-mails will be sent and everyone can read it on the website');
   await dlg2.getByLabel('Subject', { exact: true }).fill('Website only note'); await dlg2.getByLabel('Message', { exact: true }).fill('Only on the website.');

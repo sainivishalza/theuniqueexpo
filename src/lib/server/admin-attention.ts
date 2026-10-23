@@ -3,6 +3,8 @@ import pool from "@/lib/db";
 
 export interface AttentionCounts {
   registrations: number;
+  /** Exhibition registrations still pending after more than 3 days. */
+  staleRegistrations: number;
   tourRegistrations: number;
   topups: number;
   withdrawals: number;
@@ -30,8 +32,9 @@ const DOC_COLUMNS = [
 export async function getAttentionCounts(): Promise<AttentionCounts> {
   // A buyer's uploaded documents still waiting for review (an upload counts as verified unless an admin set it back).
   const docSql = DOC_COLUMNS.map((c) => `(SELECT COUNT(*) FROM buyer_profiles WHERE has_doc_${c} = 1 AND doc_${c}_status = 'pending')`).join(" + ");
-  const [registrations, tourRegistrations, topups, withdrawals, expenses, builtinDocs, customDocs, failedEmails] = await Promise.all([
+  const [registrations, staleRegistrations, tourRegistrations, topups, withdrawals, expenses, builtinDocs, customDocs, failedEmails] = await Promise.all([
     count("SELECT COUNT(*) AS n FROM expo_registrations WHERE status = 'pending'"),
+    count("SELECT COUNT(*) AS n FROM expo_registrations WHERE status = 'pending' AND created_at < DATE_SUB(NOW(), INTERVAL 3 DAY)"),
     count("SELECT COUNT(*) AS n FROM tour_registrations WHERE status = 'pending'"),
     count("SELECT COUNT(*) AS n FROM wallet_topups WHERE status = 'pending'"),
     count("SELECT COUNT(*) AS n FROM wallet_withdrawals WHERE status = 'pending'"),
@@ -40,5 +43,5 @@ export async function getAttentionCounts(): Promise<AttentionCounts> {
     count("SELECT COUNT(*) AS n FROM buyer_custom_documents WHERE status = 'pending'"),
     count("SELECT COUNT(*) AS n FROM email_log WHERE status = 'failed' AND created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)"),
   ]);
-  return { registrations, tourRegistrations, topups, withdrawals, expenses, documents: builtinDocs + customDocs, failedEmails };
+  return { registrations, staleRegistrations, tourRegistrations, topups, withdrawals, expenses, documents: builtinDocs + customDocs, failedEmails };
 }

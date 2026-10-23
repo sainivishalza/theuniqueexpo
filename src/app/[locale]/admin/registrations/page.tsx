@@ -57,14 +57,17 @@ export default function AdminAllRegistrationsPage() {
   const ta = useTranslations("adminCommon");
   const locale = useLocale();
   const { user, loading: authLoading } = useAuth();
-  const ids = { expo: useId(), country: useId() };
+  const ids = { expo: useId(), country: useId(), sort: useId() };
 
   const [exhibition, setExhibition] = useState("");
   const [status, setStatus] = useState("all");
   const [country, setCountry] = useState("");
   const [query, setQuery] = useState("");
   const [typed, setTyped] = useState("");
+  const [sort, setSort] = useState<"newest" | "oldest">("newest");
   const [page, setPage] = useState(1);
+  // The filters can come with the link (the admin home links to the oldest pending registrations).
+  const [ready, setReady] = useState(false);
   const [data, setData] = useState<Result | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -72,6 +75,20 @@ export default function AdminAllRegistrationsPage() {
   const [bulk, setBulk] = useState<"approved" | "rejected" | null>(null);
   // Only the newest request may fill the screen (typing fast would otherwise show an older answer).
   const latest = useRef(0);
+
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const wantedStatus = q.get("status") ?? "";
+    if (wantedStatus === "expired" || (REGISTRATION_STATUSES as readonly string[]).includes(wantedStatus)) setStatus(wantedStatus);
+    const wantedExpo = q.get("exhibition");
+    if (wantedExpo) setExhibition(wantedExpo);
+    const wantedCountry = q.get("country");
+    if (wantedCountry) setCountry(wantedCountry);
+    if (q.get("sort") === "oldest") setSort("oldest");
+    const text = q.get("q");
+    if (text) { setTyped(text); setQuery(text); }
+    setReady(true);
+  }, []);
 
   // What is typed reaches the server a moment after the last keystroke.
   useEffect(() => {
@@ -92,8 +109,9 @@ export default function AdminAllRegistrationsPage() {
     if (status !== "all") p.set("status", status);
     if (country) p.set("country", country);
     if (query.trim()) p.set("q", query.trim());
+    if (sort === "oldest") p.set("sort", "oldest");
     return p;
-  }, [exhibition, status, country, query]);
+  }, [exhibition, status, country, query, sort]);
 
   const load = useCallback(() => {
     const mine = ++latest.current;
@@ -112,9 +130,9 @@ export default function AdminAllRegistrationsPage() {
   }, [params, page, t]);
 
   useEffect(() => {
-    if (!user || user.role !== "admin") return;
+    if (!user || user.role !== "admin" || !ready) return;
     load();
-  }, [user, load]);
+  }, [user, load, ready]);
 
   function change(apply: () => void) {
     apply();
@@ -131,7 +149,7 @@ export default function AdminAllRegistrationsPage() {
   const filterKeys = [...REGISTRATION_STATUSES.slice(0, 4), "expired", ...REGISTRATION_STATUSES.slice(4)] as string[];
   const shownIds = rows.map((r) => r.id);
   const allShownTicked = shownIds.length > 0 && shownIds.every((id) => selected.has(id));
-  const filtered = exhibition !== "" || status !== "all" || country !== "" || query.trim() !== "";
+  const filtered = exhibition !== "" || status !== "all" || country !== "" || query.trim() !== "" || sort !== "newest";
   const exportHref = `/api/admin/expo-registrations/all/export?${params().toString()}`;
 
   function toggleRow(id: string) {
@@ -178,7 +196,7 @@ export default function AdminAllRegistrationsPage() {
 
       <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <label htmlFor={ids.expo} className="mb-1.5 block text-sm font-medium text-gray-700">{t("exhibitionLabel")}</label>
               <select id={ids.expo} value={exhibition} onChange={(e) => change(() => setExhibition(e.target.value))} className={fieldClasses()}>
@@ -193,7 +211,14 @@ export default function AdminAllRegistrationsPage() {
                 {(data?.countries ?? []).map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
-            <div className="sm:col-span-2 lg:col-span-1 lg:pt-[1.7rem]">
+            <div>
+              <label htmlFor={ids.sort} className="mb-1.5 block text-sm font-medium text-gray-700">{t("sortLabel")}</label>
+              <select id={ids.sort} value={sort} onChange={(e) => change(() => setSort(e.target.value as "newest" | "oldest"))} className={fieldClasses()}>
+                <option value="newest">{t("newest")}</option>
+                <option value="oldest">{t("oldest")}</option>
+              </select>
+            </div>
+            <div className="sm:col-span-2 lg:col-span-4">
               <SearchBox value={typed} onChange={setTyped} compact label={t("searchLabel")} placeholder={t("searchPlaceholder")} />
             </div>
           </div>
@@ -230,7 +255,7 @@ export default function AdminAllRegistrationsPage() {
               <p className="text-gray-500">{filtered ? t("noResultsFiltered") : t("noResultsEmpty")}</p>
               {filtered && (
                 <div className="mt-5">
-                  <Button type="button" variant="secondaryOutline" size="compact" onClick={() => { setExhibition(""); setStatus("all"); setCountry(""); setTyped(""); setQuery(""); setPage(1); setSelected(new Set()); }}>{t("clearFilters")}</Button>
+                  <Button type="button" variant="secondaryOutline" size="compact" onClick={() => { setExhibition(""); setStatus("all"); setCountry(""); setSort("newest"); setTyped(""); setQuery(""); setPage(1); setSelected(new Set()); }}>{t("clearFilters")}</Button>
                 </div>
               )}
             </Card>

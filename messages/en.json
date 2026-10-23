@@ -737,6 +737,7 @@
       "title": "Needs your attention",
       "allClear": "Nothing is waiting for you right now.",
       "loading": "Checking what is waiting…",
+      "staleRegistrations": "{count, plural, one {# exhibition registration has waited more than 3 days} other {# exhibition registrations have waited more than 3 days}}",
       "registrations": "{count, plural, one {# exhibition registration waits for approval} other {# exhibition registrations wait for approval}}",
       "tourRegistrations": "{count, plural, one {# tour registration waits for approval} other {# tour registrations wait for approval}}",
       "topups": "{count, plural, one {# points top-up to check} other {# points top-ups to check}}",
@@ -5236,7 +5237,10 @@
     "previous": "Previous",
     "next": "Next",
     "pageOf": "Page {page} of {pages}",
-    "loadFailed": "Could not load the registrations. Please try again."
+    "loadFailed": "Could not load the registrations. Please try again.",
+    "sortLabel": "Sort",
+    "newest": "Newest first",
+    "oldest": "Oldest first"
   },
   "profileCompleteness": {
     "title": "Your profile is {percent}% complete",

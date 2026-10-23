@@ -14,6 +14,8 @@ export interface AllRegistrationsFilter {
   status?: string;
   country?: string;
   q?: string;
+  /** Oldest first (for working through what has waited longest). */
+  oldest?: boolean;
 }
 
 export interface AllRegistrationRow {
@@ -61,6 +63,7 @@ export function readFilter(searchParams: URLSearchParams): AllRegistrationsFilte
     status: valid ? status : undefined,
     country: (searchParams.get("country") ?? "").slice(0, 100) || undefined,
     q: (searchParams.get("q") ?? "").slice(0, 100) || undefined,
+    oldest: searchParams.get("sort") === "oldest" || undefined,
   };
 }
 
@@ -140,7 +143,7 @@ export async function listAllRegistrations(f: AllRegistrationsFilter, page: numb
   const lastPage = Math.max(1, Math.ceil(total / pageSize));
   const offset = (Math.min(Math.max(1, page), lastPage) - 1) * pageSize;
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT ${COLUMNS} ${FROM} ${whereSql} ORDER BY r.created_at DESC, r.id DESC LIMIT ? OFFSET ?`,
+    `SELECT ${COLUMNS} ${FROM} ${whereSql} ORDER BY r.created_at ${f.oldest ? "ASC" : "DESC"}, r.id ${f.oldest ? "ASC" : "DESC"} LIMIT ? OFFSET ?`,
     [...params, pageSize, offset]
   );
   const [countRows] = await pool.query<RowDataPacket[]>(`SELECT ${EFFECTIVE} AS s, COUNT(*) AS n ${FROM} ${baseSql} GROUP BY s`, base.params);
@@ -171,7 +174,7 @@ export async function buildAllRegistrationsExcel(f: AllRegistrationsFilter): Pro
   const st = statusClause(f.status);
   const where = [...base.where, ...(st.sql ? [st.sql] : [])];
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT ${COLUMNS} ${FROM} ${where.length ? `WHERE ${where.join(" AND ")}` : ""} ORDER BY r.created_at DESC, r.id DESC LIMIT ?`,
+    `SELECT ${COLUMNS} ${FROM} ${where.length ? `WHERE ${where.join(" AND ")}` : ""} ORDER BY r.created_at ${f.oldest ? "ASC" : "DESC"}, r.id ${f.oldest ? "ASC" : "DESC"} LIMIT ?`,
     [...base.params, ...st.params, MAX_EXPORT_ROWS + 1]
   );
   const truncated = rows.length > MAX_EXPORT_ROWS;

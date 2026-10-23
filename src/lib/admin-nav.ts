@@ -15,6 +15,7 @@ export const ADMIN_GROUPS: AdminSection["group"][] = ["events", "people", "reque
 
 export const ADMIN_SECTIONS: AdminSection[] = [
   { key: "exhibitionManagement", href: "/admin/exhibitions", icon: "🎪", color: "from-emerald-500 to-emerald-600", group: "events" },
+  { key: "allRegistrations", href: "/admin/registrations", icon: "📝", color: "from-emerald-600 to-teal-600", group: "events" },
   { key: "tourManagement", href: "/admin/tours", icon: "🧳", color: "from-cyan-500 to-blue-600", group: "events" },
   { key: "eventManagement", href: "/admin/events", icon: "🎉", color: "from-pink-500 to-rose-600", group: "events" },
   { key: "blogManagement", href: "/admin/blog", icon: "📰", color: "from-indigo-500 to-purple-600", group: "content" },

@@ -710,6 +710,10 @@
       "activity": {
         "title": "Журнал действий",
         "description": "Кто и что делал в панели администратора"
+      },
+      "allRegistrations": {
+        "title": "Все регистрации",
+        "description": "Регистрации всех покупателей на все выставки в одном списке: фильтры, поиск и экспорт в Excel."
       }
     },
     "attention": {
@@ -5166,5 +5170,38 @@
       "invalid_date": "Введите корректную дату.",
       "invalid_status": "Недопустимый выбор."
     }
+  },
+  "adminAllRegistrations": {
+    "title": "Все регистрации",
+    "backToAdmin": "← Назад в админ-панель",
+    "count": "{count, plural, one {# регистрация} few {# регистрации} many {# регистраций} other {# регистрации}}",
+    "exportToExcel": "⬇ Экспорт в Excel",
+    "exhibitionLabel": "Выставка",
+    "allExhibitions": "Все выставки",
+    "countryLabel": "Страна",
+    "allCountries": "Все страны",
+    "searchLabel": "Поиск регистраций",
+    "searchPlaceholder": "Имя, e-mail, компания, номер покупателя…",
+    "filterByStatus": "Фильтр по статусу",
+    "filterAll": "Все ({count})",
+    "columns": {
+      "buyer": "Покупатель",
+      "exhibition": "Выставка",
+      "company": "Компания",
+      "contact": "Контакты",
+      "status": "Статус",
+      "registered": "Дата регистрации"
+    },
+    "confirmBy": "Подтвердить до {date}",
+    "noResultsTitle": "Регистрации не найдены",
+    "noResultsFiltered": "По этим фильтрам ничего нет. Попробуйте другую выставку, статус или запрос.",
+    "noResultsEmpty": "Регистрации появятся здесь, как только покупатели зарегистрируются.",
+    "clearFilters": "Сбросить фильтры",
+    "pagination": "Страницы",
+    "showing": "{from}–{to} из {total}",
+    "previous": "Назад",
+    "next": "Вперёд",
+    "pageOf": "Страница {page} из {pages}",
+    "loadFailed": "Не удалось загрузить регистрации. Попробуйте ещё раз."
   }
 }

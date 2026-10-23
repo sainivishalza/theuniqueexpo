@@ -710,6 +710,10 @@
       "activity": {
         "title": "Activity",
         "description": "Who did what in the admin area"
+      },
+      "allRegistrations": {
+        "title": "All registrations",
+        "description": "Every buyer registration for every exhibition in one list, with filters, search and Excel export."
       }
     },
     "attention": {
@@ -5166,5 +5170,38 @@
       "invalid_date": "Please enter a valid date.",
       "invalid_status": "Invalid choice."
     }
+  },
+  "adminAllRegistrations": {
+    "title": "All registrations",
+    "backToAdmin": "← Back to admin",
+    "count": "{count, plural, one {# registration} other {# registrations}}",
+    "exportToExcel": "⬇ Export to Excel",
+    "exhibitionLabel": "Exhibition",
+    "allExhibitions": "All exhibitions",
+    "countryLabel": "Country",
+    "allCountries": "All countries",
+    "searchLabel": "Search registrations",
+    "searchPlaceholder": "Name, e-mail, company, buyer number…",
+    "filterByStatus": "Filter by status",
+    "filterAll": "All ({count})",
+    "columns": {
+      "buyer": "Buyer",
+      "exhibition": "Exhibition",
+      "company": "Company",
+      "contact": "Contact",
+      "status": "Status",
+      "registered": "Registered"
+    },
+    "confirmBy": "Confirm by {date}",
+    "noResultsTitle": "No registrations found",
+    "noResultsFiltered": "Nothing matches these filters. Try another exhibition, status or search.",
+    "noResultsEmpty": "Registrations will appear here as soon as buyers register.",
+    "clearFilters": "Clear filters",
+    "pagination": "Pages",
+    "showing": "{from}–{to} of {total}",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {pages}",
+    "loadFailed": "Could not load the registrations. Please try again."
   }
 }

@@ -777,6 +777,10 @@
       "health": {
         "title": "Health and backups",
         "description": "Registrations, failed e-mails and when the last backups were made."
+      },
+      "errors": {
+        "title": "Errors",
+        "description": "Problems the website ran into, with how often they happen."
       }
     },
     "attention": {
@@ -829,6 +833,11 @@
         "finance": "Wallet and reports",
         "viewer": "View only"
       }
+    },
+    "twoStepRequired": {
+      "title": "Set up two-step sign-in first",
+      "text": "Every admin must use two-step sign-in. Until you set it up, the only page you can open is your account page.",
+      "button": "Open my account"
     }
   },
   "adminSubsidies": {
@@ -5093,7 +5102,9 @@
       "visaExpiring": "Visa expires too early",
       "groupInvite": "Colleague invitation",
       "scheduledReport": "Scheduled report",
-      "dailyHealth": "Daily health report"
+      "dailyHealth": "Daily health report",
+      "adminSignIn": "New admin sign-in alert",
+      "errorAlert": "New website error alert"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -5335,7 +5346,10 @@
       "retention_run": "Deleted old passport and visa pictures",
       "health_email_setting_changed": "Changed the daily health e-mail setting",
       "health_email_sent_now": "Sent the health e-mail to themselves",
-      "email_bounce_cleared": "Cleared a bounced e-mail address"
+      "email_bounce_cleared": "Cleared a bounced e-mail address",
+      "two_step_required_changed": "Changed whether every admin must use two-step sign-in",
+      "error_resolved": "Marked a website error resolved",
+      "error_reopened": "Opened a website error again"
     }
   },
   "notificationsPage": {
@@ -6120,7 +6134,9 @@
       "rate_limited": "Too many sends in the last hour. Please wait.",
       "send_failed": "The e-mail could not be sent. Check the E-mail settings.",
       "failed": "That did not work. Please try again."
-    }
+    },
+    "issueErrors": "{n} errors were reported by the website in the last 24 hours.",
+    "errorsReported": "Website errors reported"
   },
   "adminBounces": {
     "title": "Addresses that bounced",
@@ -6134,5 +6150,48 @@
     "stopped": "The website no longer e-mails this address (except sign-in mails) until you clear it.",
     "clear": "Clear",
     "cleared": "{email} will be e-mailed again."
+  },
+  "adminSecurity": {
+    "title": "Two-step sign-in for every admin",
+    "label": "Require two-step sign-in for every admin",
+    "explain": "While this is on, an admin who has not set up two-step sign-in can only open their account page, where they set it up. Nobody is signed out.",
+    "without": "{count, plural, one {# active admin has} other {# active admins have}} not set it up yet.",
+    "setUpYours": "Set up your own first, then you can turn this on.",
+    "openAccount": "Open my account",
+    "nowOn": "Now every admin needs two-step sign-in.",
+    "nowOff": "No longer required.",
+    "errors": {
+      "own_first": "Set up your own two-step sign-in first.",
+      "failed": "That did not work. Please try again."
+    }
+  },
+  "adminSignIns": {
+    "title": "Where you signed in from",
+    "intro": "A sign-in from a browser or place not seen before is also e-mailed to you. If you do not recognise one here, change your password.",
+    "none": "Nothing recorded yet.",
+    "place": "Network {network}",
+    "seen": "Last {last}, first {first}, {count, plural, one {# sign-in} other {# sign-ins}}"
+  },
+  "adminErrors": {
+    "title": "Website errors",
+    "subtitle": "What went wrong on the site, and how often.",
+    "back": "← Back to Admin",
+    "how": "The site reports errors from its server and from visitors' browsers. The same error is one row with a count. A new one is e-mailed to the admins (one e-mail for several). Mark an error resolved once it is fixed; it returns here only if it happens again.",
+    "showResolved": "Also show errors marked resolved",
+    "none": "No errors reported. All quiet.",
+    "loadFailed": "Could not load the list.",
+    "source": {
+      "server": "Server",
+      "client": "Browser"
+    },
+    "times": "{count, plural, one {# time} other {# times}}, last {last}, first {first}",
+    "where": "On {path}",
+    "isResolved": "Marked resolved",
+    "details": "Details",
+    "hideDetails": "Hide details",
+    "resolve": "Mark resolved",
+    "reopen": "Open again",
+    "resolvedNote": "Marked resolved.",
+    "reopenedNote": "Opened again."
   }
 }

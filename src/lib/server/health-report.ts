@@ -1,5 +1,6 @@
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
+import { recentErrorCount } from "@/lib/server/error-log";
 import { isMailEnabled, sendMail } from "@/lib/server/mail";
 
 // The daily health e-mail to admins, and the same numbers on Admin -> Health: how many registrations came in, how many
@@ -17,6 +18,8 @@ export interface HealthReport {
   pendingRegistrations: number;
   emailsSent: number;
   emailsFailed: number;
+  /** Errors reported by the website in the last 24 hours that nobody has marked resolved. */
+  errors: number;
   mailOn: boolean;
   deployBackup: BackupInfo | null;
   offsiteBackup: BackupInfo | null;
@@ -57,11 +60,12 @@ async function lastBackup(kind: "deploy" | "offsite"): Promise<BackupInfo | null
 const daysAgo = (iso: string) => Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
 
 export async function buildHealthReport(): Promise<HealthReport> {
-  const [newRegistrations, pendingRegistrations, emailsSent, emailsFailed, mailOn, deployBackup, offsiteBackup] = await Promise.all([
+  const [newRegistrations, pendingRegistrations, emailsSent, emailsFailed, errors, mailOn, deployBackup, offsiteBackup] = await Promise.all([
     count("SELECT COUNT(*) AS n FROM expo_registrations WHERE created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)"),
     count("SELECT COUNT(*) AS n FROM expo_registrations WHERE status = 'pending'"),
     count("SELECT COUNT(*) AS n FROM email_log WHERE status = 'sent' AND created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)"),
     count("SELECT COUNT(*) AS n FROM email_log WHERE status = 'failed' AND created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)"),
+    recentErrorCount(),
     isMailEnabled().catch(() => false),
     lastBackup("deploy"),
     lastBackup("offsite"),
@@ -72,8 +76,9 @@ export async function buildHealthReport(): Promise<HealthReport> {
   if (!deployBackup) issues.push("No backup made by a deploy is recorded yet.");
   else if (daysAgo(deployBackup.at) >= DEPLOY_STALE_DAYS) issues.push(`The last backup made by a deploy is ${daysAgo(deployBackup.at)} days old.`);
   if (emailsFailed > 0) issues.push(`${emailsFailed} e-mail${emailsFailed === 1 ? "" : "s"} failed to send in the last 24 hours.`);
+  if (errors > 0) issues.push(`${errors} error${errors === 1 ? " was" : "s were"} reported by the website in the last 24 hours.`);
   if (pendingRegistrations >= PENDING_BACKLOG) issues.push(`${pendingRegistrations} registrations are waiting for review.`);
-  return { generatedAt: new Date().toISOString(), newRegistrations, pendingRegistrations, emailsSent, emailsFailed, mailOn, deployBackup, offsiteBackup, issues };
+  return { generatedAt: new Date().toISOString(), newRegistrations, pendingRegistrations, emailsSent, emailsFailed, errors, mailOn, deployBackup, offsiteBackup, issues };
 }
 
 // ----- settings -----
@@ -119,6 +124,7 @@ export function healthEmailContent(r: HealthReport, siteUrl: string): { subject:
     `New registrations in the last 24 hours: ${r.newRegistrations}`,
     `Registrations waiting for review: ${r.pendingRegistrations}`,
     `E-mails sent / failed in the last 24 hours: ${r.emailsSent} / ${r.emailsFailed}`,
+    `Website errors reported in the last 24 hours: ${r.errors}`,
     `Last backup made by a deploy: ${fmtBackup(r.deployBackup)}`,
     `Last off-site backup: ${fmtBackup(r.offsiteBackup)}`,
   ];

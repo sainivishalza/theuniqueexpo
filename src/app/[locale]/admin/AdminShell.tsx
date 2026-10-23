@@ -20,7 +20,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const { user, loading } = useAuth();
   const pathname = usePathname();
   const isAdmin = !loading && shellAppliesTo("admin", user);
-  const { preset, loaded } = useStaffPreset(isAdmin);
+  const { preset, loaded, twoStepRequired } = useStaffPreset(isAdmin);
 
   // How many rewards requests (top-ups, withdrawals, expense claims) are waiting, shown on the
   // menu entry. Looked up again on each page change and once a minute; a failure just hides it.
@@ -65,7 +65,14 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         { key: "find-users", href: `/admin/users?q=${encodeURIComponent(q)}`, label: tc("shell.findUsers", { query: q }), icon: "👥" },
       ]}
     >
-      {loaded && !canOpenAdminPage(preset, pathname) ? (
+      {loaded && twoStepRequired && !pathname.startsWith("/admin/account") ? (
+        <div className="mx-auto max-w-2xl px-6 py-20 text-center" data-testid="two-step-required">
+          <div className="text-5xl" aria-hidden="true">🔐</div>
+          <h1 className="mt-4 text-2xl font-bold text-heading">{t("twoStepRequired.title")}</h1>
+          <p className="mt-2 text-gray-700">{t("twoStepRequired.text")}</p>
+          <Link href="/admin/account" className="mt-4 inline-block font-semibold text-emerald-800 underline">{t("twoStepRequired.button")}</Link>
+        </div>
+      ) : loaded && !canOpenAdminPage(preset, pathname) ? (
         <div className="mx-auto max-w-2xl px-6 py-20 text-center" data-testid="no-staff-access">
           <div className="text-5xl" aria-hidden="true">🔒</div>
           <h1 className="mt-4 text-2xl font-bold text-heading">{t("noAccess.title")}</h1>

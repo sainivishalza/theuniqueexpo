@@ -6,6 +6,7 @@ import { checkRateLimit, getClientIp, peekRateLimit, resetRateLimit } from "@/li
 import { detectLocale, rememberLocale } from "@/lib/server/notifications";
 import { readChallenge, verifySecondStep } from "@/lib/server/totp";
 import { logAdminAction } from "@/lib/server/audit-log";
+import { noteAdminSignIn } from "@/lib/server/admin-security";
 
 const ATTEMPTS = 8;
 const WINDOW_MS = 10 * 60 * 1000;
@@ -44,6 +45,7 @@ export async function POST(request: Request) {
   await resetRateLimit(userKey);
   rememberLocale(user.id, detectLocale(request));
   logAdminAction(request, user, result === "recovery" ? "sign_in_recovery_code" : "sign_in", { targetType: "user", targetId: user.id });
+  noteAdminSignIn(request, user);
   const response = NextResponse.json({ user, usedRecoveryCode: result === "recovery" });
   setSessionCookie(response, signSessionToken(user));
   return response;

@@ -1,12 +1,14 @@
 import pool from "@/lib/db";
 import { checkRateLimit } from "@/lib/server/rate-limit";
 import { pruneSlowQueries } from "@/lib/server/slow-queries";
+import { pruneErrors } from "@/lib/server/error-log";
 
 // Old records that nobody needs any more are removed once a day, so the tables stay small and the
 // database does not keep personal details (e-mail addresses, IP addresses) longer than it has to.
 //   e-mail log          180 days     (who was e-mailed what, to answer "did my mail go out?")
 //   admin activity log  2 years
 //   website notifications  180 days
+//   error log           90 days, at most 2000 rows
 //   used / expired links  1 day after they stop working (password reset, change of e-mail)
 // Started by the admin home and by the daily reminder call; never delays or fails either.
 
@@ -33,6 +35,7 @@ export async function pruneOldRecords(): Promise<number> {
     }
   }
   removed += await pruneSlowQueries();
+  removed += await pruneErrors();
   return removed;
 }
 

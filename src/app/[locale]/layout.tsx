@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import "./globals.css";
 import ClientShell from "@/components/ClientShell";
+import ClientErrorReporter from "@/components/ClientErrorReporter";
 import CookieConsent from "@/components/CookieConsent";
 import OrganizationSchema from "@/components/OrganizationSchema";
 import { routing } from "@/i18n/routing";
@@ -178,6 +179,7 @@ export default async function RootLayout({
         <OrganizationSchema profile={companyProfile} />
         <NextIntlClientProvider messages={messages}>
           <CookieConsent measurementId={analyticsId} />
+          <ClientErrorReporter />
           <ClientShell companyProfile={companyProfile} analyticsId={analyticsId} navSections={navSections}>{children}</ClientShell>
         </NextIntlClientProvider>
       </body>

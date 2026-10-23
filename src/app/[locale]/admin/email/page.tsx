@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { fieldClasses } from "@/components/ui/FormField";
+import BouncedAddresses from "./BouncedAddresses";
 import Button from "@/components/ui/Button";
 
 interface Settings {
@@ -30,7 +31,7 @@ interface LogRow {
 
 const KINDS = [
   "passwordReset", "passwordChanged", "registrationReceived", "registrationWaitlisted", "waitlistPlaceOpened", "registrationApproved", "registrationRejected", "tourRegistrationApproved", "tourRegistrationRejected", "documentRejected", "pointsReceived",
-  "topupApproved", "topupRejected", "withdrawalPaid", "withdrawalRejected", "expenseApproved", "expenseRejected", "confirmEmail", "confirmEmailChange", "emailChanged", "registrationReminder", "registrationStartsSoon", "scheduledReport", "savedRegistrationOpened", "savedRegistrationClosing", "passportExpiring", "visaExpiring", "groupInvite", "announcement", "test",
+  "topupApproved", "topupRejected", "withdrawalPaid", "withdrawalRejected", "expenseApproved", "expenseRejected", "confirmEmail", "confirmEmailChange", "emailChanged", "registrationReminder", "registrationStartsSoon", "scheduledReport", "dailyHealth", "adminSignIn", "errorAlert", "savedRegistrationOpened", "savedRegistrationClosing", "passportExpiring", "visaExpiring", "groupInvite", "announcement", "test",
 ];
 
 // Admin -> Email: the mail server the website sends from, a test button, and what was sent lately.
@@ -234,6 +235,8 @@ export default function AdminEmailPage() {
               <Button type="button" variant="secondaryOutline" size="compact" onClick={makeKey}>{t("reminders.makeKey")}</Button>
             </div>
           </div>
+
+          <BouncedAddresses />
 
           <div className="rounded-2xl bg-white p-6 shadow-sm">
             <h2 className="font-bold text-heading">{t("logTitle")}</h2>

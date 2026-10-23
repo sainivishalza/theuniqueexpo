@@ -1,0 +1,30 @@
+name: Mail bounces
+
+# Every few hours this reads the mailbox that bounced e-mails come back to and tells the website which addresses do not work, so
+# Admin -> Email shows them and the site stops e-mailing an address that no longer exists.
+#
+# To switch it on, add these repository secrets (Settings -> Secrets and variables -> Actions):
+#   BOUNCE_IMAP_HOST, BOUNCE_IMAP_USER, BOUNCE_IMAP_PASSWORD  the mailbox the website sends from (its address is the "From" address in Admin -> Email)
+#   REMINDER_KEY                                              the key from Admin -> Email -> Daily reminders (already used by "Registration reminders")
+# Without them this does nothing.
+on:
+  schedule:
+    - cron: "23 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bounces:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the mailbox and hand the bounces to the website
+        env:
+          BOUNCE_IMAP_HOST: ${{ secrets.BOUNCE_IMAP_HOST }}
+          BOUNCE_IMAP_USER: ${{ secrets.BOUNCE_IMAP_USER }}
+          BOUNCE_IMAP_PASSWORD: ${{ secrets.BOUNCE_IMAP_PASSWORD }}
+          REMINDER_KEY: ${{ secrets.REMINDER_KEY }}
+        run: python3 scripts/read-bounces.py

@@ -104,7 +104,7 @@ const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'tok
   for (const [loc, title] of [['ru', 'Внутренние заметки'], ['zh', '内部备注']]) {
     [c, p] = await open(loc, { width: 375, height: 900 }, `/admin/exhibitions/${slug}/registrations`);
     await p.getByRole('button').filter({ hasText: /Просмотр|Посмотреть|查看|View|Открыть/ }).first().click().catch(async () => { await p.locator('tbody tr button').last().click(); });
-    await p.getByRole('heading', { name: title }).waitFor(); const v = await axeViolations(p); ok(v.length === 0, `${loc}: axe 0`, v); await c.close();
+    await p.getByRole('heading', { name: title }).waitFor(); await sleep(900); const v = await axeViolations(p); ok(v.length === 0, `${loc}: axe 0`, v); await c.close();
   }
 
   console.log('\n== exhibition history (API)');

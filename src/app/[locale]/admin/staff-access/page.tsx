@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import TwoStepRule from "./TwoStepRule";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { fieldClasses } from "@/components/ui/FormField";
@@ -80,6 +81,7 @@ export default function AdminStaffAccessPage() {
             </dl>
             <p className="mt-3 text-xs text-gray-600">{t("note")}</p>
           </div>
+          <TwoStepRule />
           {message && <p role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900">{message}</p>}
           {error && <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
           <div className="rounded-2xl bg-white shadow-sm overflow-hidden">

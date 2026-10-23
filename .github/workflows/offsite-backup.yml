@@ -1,0 +1,87 @@
+name: Off-site backup
+
+# A nightly copy of the database kept OUTSIDE the Hostinger server (the deploy backups live on the same server as the
+# site, so losing the server would lose them too).
+#
+# What it does: asks the server for a database dump over SSH (the same login the deploy uses), checks the dump is complete,
+# ENCRYPTS it on this runner with a public key (so nobody who can see this repository or its downloads can read buyers'
+# data; only the matching private key, which you keep, opens it), keeps it as a download on this run for 14 days, and writes
+# the time and size into the site's backup_log so Admin -> Health and the daily health e-mail can show it.
+#
+# Set up once: see "Off-site backups" in HOSTINGER-DEPLOY.md (make a key pair, save the PUBLIC key as the repository
+# secret BACKUP_AGE_PUBLIC_KEY, keep the private key somewhere safe and NOT on the server).
+on:
+  schedule:
+    - cron: "37 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check the encryption key is set
+        env:
+          KEY: ${{ secrets.BACKUP_AGE_PUBLIC_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "BACKUP_AGE_PUBLIC_KEY is not set, so nothing can be backed up safely (an unencrypted copy of buyers' passports must never be stored here)." >&2
+            echo "See 'Off-site backups' in HOSTINGER-DEPLOY.md." >&2
+            exit 1
+          fi
+
+      - name: Install tools
+        run: sudo apt-get update || true; sudo apt-get install -y sshpass age
+
+      - name: Dump the database over SSH
+        env:
+          SSHPASS: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+        run: |
+          set -euo pipefail
+          SSH="sshpass -e ssh -o StrictHostKeyChecking=accept-new -o ServerAliveInterval=30 -o ServerAliveCountMax=10 -p $SSH_PORT $SSH_USER@$SSH_HOST"
+          APP_DIR=$($SSH 'for f in $(find ~ -maxdepth 4 -name "package.json" -not -path "*/node_modules/*" -not -path "*/.*/*" 2>/dev/null); do grep -q "\"name\": *\"expobridge\"" "$f" 2>/dev/null && dirname "$f" && break; done')
+          [ -n "$APP_DIR" ] || { echo "Could not find the app directory on the server." >&2; exit 1; }
+          # The password never appears on a command line: the server's own .env.local supplies it.
+          $SSH "cd '$APP_DIR' && set -a && source .env.local && set +a && mysqldump --default-character-set=utf8mb4 --single-transaction -h \"\$DB_HOST\" -u \"\$DB_USER\" -p\"\$DB_PASSWORD\" \"\$DB_NAME\" | gzip -9" > dump.sql.gz
+          gzip -t dump.sql.gz
+          # A dump that stopped half way has no closing line.
+          gzip -dc dump.sql.gz | tail -n 5 | grep -q -- '-- Dump completed' || { echo "The dump is incomplete, so it is not kept." >&2; exit 1; }
+          echo "Dump: $(wc -c < dump.sql.gz) bytes (compressed)"
+          echo "APP_DIR=$APP_DIR" >> "$GITHUB_ENV"
+
+      - name: Encrypt it (the dump itself is deleted here)
+        env:
+          KEY: ${{ secrets.BACKUP_AGE_PUBLIC_KEY }}
+        run: |
+          set -euo pipefail
+          STAMP=$(date -u +%Y%m%d-%H%M%S)
+          age -r "$KEY" -o "theuniqueexpo-$STAMP.sql.gz.age" dump.sql.gz
+          shred -u dump.sql.gz 2>/dev/null || rm -f dump.sql.gz
+          ls -l theuniqueexpo-*.age
+          echo "BACKUP_NAME=theuniqueexpo-$STAMP.sql.gz.age" >> "$GITHUB_ENV"
+
+      - name: Keep the encrypted copy
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-backup-encrypted
+          path: theuniqueexpo-*.sql.gz.age
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Record it on the site
+        env:
+          SSHPASS: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+        run: |
+          set -euo pipefail
+          SIZE=$(wc -c < "$BACKUP_NAME")
+          SSH="sshpass -e ssh -o StrictHostKeyChecking=accept-new -p $SSH_PORT $SSH_USER@$SSH_HOST"
+          $SSH "cd '$APP_DIR' && set -a && source .env.local && set +a && mysql --default-character-set=utf8mb4 -h \"\$DB_HOST\" -u \"\$DB_USER\" -p\"\$DB_PASSWORD\" \"\$DB_NAME\" -e \"INSERT INTO backup_log (kind, file_name, size_bytes, created_at) VALUES ('offsite', '$BACKUP_NAME', $SIZE, UTC_TIMESTAMP())\""

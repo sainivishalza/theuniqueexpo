@@ -4,6 +4,7 @@ import { checkLoginRateLimit, resetLoginRateLimit } from "@/lib/server/rate-limi
 import { detectLocale, rememberLocale } from "@/lib/server/notifications";
 import { isTwoStepOn, signChallenge } from "@/lib/server/totp";
 import { logAdminAction } from "@/lib/server/audit-log";
+import { noteAdminSignIn } from "@/lib/server/admin-security";
 
 export async function POST(request: Request) {
   try {
@@ -35,7 +36,10 @@ export async function POST(request: Request) {
     }
     await resetLoginRateLimit(request, email);
 
-    if (user.role === "admin") logAdminAction(request, user, "sign_in", { targetType: "user", targetId: user.id });
+    if (user.role === "admin") {
+      logAdminAction(request, user, "sign_in", { targetType: "user", targetId: user.id });
+      noteAdminSignIn(request, user);
+    }
     rememberLocale(user.id, detectLocale(request));
     const token = signSessionToken(user);
     const response = NextResponse.json({ user });

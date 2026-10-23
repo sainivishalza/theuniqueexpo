@@ -22,7 +22,7 @@ interface Rule {
 }
 
 // Used by every role: the person's own security settings, and the tools that only keep personal preferences.
-const EVERYONE: Rule = { read: ["two-step", "saved-views", "stats", "attention"], write: ["two-step", "saved-views"], pages: ["/admin", "/admin/account"] };
+const EVERYONE: Rule = { read: ["two-step", "saved-views", "stats", "attention", "sign-ins"], write: ["two-step", "saved-views"], pages: ["/admin", "/admin/account"] };
 
 const REGISTRATION_AREAS = ["expo-registrations", "tour-registrations", "event-registrations"];
 const BUYER_AREAS = ["buyer-profiles", "buyers", "buyer-expos", "buyer-form"];
@@ -31,7 +31,7 @@ const CONTENT_AREAS = ["exhibitions", "tours", "events", "blog", "magazine", "vi
 const RULES: Record<Exclude<StaffPreset, "full">, Rule> = {
   // Looks after registrations and buyers: approves, checks documents, announces, checks tickets at the door.
   reviewer: {
-    read: [...REGISTRATION_AREAS, ...BUYER_AREAS, "exhibitions", "tours", "events", "record-meta", "tickets", "insights", "announcement-templates", "visa-applications", "tour-applications", "business-trip-inquiries"],
+    read: [...REGISTRATION_AREAS, ...BUYER_AREAS, "exhibitions", "tours", "events", "record-meta", "tickets", "insights", "email-bounces", "announcement-templates", "visa-applications", "tour-applications", "business-trip-inquiries"],
     write: [...REGISTRATION_AREAS, "buyer-profiles", "buyers", "record-meta", "tickets", "announcement-templates", "visa-applications", "tour-applications", "business-trip-inquiries"],
     pages: ["/admin/registrations", "/admin/buyer-profiles", "/admin/buyer-expos", "/admin/ticket-check", "/admin/insights", "/admin/exhibitions", "/admin/tours", "/admin/events", "/admin/visa-applications", "/admin/tour-applications", "/admin/business-trip-inquiries", "/admin/buyer-form"],
   },

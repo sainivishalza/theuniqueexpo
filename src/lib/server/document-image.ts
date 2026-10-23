@@ -1,3 +1,5 @@
+import { scanDocument } from "@/lib/server/document-scan";
+
 // Buyer documents are stored in the database as data: URLs. A phone photo is often 3-6 MB, and
 // the browser's own shrinking does not run (the site's Content-Security-Policy blocks the blob:
 // pictures it needs), so with thousands of buyers the database, its backups and the Excel / ZIP
@@ -25,6 +27,20 @@ export function parseDataUrl(dataUrl: string): ParsedDataUrl | null {
   return { contentType: match[1].toLowerCase(), buffer: Buffer.from(match[2], "base64") };
 }
 
+// Does a picture carry bytes after where its format says it ends? (A "picture" that is also another kind of file.)
+// Only pictures kept exactly as uploaded are checked this way; the others are re-encoded, which drops such bytes.
+export function hasTrailingData(buffer: Buffer, contentType: string): boolean {
+  const n = buffer.length;
+  if (contentType === "image/png") {
+    const iend = buffer.lastIndexOf("IEND", n, "latin1");
+    return iend < 0 || iend + 8 !== n;
+  }
+  if (contentType === "image/jpeg" || contentType === "image/jpg") return !(n > 2 && buffer[n - 2] === 0xff && buffer[n - 1] === 0xd9);
+  if (contentType === "image/gif") return buffer[n - 1] !== 0x3b;
+  if (contentType === "image/webp") return buffer.length < 12 || buffer.readUInt32LE(4) + 8 !== n;
+  return true;
+}
+
 export function isPdfBuffer(buffer: Buffer): boolean {
   return buffer.length > 5 && buffer.subarray(0, 5).toString("latin1") === "%PDF-";
 }
@@ -47,10 +63,12 @@ export async function shrinkDocumentDataUrl(dataUrl: string): Promise<string> {
   const parsed = parseDataUrl(dataUrl);
   if (!parsed) throw new DocumentFileError("Malformed file");
 
-  if (parsed.contentType === "application/pdf") {
-    if (!isPdfBuffer(parsed.buffer)) throw new DocumentFileError("Not a PDF file");
-    return dataUrl;
-  }
+  if (parsed.contentType === "application/pdf" && !isPdfBuffer(parsed.buffer)) throw new DocumentFileError("Not a PDF file");
+
+  const scan = await scanDocument(parsed.buffer, parsed.contentType);
+  if (!scan.ok) throw new DocumentFileError(scan.reason === "scanner_unavailable" ? "The file could not be checked" : "The file did not pass the safety check");
+
+  if (parsed.contentType === "application/pdf") return dataUrl;
 
   const sharp = await loadSharp();
   if (!sharp) return dataUrl;
@@ -67,8 +85,9 @@ export async function shrinkDocumentDataUrl(dataUrl: string): Promise<string> {
   } catch {
     throw new DocumentFileError("Not a readable picture");
   }
-  // A small picture (a screenshot, a 1-pixel test file) can come out larger as a JPEG: keep it.
-  if (output.length >= parsed.buffer.length) return dataUrl;
+  // A small picture (a screenshot, a 1-pixel test file) can come out larger as a JPEG: keep it, unless something
+  // hides after the end of the picture (then the clean re-encoded copy is stored instead).
+  if (output.length >= parsed.buffer.length && !hasTrailingData(parsed.buffer, parsed.contentType)) return dataUrl;
   return `data:image/jpeg;base64,${output.toString("base64")}`;
 }
 

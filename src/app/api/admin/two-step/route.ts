@@ -6,6 +6,7 @@ import pool from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-server";
 import { checkRateLimit, peekRateLimit, resetRateLimit } from "@/lib/server/rate-limit";
 import { logAdminAction } from "@/lib/server/audit-log";
+import { forgetSecurityCaches } from "@/lib/server/admin-security";
 import {
   beginSetup, confirmSetup, disableTwoStep, isTwoStepOn, recoveryCodesLeft, regenerateRecoveryCodes, verifySecondStep,
 } from "@/lib/server/totp";
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
       return fail("wrong_code", 400);
     }
     await resetRateLimit(key);
+    forgetSecurityCaches();
     logAdminAction(request, admin, "two_step_on", { targetType: "user", targetId: admin.id });
     return NextResponse.json({ enabled: true, recoveryCodes: codes }, { headers: noStore });
   }
@@ -79,6 +81,7 @@ export async function POST(request: Request) {
     await resetRateLimit(key);
     if (action === "disable") {
       await disableTwoStep(admin.id);
+      forgetSecurityCaches();
       logAdminAction(request, admin, "two_step_off", { targetType: "user", targetId: admin.id });
       return NextResponse.json({ enabled: false }, { headers: noStore });
     }

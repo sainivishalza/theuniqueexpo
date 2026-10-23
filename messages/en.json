@@ -3336,6 +3336,16 @@
         "nobody": "No buyers match this choice.",
         "tooMany": "That is more than {max} buyers. Narrow the group down."
       }
+    },
+    "assigneeFilter": {
+      "label": "Looked after by",
+      "all": "Anyone",
+      "me": "Me",
+      "none": "Nobody"
+    },
+    "tagFilter": {
+      "label": "Tag",
+      "all": "Any tag"
     }
   },
   "homepageSlideshow": {
@@ -5265,7 +5275,10 @@
       "announcement_template_saved": "Saved an announcement text",
       "announcement_template_deleted": "Deleted a saved announcement text",
       "tour_registrations_bulk_status": "Changed several tour registrations at once",
-      "event_registrations_bulk_status": "Changed several event registrations at once"
+      "event_registrations_bulk_status": "Changed several event registrations at once",
+      "internal_note_added": "Added an internal note",
+      "internal_tags_set": "Changed internal tags",
+      "internal_assigned": "Assigned a record to an admin"
     }
   },
   "notificationsPage": {
@@ -5691,6 +5704,37 @@
       "bad_filters": "These filters could not be saved.",
       "limit": "You have reached the limit of 30 saved views for this list. Delete one first.",
       "unavailable": "Saved views are not available yet. Please try again in a few minutes.",
+      "failed": "That did not work. Please try again."
+    }
+  },
+  "adminRecordNotes": {
+    "title": "Internal notes",
+    "private": "Only the team sees this. Buyers never do.",
+    "loading": "Loading…",
+    "assignedTo": "Looked after by",
+    "nobody": "Nobody",
+    "you": "you",
+    "assigned": "Assigned.",
+    "unassigned": "No longer assigned.",
+    "tags": "Tags",
+    "tagsPlaceholder": "e.g. vip, visa problem",
+    "tagsHint": "Separate tags with commas (up to 10, each up to 30 characters).",
+    "saveTags": "Save tags",
+    "tagsSaved": "Tags saved.",
+    "addNote": "Add a note",
+    "saveNote": "Add note",
+    "noteAdded": "Note added.",
+    "noteDeleted": "Note deleted.",
+    "noNotes": "No notes yet.",
+    "notesList": "Notes",
+    "deleteNote": "Delete my note",
+    "unknownAdmin": "An admin",
+    "errors": {
+      "load": "Could not load the notes.",
+      "bad_note": "A note needs 1 to 2000 characters.",
+      "bad_tags": "Use up to 10 tags of up to 30 characters.",
+      "bad_admin": "Choose one of the admins.",
+      "not_found": "This record no longer exists.",
       "failed": "That did not work. Please try again."
     }
   }

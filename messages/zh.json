@@ -3336,6 +3336,16 @@
         "nobody": "没有符合此选择的买家。",
         "tooMany": "超过 {max} 位买家，请缩小范围。"
       }
+    },
+    "assigneeFilter": {
+      "label": "负责人",
+      "all": "任何人",
+      "me": "我",
+      "none": "无"
+    },
+    "tagFilter": {
+      "label": "标签",
+      "all": "任意标签"
     }
   },
   "homepageSlideshow": {
@@ -5265,7 +5275,10 @@
       "announcement_template_saved": "保存了公告文本",
       "announcement_template_deleted": "删除了已保存的公告文本",
       "tour_registrations_bulk_status": "批量更改了多条旅游登记",
-      "event_registrations_bulk_status": "批量更改了多条活动登记"
+      "event_registrations_bulk_status": "批量更改了多条活动登记",
+      "internal_note_added": "添加了内部备注",
+      "internal_tags_set": "更改了内部标签",
+      "internal_assigned": "指派了负责人"
     }
   },
   "notificationsPage": {
@@ -5691,6 +5704,37 @@
       "bad_filters": "无法保存这些筛选条件。",
       "limit": "此列表已达到 30 个视图的上限，请先删除一个。",
       "unavailable": "暂时无法使用已保存的视图，请几分钟后重试。",
+      "failed": "操作失败，请重试。"
+    }
+  },
+  "adminRecordNotes": {
+    "title": "内部备注",
+    "private": "仅团队可见，买家永远看不到。",
+    "loading": "加载中…",
+    "assignedTo": "负责人",
+    "nobody": "无",
+    "you": "您",
+    "assigned": "已指派。",
+    "unassigned": "已取消指派。",
+    "tags": "标签",
+    "tagsPlaceholder": "例如：vip, 签证问题",
+    "tagsHint": "用逗号分隔标签（最多 10 个，每个最多 30 个字符）。",
+    "saveTags": "保存标签",
+    "tagsSaved": "标签已保存。",
+    "addNote": "添加备注",
+    "saveNote": "添加备注",
+    "noteAdded": "备注已添加。",
+    "noteDeleted": "备注已删除。",
+    "noNotes": "还没有备注。",
+    "notesList": "备注",
+    "deleteNote": "删除我的备注",
+    "unknownAdmin": "管理员",
+    "errors": {
+      "load": "无法加载备注。",
+      "bad_note": "备注需要 1 至 2000 个字符。",
+      "bad_tags": "最多 10 个标签，每个最多 30 个字符。",
+      "bad_admin": "请选择一位管理员。",
+      "not_found": "此记录已不存在。",
       "failed": "操作失败，请重试。"
     }
   }

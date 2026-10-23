@@ -13,6 +13,7 @@ import BulkPointsDialog from "./BulkPointsDialog";
 import BulkReviewDialog from "./BulkReviewDialog";
 import AnnounceDialog from "./AnnounceDialog";
 import SavedViews from "../SavedViews";
+import RecordNotes from "../RecordNotes";
 import { TEXT_COLUMN_ORDER } from "@/lib/buyer-profile-columns";
 import { useBuyerForm } from "@/lib/client/buyer-form";
 import { documentsComplete, type FormItem } from "@/lib/buyer-form";
@@ -304,6 +305,10 @@ export default function AdminBuyerProfilesPage() {
     if (wanted === "waiting_review" || wanted === "pending_review" || wanted === "action_needed") setDocFilter(wanted);
   }, []);
   const [pointsFilter, setPointsFilter] = useState("");
+  const [assigneeFilter, setAssigneeFilter] = useState("");
+  const [tagFilter, setTagFilter] = useState("");
+  // Who looks after which buyer, and the tags, for filtering (loaded once; changes made in a buyer's panel show on the next visit).
+  const [meta, setMeta] = useState<{ tags: Record<string, string[]>; assignees: Record<string, number>; allTags: string[]; admins: { id: number; name: string }[]; me: number } | null>(null);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [announceOpen, setAnnounceOpen] = useState(false);
@@ -367,6 +372,13 @@ export default function AdminBuyerProfilesPage() {
   const [numbersText, setNumbersText] = useState("");
   const [numbersResult, setNumbersResult] = useState<{ found: number; missing: string[] } | null>(null);
 
+  useEffect(() => {
+    fetch("/api/admin/record-meta/overview?type=buyer", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setMeta(d))
+      .catch(() => {});
+  }, []);
+
   // The search box stays responsive while the (deferred) list catches up.
   const deferredSearch = useDeferredValue(search);
   // Every searchable field of every buyer, lower-cased once per load instead of on every keystroke.
@@ -382,6 +394,11 @@ export default function AdminBuyerProfilesPage() {
       if (docFilter && !matchesDocFilter(r, docFilter, docItems)) return false;
       if (pointsFilter === "has" && r.rewardPoints <= 0) return false;
       if (pointsFilter === "none" && r.rewardPoints > 0) return false;
+      if (assigneeFilter) {
+        const who = meta?.assignees[String(r.userId)];
+        if (assigneeFilter === "none" ? who !== undefined : who !== (assigneeFilter === "me" ? meta?.me : Number(assigneeFilter))) return false;
+      }
+      if (tagFilter && !(meta?.tags[String(r.userId)] ?? []).some((x) => x.toLowerCase() === tagFilter.toLowerCase())) return false;
       if (!q) return true;
       if (asNumber !== null && r.buyerNo === asNumber) return true;
       return searchable[i].some((value) => value.includes(q));
@@ -392,11 +409,11 @@ export default function AdminBuyerProfilesPage() {
     const exact = asNumber === null ? -1 : matches.findIndex((r) => r.buyerNo === asNumber);
     if (exact > 0) matches.unshift(...matches.splice(exact, 1));
     return matches;
-  }, [rows, searchable, expoFilter, docFilter, pointsFilter, deferredSearch, docItems]);
+  }, [rows, searchable, expoFilter, docFilter, pointsFilter, assigneeFilter, tagFilter, meta, deferredSearch, docItems]);
   // How many pages of the list are showing. Changing the search or the expo filter
   // starts again from the first page (state adjusted while rendering, the pattern React
   // documents for "reset state when an input changes").
-  const filterKey = `${expoFilter}\n${docFilter}\n${pointsFilter}\n${deferredSearch}`;
+  const filterKey = `${expoFilter}\n${docFilter}\n${pointsFilter}\n${assigneeFilter}\n${tagFilter}\n${deferredSearch}`;
   const [pageState, setPageState] = useState({ key: filterKey, pages: 1 });
   if (pageState.key !== filterKey) setPageState({ key: filterKey, pages: 1 });
   const visible = filtered.slice(0, pageState.pages * PAGE_SIZE);
@@ -707,6 +724,18 @@ export default function AdminBuyerProfilesPage() {
               <option value="none">{t("pointsFilter.none")}</option>
               <option value="top">{t("pointsFilter.top")}</option>
             </select>
+            <select value={assigneeFilter} onChange={(e) => setAssigneeFilter(e.target.value)} aria-label={t("assigneeFilter.label")} className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              <option value="">{t("assigneeFilter.all")}</option>
+              <option value="me">{t("assigneeFilter.me")}</option>
+              <option value="none">{t("assigneeFilter.none")}</option>
+              {(meta?.admins ?? []).filter((a) => a.id !== meta?.me).map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+            </select>
+            {(meta?.allTags.length ?? 0) > 0 && (
+              <select value={tagFilter} onChange={(e) => setTagFilter(e.target.value)} aria-label={t("tagFilter.label")} className="rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="">{t("tagFilter.all")}</option>
+                {meta!.allTags.map((tag) => <option key={tag} value={tag}>{tag}</option>)}
+              </select>
+            )}
             <Link href="/admin/buyer-expos" className="text-sm font-semibold text-emerald-800 hover:text-emerald-900 underline">{t("manageExpos")}</Link>
             <Button onClick={() => setGroupAnnounceOpen(true)} variant="secondaryOutline" size="xs">{t("announce.groupToggle")}</Button>
             {selected.size > 0 && (
@@ -927,6 +956,7 @@ export default function AdminBuyerProfilesPage() {
               <p className="text-gray-500">{ta("loading")}</p>
             ) : (
               <div className="space-y-6">
+                {openId !== null && <RecordNotes type="buyer" id={openId} />}
                 <div className="grid grid-cols-2 gap-4">
                   {FIELDS.map((field) => (
                     <div key={field.key} className={field.kind === "expos" ? "col-span-2" : undefined}>

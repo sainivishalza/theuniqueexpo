@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useTranslations } from "next-intl";
 import { formatNumber } from "@/lib/format";
 import { errorKey, walletApi } from "@/lib/client/wallet-client";
 import Card from "@/components/ui/Card";
+import { fieldClasses } from "@/components/ui/FormField";
+import { DownloadExcel } from "./shared";
 
 interface Overview {
   wallets: number; outstandingPoints: number; pendingTopups: number; pendingWithdrawals: number; pendingWithdrawalPoints: number; pendingExpenses: number;
@@ -15,6 +17,12 @@ export default function OverviewTab({ onOpen }: { onOpen: (tab: string) => void 
   const t = useTranslations("adminWallet");
   const [data, setData] = useState<Overview | null>(null);
   const [error, setError] = useState("");
+  // The month of the statement for the accountant: last month by default (UTC).
+  const monthId = useId();
+  const [month, setMonth] = useState(() => {
+    const now = new Date();
+    return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1)).toISOString().slice(0, 7);
+  });
 
   useEffect(() => {
     walletApi<Overview>("/api/admin/wallet/overview").then((res) => {
@@ -65,6 +73,18 @@ export default function OverviewTab({ onOpen }: { onOpen: (tab: string) => void 
             </ul>
           </div>
         )}
+      </Card>
+
+      <Card shadow="sm" bordered={false} className="p-5" data-testid="wallet-statement">
+        <h2 className="text-lg font-bold text-heading mb-1">{t("statement.title")}</h2>
+        <p className="mb-3 text-sm text-gray-700">{t("statement.help")}</p>
+        <div className="flex flex-wrap items-end gap-3">
+          <div>
+            <label htmlFor={monthId} className="mb-1 block text-sm font-medium text-gray-700">{t("statement.month")}</label>
+            <input id={monthId} type="month" value={month} max={new Date().toISOString().slice(0, 7)} onChange={(e) => setMonth(e.target.value)} className={fieldClasses()} />
+          </div>
+          <DownloadExcel path={`/api/admin/wallet/export/monthly?month=${encodeURIComponent(month)}`} fallbackName={`wallet-statement-${month}.xlsx`} label={t("statement.download")} />
+        </div>
       </Card>
     </div>
   );

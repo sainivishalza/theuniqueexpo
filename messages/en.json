@@ -785,6 +785,14 @@
       "errors": {
         "title": "Errors",
         "description": "Problems the website ran into, with how often they happen."
+      },
+      "pageSpeed": {
+        "title": "Page speed",
+        "description": "How fast pages feel to real visitors, on phones and computers."
+      },
+      "guide": {
+        "title": "Staff guide",
+        "description": "Step-by-step guides for the daily tasks of your role."
       }
     },
     "attention": {
@@ -4709,6 +4717,12 @@
       "alipayQr": "Our Alipay QR code",
       "wechatQr": "Our WeChat Pay QR code",
       "saved": "Saved."
+    },
+    "statement": {
+      "title": "Monthly statement for the accountant",
+      "help": "One month of the rewards wallet in Excel: the balance at the start, what was added and taken away by kind, the balance at the end, a check that the buyers' balances agree with the ledger, and the same per buyer. 1 point = 1 RMB; months are in UTC.",
+      "month": "Month",
+      "download": "Download the statement"
     }
   },
   "searchPage": {
@@ -6169,7 +6183,8 @@
       "failed": "That did not work. Please try again."
     },
     "issueErrors": "{n} errors were reported by the website in the last 24 hours.",
-    "errorsReported": "Website errors reported"
+    "errorsReported": "Website errors reported",
+    "issuePageSpeed": "{n} page-speed measures are below the healthy level for real visitors. See Page speed."
   },
   "adminBounces": {
     "title": "Addresses that bounced",
@@ -6322,6 +6337,151 @@
       "send_failed": "The e-mail could not be sent.",
       "rate_limited": "Too many previews. Please wait a while.",
       "unavailable": "Not available yet. Try again after the next update."
+    }
+  },
+  "adminPageSpeed": {
+    "title": "Page speed",
+    "subtitle": "How fast pages feel to real visitors.",
+    "back": "← Back to Admin",
+    "how": "About one visit in five reports how long the page took to show its main content (loading), to react to a tap (responding) and how much it jumped around (stability). A measure is healthy when at least {share}% of page views were good.",
+    "period": "Period",
+    "lastDays": "Last {days} days",
+    "loadFailed": "Could not load the numbers.",
+    "unavailable": "Not available yet. It starts after the next update.",
+    "none": "No measurements yet. They appear as visitors browse the site.",
+    "home": "Home page",
+    "phone": "On phones",
+    "desktop": "On computers",
+    "metric": {
+      "LCP": "Loading",
+      "INP": "Responding to taps",
+      "CLS": "Staying still"
+    },
+    "share": "{share}% good, {samples} page views, typical {value}",
+    "seconds": "{n} s",
+    "ms": "{n} ms",
+    "healthy": "Healthy",
+    "slow": "Needs work",
+    "notEnough": "Fewer than {min} views"
+  },
+  "adminGuide": {
+    "title": "Staff guide",
+    "subtitle": "The everyday tasks, step by step.",
+    "back": "← Back to Admin",
+    "yourRole": "Your role: {role}. This page shows the tasks for your role.",
+    "roles": {
+      "everyone": {
+        "name": "For everyone",
+        "about": "Things every staff member should know."
+      },
+      "reviewer": {
+        "name": "Registrations and buyers",
+        "about": "Approve registrations, check documents, send announcements and check tickets at the door."
+      },
+      "content": {
+        "name": "Website content",
+        "about": "Keep exhibitions, tours, articles and pages up to date."
+      },
+      "finance": {
+        "name": "Rewards wallet and reports",
+        "about": "Approve top-ups and expenses, pay withdrawals and give the accountant what they need."
+      },
+      "viewer": {
+        "name": "Look only",
+        "about": "Look at registrations and the reports; you cannot change anything."
+      }
+    },
+    "tasks": {
+      "twoStep": {
+        "title": "Turn on two-step sign-in",
+        "steps": "Open My account.\nPress Turn on two-step sign-in and type your password.\nOpen an authenticator app on your phone, scan the picture and type the 6-digit code it shows, then press Turn on.\nSave the 10 recovery codes somewhere safe: they are shown only once, and each one signs you in once if you lose your phone.",
+        "open": "Open My account"
+      },
+      "findThings": {
+        "title": "Find things quickly",
+        "steps": "Use the search box at the top of a list: it looks at names, e-mails, buyer numbers, exhibitions and more.\nSeveral words must all match.\nSet the filters you use often, then save them as a view to open again with one click.",
+        "open": "Open the admin home"
+      },
+      "approve": {
+        "title": "Approve or reject registrations",
+        "steps": "Open All registrations.\nChoose the exhibition and the status pending (the admin home lists what is waiting under Needs your attention).\nOpen a registration and check the buyer's details and documents.\nApprove it (the buyer is told by e-mail and on the website, and asked to confirm attendance by a date) or reject it.\nTo decide many at once, tick the rows and use Approve or Reject above the list.",
+        "open": "Open All registrations"
+      },
+      "documents": {
+        "title": "Check buyers' documents",
+        "steps": "Open Buyer Profiles and choose a buyer.\nLook at each document photo or PDF.\nMark it Verified, or reject it with a reason: the buyer is told what to fix and can upload it again.\nUse the document filter (for example Missing a document) to find buyers whose documents are incomplete; documents waiting for you show as Pending review.",
+        "open": "Open Buyer Profiles"
+      },
+      "announce": {
+        "title": "Send an announcement to buyers",
+        "steps": "In Buyer Profiles, filter the buyers you want or tick them.\nPress Send announcement and write the message (add Russian and Chinese versions if you have them).\nSend it: buyers see it under Notifications on the website, and it is e-mailed too when e-mail is on.",
+        "open": "Open Buyer Profiles"
+      },
+      "doorCheck": {
+        "title": "Check tickets at the door",
+        "steps": "Open Check tickets on a phone.\nScan the QR code on the buyer's e-ticket with the camera, or type the ticket code.\nIf the buyer has confirmed attendance, press Let them in (mark attended). If not, the screen says why they cannot be checked in.",
+        "open": "Open Check tickets"
+      },
+      "exportList": {
+        "title": "Get a list in Excel",
+        "steps": "Open All registrations.\nChoose the exhibition, status or country you need, or search.\nPress Export to Excel: the file has what the filters show.",
+        "open": "Open All registrations"
+      },
+      "addExhibition": {
+        "title": "Add or update an exhibition",
+        "steps": "Open Exhibition Management and add a new exhibition, or open an existing one.\nFill in the name, dates, city, venue, industry, organiser and description, and add a poster picture.\nSet when registration opens and closes if you want a window.\nAdd Russian and Chinese descriptions if you have them; where they are missing, the English text is shown.\nSave: the change appears on the website within a minute.",
+        "open": "Open Exhibition Management"
+      },
+      "editPages": {
+        "title": "Edit the text of a website page",
+        "steps": "Open Website Pages and choose the page (for example Help Center, Contact or Terms of Service).\nEdit the heading, text and list items.\nEach language has its own text: check the Russian and Chinese versions too.\nSave: the page updates within a minute.",
+        "open": "Open Website Pages"
+      },
+      "helpAnswers": {
+        "title": "Add an answer to the Help box",
+        "steps": "Open Website Pages and choose Help Center.\nAdd a question and its answer to the list (and its Russian and Chinese versions).\nSave: the help box on every public page searches these answers, and visitors who find nothing can send their question on WhatsApp.",
+        "open": "Open Website Pages"
+      },
+      "blog": {
+        "title": "Publish an article",
+        "steps": "Open Blog Management and add an article: title, text and a cover picture.\nKeep it unpublished while you are writing.\nPublish it when it is ready: it appears on the website within a minute.",
+        "open": "Open Blog Management"
+      },
+      "topups": {
+        "title": "Approve a top-up",
+        "steps": "Open Rewards Wallet and the Top-ups section.\nOpen a request and look at the proof the buyer uploaded.\nCheck it against your Alipay, WeChat or bank record.\nApprove (you can change the amount) or reject with a note to the buyer. The points are added when you approve.",
+        "open": "Open Rewards Wallet"
+      },
+      "withdrawals": {
+        "title": "Pay a withdrawal",
+        "steps": "Open Rewards Wallet and the Withdrawals section.\nUse the Excel export to get the list to pay, with each buyer's receiving details and QR code.\nPay the buyer outside the site (Alipay, WeChat or bank).\nType your Payment reference and press I have paid — mark as paid. To refuse instead, press Reject and return the points.",
+        "open": "Open Rewards Wallet"
+      },
+      "expenses": {
+        "title": "Review expense claims",
+        "steps": "Open Rewards Wallet and the Expense claims section.\nOpen a claim and check the receipt.\nApprove (the points are added) or reject with a note to the buyer.",
+        "open": "Open Rewards Wallet"
+      },
+      "statement": {
+        "title": "Give the accountant the monthly statement",
+        "steps": "Open Rewards Wallet and the Overview section.\nFirst look at the books check: it should say the books agree.\nChoose the month and press Download the statement.\nSend the Excel file to the accountant: it has the opening and closing balance, the movements by kind and a sheet per buyer.",
+        "open": "Open Rewards Wallet"
+      },
+      "scheduled": {
+        "title": "Have a report e-mailed on a schedule",
+        "steps": "Open Scheduled reports and press New report.\nChoose what to send, how often, and the e-mail addresses that should get it.\nThe Excel file arrives by e-mail each time (e-mail must be switched on); Send now sends one at once.",
+        "open": "Open Scheduled reports"
+      },
+      "look": {
+        "title": "Look up a registration",
+        "steps": "Open All registrations.\nType a name, e-mail, company or buyer number in the search box, or choose an exhibition or status.\nOpen a row to see the details. You can look but not change anything.",
+        "open": "Open All registrations"
+      },
+      "numbers": {
+        "title": "Read the numbers",
+        "steps": "Open Reports.\nChoose the period (for example the last 28 days) and an exhibition, or all of them.\nRead the figures: registrations per day or week, by country, by exhibition, and how far registrations get.",
+        "open": "Open Reports"
+      }
     }
   }
 }

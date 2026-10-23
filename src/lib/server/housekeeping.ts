@@ -2,6 +2,7 @@ import pool from "@/lib/db";
 import { checkRateLimit } from "@/lib/server/rate-limit";
 import { pruneSlowQueries } from "@/lib/server/slow-queries";
 import { pruneErrors } from "@/lib/server/error-log";
+import { pruneWebVitals } from "@/lib/server/web-vitals";
 
 // Old records that nobody needs any more are removed once a day, so the tables stay small and the
 // database does not keep personal details (e-mail addresses, IP addresses) longer than it has to.
@@ -36,6 +37,7 @@ export async function pruneOldRecords(): Promise<number> {
   }
   removed += await pruneSlowQueries();
   removed += await pruneErrors();
+  removed += await pruneWebVitals();
   return removed;
 }
 

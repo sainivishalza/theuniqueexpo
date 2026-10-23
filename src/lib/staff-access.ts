@@ -22,7 +22,7 @@ interface Rule {
 }
 
 // Used by every role: the person's own security settings, and the tools that only keep personal preferences.
-const EVERYONE: Rule = { read: ["two-step", "saved-views", "stats", "attention", "sign-ins"], write: ["two-step", "saved-views"], pages: ["/admin", "/admin/account"] };
+const EVERYONE: Rule = { read: ["two-step", "saved-views", "stats", "attention", "sign-ins"], write: ["two-step", "saved-views"], pages: ["/admin", "/admin/account", "/admin/guide"] };
 
 const REGISTRATION_AREAS = ["expo-registrations", "tour-registrations", "event-registrations"];
 const BUYER_AREAS = ["buyer-profiles", "buyers", "buyer-expos", "buyer-form"];

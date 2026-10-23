@@ -61,7 +61,7 @@ export default function AdminHealthPage() {
   const size = (n: number) => (n >= 1_048_576 ? t("mb", { n: (n / 1_048_576).toFixed(1) }) : t("kb", { n: Math.max(1, Math.round(n / 1024)) }));
   const backupLine = (b: Backup | null) => (b ? t("backupWhen", { date: formatDateTime(b.at, locale), size: size(b.sizeBytes), days: Math.floor((Date.now() - new Date(b.at).getTime()) / DAY) }) : t("backupNone"));
   const issueText = (issue: string): string => {
-    const key = /error/.test(issue) && !/e-mail/.test(issue) && !/backup/.test(issue) ? "issueErrors" : issue.startsWith("No off-site") ? "issueNoOffsite" : issue.startsWith("The last off-site") ? "issueOldOffsite" : issue.startsWith("No backup made") ? "issueNoDeploy" : issue.startsWith("The last backup") ? "issueOldDeploy" : /e-mail/.test(issue) ? "issueFailedMail" : "issueBacklog";
+    const key = issue.startsWith("Page speed") ? "issuePageSpeed" : /error/.test(issue) && !/e-mail/.test(issue) && !/backup/.test(issue) ? "issueErrors" : issue.startsWith("No off-site") ? "issueNoOffsite" : issue.startsWith("The last off-site") ? "issueOldOffsite" : issue.startsWith("No backup made") ? "issueNoDeploy" : issue.startsWith("The last backup") ? "issueOldDeploy" : /e-mail/.test(issue) ? "issueFailedMail" : "issueBacklog";
     return t(key, { n: Number(/\d+/.exec(issue)?.[0] ?? 0) });
   };
 

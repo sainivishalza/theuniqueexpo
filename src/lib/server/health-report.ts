@@ -1,6 +1,7 @@
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { recentErrorCount } from "@/lib/server/error-log";
+import { pageSpeedIssues } from "@/lib/server/web-vitals";
 import { isMailEnabled, sendMail } from "@/lib/server/mail";
 
 // The daily health e-mail to admins, and the same numbers on Admin -> Health: how many registrations came in, how many
@@ -78,6 +79,8 @@ export async function buildHealthReport(): Promise<HealthReport> {
   if (emailsFailed > 0) issues.push(`${emailsFailed} e-mail${emailsFailed === 1 ? "" : "s"} failed to send in the last 24 hours.`);
   if (errors > 0) issues.push(`${errors} error${errors === 1 ? " was" : "s were"} reported by the website in the last 24 hours.`);
   if (pendingRegistrations >= PENDING_BACKLOG) issues.push(`${pendingRegistrations} registrations are waiting for review.`);
+  const slow = await pageSpeedIssues(7).catch(() => []);
+  if (slow.length > 0) issues.push(`Page speed: ${slow.length} measure${slow.length === 1 ? " is" : "s are"} below the healthy level for real visitors (see Admin -> Page speed).`);
   return { generatedAt: new Date().toISOString(), newRegistrations, pendingRegistrations, emailsSent, emailsFailed, errors, mailOn, deployBackup, offsiteBackup, issues };
 }
 

@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import HelpWidget from "@/components/HelpWidget";
 import { usePathname } from "@/i18n/navigation";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { CompanyProfileProvider } from "@/lib/company-profile-context";
@@ -48,7 +48,7 @@ function Frame({
         <main id="main-content" tabIndex={-1} className={`flex-1 focus:outline-none ${showChrome ? "pt-16" : ""}`}>{children}</main>
       )}
       {showChrome && <Footer companyProfile={companyProfile} analyticsEnabled={GA_MEASUREMENT_ID_RE.test(analyticsId)} sections={navSections} />}
-      {!inApp && <WhatsAppButton number={companyProfile.whatsapp} />}
+      {!inApp && <HelpWidget number={companyProfile.whatsapp} />}
     </div>
   );
 }

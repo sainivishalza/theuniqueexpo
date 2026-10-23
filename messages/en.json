@@ -6239,5 +6239,26 @@
     "stateOpensLater": "Not open yet",
     "stateClosed": "Closed",
     "stateOff": "Not taking registrations"
+  },
+  "helpWidget": {
+    "label": "Help and questions",
+    "title": "How can we help?",
+    "intro": "Search the answers, or ask us directly.",
+    "close": "Close help",
+    "searchLabel": "Search the answers",
+    "searchPlaceholder": "Type your question…",
+    "loading": "Loading answers…",
+    "loadFailed": "The answers could not be loaded. You can still ask us below.",
+    "common": "Common questions",
+    "results": "{count, plural, one {# answer found} other {# answers found}}",
+    "none": "No answer matches those words. Try different words, or ask us below.",
+    "noAnswersYet": "There are no answers written yet. Ask us below.",
+    "notFound": "Did not find what you need?",
+    "whatsapp": "Chat with us on WhatsApp",
+    "whatsappAsk": "Send this question on WhatsApp",
+    "whatsappQuestion": "Hello! I have a question about theuniqueexpo.com: {question}",
+    "opensNewTab": "(opens in a new tab)",
+    "contact": "Contact us",
+    "helpCenter": "Open the Help Center"
   }
 }

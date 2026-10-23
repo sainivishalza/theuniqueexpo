@@ -6239,5 +6239,26 @@
     "stateOpensLater": "尚未开放",
     "stateClosed": "已截止",
     "stateOff": "暂不接受注册"
+  },
+  "helpWidget": {
+    "label": "帮助与提问",
+    "title": "需要什么帮助？",
+    "intro": "搜索常见问题，或直接联系我们。",
+    "close": "关闭帮助",
+    "searchLabel": "搜索答案",
+    "searchPlaceholder": "输入您的问题…",
+    "loading": "正在加载答案…",
+    "loadFailed": "无法加载答案，您仍可在下方联系我们。",
+    "common": "常见问题",
+    "results": "找到 {count} 条答案",
+    "none": "没有匹配的答案。请换个说法，或在下方联系我们。",
+    "noAnswersYet": "暂无答案，请在下方联系我们。",
+    "notFound": "没有找到想要的答案？",
+    "whatsapp": "在 WhatsApp 上联系我们",
+    "whatsappAsk": "通过 WhatsApp 发送此问题",
+    "whatsappQuestion": "您好！我对 theuniqueexpo.com 有一个问题：{question}",
+    "opensNewTab": "（在新标签页打开）",
+    "contact": "联系我们",
+    "helpCenter": "打开帮助中心"
   }
 }

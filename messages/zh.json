@@ -2435,9 +2435,11 @@
     "ourServices": "我们的服务",
     "stats": {
       "exhibitions": "大型展会",
-      "exhibitors": "参展商",
+      "exhibitors": "即将举办展会的参展商",
       "visitors": "全球观众",
-      "markets": "中国市场"
+      "markets": "中国市场",
+      "buyers": "注册采购商",
+      "countries": "采购商所在国家"
     },
     "featuredBadge": "🎪 精选展会",
     "featuredTitle": "即将举行的展会",
@@ -2493,7 +2495,8 @@
     "meetTheTeam": "查看完整团队",
     "planABusinessTrip": "规划商务行程",
     "planMyTrip": "规划我的行程",
-    "register": "报名"
+    "register": "报名",
+    "industryCount": "{count} 场即将举办的展会"
   },
   "eventsPage": {
     "title": "活动",

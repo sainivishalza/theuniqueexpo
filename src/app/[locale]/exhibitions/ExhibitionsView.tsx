@@ -27,9 +27,12 @@ export interface Exhibition {
 export default function ExhibitionsView({
   exhibitions,
   initialView,
+  initialIndustry = null,
 }: {
   exhibitions: Exhibition[];
   initialView: string | null;
+  /** An industry to start with (from a link such as ?industry=Electronics); ignored when no exhibition has it. */
+  initialIndustry?: string | null;
 }) {
   const t = useTranslations("exhibitionsPage");
   const tw = useTranslations("exhibitionsPage.window");
@@ -39,7 +42,7 @@ export default function ExhibitionsView({
     upcoming: t("upcoming"),
     past: t("past"),
   };
-  const [industry, setIndustry] = useState("All");
+  const [industry, setIndustry] = useState(initialIndustry && exhibitions.some((e) => e.industry === initialIndustry) ? initialIndustry : "All");
   const [city, setCity] = useState("All");
   const [dateFilter, setDateFilter] = useState(initialView === "past" || initialView === "all" ? initialView : "upcoming");
 

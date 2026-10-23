@@ -2435,9 +2435,11 @@
     "ourServices": "Our Services",
     "stats": {
       "exhibitions": "Major Exhibitions",
-      "exhibitors": "Exhibitors",
+      "exhibitors": "Exhibitors at upcoming exhibitions",
       "visitors": "Global Visitors",
-      "markets": "Chinese Markets"
+      "markets": "Chinese Markets",
+      "buyers": "Registered buyers",
+      "countries": "Buyer countries"
     },
     "featuredBadge": "🎪 Featured Events",
     "featuredTitle": "Upcoming Exhibitions",
@@ -2493,7 +2495,8 @@
     "meetTheTeam": "Meet the Full Team",
     "planABusinessTrip": "Plan a Business Trip",
     "planMyTrip": "Plan My Trip",
-    "register": "Register"
+    "register": "Register",
+    "industryCount": "{count, plural, one {# upcoming exhibition} other {# upcoming exhibitions}}"
   },
   "eventsPage": {
     "title": "Events",

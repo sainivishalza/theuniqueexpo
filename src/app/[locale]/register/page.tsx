@@ -2,7 +2,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useSiteStats } from "@/lib/client/site-stats";
+import { friendlyCount, showable } from "@/lib/site-stats-format";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { useAuth, type UserRole } from "@/lib/auth-context";
@@ -19,6 +21,9 @@ const ROLE_KEYS: { value: UserRole; icon: string }[] = [
 
 export default function RegisterPage() {
   const t = useTranslations("registerPage");
+  const locale = useLocale();
+  // Real figures only (counted from the database); one that is still small is left out.
+  const site = useSiteStats();
   const roles = ROLE_KEYS.map((r) => ({
     ...r,
     label: t(`roles.${r.value}.label`),
@@ -64,8 +69,8 @@ export default function RegisterPage() {
           <h1 className="text-4xl font-extrabold mt-8 mb-4 leading-tight">{t("heroTitleLine1")}<br/>{t("heroTitleLine2")}<br/>{t("heroTitleLine3")}</h1>
           <p className="text-emerald-100 text-lg max-w-md">{t("heroSubtitle")}</p>
           <div className="mt-10 grid grid-cols-3 gap-6">
-            <div><div className="text-3xl font-extrabold">100K+</div><div className="text-sm text-emerald-200">{t("stats.users")}</div></div>
-            <div><div className="text-3xl font-extrabold">50+</div><div className="text-sm text-emerald-200">{t("stats.countries")}</div></div>
+            {site && showable(site, "buyers") && <div><div className="text-3xl font-extrabold">{friendlyCount(site.buyers, locale)}</div><div className="text-sm text-emerald-200">{t("stats.users")}</div></div>}
+            {site && showable(site, "buyerCountries") && <div><div className="text-3xl font-extrabold">{friendlyCount(site.buyerCountries, locale)}</div><div className="text-sm text-emerald-200">{t("stats.countries")}</div></div>}
             <div><div className="text-3xl font-extrabold">{t("stats.freeValue")}</div><div className="text-sm text-emerald-200">{t("stats.freeLabel")}</div></div>
           </div>
         </div>

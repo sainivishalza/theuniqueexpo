@@ -81,7 +81,7 @@ const ip = () => '10.7.' + Math.floor(Math.random() * 250) + '.' + (Math.floor(M
 
   console.log('\n== pages');
   await p.getByLabel('Exhibition', { exact: true }).selectOption(XC.slug);
-  await p.getByText('Page 1 of 2').waitFor();
+  await p.getByText('1–50 of 55').waitFor();
   ok(await p.getByText('1–50 of 55').isVisible() && await p.getByRole('button', { name: 'Previous' }).isDisabled(), 'page 1 of 2, "1–50 of 55", Previous is off');
   await p.getByRole('button', { name: 'Next' }).click();
   await p.getByText('Page 2 of 2').waitFor();

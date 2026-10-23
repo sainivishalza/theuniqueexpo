@@ -9,6 +9,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
 
   return NextResponse.json(
     { tour },
-    { headers: { "Cache-Control": "public, max-age=20, stale-while-revalidate=60" } }
+    { headers: { "Cache-Control": "public, max-age=20, s-maxage=60, stale-while-revalidate=300" } }
   );
 }

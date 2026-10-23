@@ -1,5 +1,6 @@
 import pool from "@/lib/db";
 import { checkRateLimit } from "@/lib/server/rate-limit";
+import { pruneSlowQueries } from "@/lib/server/slow-queries";
 import { pruneErrors } from "@/lib/server/error-log";
 
 // Old records that nobody needs any more are removed once a day, so the tables stay small and the
@@ -33,6 +34,7 @@ export async function pruneOldRecords(): Promise<number> {
       if ((err as { code?: string }).code !== "ER_NO_SUCH_TABLE") throw err;
     }
   }
+  removed += await pruneSlowQueries();
   removed += await pruneErrors();
   return removed;
 }

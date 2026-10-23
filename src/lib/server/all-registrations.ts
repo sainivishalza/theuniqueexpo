@@ -150,12 +150,13 @@ export async function listAllRegistrations(f: AllRegistrationsFilter, page: numb
   const counts: Record<string, number> = {};
   for (const c of countRows) counts[String(c.s)] = Number(c.n);
 
-  // The pick-lists: exhibitions that have registrations, and the countries seen (not narrowed by the current choice).
+  // The pick-lists: exhibitions that have registrations, and the countries seen (not narrowed by the current choice). Counted in a
+  // sub-query first (one pass over the registrations), so a long list of registrations does not make them slow.
   const [expoRows] = await pool.query<RowDataPacket[]>(
-    `SELECT e.slug, e.title, COUNT(*) AS n FROM expo_registrations r JOIN exhibitions e ON e.id = r.exhibition_id GROUP BY e.id, e.slug, e.title ORDER BY MAX(e.start_date) DESC, e.title`
+    `SELECT e.slug, e.title, x.n FROM (SELECT exhibition_id, COUNT(*) AS n FROM expo_registrations GROUP BY exhibition_id) x JOIN exhibitions e ON e.id = x.exhibition_id ORDER BY e.start_date DESC, e.title`
   );
   const [countryRows] = await pool.query<RowDataPacket[]>(
-    `SELECT DISTINCT ${COUNTRY} AS c ${FROM} HAVING c <> '' ORDER BY c`
+    `SELECT DISTINCT COALESCE(NULLIF(x.nationality, ''), NULLIF(bp.nationality, ''), '') AS c FROM (SELECT DISTINCT user_id, nationality FROM expo_registrations) x LEFT JOIN buyer_profiles bp ON bp.user_id = x.user_id HAVING c <> '' ORDER BY c`
   );
   return {
     rows: rows.map(mapRow),

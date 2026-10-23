@@ -6,6 +6,6 @@ export async function GET() {
   // Public, rarely-changing data -- same caching as /api/exhibitions.
   return NextResponse.json(
     { photos },
-    { headers: { "Cache-Control": "public, max-age=30, stale-while-revalidate=120" } }
+    { headers: { "Cache-Control": "public, max-age=30, s-maxage=120, stale-while-revalidate=600" } }
   );
 }

@@ -13,6 +13,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   // flow tolerates a few seconds of staleness here.
   return NextResponse.json(
     { exhibition },
-    { headers: { "Cache-Control": "public, max-age=20, stale-while-revalidate=60" } }
+    { headers: { "Cache-Control": "public, max-age=20, s-maxage=60, stale-while-revalidate=300" } }
   );
 }

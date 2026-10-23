@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
+import { isAnonymousPublicPageView } from "./lib/public-cache";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -48,6 +49,13 @@ export default function middleware(request: NextRequest) {
   );
   overrideKeys.add("x-pathname");
   response.headers.set("x-middleware-override-headers", Array.from(overrideKeys).join(","));
+  if (isAnonymousPublicPageView(request)) {
+    // A response that sets a cookie is never kept by the CDN in front of the site (see next.config.js), and every first
+    // visit (and every search-engine visit) would get one: the language is already in the address, and the language
+    // switcher remembers the choice itself.
+    const setCookie = response.headers.get("set-cookie") ?? "";
+    if (setCookie && /^NEXT_LOCALE=[^;]*(;[^,]*)?$/.test(setCookie.trim())) response.headers.delete("set-cookie");
+  }
   return response;
 }
 

@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import Card from "@/components/ui/Card";
 import { ADMIN_SECTIONS } from "@/lib/admin-nav";
 import AttentionPanel from "./AttentionPanel";
+import GlancePanel from "./GlancePanel";
 
 export default function AdminPage() {
   const t = useTranslations("adminHome");
@@ -89,6 +90,7 @@ export default function AdminPage() {
 
       <div className="bg-cream-50">
         <AttentionPanel />
+        <GlancePanel />
       </div>
 
       <section className="py-10 bg-cream-50">

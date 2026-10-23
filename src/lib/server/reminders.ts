@@ -64,6 +64,8 @@ export interface ReminderRun {
   savedSent?: number;
   /** "Your passport / visa expires too early" alerts. */
   documentSent?: number;
+  /** Scheduled Excel reports e-mailed. */
+  reportsSent?: number;
 }
 
 // The alerts that do not need e-mail (they are always shown on the website, and e-mailed too when e-mail is on): people
@@ -122,7 +124,7 @@ export async function runRegistrationReminders(options: { force?: boolean } = {}
     console.error("Daily alerts failed:", err);
     return { promoted: 0, saved: 0, documents: 0, reports: 0 };
   });
-  return { ran: true, sent, startSent, savedSent: alerts.saved, documentSent: alerts.documents };
+  return { ran: true, sent, startSent, savedSent: alerts.saved, documentSent: alerts.documents, reportsSent: alerts.reports };
 }
 
 // Confirmed registrations whose exhibition opens within the week, not yet checked in and not yet reminded.

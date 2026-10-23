@@ -4,7 +4,7 @@ import pool from "@/lib/db";
 import { requireAdmin } from "@/lib/auth-server";
 
 // Saved filters for the admin lists. Private to the admin who saved them.
-export const VIEW_PAGES = ["buyer-profiles", "registrations"] as const;
+const VIEW_PAGES = ["buyer-profiles", "registrations"] as const;
 const MAX_PER_PAGE = 30;
 const MAX_FILTERS_BYTES = 2000;
 

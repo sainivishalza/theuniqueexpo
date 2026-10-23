@@ -5162,7 +5162,10 @@
     "editProfile": "Check or change them in your profile",
     "overlapRow": "Same days as: {names}",
     "overlapRegistered": "{name} (already registered)",
-    "overlapWarning": "{count, plural, one {# exhibition you ticked takes place on the same days as another one.} other {# exhibitions you ticked take place on the same days as another one.}} You can still register for all of them, but you will not be able to attend both."
+    "overlapWarning": "{count, plural, one {# exhibition you ticked takes place on the same days as another one.} other {# exhibitions you ticked take place on the same days as another one.}} You can still register for all of them, but you will not be able to attend both.",
+    "suggested": "Suggested for you",
+    "suggestedHistory": "You registered for another {industry} exhibition.",
+    "suggestedProfile": "Matches your business: {field}."
   },
   "adminBulkDecision": {
     "selectedCount": "{count, plural, one {# registration selected} other {# registrations selected}}",

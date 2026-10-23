@@ -5162,7 +5162,10 @@
     "editProfile": "在个人资料中查看或修改",
     "overlapRow": "与以下展会日期重叠：{names}",
     "overlapRegistered": "{name}（已报名）",
-    "overlapWarning": "{count, plural, other {您勾选的展会中有 # 个与其他展会日期重叠。}}您仍可以全部报名，但无法同时参加。"
+    "overlapWarning": "{count, plural, other {您勾选的展会中有 # 个与其他展会日期重叠。}}您仍可以全部报名，但无法同时参加。",
+    "suggested": "为您推荐",
+    "suggestedHistory": "您之前报名过同属“{industry}”行业的其他展会。",
+    "suggestedProfile": "与您的业务相符：{field}。"
   },
   "adminBulkDecision": {
     "selectedCount": "{count, plural, other {已选择 # 条报名}}",

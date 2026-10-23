@@ -13,6 +13,7 @@ import {
   type Plan, type PlanExhibition, type PlanKnown, type PlanQuestion, type QuestionKind, type SubmitOutcome, type SubmitResult,
 } from "@/lib/bulk-registration";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
+import { suggestionFor, type Suggestion } from "@/lib/exhibition-suggestions";
 import {
   getBuyerDocument, getBuyerProfileOrEmpty, setBuyerDocument, upsertBuyerProfileFields,
   type BuyerProfile, type BuyerProfileFields,
@@ -286,13 +287,23 @@ export interface ListedExhibition {
   /** null when the buyer has no registration for it. */
   status: string | null;
   canRegister: boolean;
+  /** Why this one might interest the buyer (their earlier registrations or their profile), if it does. */
+  suggestion: Suggestion | null;
 }
 
 /** The upcoming exhibitions open for registration, each with where this buyer stands. */
 export async function listRegistrable(userId: number, locale?: string): Promise<ListedExhibition[]> {
-  const all = await listExhibitions(locale);
-  const [rows] = await pool.query<import("mysql2/promise").RowDataPacket[]>("SELECT exhibition_id, status FROM expo_registrations WHERE user_id = ?", [userId]);
+  // The untranslated list is only for matching industries (the profile's own words are not translated either).
+  const [all, plain, [rows], profile] = await Promise.all([
+    listExhibitions(locale),
+    listExhibitions(),
+    pool.query<import("mysql2/promise").RowDataPacket[]>("SELECT exhibition_id, status FROM expo_registrations WHERE user_id = ?", [userId]),
+    getBuyerProfileOrEmpty(userId),
+  ]);
   const mine = new Map(rows.map((r) => [Number(r.exhibition_id), String(r.status)]));
+  const industryOf = new Map(plain.map((e) => [Number(e.id), e.industry || ""]));
+  const history = rows.filter((r) => !["cancelled", "rejected"].includes(String(r.status))).map((r) => industryOf.get(Number(r.exhibition_id)) ?? "").filter(Boolean);
+  const profileTexts = [profile.companyField, profile.purchaseIntention, profile.otherPurchaseIntention];
   const t = today();
   return all
     .filter((e) => e.registrationEnabled && (!e.endDate || e.endDate >= t))
@@ -302,6 +313,7 @@ export async function listRegistrable(userId: number, locale?: string): Promise<
         slug: e.slug, title: e.title, startDate: e.startDate ?? "", endDate: e.endDate ?? "", dates: e.dates, venue: e.venue, city: e.city, country: e.country,
         industry: e.industry, description: (e.description || "").slice(0, 280), image: e.image || "",
         status, canRegister: status === null || canRegisterAgain(status as never),
+        suggestion: status === null || canRegisterAgain(status as never) ? suggestionFor(industryOf.get(Number(e.id)) ?? "", history, profileTexts) : null,
       };
     });
 }

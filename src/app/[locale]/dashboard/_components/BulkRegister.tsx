@@ -26,6 +26,7 @@ interface Listed {
   description: string;
   status: string | null;
   canRegister: boolean;
+  suggestion: { reason: "history" | "profile"; field?: string } | null;
 }
 
 type Step = "choose" | "details" | "done";
@@ -71,6 +72,8 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
     const q = filter.trim().toLowerCase();
     return (items ?? []).filter((e) => !q || `${e.title} ${e.city} ${e.country} ${e.industry}`.toLowerCase().includes(q));
   }, [items, filter]);
+  // Suggested ones first (the order they come in is otherwise kept).
+  const ordered = useMemo(() => shown.map((e, i) => ({ e, i })).sort((a, b) => Number(!!b.e.suggestion) - Number(!!a.e.suggestion) || a.i - b.i).map((x) => x.e), [shown]);
   const shownSelectable = shown.filter((e) => e.canRegister);
   const allShownSelected = shownSelectable.length > 0 && shownSelectable.every((e) => selected.has(e.slug));
   const chosen = (items ?? []).filter((e) => selected.has(e.slug));
@@ -246,7 +249,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
 
           <ul className="mt-4 divide-y divide-gray-100 rounded-xl border border-gray-200">
             {shown.length === 0 && <li className="p-4 text-sm text-gray-600">{t("noMatch")}</li>}
-            {shown.map((e) => {
+            {ordered.map((e) => {
               const isOpen = open === e.slug;
               const cid = `be-${e.slug}`;
               return (
@@ -264,11 +267,13 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <label htmlFor={cid} className={`min-w-0 font-semibold [overflow-wrap:anywhere] ${e.canRegister ? "cursor-pointer text-heading" : "text-gray-600"}`}>{e.title}</label>
                         {e.status && <Badge tone={STATUS_TONE[e.status] || "gray"} size="status">{statusText(e.status)}</Badge>}
+                        {e.suggestion && <Badge tone="gold" size="status">{t("suggested")}</Badge>}
                       </div>
                       <p className="text-sm text-gray-600">
                         {e.dates}
                         {[e.city, e.country].filter(Boolean).length > 0 ? ` · ${[e.city, e.country].filter(Boolean).join(", ")}` : ""}
                       </p>
+                      {e.suggestion && <p className="mt-1 text-sm text-gray-700 [overflow-wrap:anywhere]">{e.suggestion.reason === "history" ? t("suggestedHistory", { industry: e.industry }) : t("suggestedProfile", { field: e.suggestion.field ?? "" })}</p>}
                       {overlaps.has(e.slug) && <p className="mt-1 text-sm font-medium text-amber-900 [overflow-wrap:anywhere]"><span aria-hidden="true">⚠ </span>{t("overlapRow", { names: overlapNames(e.slug) })}</p>}
                       <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm">
                         <button

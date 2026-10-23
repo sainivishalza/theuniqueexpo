@@ -5142,7 +5142,10 @@
     "onFile": "On file",
     "forExhibitions": "Sent to: {names}",
     "allExhibitions": "all chosen exhibitions",
-    "editProfile": "Check or change them in your profile"
+    "editProfile": "Check or change them in your profile",
+    "overlapRow": "Same days as: {names}",
+    "overlapRegistered": "{name} (already registered)",
+    "overlapWarning": "{count, plural, one {# exhibition you ticked takes place on the same days as another one.} other {# exhibitions you ticked take place on the same days as another one.}} You can still register for all of them, but you will not be able to attend both."
   },
   "adminBulkDecision": {
     "selectedCount": "{count, plural, one {# registration selected} other {# registrations selected}}",

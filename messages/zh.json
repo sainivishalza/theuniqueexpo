@@ -5142,7 +5142,10 @@
     "onFile": "已上传",
     "forExhibitions": "提交至：{names}",
     "allExhibitions": "所有已选展会",
-    "editProfile": "在个人资料中查看或修改"
+    "editProfile": "在个人资料中查看或修改",
+    "overlapRow": "与以下展会日期重叠：{names}",
+    "overlapRegistered": "{name}（已报名）",
+    "overlapWarning": "{count, plural, other {您勾选的展会中有 # 个与其他展会日期重叠。}}您仍可以全部报名，但无法同时参加。"
   },
   "adminBulkDecision": {
     "selectedCount": "{count, plural, other {已选择 # 条报名}}",

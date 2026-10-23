@@ -9,7 +9,7 @@ import { fieldClasses } from "@/components/ui/FormField";
 import { Link } from "@/i18n/navigation";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { formatDateOnly, STATUS_TONE } from "@/lib/client/registration-format";
-import type { Plan, PlanKnown, PlanQuestion, SubmitResult } from "@/lib/bulk-registration";
+import { findOverlaps, type Plan, type PlanKnown, type PlanQuestion, type SubmitResult } from "@/lib/bulk-registration";
 
 interface Listed {
   slug: string;
@@ -70,6 +70,10 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
   const shownSelectable = shown.filter((e) => e.canRegister);
   const allShownSelected = shownSelectable.length > 0 && shownSelectable.every((e) => selected.has(e.slug));
   const chosen = (items ?? []).filter((e) => selected.has(e.slug));
+  // Exhibitions held on the same days: a warning only (a buyer may register for both and decide later).
+  const overlaps = useMemo(() => findOverlaps(items ?? [], selected), [items, selected]);
+  const overlapNames = (slug: string) =>
+    (overlaps.get(slug) ?? []).map((o) => (o.registered ? t("overlapRegistered", { name: o.title }) : o.title)).join(", ");
 
   function toggle(slug: string) {
     setSelected((s) => {
@@ -260,6 +264,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
                         {e.dates}
                         {[e.city, e.country].filter(Boolean).length > 0 ? ` · ${[e.city, e.country].filter(Boolean).join(", ")}` : ""}
                       </p>
+                      {overlaps.has(e.slug) && <p className="mt-1 text-sm font-medium text-amber-900 [overflow-wrap:anywhere]"><span aria-hidden="true">⚠ </span>{t("overlapRow", { names: overlapNames(e.slug) })}</p>}
                       <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm">
                         <button
                           type="button"
@@ -291,6 +296,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
             })}
           </ul>
 
+          {overlaps.size > 0 && <p role="status" className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">{t("overlapWarning", { count: overlaps.size })}</p>}
           {error && <p role="alert" className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
           <div className="sticky bottom-0 -mx-5 mt-4 flex flex-wrap items-center gap-3 border-t border-gray-100 bg-white/95 px-5 py-3 backdrop-blur sm:-mx-6 sm:px-6">
             <p role="status" aria-live="polite" className="text-sm font-semibold text-gray-800">{selectable.length === 0 ? t("nothingToRegister") : t("selectedCount", { count: selected.size })}</p>

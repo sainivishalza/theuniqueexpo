@@ -112,7 +112,7 @@ jobs:
 
       - name: Post the link on the pull request
         if: github.event.pull_request.number || github.event.inputs.pr
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr }}
           ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}

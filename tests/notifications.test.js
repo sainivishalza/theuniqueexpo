@@ -91,6 +91,34 @@ const waitFor = async (t, kind, n = 1) => { for (let i = 0; i < 40; i++) { const
   ok(sql(`SELECT COUNT(*) FROM user_notifications WHERE user_id=${bId}`) === '45', 'the newer ones stay');
   sql(`DELETE FROM user_notifications WHERE user_id=${bId} AND params LIKE '%bulk%'`);
 
+  console.log('\n== tour registrations');
+  sql(`INSERT INTO tours (slug,title,start_date,end_date,duration,departure_city,destination,description,highlights,price,currency,group_size,organizer,color,image,registration_form_schema) VALUES ('nt-tour-${st}','Notify Tour ${st}',DATE_ADD(UTC_DATE(),INTERVAL 40 DAY),DATE_ADD(UTC_DATE(),INTERVAL 45 DAY),'5 days','Guangzhou','Yiwu','d','[]',100,'USD','10','Org','#000','','[]')`);
+  const tourId = Number(sql(`SELECT id FROM tours WHERE slug='nt-tour-${st}'`));
+  sql(`INSERT INTO tour_registrations (tour_id,user_id,status,custom_answers,form_schema_snapshot) VALUES (${tourId},${bId},'pending','{}','[]')`);
+  const trId = Number(sql(`SELECT id FROM tour_registrations WHERE user_id=${bId} AND tour_id=${tourId}`));
+  r = await call('PATCH', `/api/admin/tour-registrations/${trId}`, u.aT, { status: 'approved' });
+  l = await waitFor(myT, 'tourRegistrationApproved');
+  n = l.items.find((x) => x.kind === 'tourRegistrationApproved');
+  ok(r.status === 200 && n && n.params.tour === 'Notify Tour ' + st && n.path === `/tours/nt-tour-${st}`, 'approving a tour registration tells the buyer, with the tour and a link to it', n);
+  r = await call('PATCH', `/api/admin/tour-registrations/${trId}`, u.aT, { status: 'approved' }); await sleep(500);
+  ok((await list(myT)).items.filter((x) => x.kind === 'tourRegistrationApproved').length === 1, 'saving the same status again tells nothing more');
+  r = await call('PATCH', `/api/admin/tour-registrations/${trId}`, u.aT, { status: 'rejected' });
+  l = await waitFor(myT, 'tourRegistrationRejected');
+  ok(l.items.some((x) => x.kind === 'tourRegistrationRejected'), 'a rejection is told too');
+  r = await call('PATCH', `/api/admin/tour-registrations/${trId}`, u.aT, { status: 'pending' }); await sleep(400);
+  ok((await list(myT)).items.filter((x) => /^tourRegistration/.test(x.kind)).length === 2, 'moving it back to waiting tells nothing');
+  ok((await call('PATCH', `/api/admin/tour-registrations/99999999`, u.aT, { status: 'approved' })).status === 404, 'an unknown registration is not found');
+  ok((await call('PATCH', `/api/admin/tour-registrations/${trId}`, u.bT, { status: 'approved' })).status === 401, 'a buyer cannot decide');
+  // with e-mail on, the buyer is e-mailed as well
+  const srvT = await smtp.start(2530);
+  await call('PUT', '/api/admin/email', u.aT, { enabled: true, host: '127.0.0.1', port: 2530, secure: false, username: 'm', password: 'x', fromName: 'The Unique Expo', fromEmail: 'noreply@theuniqueexpo.test' }); await sleep(250);
+  await call('PATCH', `/api/admin/tour-registrations/${trId}`, u.aT, { status: 'approved' });
+  for (let i = 0; i < 40 && srvT.messages.length < 1; i++) await sleep(150);
+  const mail = srvT.messages[0] && smtp.decode(srvT.messages[0].raw);
+  ok(mail && mail.subject.includes('Notify Tour ' + st) && mail.text.includes('theuniqueexpo.com') , 'with e-mail on the buyer is e-mailed too, naming the tour', mail && mail.subject);
+  await srvT.close(); sql('DELETE FROM mail_settings');
+  sql(`DELETE FROM tour_registrations WHERE tour_id=${tourId}; DELETE FROM tours WHERE id=${tourId}`);
+
   console.log('\n== announcements reach people without e-mail too');
   const srv = await smtp.start(2529);
   const settings = { enabled: true, host: '127.0.0.1', port: 2529, secure: false, username: 'm', password: 'x', fromName: 'The Unique Expo', fromEmail: 'noreply@theuniqueexpo.test' };

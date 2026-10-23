@@ -8,6 +8,8 @@ export type NotificationKind =
   | "registrationApproved"
   | "registrationRejected"
   | "registrationReminder"
+  | "tourRegistrationApproved"
+  | "tourRegistrationRejected"
   | "documentRejected"
   | "pointsReceived"
   | "topupApproved"
@@ -20,7 +22,7 @@ export type NotificationKind =
   | "announcement";
 
 export const NOTIFICATION_KINDS: readonly string[] = [
-  "registrationApproved", "registrationRejected", "registrationReminder", "documentRejected", "pointsReceived",
+  "registrationApproved", "registrationRejected", "registrationReminder", "tourRegistrationApproved", "tourRegistrationRejected", "documentRejected", "pointsReceived",
   "topupApproved", "topupRejected", "withdrawalPaid", "withdrawalRejected", "expenseApproved", "expenseRejected",
   "passwordChanged", "announcement",
 ];

@@ -3174,10 +3174,10 @@
       }
     },
     "announce": {
-      "toggle": "发送邮件",
-      "title": "向已选的 {count} 位买家发送邮件",
-      "recipients": "已选的 {total} 位买家中有 {with} 位有真实邮箱地址，将收到邮件。所有已选买家也可以在网站的“通知”中阅读。",
-      "noRecipients": "所选买家都没有真实邮箱地址。",
+      "toggle": "发送公告",
+      "title": "向已选的 {count} 位买家发布公告",
+      "recipients": "已选的 {total} 位买家中有 {with} 位有真实邮箱地址，也将收到邮件。所有已选买家都可以在网站的“通知”中阅读公告。",
+      "noRecipients": "已选买家都没有真实邮箱地址，因此不会发送邮件。他们可以在网站的“通知”中阅读公告。",
       "languages": "邮件语言",
       "lang": {
         "en": "English",
@@ -3188,11 +3188,11 @@
       "message": "内容",
       "messageHint": "英文必填。俄文和中文可选：使用这些语言的买家会收到对应版本，其他人收到英文版。空一行表示新段落。",
       "send": "检查并发送",
-      "confirmQuestion": "现在向 {count} 位买家发送这封邮件吗？发送后无法撤回。",
+      "confirmQuestion": "现在向 {count} 位买家发送此公告吗？发送后无法撤回。",
       "confirmSend": "确认发送",
       "sending": "发送中…",
       "back": "返回",
-      "done": "完成：邮件正在发送给 {count} 位买家。",
+      "done": "完成：{count} 位买家现在可以在网站的“通知”中阅读。",
       "skipped": "有 {count} 位买家没有真实邮箱地址，因此未向其发送邮件；他们可以在网站的“通知”中阅读。您可以在“管理 → 邮件”中查看所有邮件。",
       "errors": {
         "no_buyers": "请至少选择一位买家。",
@@ -3201,7 +3201,10 @@
         "english_required": "请用英文填写主题（至少 3 个字符）和内容（至少 5 个字符）。",
         "mail_off": "邮件功能已关闭。请先在“管理 → 邮件”中开启。",
         "rate_limited": "您在过去一小时内发送了多次公告，请稍候。"
-      }
+      },
+      "mailOff": "邮件发送已关闭，因此不会发送邮件。所有已选买家都可以在网站的“通知”中阅读公告。",
+      "doneEmail": "正在向 {count} 位买家发送邮件。",
+      "mailOffDone": "邮件发送已关闭，因此未发送邮件。"
     }
   },
   "homepageSlideshow": {
@@ -4643,6 +4646,18 @@
       "subject": "{subject}",
       "intro": "{message}",
       "button": "打开网站"
+    },
+    "tourRegistrationApproved": {
+      "subject": "您报名的 {tour} 已通过",
+      "intro": "好消息：您报名的 {tour} 已通过审核。",
+      "body": "请打开行程页面查看详情。如需其他材料，我们会与您联系。",
+      "button": "打开行程"
+    },
+    "tourRegistrationRejected": {
+      "subject": "关于您报名的 {tour}",
+      "intro": "我们无法批准您报名的 {tour}。",
+      "body": "如果您认为这是错误，请联系我们，我们会重新审核。",
+      "button": "打开行程"
     }
   },
   "adminEmail": {
@@ -4702,7 +4717,9 @@
       "test": "测试邮件",
       "confirmEmail": "邮箱确认链接",
       "registrationReminder": "报名提醒",
-      "announcement": "公告"
+      "announcement": "公告",
+      "tourRegistrationApproved": "旅游报名已通过",
+      "tourRegistrationRejected": "旅游报名未通过"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -4996,6 +5013,14 @@
       "passwordChanged": {
         "title": "密码已更改",
         "body": "您账户的密码已被更改。如果不是您本人操作，请立即联系我们。"
+      },
+      "tourRegistrationApproved": {
+        "title": "旅游报名已通过",
+        "body": "您报名的 {tour} 已通过审核。"
+      },
+      "tourRegistrationRejected": {
+        "title": "旅游报名未通过",
+        "body": "您报名的 {tour} 未通过审核。"
       }
     }
   }

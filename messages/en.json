@@ -4947,7 +4947,8 @@
       "blog_post_updated": "Edited a blog post",
       "blog_post_deleted": "Deleted a blog post",
       "site_page_saved": "Saved a website page",
-      "signed_out_everywhere": "Signed out of all other devices"
+      "signed_out_everywhere": "Signed out of all other devices",
+      "expo_registrations_bulk_status": "Approved or rejected several exhibition registrations"
     }
   },
   "notificationsPage": {
@@ -5138,5 +5139,32 @@
     "forExhibitions": "Sent to: {names}",
     "allExhibitions": "all chosen exhibitions",
     "editProfile": "Check or change them in your profile"
+  },
+  "adminBulkDecision": {
+    "selectedCount": "{count, plural, one {# registration selected} other {# registrations selected}}",
+    "approve": "Approve",
+    "reject": "Reject",
+    "clear": "Clear selection",
+    "selectAll": "Select all shown",
+    "selectRow": "Select {name}",
+    "approveTitle": "{count, plural, one {Approve # registration} other {Approve # registrations}}",
+    "rejectTitle": "{count, plural, one {Reject # registration} other {Reject # registrations}}",
+    "approveHint": "Each buyer is told by e-mail and on the website, and asked to confirm attendance by the date below. Registrations that are already confirmed, attended or cancelled are left as they are.",
+    "rejectHint": "Each buyer is told that the registration was not approved. Registrations that are already confirmed, attended or cancelled are left as they are.",
+    "confirmBy": "Buyers confirm attendance by",
+    "leaveEmpty": "Leave empty to use the day before each exhibition starts.",
+    "approveSubmit": "{count, plural, one {Approve # registration} other {Approve # registrations}}",
+    "rejectSubmit": "{count, plural, one {Reject # registration} other {Reject # registrations}}",
+    "working": "Working…",
+    "done": "{count, plural, =0 {No registration was changed.} one {# registration updated.} other {# registrations updated.}}",
+    "unchanged": "{count, plural, one {# was already in that status.} other {# were already in that status.}}",
+    "skipped": "{count, plural, one {# was left as it is (already confirmed, attended, cancelled, or changed a moment ago).} other {# were left as they are (already confirmed, attended, cancelled, or changed a moment ago).}}",
+    "notFound": "{count, plural, one {# registration no longer exists.} other {# registrations no longer exist.}}",
+    "errors": {
+      "none": "Select at least one registration.",
+      "too_many": "Select at most 200 registrations at a time.",
+      "invalid_date": "Please enter a valid date.",
+      "invalid_status": "Invalid choice."
+    }
   }
 }

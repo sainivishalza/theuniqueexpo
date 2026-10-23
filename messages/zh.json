@@ -4947,7 +4947,8 @@
       "blog_post_updated": "编辑博客文章",
       "blog_post_deleted": "删除博客文章",
       "site_page_saved": "保存网站页面",
-      "signed_out_everywhere": "退出所有其他设备"
+      "signed_out_everywhere": "退出所有其他设备",
+      "expo_registrations_bulk_status": "批量批准或拒绝展会报名"
     }
   },
   "notificationsPage": {
@@ -5138,5 +5139,32 @@
     "forExhibitions": "提交至：{names}",
     "allExhibitions": "所有已选展会",
     "editProfile": "在个人资料中查看或修改"
+  },
+  "adminBulkDecision": {
+    "selectedCount": "{count, plural, other {已选择 # 条报名}}",
+    "approve": "批准",
+    "reject": "拒绝",
+    "clear": "取消选择",
+    "selectAll": "选择当前显示的全部",
+    "selectRow": "选择 {name}",
+    "approveTitle": "{count, plural, other {批准 # 条报名}}",
+    "rejectTitle": "{count, plural, other {拒绝 # 条报名}}",
+    "approveHint": "每位采购商会收到电子邮件和网站通知，并被要求在下面的日期前确认出席。已确认、已出席或已取消的报名保持不变。",
+    "rejectHint": "每位采购商会收到报名未获批准的通知。已确认、已出席或已取消的报名保持不变。",
+    "confirmBy": "采购商确认出席的截止日期",
+    "leaveEmpty": "留空则使用每个展会开幕前一天。",
+    "approveSubmit": "{count, plural, other {批准 # 条报名}}",
+    "rejectSubmit": "{count, plural, other {拒绝 # 条报名}}",
+    "working": "处理中…",
+    "done": "{count, plural, =0 {没有更改任何报名。} other {已更新 # 条报名。}}",
+    "unchanged": "{count, plural, other {# 条本来就是该状态。}}",
+    "skipped": "{count, plural, other {# 条保持不变（已确认、已出席、已取消或刚刚被更改）。}}",
+    "notFound": "{count, plural, other {# 条报名已不存在。}}",
+    "errors": {
+      "none": "请至少选择一条报名。",
+      "too_many": "一次最多选择 200 条报名。",
+      "invalid_date": "请输入有效日期。",
+      "invalid_status": "无效的选择。"
+    }
   }
 }

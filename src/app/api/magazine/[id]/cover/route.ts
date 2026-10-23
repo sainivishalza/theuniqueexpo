@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getIssueCoverImageValue } from "@/lib/server/magazine-repo";
 import { isAllowedImageContentType } from "@/lib/server/validate-upload";
+import { imageCacheControl } from "@/lib/server/image-cache";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -26,7 +27,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   return new NextResponse(bytes, {
     headers: {
       "Content-Type": contentType,
-      "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+      "Cache-Control": imageCacheControl(request),
       "Content-Length": String(bytes.length),
     },
   });

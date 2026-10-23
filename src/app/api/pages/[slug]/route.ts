@@ -12,6 +12,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   const content = await getSitePage(slug, locale);
   return NextResponse.json(
     { content },
-    { headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=300" } }
+    { headers: { "Cache-Control": "public, max-age=60, s-maxage=180, stale-while-revalidate=900" } }
   );
 }

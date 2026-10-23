@@ -6,6 +6,6 @@ export async function GET(request: Request) {
   const events = await listEvents(view === "past" ? "past" : view === "upcoming" ? "upcoming" : undefined);
   return NextResponse.json(
     { events },
-    { headers: { "Cache-Control": "public, max-age=30, stale-while-revalidate=120" } }
+    { headers: { "Cache-Control": "public, max-age=30, s-maxage=120, stale-while-revalidate=600" } }
   );
 }

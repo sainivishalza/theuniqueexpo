@@ -7,6 +7,6 @@ export async function GET(request: Request) {
   const content = translateContent(await getConferenceHostingContent(), locale);
   return NextResponse.json(
     { content },
-    { headers: { "Cache-Control": "public, max-age=30, stale-while-revalidate=120" } }
+    { headers: { "Cache-Control": "public, max-age=30, s-maxage=120, stale-while-revalidate=600" } }
   );
 }

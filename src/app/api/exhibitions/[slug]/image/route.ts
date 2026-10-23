@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getExhibitionImageValue } from "@/lib/server/exhibitions-repo";
 import { isAllowedImageContentType } from "@/lib/server/validate-upload";
+import { imageCacheControl } from "@/lib/server/image-cache";
 
 // Serves the exhibition poster as an actual image response instead of
 // inline base64 JSON, so browsers can cache it across page navigations
@@ -32,7 +33,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   return new NextResponse(bytes, {
     headers: {
       "Content-Type": contentType,
-      "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+      "Cache-Control": imageCacheControl(request),
       "Content-Length": String(bytes.length),
     },
   });

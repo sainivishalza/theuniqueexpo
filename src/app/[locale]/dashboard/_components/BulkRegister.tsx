@@ -9,7 +9,7 @@ import { fieldClasses } from "@/components/ui/FormField";
 import { Link } from "@/i18n/navigation";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { formatDateOnly, STATUS_TONE } from "@/lib/client/registration-format";
-import type { Plan, PlanQuestion, SubmitResult } from "@/lib/bulk-registration";
+import type { Plan, PlanKnown, PlanQuestion, SubmitResult } from "@/lib/bulk-registration";
 
 interface Listed {
   slug: string;
@@ -35,7 +35,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
   const t = useTranslations("bulkRegister");
   const ts = useTranslations("buyerDashboard.registrations");
   const locale = useLocale();
-  const ids = { search: useId() };
+  const ids = { search: useId(), known: useId() };
   const topRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<Listed[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -126,6 +126,8 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
   });
 
   const questionLabel = (q: PlanQuestion) => (q.core ? t(`core.${q.core}`) : q.label || "");
+  const knownLabel = (k: PlanKnown) => (k.core ? t(`core.${k.core}`) : k.label || "");
+  const knownValue = (k: PlanKnown) => (k.file ? t("onFile") : k.core === "gender" ? t(`genders.${k.text}`) : k.text || "");
   const optionLabel = (q: PlanQuestion, o: string) => (q.core === "gender" ? t(`genders.${o}`) : o);
 
   function setAnswer(key: string, value: string | string[]) {
@@ -315,6 +317,29 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
               </li>
             ))}
           </ul>
+
+          {plan.known.length > 0 && (
+            <section aria-labelledby={ids.known} className="mt-5 rounded-lg border border-emerald-100 bg-emerald-50/60 p-4">
+              <h3 id={ids.known} className="text-sm font-bold text-heading">{t("fromProfile")}</h3>
+              <p className="mt-1 text-xs text-gray-700">{t("fromProfileHelp")}</p>
+              <dl className="mt-3 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+                {plan.known.map((k) => {
+                  const sending = plan.exhibitions.filter((x) => x.state === "new" || x.state === "resubmit").length;
+                  const names = k.exhibitions.length === sending ? "" : t("forExhibitions", { names: k.exhibitions.map((s) => plan.exhibitions.find((x) => x.slug === s)?.title ?? s).join(", ") });
+                  return (
+                    <div key={k.key} className="min-w-0">
+                      <dt className="text-xs text-gray-600">{knownLabel(k)}</dt>
+                      <dd className="font-medium text-heading [overflow-wrap:anywhere]">{knownValue(k)}</dd>
+                      {names && <dd className="text-xs text-gray-600 [overflow-wrap:anywhere]">{names}</dd>}
+                    </div>
+                  );
+                })}
+              </dl>
+              <p className="mt-3 text-xs">
+                <Link href="/dashboard/buyer/profile" target="_blank" rel="noopener" className="font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">{t("editProfile")}</Link>
+              </p>
+            </section>
+          )}
 
           <form onSubmit={submit} className="mt-5" noValidate>
             {visibleQuestions.length > 0 ? (

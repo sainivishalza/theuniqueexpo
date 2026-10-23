@@ -98,6 +98,19 @@ const J = (v) => (typeof v === 'string' ? JSON.parse(v) : v);
   ok((await p.getByText('Waiting for review').count()) >= 2 && await p.getByText('Select all (1)').isVisible(), 'they show their status, and only the open one counts');
   ok(await p.getByRole('link', { name: /Open exhibition page/ }).count() >= 2, 'and the registrations list below shows them');
 
+  console.log('\n== what the profile has is shown, not asked');
+  await p.getByLabel(B.title).check();
+  await p.getByRole('button', { name: 'Register for 1 exhibition' }).click();
+  await p.getByRole('heading', { name: 'Check and register' }).waitFor();
+  const known = p.getByRole('region', { name: 'Already in your profile' });
+  ok(await known.isVisible(), 'a block lists what is already in the profile');
+  ok(await known.getByText('UI Co').isVisible() && await known.getByText('U123').isVisible() && await known.getByText('Russia').isVisible() && await known.getByText('Male').isVisible() && await known.getByText('Company name').isVisible(), 'with the company, passport, nationality and gender from the profile');
+  ok((await known.getByText('On file').count()) === 4, 'and the four documents as on file');
+  ok((await known.getByRole('link', { name: /Check or change them/ }).getAttribute('target')) === '_blank', 'with a link to the profile');
+  const v4 = await axeViolations(p); ok(v4.length === 0, 'the review with the block: axe 0 violations', v4);
+  await p.getByRole('button', { name: 'Back to the list' }).click();
+  await p.getByLabel('Search exhibitions').fill(String(st));
+
   console.log('\n== nothing more to ask');
   await p.getByLabel(B.title).check();
   await p.getByRole('button', { name: 'Register for 1 exhibition' }).click();

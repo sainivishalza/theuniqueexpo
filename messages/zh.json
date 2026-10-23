@@ -5112,13 +5112,20 @@
       "docPassportFront": "护照首页",
       "docBusinessCard": "名片",
       "docVisaPage": "签证页",
-      "docBusinessLicense": "营业执照"
+      "docBusinessLicense": "营业执照",
+      "fullName": "姓名"
     },
     "extra": {
       "title": "展会所需的更多信息",
       "intro": "您在报名展会时给出的回答。它们会在下次使用，所以不会再次询问。下次报名时可以修改。",
       "file": "已保存文件",
       "empty": "—"
-    }
+    },
+    "fromProfile": "您的资料中已有",
+    "fromProfileHelp": "我们会将这些信息随报名一并提交，无需再次填写。",
+    "onFile": "已上传",
+    "forExhibitions": "提交至：{names}",
+    "allExhibitions": "所有已选展会",
+    "editProfile": "在个人资料中查看或修改"
   }
 }

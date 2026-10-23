@@ -35,9 +35,24 @@ export interface PlanExhibition {
   state: "new" | "resubmit" | "already_registered" | "closed" | "unknown";
 }
 
+/** A detail that is already known (the buyer's profile or earlier answers): shown, not asked. */
+export interface PlanKnown {
+  key: string;
+  core?: string;
+  label?: string;
+  kind: QuestionKind;
+  /** The text (or the choices, joined) that will be sent; absent for a file. */
+  text?: string;
+  /** A file is on the profile and will be sent. */
+  file?: boolean;
+  /** The exhibitions (slugs) it goes to. */
+  exhibitions: string[];
+}
+
 export interface Plan {
   exhibitions: PlanExhibition[];
   questions: PlanQuestion[];
+  known: PlanKnown[];
 }
 
 export type SubmitOutcome = "registered" | "registered_again" | "already_registered" | "closed" | "unknown" | "failed";

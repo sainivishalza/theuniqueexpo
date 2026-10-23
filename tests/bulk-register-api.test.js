@@ -73,6 +73,11 @@ const key = (p, k) => p.questions.find((q) => q.key === k);
   ok(key(p, 'core:nationality') && key(p, 'core:gender'), 'a profile value that does not fit the form (a nationality not in its list, gender "other") is asked again');
   await profile({ nationality: 'Russia', gender: 'male' });
 
+  const known = Object.fromEntries(p.known.map((k) => [k.key, k]));
+  ok(known['core:companyName'].text === 'Profile Co' && known['core:passportNumber'].text === 'P1234567' && known['core:phone'].text === '+7 999 111' && known['core:nationality'].text === 'Russia' && known['core:gender'].text === 'male', 'what comes from the profile is listed as "already known" (with its values) so the screen can show it', Object.keys(known));
+  ok(known['core:fullName'] && known['core:fullName'].text.length > 0 && known['core:email'] && known['core:email'].exhibitions.join() === A.slug, 'the full name and e-mail address that will be sent are listed too');
+  ok(!p.known.some((k) => p.questions.some((q) => q.key === k.key)), 'nothing is both asked and "known"');
+
   console.log('\n== an organiser\'s own form');
   p = await plan(buyer, [C.slug]);
   const kc = p.questions.map((q) => q.key);
@@ -191,6 +196,17 @@ const key = (p, k) => p.questions.find((q) => q.key === k);
   ok(sql(`SELECT COUNT(*) FROM expo_registrations WHERE user_id=${u.bId} AND exhibition_id=${A.id}`) === '1' && sql(`SELECT COUNT(*) FROM buyer_extra_info WHERE user_id=${e.bId} AND value LIKE '%Profile Co%'`) === '0', 'each buyer has only their own registrations and answers');
   const pe = await plan(eT, [B.slug]);
   ok(key(pe, 'core:companyScale').value === '11-20', 'a buyer is offered only their own saved answers (not the other buyer\'s "0-10")', key(pe, 'core:companyScale').value);
+
+  console.log('\n== the admin sees each exhibition\'s own list');
+  const adminList = async (slug) => (await (await call('GET', '/api/admin/expo-registrations?exhibition=' + slug, u.aT)).json()).registrations;
+  const la = await adminList(A.slug), lb = await adminList(B.slug), lc = await adminList(C.slug);
+  const mineIn = (l) => l.filter((x) => String(x.userId) === String(bId));
+  ok(mineIn(la).length === 1 && mineIn(lb).length === 1 && mineIn(lc).length === 1, 'a buyer who registered for several exhibitions is in the list of each, once', [la.length, lb.length, lc.length]);
+  const ra = mineIn(la)[0];
+  ok(ra.companyName === 'Profile Co' && ra.passportNumber === 'P1234567' && ra.phone === '+7 999 111' && ra.nationality === 'Russia' && ra.companyScale === '11-20' && ra.fullName, 'the list shows the details taken from the profile and the answers given', ra);
+  ok(la.some((x) => String(x.userId) === String(e.bId)) && !lb.some((x) => String(x.userId) === String(e.bId)), 'a buyer is only in the lists of the exhibitions they chose');
+  const rc = mineIn(lc)[0];
+  ok(rc.customAnswers && Object.keys(rc.customAnswers).length >= 3, 'the organiser\'s own form answers are in that exhibition\'s list', rc.customAnswers);
 
   await db.query('DELETE FROM expo_registrations WHERE exhibition_id IN (?)', [[A.id, B.id, C.id, F.id, f2.id, closed.id, ended.id]]);
   await db.query('DELETE FROM exhibitions WHERE id IN (?)', [[A.id, B.id, C.id, F.id, f2.id, closed.id, ended.id]]);

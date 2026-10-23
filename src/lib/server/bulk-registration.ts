@@ -10,7 +10,7 @@ import { shrinkDocumentDataUrl } from "@/lib/server/document-image";
 import { canRegisterAgain } from "@/lib/registration-lifecycle";
 import {
   customQuestionKey, normalizeLabel, MAX_EXHIBITIONS_AT_ONCE,
-  type Plan, type PlanExhibition, type PlanQuestion, type QuestionKind, type SubmitOutcome, type SubmitResult,
+  type Plan, type PlanExhibition, type PlanKnown, type PlanQuestion, type QuestionKind, type SubmitOutcome, type SubmitResult,
 } from "@/lib/bulk-registration";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
 import {
@@ -316,7 +316,17 @@ function clientQuestion(q: Q): PlanQuestion {
 export async function planRegistrations(user: Person, slugs: string[], locale?: string): Promise<Plan> {
   const ctx = await loadContext(user);
   const built = await build(ctx, slugs, locale);
-  return { exhibitions: built.exhibitions, questions: built.questions.filter((q) => q.visible).map(clientQuestion) };
+  const known: PlanKnown[] = [];
+  const standard = built.active.filter((a) => !a.schema).map((a) => a.slug);
+  const fullName = profileText(ctx, "fullName");
+  if (standard.length > 0 && fullName) known.push({ key: "core:fullName", core: "fullName", kind: "text", text: fullName, exhibitions: standard });
+  for (const q of built.questions) {
+    if (q.visible || q.exhibitions.length === 0) continue;
+    const base = { key: q.key, core: q.core, label: q.label, kind: q.kind, exhibitions: q.exhibitions };
+    if (q.kind === "file") known.push({ ...base, file: true });
+    else known.push({ ...base, text: Array.isArray(q.known) ? q.known.join(", ") : String(q.known ?? "") });
+  }
+  return { exhibitions: built.exhibitions, questions: built.questions.filter((q) => q.visible).map(clientQuestion), known };
 }
 
 // ----- submitting -----

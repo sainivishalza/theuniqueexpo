@@ -5112,13 +5112,20 @@
       "docPassportFront": "Passport front page",
       "docBusinessCard": "Business card",
       "docVisaPage": "Visa page",
-      "docBusinessLicense": "Business license"
+      "docBusinessLicense": "Business license",
+      "fullName": "Full name"
     },
     "extra": {
       "title": "More information asked by exhibitions",
       "intro": "Answers you gave when registering for exhibitions. They are used the next time, so you are not asked again. You can change them the next time you register.",
       "file": "File saved",
       "empty": "—"
-    }
+    },
+    "fromProfile": "Already in your profile",
+    "fromProfileHelp": "We send these with your registration. You do not need to fill them in again.",
+    "onFile": "On file",
+    "forExhibitions": "Sent to: {names}",
+    "allExhibitions": "all chosen exhibitions",
+    "editProfile": "Check or change them in your profile"
   }
 }

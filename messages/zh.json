@@ -785,6 +785,10 @@
       "errors": {
         "title": "错误",
         "description": "网站遇到的问题及其发生频率。"
+      },
+      "pageSpeed": {
+        "title": "页面速度",
+        "description": "真实访客在手机和电脑上感受到的页面速度。"
       }
     },
     "attention": {
@@ -6175,7 +6179,8 @@
       "failed": "操作失败，请重试。"
     },
     "issueErrors": "过去 24 小时网站报告了 {n} 个错误。",
-    "errorsReported": "网站报告的错误"
+    "errorsReported": "网站报告的错误",
+    "issuePageSpeed": "有 {n} 项页面速度指标低于健康水平。请查看“页面速度”。"
   },
   "adminBounces": {
     "title": "退信的邮箱地址",
@@ -6329,5 +6334,30 @@
       "rate_limited": "预览次数过多，请稍候。",
       "unavailable": "暂不可用，请在下次更新后重试。"
     }
+  },
+  "adminPageSpeed": {
+    "title": "页面速度",
+    "subtitle": "真实访客感受到的页面速度。",
+    "back": "← 返回管理后台",
+    "how": "大约每五次访问中有一次会上报：页面显示主要内容用了多久（加载）、对点击的反应多快（响应）以及页面跳动多少（稳定性）。当至少 {share}% 的页面浏览表现良好时，该指标视为健康。",
+    "period": "时间范围",
+    "lastDays": "最近 {days} 天",
+    "loadFailed": "无法加载数据。",
+    "unavailable": "暂不可用，将在下次更新后启用。",
+    "none": "暂无数据，随着访客浏览将逐步出现。",
+    "home": "首页",
+    "phone": "手机端",
+    "desktop": "电脑端",
+    "metric": {
+      "LCP": "加载",
+      "INP": "点击响应",
+      "CLS": "页面稳定"
+    },
+    "share": "{share}% 良好，{samples} 次浏览，平均 {value}",
+    "seconds": "{n} 秒",
+    "ms": "{n} 毫秒",
+    "healthy": "健康",
+    "slow": "需要改进",
+    "notEnough": "不足 {min} 次浏览"
   }
 }

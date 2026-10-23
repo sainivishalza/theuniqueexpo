@@ -44,6 +44,7 @@ export const ADMIN_SECTIONS: AdminSection[] = [
   { key: "errors", href: "/admin/errors", icon: "🐞", color: "from-red-500 to-rose-600", group: "settings" },
   { key: "health", href: "/admin/health", icon: "🩺", color: "from-emerald-500 to-teal-600", group: "settings" },
   { key: "dataRetention", href: "/admin/data-retention", icon: "🧹", color: "from-slate-500 to-gray-700", group: "settings" },
+  { key: "pageSpeed", href: "/admin/page-speed", icon: "⚡", color: "from-amber-500 to-yellow-600", group: "settings" },
   { key: "slowQueries", href: "/admin/slow-queries", icon: "🐢", color: "from-slate-500 to-gray-600", group: "settings" },
   { key: "scheduledExports", href: "/admin/scheduled-exports", icon: "🗓️", color: "from-sky-500 to-indigo-600", group: "settings" },
   { key: "email", href: "/admin/email", icon: "✉️", color: "from-sky-500 to-blue-600", group: "settings" },

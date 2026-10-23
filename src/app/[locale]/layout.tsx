@@ -11,6 +11,7 @@ import { headers } from "next/headers";
 import "./globals.css";
 import ClientShell from "@/components/ClientShell";
 import ClientErrorReporter from "@/components/ClientErrorReporter";
+import WebVitalsReporter from "@/components/WebVitalsReporter";
 import CookieConsent from "@/components/CookieConsent";
 import OrganizationSchema from "@/components/OrganizationSchema";
 import { routing } from "@/i18n/routing";
@@ -180,6 +181,7 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <CookieConsent measurementId={analyticsId} />
           <ClientErrorReporter />
+          <WebVitalsReporter />
           <ClientShell companyProfile={companyProfile} analyticsId={analyticsId} navSections={navSections}>{children}</ClientShell>
         </NextIntlClientProvider>
       </body>

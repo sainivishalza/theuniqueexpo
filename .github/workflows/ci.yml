@@ -71,6 +71,9 @@ jobs:
         # fails a build that is fine, so one retry is allowed.
         run: npm run build || (echo "build failed once, retrying" && sleep 20 && npm run build)
 
+      - name: Keep the site's JavaScript within its budget
+        run: node scripts/check-bundle-size.mjs
+
       - name: Start the site
         run: |
           nohup npx next start -p 3100 > site.log 2>&1 &

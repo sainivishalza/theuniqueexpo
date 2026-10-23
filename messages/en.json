@@ -785,6 +785,10 @@
       "errors": {
         "title": "Errors",
         "description": "Problems the website ran into, with how often they happen."
+      },
+      "pageSpeed": {
+        "title": "Page speed",
+        "description": "How fast pages feel to real visitors, on phones and computers."
       }
     },
     "attention": {
@@ -6175,7 +6179,8 @@
       "failed": "That did not work. Please try again."
     },
     "issueErrors": "{n} errors were reported by the website in the last 24 hours.",
-    "errorsReported": "Website errors reported"
+    "errorsReported": "Website errors reported",
+    "issuePageSpeed": "{n} page-speed measures are below the healthy level for real visitors. See Page speed."
   },
   "adminBounces": {
     "title": "Addresses that bounced",
@@ -6329,5 +6334,30 @@
       "rate_limited": "Too many previews. Please wait a while.",
       "unavailable": "Not available yet. Try again after the next update."
     }
+  },
+  "adminPageSpeed": {
+    "title": "Page speed",
+    "subtitle": "How fast pages feel to real visitors.",
+    "back": "← Back to Admin",
+    "how": "About one visit in five reports how long the page took to show its main content (loading), to react to a tap (responding) and how much it jumped around (stability). A measure is healthy when at least {share}% of page views were good.",
+    "period": "Period",
+    "lastDays": "Last {days} days",
+    "loadFailed": "Could not load the numbers.",
+    "unavailable": "Not available yet. It starts after the next update.",
+    "none": "No measurements yet. They appear as visitors browse the site.",
+    "home": "Home page",
+    "phone": "On phones",
+    "desktop": "On computers",
+    "metric": {
+      "LCP": "Loading",
+      "INP": "Responding to taps",
+      "CLS": "Staying still"
+    },
+    "share": "{share}% good, {samples} page views, typical {value}",
+    "seconds": "{n} s",
+    "ms": "{n} ms",
+    "healthy": "Healthy",
+    "slow": "Needs work",
+    "notEnough": "Fewer than {min} views"
   }
 }

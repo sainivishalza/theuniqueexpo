@@ -821,6 +821,11 @@
         "finance": "钱包与报表",
         "viewer": "仅查看"
       }
+    },
+    "twoStepRequired": {
+      "title": "请先设置两步验证登录",
+      "text": "所有管理员都必须使用两步验证登录。在你设置完成之前，只能打开你的账户页面。",
+      "button": "打开我的账户"
     }
   },
   "adminSubsidies": {
@@ -5085,7 +5090,8 @@
       "visaExpiring": "签证到期过早",
       "groupInvite": "同事邀请",
       "scheduledReport": "定时报表",
-      "dailyHealth": "每日运行状况报告"
+      "dailyHealth": "每日运行状况报告",
+      "adminSignIn": "管理员新登录提醒"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -5327,7 +5333,8 @@
       "retention_run": "删除了过期的护照和签证照片",
       "health_email_setting_changed": "修改了每日运行状况邮件设置",
       "health_email_sent_now": "向自己发送了运行状况邮件",
-      "email_bounce_cleared": "清除了退信地址标记"
+      "email_bounce_cleared": "清除了退信地址标记",
+      "two_step_required_changed": "修改了是否要求所有管理员使用两步验证"
     }
   },
   "notificationsPage": {
@@ -6126,5 +6133,26 @@
     "stopped": "在你清除标记之前，网站不会再向此地址发送邮件（登录相关邮件除外）。",
     "clear": "清除",
     "cleared": "将恢复向 {email} 发送邮件。"
+  },
+  "adminSecurity": {
+    "title": "所有管理员使用两步验证",
+    "label": "要求所有管理员使用两步验证登录",
+    "explain": "开启后，尚未设置两步验证的管理员只能打开自己的账户页面进行设置。不会让任何人退出登录。",
+    "without": "还有 {count} 位在职管理员未设置。",
+    "setUpYours": "请先设置你自己的两步验证，然后才能开启此项。",
+    "openAccount": "打开我的账户",
+    "nowOn": "现在所有管理员都需要两步验证。",
+    "nowOff": "不再强制要求。",
+    "errors": {
+      "own_first": "请先设置你自己的两步验证。",
+      "failed": "操作失败，请重试。"
+    }
+  },
+  "adminSignIns": {
+    "title": "你的登录来源",
+    "intro": "从新的浏览器或地点登录时，你也会收到邮件通知。如果你不认识这里的某条记录，请更换密码。",
+    "none": "暂无记录。",
+    "place": "网络 {network}",
+    "seen": "最近 {last}，首次 {first}，共 {count} 次登录"
   }
 }

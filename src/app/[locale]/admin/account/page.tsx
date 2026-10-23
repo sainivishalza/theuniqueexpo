@@ -7,6 +7,7 @@ import ChangePasswordCard from "../../dashboard/_components/ChangePasswordCard";
 import ChangeEmailCard from "../../dashboard/_components/ChangeEmailCard";
 import TwoStepCard from "./TwoStepCard";
 import SessionsCard from "../../dashboard/_components/SessionsCard";
+import SignInDevices from "./SignInDevices";
 
 // The admin's own account: change the password they sign in with, and the two-step sign-in.
 export default function AdminAccountPage() {
@@ -38,6 +39,7 @@ export default function AdminAccountPage() {
             <ChangePasswordCard />
             <ChangeEmailCard />
             <TwoStepCard />
+            <SignInDevices />
             <SessionsCard />
           </div>
         </div>

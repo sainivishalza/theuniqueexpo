@@ -8,10 +8,12 @@ import { isStaffPreset } from "@/lib/staff-access";
 // flicker; someone with a limited role sees the menu shrink a moment after the page opens). The server enforces it
 // either way: this only decides what to show.
 let known: StaffPreset | null = null;
+let knownTwoStepRequired = false;
 
-export function useStaffPreset(enabled: boolean): { preset: StaffPreset; loaded: boolean } {
+export function useStaffPreset(enabled: boolean): { preset: StaffPreset; loaded: boolean; twoStepRequired: boolean } {
   const [preset, setPreset] = useState<StaffPreset>(known ?? "full");
   const [loaded, setLoaded] = useState(known !== null);
+  const [twoStepRequired, setTwoStepRequired] = useState(knownTwoStepRequired);
   useEffect(() => {
     if (!enabled) return;
     let alive = true;
@@ -21,6 +23,8 @@ export function useStaffPreset(enabled: boolean): { preset: StaffPreset; loaded:
         if (!alive) return;
         const p = d && isStaffPreset(d.preset) ? d.preset : "full";
         known = p;
+        knownTwoStepRequired = !!d?.twoStepRequired;
+        setTwoStepRequired(knownTwoStepRequired);
         setPreset(p);
         setLoaded(true);
       })
@@ -29,5 +33,5 @@ export function useStaffPreset(enabled: boolean): { preset: StaffPreset; loaded:
       alive = false;
     };
   }, [enabled]);
-  return { preset, loaded };
+  return { preset, loaded, twoStepRequired };
 }

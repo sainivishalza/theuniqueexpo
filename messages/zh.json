@@ -761,6 +761,10 @@
       "staffAccess": {
         "title": "员工角色",
         "description": "把管理员账户限制在后台的一部分：登记与买家、网站内容、钱包，或仅查看。"
+      },
+      "slowQueries": {
+        "title": "慢查询",
+        "description": "耗时异常长的数据库请求（供网站维护人员查看）。"
       }
     },
     "attention": {
@@ -5310,7 +5314,8 @@
       "scheduled_export_saved": "保存了定时报表",
       "scheduled_export_deleted": "删除了定时报表",
       "scheduled_export_sent_now": "立即发送了定时报表",
-      "staff_role_set": "设置了管理员角色"
+      "staff_role_set": "设置了管理员角色",
+      "slow_queries_cleared": "清空了慢查询列表"
     }
   },
   "notificationsPage": {
@@ -5987,5 +5992,17 @@
       "unavailable": "暂时无法使用角色，请几分钟后重试。",
       "failed": "操作失败，请重试。"
     }
+  },
+  "adminSlowQueries": {
+    "title": "慢查询",
+    "subtitle": "耗时异常长的数据库请求。",
+    "back": "← 返回管理后台",
+    "how": "每个耗时超过 0.4 秒的数据库请求都会按其形式（去掉其中的数字和文本）记录在这里，按总耗时从高到低排列。这是给网站维护人员看的：某个页面变慢时会在此出现。大约每分钟写入一次。",
+    "none": "没有发现慢查询。",
+    "loadFailed": "无法加载列表。",
+    "summary": "{calls} 次，平均 {avg} 毫秒，最慢 {max} 毫秒，共 {total} 秒",
+    "seen": "最近 {last}，首次 {first}",
+    "clear": "重新开始记录",
+    "cleared": "列表已清空。"
   }
 }

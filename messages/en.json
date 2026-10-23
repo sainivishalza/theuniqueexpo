@@ -761,6 +761,10 @@
       "staffAccess": {
         "title": "Staff roles",
         "description": "Limit an admin account to part of the back office: registrations and buyers, website content, the wallet, or view only."
+      },
+      "slowQueries": {
+        "title": "Slow queries",
+        "description": "Database requests that took unusually long (for whoever looks after the site)."
       }
     },
     "attention": {
@@ -5310,7 +5314,8 @@
       "scheduled_export_saved": "Saved a scheduled report",
       "scheduled_export_deleted": "Deleted a scheduled report",
       "scheduled_export_sent_now": "Sent a scheduled report now",
-      "staff_role_set": "Set an admin's role"
+      "staff_role_set": "Set an admin's role",
+      "slow_queries_cleared": "Cleared the slow-queries list"
     }
   },
   "notificationsPage": {
@@ -5987,5 +5992,17 @@
       "unavailable": "Roles are not available yet. Please try again in a few minutes.",
       "failed": "That did not work. Please try again."
     }
+  },
+  "adminSlowQueries": {
+    "title": "Slow queries",
+    "subtitle": "Database requests that took unusually long.",
+    "back": "← Back to Admin",
+    "how": "Every request to the database that takes longer than 0.4 seconds is counted here by what it looks like (the numbers and texts in it are taken out). The worst by total time come first. This is for whoever looks after the site: a screen that is slow shows up here. It is written about once a minute.",
+    "none": "Nothing slow has been seen.",
+    "loadFailed": "Could not load the list.",
+    "summary": "{calls, plural, one {# time} other {# times}}, {avg} ms on average, slowest {max} ms, {total} s in all",
+    "seen": "Last {last}, first {first}",
+    "clear": "Start the list again",
+    "cleared": "The list is empty again."
   }
 }

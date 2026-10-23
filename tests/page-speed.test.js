@@ -76,6 +76,7 @@ const beacon = (body, ip = ipn()) => fetch(BASE + '/api/web-vitals', { method: '
   for (const locale of ['en', 'ru', 'zh']) {
     const c = await br.newContext({ viewport: { width: 375, height: 900 }, extraHTTPHeaders: { 'x-forwarded-for': ipn() } });
     await c.addCookies([{ name: 'token', value: u.aT, url: BASE }]);
+    await c.addInitScript(() => { Math.random = () => 0.99; }); // looking at this screen must not add numbers of its own
     const p = await c.newPage(); await p.goto(`${BASE}/${locale}/admin/page-speed`, { waitUntil: 'domcontentloaded' });
     await p.getByTestId('speed-page').first().waitFor();
     ok((await p.getByTestId('speed-page').count()) === 2, `${locale}: one card for each kind of page`);

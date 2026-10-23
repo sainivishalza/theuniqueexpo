@@ -15,6 +15,8 @@ export type EmailKind =
   | "passwordReset"
   | "passwordChanged"
   | "registrationReceived"
+  | "registrationWaitlisted"
+  | "waitlistPlaceOpened"
   | "registrationApproved"
   | "registrationRejected"
   | "tourRegistrationApproved"
@@ -32,6 +34,11 @@ export type EmailKind =
   | "emailChanged"
   | "registrationReminder"
   | "registrationStartsSoon"
+  | "savedRegistrationOpened"
+  | "savedRegistrationClosing"
+  | "passportExpiring"
+  | "visaExpiring"
+  | "groupInvite"
   | "announcement"
   | "test";
 

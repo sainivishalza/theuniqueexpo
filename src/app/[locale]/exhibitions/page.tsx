@@ -32,6 +32,11 @@ export default async function ExhibitionsPage({
     color: r.color,
     image: r.image,
     registrationEnabled: r.registrationEnabled,
+    registrationState: r.registrationState,
+    registrationOpens: r.registrationOpens,
+    registrationCloses: r.registrationCloses,
+    registrationDaysToClose: r.registrationDaysToClose,
+    registrationDaysToOpen: r.registrationDaysToOpen,
   }));
   return <ExhibitionsView exhibitions={exhibitions} initialView={view ?? null} />;
 }

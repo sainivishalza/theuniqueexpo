@@ -14,11 +14,15 @@ import type { MyRegistration } from "@/lib/registration-lifecycle";
 import ExpoRegistrationStatus from "@/components/ExpoRegistrationStatus";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import RegistrationWindowNote, { hasWindowNote } from "@/components/RegistrationWindowNote";
 import FormField, { fieldClasses } from "@/components/ui/FormField";
 
 interface Exhibition {
   id: string; slug: string; title: string; dates: string;
   registrationEnabled: boolean; registrationFormSchema: CustomFormSchema | null;
+  registrationState?: "open" | "opens_later" | "deadline_passed" | "switched_off";
+  registrationOpens?: string | null; registrationCloses?: string | null;
+  registrationDaysToClose?: number | null; registrationDaysToOpen?: number | null;
 }
 
 const EMPTY_FORM: Omit<ExpoRegistrationInput, "exhibitionId"> = {
@@ -73,6 +77,7 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
   const t = useTranslations("expoRegisterPage");
   const locale = useLocale();
   const tc = useTranslations("common");
+  const tw = useTranslations("expoRegisterPage.window");
   const DOCUMENT_FIELDS = DOCUMENT_FIELD_KEYS.map((d) => ({ ...d, label: t(`documents.${d.labelKey}`) }));
   const { user, loading: authLoading, setUser } = useAuth();
   const [expo, setExpo] = useState<Exhibition | null | undefined>(undefined);
@@ -335,7 +340,8 @@ export default function ExpoRegisterPage({ params }: { params: Promise<{ slug: s
         <Card shadow="sm" bordered={false} className="text-center max-w-md mx-auto p-8">
           <div className="text-5xl mb-4">🚫</div>
           <h1 className="text-2xl font-bold text-heading mb-2">{t("registrationClosed")}</h1>
-          <p className="text-gray-500 mb-6">{t.rich("registrationClosedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
+          <p className="text-gray-500 mb-4">{t.rich("registrationClosedHint", { name: expo.title, strong: (chunks) => <strong>{chunks}</strong> })}</p>
+          {hasWindowNote(expo) && <div className="mb-6"><RegistrationWindowNote info={expo} t={tw} locale={locale} /></div>}
           <Link href={`/exhibitions/${expo.slug}`} className="inline-block rounded-[var(--radius-button)] gradient-brand px-6 py-3 text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">{t("backTo", { name: expo.title })}</Link>
         </Card>
       </div>

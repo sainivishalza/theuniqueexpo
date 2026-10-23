@@ -61,6 +61,8 @@ export interface SubmitResult {
   slug: string;
   title: string;
   outcome: SubmitOutcome;
+  /** Registered, but every place is taken: the buyer is on the waiting list. */
+  waitlisted?: boolean;
   error?: string;
 }
 

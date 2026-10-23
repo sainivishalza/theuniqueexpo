@@ -188,7 +188,7 @@ export default function TourDetailView({ tour }: { tour: Tour | null }) {
                     {t("registerForThisTour")}
                   </Button>
                 ) : (
-                  <div className="block w-full text-center rounded-[var(--radius-badge)] bg-gray-200 py-3 text-sm font-semibold text-gray-500">
+                  <div className="block w-full text-center rounded-[var(--radius-badge)] bg-gray-200 py-3 text-sm font-semibold text-gray-700">
                     {t("registrationClosed")}
                   </div>
                 )}

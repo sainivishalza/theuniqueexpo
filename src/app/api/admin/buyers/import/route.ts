@@ -24,7 +24,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PROFILE_KEYS = [
   "companyName", "nationality", "annualTurnover", "purchaseIntention", "otherPurchaseIntention",
   "contactPerson", "departureCity", "attendanceDay", "meetingOrVisiting", "passportName", "gender",
-  "overseasCompanyAddress", "companyField", "jobTitle", "dateOfBirth", "visaType", "visaExpireDate",
+  "overseasCompanyAddress", "companyField", "jobTitle", "dateOfBirth", "visaType", "visaExpireDate", "passportExpireDate",
 ] as const;
 
 interface ImportRow {

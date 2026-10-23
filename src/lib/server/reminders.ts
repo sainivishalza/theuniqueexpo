@@ -3,6 +3,8 @@ import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { decryptSecret, encryptSecret, isMailEnabled } from "@/lib/server/mail";
 import { notifyUser } from "@/lib/server/notifications";
+import { sendDocumentExpiryAlerts, sendSavedExhibitionAlerts } from "@/lib/server/registration-alerts";
+import { exhibitionsWithWaitlist, promoteFromWaitlist } from "@/lib/server/waitlist";
 
 // "Please confirm your attendance": an approved registration whose confirm-by date is within 2 days and
 // that the buyer has not confirmed yet gets one reminder e-mail. The job runs at most every 6 hours, started
@@ -57,6 +59,29 @@ export interface ReminderRun {
   sent: number;
   /** "Your exhibition starts soon" e-mails. */
   startSent?: number;
+  /** Alerts to people who saved an exhibition ("registration opened", "closes soon"). */
+  savedSent?: number;
+  /** "Your passport / visa expires too early" alerts. */
+  documentSent?: number;
+}
+
+// The alerts that do not need e-mail (they are always shown on the website, and e-mailed too when e-mail is on): people
+// moved up the waiting list, saved exhibitions whose registration opens or closes, passports and visas that expire too
+// early. Each is told once, so running this often is harmless.
+export async function runDailyAlerts(): Promise<{ promoted: number; saved: number; documents: number }> {
+  let promoted = 0;
+  for (const exhibitionId of await exhibitionsWithWaitlist()) promoted += await promoteFromWaitlist(exhibitionId);
+  const saved = await sendSavedExhibitionAlerts();
+  const documents = await sendDocumentExpiryAlerts();
+  return { promoted, saved: saved.opened + saved.closing, documents: documents.passport + documents.visa };
+}
+
+let lastAlertsRun = 0;
+function runAlertsInBackground(): void {
+  // At most once an hour per server process; the alerts themselves are told once whatever happens here.
+  if (Date.now() - lastAlertsRun < 60 * 60_000) return;
+  lastAlertsRun = Date.now();
+  runDailyAlerts().catch((err) => console.error("Daily alerts failed:", err));
 }
 
 export async function runRegistrationReminders(options: { force?: boolean } = {}): Promise<ReminderRun> {
@@ -87,7 +112,11 @@ export async function runRegistrationReminders(options: { force?: boolean } = {}
   }
   await pool.query("UPDATE mail_settings SET reminders_last_count = ? WHERE id = 1", [sent]);
   const startSent = await sendStartReminders();
-  return { ran: true, sent, startSent };
+  const alerts = await runDailyAlerts().catch((err) => {
+    console.error("Daily alerts failed:", err);
+    return { promoted: 0, saved: 0, documents: 0 };
+  });
+  return { ran: true, sent, startSent, savedSent: alerts.saved, documentSent: alerts.documents };
 }
 
 // Confirmed registrations whose exhibition opens within the week, not yet checked in and not yet reminded.
@@ -119,5 +148,6 @@ async function sendStartReminders(): Promise<number> {
 
 // Started in the background by the admin home; never delays or fails the page.
 export function runRemindersInBackground(): void {
+  runAlertsInBackground();
   runRegistrationReminders().catch((err) => console.error("Reminder run failed:", err));
 }

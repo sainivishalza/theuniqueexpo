@@ -22,7 +22,7 @@ type RegistrationSummary = Pick<
   "exportingMarkets" | "createdAt" | "customAnswers" | "formSchemaSnapshot" |
   "approvedAt" | "confirmBy" | "confirmedAt" | "arrivalDate" | "arrivalNote" |
   "checkedInAt" | "checkedOutAt" | "cancelledAt" | "feedbackRating" | "feedbackComment" | "feedbackAt"
-> & { status: RegistrationStatus; effectiveStatus: EffectiveStatus; hasTicket: boolean };
+> & { status: RegistrationStatus; effectiveStatus: EffectiveStatus; hasTicket: boolean; waitlisted?: boolean };
 
 const STATUS_STYLE: Record<string, string> = {
   pending: "bg-amber-100 text-amber-700",
@@ -63,6 +63,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
   const { user, loading: authLoading } = useAuth();
   const [exhibition, setExhibition] = useState<Exhibition | null>(null);
   const [registrations, setRegistrations] = useState<RegistrationSummary[]>([]);
+  const [places, setPlaces] = useState<{ quota: number; taken: number; waitlisted: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -88,6 +89,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
         if (data.error) throw new Error(data.error);
         setExhibition(data.exhibition);
         setRegistrations(data.registrations || []);
+        setPlaces(data.places || null);
         setDefaultConfirmBy(data.defaultConfirmBy || null);
         setCheckInPath(data.checkInPath || "");
       })
@@ -234,6 +236,12 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
             <div>
               <h1 className="text-3xl font-extrabold text-white">{exhibition ? t("titleWithName", { name: exhibition.title }) : t("title")}</h1>
               <p className="mt-1 text-emerald-200/80">{loading ? ta("loading") : t("registeredCount", { count: registrations.length })}</p>
+              {places && places.quota > 0 && (
+                <p className="mt-1 text-sm font-semibold text-white" data-testid="places-summary">
+                  {t("places", { taken: places.taken, quota: places.quota })}
+                  {places.waitlisted > 0 && <span> · {t("waitingCount", { count: places.waitlisted })}</span>}
+                </p>
+              )}
             </div>
             {exhibition && (
               <div className="flex flex-wrap gap-3">
@@ -334,6 +342,9 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
                       >
                         {REGISTRATION_STATUSES.map((s) => <option key={s} value={s}>{tr(`statuses.${s}`)}</option>)}
                       </select>
+                      {r.waitlisted && r.status === "pending" && (
+                        <span className="ml-2 inline-block rounded-lg bg-gold-100 px-2 py-1 text-xs font-bold text-gold-800">{t("waitingList")}</span>
+                      )}
                       {r.effectiveStatus === "expired" && (
                         <span className={`ml-2 inline-block rounded-lg px-2 py-1 text-xs font-bold ${STATUS_STYLE.expired}`}>{tr("statuses.expired")}</span>
                       )}

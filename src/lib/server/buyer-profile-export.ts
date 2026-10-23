@@ -24,6 +24,7 @@ export const FIELD_LABELS: Record<string, string> = {
   dateOfBirth: "Date of Birth",
   visaType: "Visa Type",
   visaExpireDate: "Visa Expiry Date",
+  passportExpireDate: "Passport Expiry Date",
   departureCity: "Departure City",
   attendanceDay: "Attendance Day",
   meetingOrVisiting: "Meeting or Visiting",

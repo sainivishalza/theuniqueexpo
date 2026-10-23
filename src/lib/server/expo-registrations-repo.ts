@@ -1,5 +1,6 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import pool from "@/lib/db";
+import { applyWaitlistOnRegistration, promoteQuietly, waitlistFlags } from "@/lib/server/waitlist";
 import { safeParseArray, safeParseJson, stripFileAnswers } from "@/lib/server/db-helpers";
 import { translateString } from "@/lib/server/content-translations";
 import { formatBuyerNumber } from "@/lib/buyer-number";
@@ -201,7 +202,22 @@ export async function createExpoRegistration(userId: number, uploaded: ExpoRegis
       input.docOrderList || null,
     ]
   );
+  await flagIfNoPlaceLeft(result.insertId, input.exhibitionId);
   return result.insertId;
+}
+
+// A registration made while every place is taken waits for one (see waitlist.ts); this never fails the registration.
+async function flagIfNoPlaceLeft(registrationId: number, exhibitionId: number): Promise<void> {
+  try {
+    await applyWaitlistOnRegistration(registrationId, exhibitionId);
+  } catch (err) {
+    console.error("Waiting list check failed:", err);
+  }
+}
+
+async function exhibitionOf(registrationId: number): Promise<number | null> {
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT exhibition_id FROM expo_registrations WHERE id = ?", [registrationId]);
+  return rows[0] ? Number(rows[0].exhibition_id) : null;
 }
 
 export async function createCustomExpoRegistration(
@@ -215,6 +231,7 @@ export async function createCustomExpoRegistration(
      VALUES (?, ?, ?, ?, 'pending')`,
     [exhibitionId, userId, JSON.stringify(customAnswers || {}), JSON.stringify(formSchemaSnapshot || [])]
   );
+  await flagIfNoPlaceLeft(result.insertId, exhibitionId);
   return result.insertId;
 }
 
@@ -263,6 +280,10 @@ export async function rewriteRegistration(
       `UPDATE expo_registrations SET ${reset} ${DEFAULT_FORM_SET_SQL} WHERE id = ? AND user_id = ? AND ${allowed}`,
       [...defaultFormValues(await shrinkRegistrationDocuments(form.input)), id, userId]
     );
+    if (result.affectedRows > 0 && mode === "resubmit") {
+      const expo = await exhibitionOf(id);
+      if (expo) await flagIfNoPlaceLeft(id, expo);
+    }
     return result.affectedRows > 0;
   }
   const [result] = await pool.query<ResultSetHeader>(
@@ -270,6 +291,10 @@ export async function rewriteRegistration(
      WHERE id = ? AND user_id = ? AND ${allowed}`,
     [JSON.stringify(form.answers || {}), JSON.stringify(form.schema || []), id, userId]
   );
+  if (result.affectedRows > 0 && mode === "resubmit") {
+    const expo = await exhibitionOf(id);
+    if (expo) await flagIfNoPlaceLeft(id, expo);
+  }
   return result.affectedRows > 0;
 }
 
@@ -298,7 +323,8 @@ export async function listRegistrationsForExhibition(exhibitionId: number) {
      FROM expo_registrations r LEFT JOIN users u ON u.id = r.user_id WHERE r.exhibition_id = ? ORDER BY r.created_at DESC`,
     [exhibitionId]
   );
-  return rows.map(mapSummaryRow);
+  const waiting = await waitlistFlags(rows.map((r) => Number(r.id)));
+  return rows.map((row) => ({ ...mapSummaryRow(row), waitlisted: waiting.has(Number(row.id)) }));
 }
 
 export async function getRegistrationById(id: number): Promise<ExpoRegistration | null> {
@@ -317,7 +343,9 @@ export async function getMyRegistration(exhibitionId: number, userId: number, lo
     `${MY_SELECT} WHERE r.exhibition_id = ? AND r.user_id = ? LIMIT 1`,
     [exhibitionId, userId]
   );
-  return rows[0] ? mapMyRow(rows[0], locale) : null;
+  if (!rows[0]) return null;
+  const waiting = await waitlistFlags([Number(rows[0].id)]);
+  return { ...mapMyRow(rows[0], locale), waitlisted: waiting.has(Number(rows[0].id)) };
 }
 
 export async function listMyRegistrations(userId: number, locale?: string): Promise<MyRegistration[]> {
@@ -325,13 +353,15 @@ export async function listMyRegistrations(userId: number, locale?: string): Prom
     `${MY_SELECT} WHERE r.user_id = ? ORDER BY e.start_date DESC, r.id DESC`,
     [userId]
   );
-  return rows.map((row) => mapMyRow(row, locale));
+  const waiting = await waitlistFlags(rows.map((r) => Number(r.id)));
+  return rows.map((row) => ({ ...mapMyRow(row, locale), waitlisted: waiting.has(Number(row.id)) }));
 }
 
 // Every change below is a single conditional UPDATE, so two taps (or two tabs)
 // can never push a registration through a step it is not in.
 
 export async function cancelMyRegistration(id: number, userId: number): Promise<boolean> {
+  const expo = await exhibitionOf(id);
   const [result] = await pool.query<ResultSetHeader>(
     `UPDATE expo_registrations r JOIN exhibitions e ON e.id = r.exhibition_id
      SET r.status = 'cancelled', r.cancelled_at = UTC_TIMESTAMP()
@@ -342,6 +372,8 @@ export async function cancelMyRegistration(id: number, userId: number): Promise<
      )`,
     [id, userId]
   );
+  // A place may have been freed: the registrations that waited longest are let in.
+  if (result.affectedRows > 0 && expo) promoteQuietly(expo);
   return result.affectedRows > 0;
 }
 
@@ -442,6 +474,8 @@ export async function setRegistrationStatus(id: number, status: RegistrationStat
   }
   const [result] = await pool.query<ResultSetHeader>(`UPDATE expo_registrations SET status = ?, ${sets} WHERE id = ?`, [...values, id]);
   if (result.affectedRows === 0) return false;
+  const expo = await exhibitionOf(id);
+  if (expo) promoteQuietly(expo);
   if (status === "attended") await awardAttendanceQuietly(id);
   return true;
 }

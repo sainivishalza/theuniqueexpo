@@ -40,6 +40,11 @@ export default async function ExhibitionDetailPage({
       img?.startsWith("data:") ? `/api/exhibitions/${row.slug}/gallery/${i}?v=${row.updatedAt}` : img
     ),
     registrationEnabled: row.registrationEnabled,
+    registrationState: row.registrationState,
+    registrationOpens: row.registrationOpens,
+    registrationCloses: row.registrationCloses,
+    registrationDaysToClose: row.registrationDaysToClose,
+    registrationDaysToOpen: row.registrationDaysToOpen,
   };
 
   // Event structured data so Google can show the dates and venue directly in

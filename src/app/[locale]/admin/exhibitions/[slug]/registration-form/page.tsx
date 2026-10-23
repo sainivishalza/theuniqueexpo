@@ -18,6 +18,7 @@ interface ExhibitionSummary { id: string; title: string; slug: string; }
 export default function RegistrationFormBuilderPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const t = useTranslations("adminExhibitionRegForm");
+  const tw = useTranslations("adminExhibitionRegForm.window");
   const tb = useTranslations("adminRegFormBuilder");
   const ta = useTranslations("adminCommon");
   const TYPE_LABELS: Record<CustomFieldType, string> = {
@@ -30,6 +31,12 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
   const { user, loading: authLoading } = useAuth();
   const [exhibition, setExhibition] = useState<ExhibitionSummary | null>(null);
   const [enabled, setEnabled] = useState(true);
+  const [opens, setOpens] = useState("");
+  const [closes, setCloses] = useState("");
+  const [quota, setQuota] = useState("");
+  const [series, setSeries] = useState("");
+  const [windowState, setWindowState] = useState("open");
+  const [places, setPlaces] = useState<{ quota: number; taken: number; waitlisted: number } | null>(null);
   const [usingDefault, setUsingDefault] = useState(true);
   const [fields, setFields] = useState<CustomFormField[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,6 +52,12 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
         if (data.error) throw new Error(data.error);
         setExhibition(data.exhibition);
         setEnabled(data.registrationEnabled);
+        setOpens(data.registrationOpens || "");
+        setCloses(data.registrationCloses || "");
+        setQuota(data.buyerQuota ? String(data.buyerQuota) : "");
+        setSeries(data.series || "");
+        setWindowState(data.registrationState || "open");
+        setPlaces(data.places || null);
         if (data.registrationFormSchema && data.registrationFormSchema.length > 0) {
           setUsingDefault(false);
           setFields(data.registrationFormSchema);
@@ -92,12 +105,23 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           registrationEnabled: enabled,
+          registrationOpens: opens || null,
+          registrationCloses: closes || null,
+          buyerQuota: quota.trim() === "" ? null : Number(quota),
+          series,
           registrationFormSchema: usingDefault ? null : fields,
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || tb("saveFailed"));
+      if (!res.ok) {
+        const known = ["invalid_date", "closes_before_opens", "invalid_quota", "series_too_long"];
+        throw new Error(known.includes(data.code) ? tw(data.code) : data.error || tb("saveFailed"));
+      }
       setSaved(true);
+      // The state shown below follows the dates just saved.
+      fetch(`/api/admin/exhibitions/${encodeURIComponent(slug)}/registration-form`).then((r) => r.json()).then((d) => {
+        if (d && !d.error) { setWindowState(d.registrationState || "open"); setPlaces(d.places || null); }
+      }).catch(() => {});
       setTimeout(() => setSaved(false), 2500);
     } catch (err) {
       setError(errorMessage(err, ta("somethingWentWrong")));
@@ -146,6 +170,40 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
                 >
                   <span className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-transform ${enabled ? "translate-x-7" : "translate-x-1"}`} />
                 </button>
+              </Card>
+
+              <Card shadow="sm" bordered={false} className="p-6">
+                <h2 className="font-bold text-heading">{tw("title")}</h2>
+                <p className="text-sm text-gray-500 mt-1">{tw("hint")}</p>
+                <p className="mt-3 text-sm font-semibold text-emerald-900" data-testid="window-state">
+                  {tw(({ open: "stateOpen", opens_later: "stateOpensLater", deadline_passed: "stateDeadline", switched_off: "stateOff" } as Record<string, string>)[windowState] || "stateOpen")}
+                </p>
+                <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                  <div>
+                    <label htmlFor="rw-opens" className="block text-sm font-medium text-gray-700 mb-1">{tw("opens")}</label>
+                    <input id="rw-opens" type="date" value={opens} onChange={(e) => setOpens(e.target.value)} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" />
+                  </div>
+                  <div>
+                    <label htmlFor="rw-closes" className="block text-sm font-medium text-gray-700 mb-1">{tw("closes")}</label>
+                    <input id="rw-closes" type="date" value={closes} onChange={(e) => setCloses(e.target.value)} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" />
+                  </div>
+                  <div>
+                    <label htmlFor="rw-quota" className="block text-sm font-medium text-gray-700 mb-1">{tw("quota")}</label>
+                    <input id="rw-quota" type="number" inputMode="numeric" min={1} max={100000} value={quota} onChange={(e) => setQuota(e.target.value)} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm" />
+                  </div>
+                </div>
+                <p className="mt-2 text-xs text-gray-500">{tw("quotaHint")}</p>
+                <div className="mt-4">
+                  <label htmlFor="rw-series" className="block text-sm font-medium text-gray-700 mb-1">{tw("series")}</label>
+                  <input id="rw-series" type="text" maxLength={100} value={series} onChange={(e) => setSeries(e.target.value)} placeholder={tw("seriesPlaceholder")} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm sm:max-w-sm" />
+                  <p className="mt-1 text-xs text-gray-500">{tw("seriesHint")}</p>
+                </div>
+                {places && (
+                  <p className="mt-3 text-sm text-gray-700" data-testid="places-summary">
+                    {places.quota > 0 ? tw("places", { taken: places.taken, quota: places.quota }) : tw("placesNoLimit", { taken: places.taken })}
+                    {places.waitlisted > 0 && <span className="ml-2 font-semibold text-gold-800">{tw("waiting", { count: places.waitlisted })}</span>}
+                  </p>
+                )}
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6">

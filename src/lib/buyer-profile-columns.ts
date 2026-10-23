@@ -22,6 +22,7 @@ export const TEXT_COLUMN_ORDER = [
   "dateOfBirth",
   "visaType",
   "visaExpireDate",
+  "passportExpireDate",
   "meetingOrVisiting",
   "gender",
   "purchaseIntention",

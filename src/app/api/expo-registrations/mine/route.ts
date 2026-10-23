@@ -3,6 +3,8 @@ import { getSessionUser } from "@/lib/auth-server";
 import { getBuyerNumber } from "@/lib/server/buyer-numbers";
 import { getExhibitionBySlugOrId } from "@/lib/server/exhibitions-repo";
 import { getMyRegistration, getRegistrationById, listMyRegistrations } from "@/lib/server/expo-registrations-repo";
+import { withNextEditions } from "@/lib/server/next-edition";
+import { withDocumentWarnings } from "@/lib/server/registration-alerts";
 
 const LOCALES = ["en", "ru", "zh"];
 
@@ -19,13 +21,20 @@ export async function GET(request: Request) {
 
   const buyerNumber = await getBuyerNumber(user.id);
   if (!slug) {
-    return NextResponse.json({ registrations: await listMyRegistrations(user.id, locale), buyerNumber });
+    return NextResponse.json({ registrations: await withNextEditions(await withDocumentWarnings(user.id, await listMyRegistrations(user.id, locale)), locale), buyerNumber });
   }
 
   const exhibition = await getExhibitionBySlugOrId(slug);
   if (!exhibition) return NextResponse.json({ error: "Exhibition not found" }, { status: 404 });
 
-  const registration = await getMyRegistration(Number(exhibition.id), user.id, locale);
+  const found = await getMyRegistration(Number(exhibition.id), user.id, locale);
+  let registration = found ? (await withDocumentWarnings(user.id, [found]))[0] : found;
+  // The next edition is only checked against this one exhibition's registration (others of the same series are not loaded).
+  if (registration) {
+    const others = await listMyRegistrations(user.id, locale);
+    const extra = (await withNextEditions(others, locale)).find((r) => r.id === registration!.id);
+    if (extra?.nextEdition) registration = { ...registration, nextEdition: extra.nextEdition };
+  }
   if (searchParams.get("full") === "1" && registration) {
     const form = await getRegistrationById(Number(registration.id));
     return NextResponse.json({ registration, form, buyerNumber });

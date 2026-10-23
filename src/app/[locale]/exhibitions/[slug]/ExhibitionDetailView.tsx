@@ -3,7 +3,8 @@
 import ShareButtons from "@/components/ShareButtons";
 import { useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import RegistrationWindowNote, { hasWindowNote } from "@/components/RegistrationWindowNote";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Link } from "@/i18n/navigation";
 import { formatNumber } from "@/lib/format";
@@ -21,6 +22,9 @@ export interface Exhibition {
   venue: string; city: string; country: string; industry: string; description: string;
   highlights: string[]; exhibitors: number; visitors: string; organizer: string; website: string;
   color: string; image: string; galleryImages: string[]; registrationEnabled: boolean;
+  registrationState?: "open" | "opens_later" | "deadline_passed" | "switched_off";
+  registrationOpens?: string | null; registrationCloses?: string | null;
+  registrationDaysToClose?: number | null; registrationDaysToOpen?: number | null;
 }
 
 
@@ -30,6 +34,8 @@ const WHO_SHOULD_ATTEND_KEYS = [
 
 export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null }) {
   const t = useTranslations("exhibitionDetail");
+  const tw = useTranslations("exhibitionDetail.window");
+  const locale = useLocale();
   const tb = useTranslations("breadcrumbs");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
@@ -271,10 +277,16 @@ export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null
                   expo.registrationEnabled ? (
                     <Card shadow="sm" className="p-6">
                       <h3 className="text-lg font-bold text-heading mb-2">{t("registerToAttend")}</h3>
-                      <p className="text-sm text-gray-500 mb-5">{t("registerToAttendHint")}</p>
+                      <p className="text-sm text-gray-500 mb-3">{t("registerToAttendHint")}</p>
+                      {hasWindowNote(expo) && <div className="mb-4"><RegistrationWindowNote info={expo} t={tw} locale={locale} /></div>}
                       <Button href={`/exhibitions/${expo.slug}/register`} variant="gradientCta" size="block">
                         {t("registerAsBuyerVisitor")}
                       </Button>
+                    </Card>
+                  ) : hasWindowNote(expo) && expo.registrationState !== "switched_off" ? (
+                    <Card shadow="sm" className="p-6">
+                      <h3 className="text-lg font-bold text-heading mb-2">{t("registerToAttend")}</h3>
+                      <RegistrationWindowNote info={expo} t={tw} locale={locale} />
                     </Card>
                   ) : null
                 }
@@ -289,7 +301,7 @@ export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null
                     {t("viewFloorPlanAndBook")}
                   </Button>
                 ) : (
-                  <div className="block w-full text-center rounded-[var(--radius-button)] bg-gray-200 py-3 text-sm font-semibold text-gray-500">
+                  <div className="block w-full text-center rounded-[var(--radius-button)] bg-gray-200 py-3 text-sm font-semibold text-gray-700">
                     {t("exhibitionEnded")}
                   </div>
                 )}

@@ -10,6 +10,7 @@ import { Link } from "@/i18n/navigation";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { formatDateOnly, STATUS_TONE } from "@/lib/client/registration-format";
 import ProfileCompleteness from "./ProfileCompleteness";
+import RegistrationWindowNote from "@/components/RegistrationWindowNote";
 import type { Completeness } from "@/lib/profile-completeness";
 import { findOverlaps, type Plan, type PlanKnown, type PlanQuestion, type SubmitResult } from "@/lib/bulk-registration";
 
@@ -27,6 +28,9 @@ interface Listed {
   status: string | null;
   canRegister: boolean;
   suggestion: { reason: "history" | "profile"; field?: string } | null;
+  registrationState?: "open" | "opens_later" | "deadline_passed" | "switched_off";
+  registrationOpens?: string | null; registrationCloses?: string | null;
+  registrationDaysToClose?: number | null; registrationDaysToOpen?: number | null;
 }
 
 type Step = "choose" | "details" | "done";
@@ -36,6 +40,7 @@ const MAX_FILE_BYTES = 8 * 1024 * 1024;
 // them at once. What your profile already has is used; only what it lacks is asked, once, and kept on the profile.
 export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
   const t = useTranslations("bulkRegister");
+  const tw = useTranslations("bulkRegister.window");
   const ts = useTranslations("buyerDashboard.registrations");
   const locale = useLocale();
   const ids = { search: useId(), known: useId() };
@@ -273,6 +278,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
                         {e.dates}
                         {[e.city, e.country].filter(Boolean).length > 0 ? ` · ${[e.city, e.country].filter(Boolean).join(", ")}` : ""}
                       </p>
+                      {e.canRegister && <RegistrationWindowNote info={e} t={tw} locale={locale} className="mt-1" />}
                       {e.suggestion && <p className="mt-1 text-sm text-gray-700 [overflow-wrap:anywhere]">{e.suggestion.reason === "history" ? t("suggestedHistory", { industry: e.industry }) : t("suggestedProfile", { field: e.suggestion.field ?? "" })}</p>}
                       {overlaps.has(e.slug) && <p className="mt-1 text-sm font-medium text-amber-900 [overflow-wrap:anywhere]"><span aria-hidden="true">⚠ </span>{t("overlapRow", { names: overlapNames(e.slug) })}</p>}
                       <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm">
@@ -451,7 +457,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
               <li key={r.slug} className="flex flex-wrap items-baseline gap-x-2">
                 <span aria-hidden="true">{r.outcome === "registered" || r.outcome === "registered_again" ? "✅" : r.outcome === "failed" ? "❌" : "ℹ️"}</span>
                 <span className="font-semibold text-heading [overflow-wrap:anywhere]">{r.title}</span>
-                <span className="text-gray-700">{t(`outcomes.${r.outcome}`)}</span>
+                <span className="text-gray-700">{r.waitlisted ? t("outcomes.waitlisted") : t(`outcomes.${r.outcome}`)}</span>
               </li>
             ))}
           </ul>

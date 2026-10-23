@@ -146,6 +146,7 @@ export interface BuyerProfileFields {
   dateOfBirth: string;
   visaType: string;
   visaExpireDate: string;
+  passportExpireDate: string;
 }
 
 export interface DocumentReview {
@@ -195,6 +196,7 @@ const EMPTY_FIELDS: BuyerProfileFields = {
   dateOfBirth: "",
   visaType: "",
   visaExpireDate: "",
+  passportExpireDate: "",
 };
 
 function mapRow(row: RowDataPacket): BuyerProfile {
@@ -224,6 +226,7 @@ function mapRow(row: RowDataPacket): BuyerProfile {
     dateOfBirth: row.date_of_birth || "",
     visaType: row.visa_type || "",
     visaExpireDate: row.visa_expire_date || "",
+    passportExpireDate: row.passport_expire_date || "",
     hasDocument: {
       businessLicense: !!row.doc_business_license,
       businessCard: !!row.doc_business_card,
@@ -269,7 +272,7 @@ function summaryColumns(stamp: boolean): string {
   "user_id, company_name, nationality, passport_number, annual_turnover, purchase_intention, other_purchase_intention, contact_person, registration_code, " +
   `${expoNamesSql("buyer_profiles.user_id")} AS source_exhibitions, ${expoIdsSql("buyer_profiles.user_id")} AS expo_ids, ` +
   "departure_city, attendance_day, meeting_or_visiting, passport_name, gender, wechat_id, overseas_company_address, company_field, job_title, contact_email, phone_number, " +
-  "date_of_birth, visa_type, visa_expire_date, " +
+  "date_of_birth, visa_type, visa_expire_date, passport_expire_date, " +
   "doc_business_license, doc_business_card, doc_passport_front, doc_visa_page, doc_canton_fair_card, doc_buyer_photo, doc_invoice_order_list, " +
   "doc_business_license_status, doc_business_license_note, doc_business_card_status, doc_business_card_note, " +
   "doc_passport_front_status, doc_passport_front_note, doc_visa_page_status, doc_visa_page_note, " +
@@ -352,6 +355,7 @@ export interface AdminBuyerProfileRow {
   dateOfBirth: string;
   visaType: string;
   visaExpireDate: string;
+  passportExpireDate: string;
   purchaseIntention: string;
   otherPurchaseIntention: string;
   documentsUploaded: number;
@@ -387,7 +391,7 @@ function adminListQuery(useFlagColumns: boolean, fields: readonly DocumentField[
             p.departure_city, p.attendance_day, p.meeting_or_visiting, p.job_title, p.company_field,
             p.overseas_company_address, p.contact_email, p.phone_number, p.registration_code, p.annual_turnover, p.contact_person,
             ${expoNamesSql("u.id")} AS source_exhibitions, ${expoIdsSql("u.id")} AS expo_ids,
-            p.date_of_birth, p.visa_type, p.visa_expire_date, p.purchase_intention, p.other_purchase_intention,
+            p.date_of_birth, p.visa_type, p.visa_expire_date, p.passport_expire_date, p.purchase_intention, p.other_purchase_intention,
             ${documentPresenceSql(useFlagColumns, fields)},
             ${fields.map((f) => `p.${DOCUMENT_STATUS_COLUMNS[f]}`).join(", ")},
             COALESCE(w.balance, 0) AS reward_points
@@ -459,6 +463,7 @@ export async function listBuyerProfilesForAdmin(): Promise<AdminBuyerProfileRow[
       dateOfBirth: row.date_of_birth || "",
       visaType: row.visa_type || "",
       visaExpireDate: row.visa_expire_date || "",
+      passportExpireDate: row.passport_expire_date || "",
       purchaseIntention: row.purchase_intention || "",
       otherPurchaseIntention: row.other_purchase_intention || "",
       documentsUploaded: docs.filter((d) => d.uploaded).length,
@@ -495,7 +500,7 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
             p.company_name, p.nationality, p.passport_number, p.annual_turnover, p.purchase_intention, p.other_purchase_intention,
             p.contact_person, p.registration_code, ${expoNamesSql("u.id")} AS source_exhibitions, p.departure_city, p.attendance_day, p.meeting_or_visiting,
             p.passport_name, p.gender, p.wechat_id, p.overseas_company_address, p.company_field, p.job_title, p.contact_email, p.phone_number,
-            p.date_of_birth, p.visa_type, p.visa_expire_date, ${docColumns}, COALESCE(w.balance, 0) AS reward_points
+            p.date_of_birth, p.visa_type, p.visa_expire_date, p.passport_expire_date, ${docColumns}, COALESCE(w.balance, 0) AS reward_points
      FROM users u
      LEFT JOIN buyer_profiles p ON p.user_id = u.id
      LEFT JOIN wallets w ON w.user_id = u.id
@@ -544,6 +549,7 @@ export async function getBuyerProfilesForExport(userIds: number[]): Promise<Buye
       dateOfBirth: row.date_of_birth || "",
       visaType: row.visa_type || "",
       visaExpireDate: row.visa_expire_date || "",
+      passportExpireDate: row.passport_expire_date || "",
       rewardPoints: Number(row.reward_points ?? 0),
       custom: customValues.get(row.user_id) ?? {},
       documentData,
@@ -575,6 +581,7 @@ const FIELD_COLUMNS: Record<Exclude<keyof BuyerProfileFields, "sourceExhibitions
   dateOfBirth: "date_of_birth",
   visaType: "visa_type",
   visaExpireDate: "visa_expire_date",
+  passportExpireDate: "passport_expire_date",
 };
 
 // Buyer editing their own profile and admin editing on a buyer's behalf

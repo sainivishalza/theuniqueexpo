@@ -57,6 +57,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ us
     "dateOfBirth",
     "visaType",
     "visaExpireDate",
+    "passportExpireDate",
   ] as const;
   const update: Record<string, string> = {};
   for (const field of fields) {

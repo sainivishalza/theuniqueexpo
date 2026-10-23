@@ -54,6 +54,7 @@ interface AdminBuyerProfileRow {
   dateOfBirth: string;
   visaType: string;
   visaExpireDate: string;
+  passportExpireDate: string;
   purchaseIntention: string;
   otherPurchaseIntention: string;
   documentsUploaded: number;
@@ -71,7 +72,7 @@ const SEARCHABLE_ROW_FIELDS: StringRowKey[] = [
   "gender", "wechatId", "departureCity", "attendanceDay", "meetingOrVisiting",
   "jobTitle", "companyField", "overseasCompanyAddress", "contactEmail", "phoneNumber",
   "registrationCode", "sourceExhibitions", "annualTurnover", "contactPerson", "dateOfBirth", "visaType",
-  "visaExpireDate", "purchaseIntention", "otherPurchaseIntention",
+  "visaExpireDate", "passportExpireDate", "purchaseIntention", "otherPurchaseIntention",
 ];
 
 interface DocReview {
@@ -104,6 +105,7 @@ interface BuyerProfileDetail {
   dateOfBirth: string;
   visaType: string;
   visaExpireDate: string;
+  passportExpireDate: string;
   hasDocument: Record<string, boolean>;
   documentReview: Record<string, DocReview>;
   custom: Record<string, string>;
@@ -163,6 +165,7 @@ const FIELDS: FieldDef[] = [
   { key: "dateOfBirth", kind: "date" },
   { key: "visaType", kind: "select", options: VISA_TYPES, translateOptions: false },
   { key: "visaExpireDate", kind: "date" },
+  { key: "passportExpireDate", kind: "date" },
   { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];

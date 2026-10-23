@@ -4,6 +4,7 @@ import { toDateOnlyString, safeParseArray, safeParseJson, slugLookupValues } fro
 import { formatDateRange, formatDateRangeShort } from "@/lib/date-format";
 import type { CustomFormSchema } from "@/lib/custom-registration-form";
 import { translateString } from "@/lib/server/content-translations";
+import { registrationWindow } from "@/lib/registration-window";
 
 export interface ExhibitionInput {
   slug: string;
@@ -35,6 +36,8 @@ export interface ExhibitionInput {
 // to English whenever a translation hasn't been filled in yet -- admins
 // add exhibitions in English first and translate them over time.
 export function mapExhibitionRow(row: RowDataPacket, locale?: string) {
+  const registrationSwitchedOn = row.registration_enabled === undefined ? true : !!row.registration_enabled;
+  const window = registrationWindow({ switchedOn: registrationSwitchedOn, opens: toDateOnlyString(row.registration_opens) || null, closes: toDateOnlyString(row.registration_closes) || null });
   const descriptionRu = row.description_ru || "";
   const descriptionZh = row.description_zh || "";
   const highlightsRu = safeParseArray(row.highlights_ru);
@@ -77,7 +80,19 @@ export function mapExhibitionRow(row: RowDataPacket, locale?: string) {
     color: row.color || "#075b4f",
     image: row.image ?? "",
     galleryImages: safeParseArray(row.gallery_images),
-    registrationEnabled: row.registration_enabled === undefined ? true : !!row.registration_enabled,
+    // Registration can be made now: switched on by the admin AND inside the opening / closing days, if any were set.
+    registrationEnabled: window.open,
+    // The admin's own switch, whatever the dates say (the admin form shows this one).
+    registrationSwitchedOn,
+    registrationState: window.state,
+    registrationOpens: window.opens,
+    registrationCloses: window.closes,
+    registrationDaysToClose: window.daysToClose,
+    registrationDaysToOpen: window.daysToOpen,
+    // How many buyers it takes (0 = no limit).
+    buyerQuota: Number(row.buyer_quota) > 0 ? Number(row.buyer_quota) : 0,
+    // Editions of one event share a series name (set by the admin).
+    series: String(row.series ?? ""),
     registrationFormSchema: safeParseJson(row.registration_form_schema) as CustomFormSchema | null,
     // Cache-busting value for the image/gallery endpoints below -- their
     // URL is otherwise identical before and after an admin re-uploads a
@@ -92,14 +107,19 @@ export function mapExhibitionRow(row: RowDataPacket, locale?: string) {
 // multi-megabyte payload). Point at the dedicated image endpoint instead;
 // plain external URLs (short, already cheap) pass through unchanged.
 export async function listExhibitions(locale?: string) {
-  const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT id, slug, title, start_date, end_date, venue, city, country, industry, description,
+  const columns = `id, slug, title, start_date, end_date, venue, city, country, industry, description,
             highlights, description_ru, description_zh, highlights_ru, highlights_zh,
             exhibitors, visitors, organizer, website, color, registration_enabled, registration_form_schema,
             updated_at,
-            IF(LEFT(image, 5) = 'data:', CONCAT('/api/exhibitions/', slug, '/image?v=', UNIX_TIMESTAMP(updated_at)), image) AS image
-     FROM exhibitions ORDER BY start_date ASC`
-  );
+            IF(LEFT(image, 5) = 'data:', CONCAT('/api/exhibitions/', slug, '/image?v=', UNIX_TIMESTAMP(updated_at)), image) AS image`;
+  let rows: RowDataPacket[];
+  try {
+    [rows] = await pool.query<RowDataPacket[]>(`SELECT ${columns}, registration_opens, registration_closes, buyer_quota, series FROM exhibitions ORDER BY start_date ASC`);
+  } catch (err) {
+    // Until migration 068 has run there are no opening / closing days or places: the list works as before.
+    if ((err as { code?: string }).code !== "ER_BAD_FIELD_ERROR") throw err;
+    [rows] = await pool.query<RowDataPacket[]>(`SELECT ${columns} FROM exhibitions ORDER BY start_date ASC`);
+  }
   return rows.map((row) => mapExhibitionRow(row, locale));
 }
 
@@ -175,14 +195,17 @@ export async function deleteExhibition(id: number) {
 
 export async function updateRegistrationFormConfig(
   id: number,
-  input: { registrationEnabled: boolean; registrationFormSchema: unknown }
+  input: { registrationEnabled: boolean; registrationFormSchema: unknown; registrationOpens?: string | null; registrationCloses?: string | null; buyerQuota?: number | null; series?: string | null }
 ) {
-  await pool.query(
-    "UPDATE exhibitions SET registration_enabled = ?, registration_form_schema = ? WHERE id = ?",
-    [
-      input.registrationEnabled,
-      input.registrationFormSchema ? JSON.stringify(input.registrationFormSchema) : null,
-      id,
-    ]
-  );
+  const schema = input.registrationFormSchema ? JSON.stringify(input.registrationFormSchema) : null;
+  try {
+    await pool.query(
+      "UPDATE exhibitions SET registration_enabled = ?, registration_form_schema = ?, registration_opens = ?, registration_closes = ?, buyer_quota = ?, series = ? WHERE id = ?",
+      [input.registrationEnabled, schema, input.registrationOpens || null, input.registrationCloses || null, input.buyerQuota && input.buyerQuota > 0 ? input.buyerQuota : null, input.series?.trim() || null, id]
+    );
+  } catch (err) {
+    // Before migration 068 only the switch and the form can be saved.
+    if ((err as { code?: string }).code !== "ER_BAD_FIELD_ERROR") throw err;
+    await pool.query("UPDATE exhibitions SET registration_enabled = ?, registration_form_schema = ? WHERE id = ?", [input.registrationEnabled, schema, id]);
+  }
 }

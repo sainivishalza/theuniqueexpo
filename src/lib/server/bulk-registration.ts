@@ -13,6 +13,7 @@ import {
   type Plan, type PlanExhibition, type PlanKnown, type PlanQuestion, type QuestionKind, type SubmitOutcome, type SubmitResult,
 } from "@/lib/bulk-registration";
 import { listExhibitions } from "@/lib/server/exhibitions-repo";
+import { waitlistedExhibitionsOf } from "@/lib/server/waitlist";
 import { suggestionFor, type Suggestion } from "@/lib/exhibition-suggestions";
 import {
   getBuyerDocument, getBuyerProfileOrEmpty, setBuyerDocument, upsertBuyerProfileFields,
@@ -289,6 +290,12 @@ export interface ListedExhibition {
   canRegister: boolean;
   /** Why this one might interest the buyer (their earlier registrations or their profile), if it does. */
   suggestion: Suggestion | null;
+  /** The closing day, if the admin set one, and how far away it is. */
+  registrationState: "open" | "opens_later" | "deadline_passed" | "switched_off";
+  registrationOpens: string | null;
+  registrationCloses: string | null;
+  registrationDaysToClose: number | null;
+  registrationDaysToOpen: number | null;
 }
 
 /** The upcoming exhibitions open for registration, each with where this buyer stands. */
@@ -314,6 +321,8 @@ export async function listRegistrable(userId: number, locale?: string): Promise<
         industry: e.industry, description: (e.description || "").slice(0, 280), image: e.image || "",
         status, canRegister: status === null || canRegisterAgain(status as never),
         suggestion: status === null || canRegisterAgain(status as never) ? suggestionFor(industryOf.get(Number(e.id)) ?? "", history, profileTexts) : null,
+        registrationState: e.registrationState, registrationOpens: e.registrationOpens, registrationCloses: e.registrationCloses,
+        registrationDaysToClose: e.registrationDaysToClose, registrationDaysToOpen: e.registrationDaysToOpen,
       };
     });
 }
@@ -554,6 +563,12 @@ export async function submitRegistrations(user: Person, slugs: string[], answers
         results.push({ slug: a.slug, title: a.title, outcome: "failed", error: "Could not register" });
       }
     }
+  }
+  // Which of them are waiting for a place (the exhibition has taken all its buyers).
+  const waiting = created > 0 ? await waitlistedExhibitionsOf(ctx.user.id) : new Set<number>();
+  for (const r of results) {
+    const a = built.active.find((x) => x.slug === r.slug);
+    if (a && (r.outcome === "registered" || r.outcome === "registered_again") && waiting.has(a.id)) r.waitlisted = true;
   }
   if (created > 0) upgradeReferralStatus(ctx.user.id, "booked_booth").catch((err) => console.error("Referral status upgrade error:", err));
   // One message for everything that was registered (not one per exhibition).

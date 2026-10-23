@@ -29,6 +29,7 @@ export type EmailKind =
   | "expenseRejected"
   | "confirmEmail"
   | "registrationReminder"
+  | "registrationStartsSoon"
   | "announcement"
   | "test";
 

@@ -4686,6 +4686,12 @@
       "intro": "我们已收到您的报名：{expo}。",
       "body": "报名正在等待审核。审核结果出来后我们会立即通知您，您也可以在“我的报名”页面查看所有报名。",
       "button": "打开我的报名"
+    },
+    "registrationStartsSoon": {
+      "subject": "{expo} 即将开幕",
+      "intro": "{expo} 将于 {date} 开幕，您已报名。",
+      "body": "请准备好护照，并在展馆扫描二维码签到。您可以在展会页面把日期添加到日历。",
+      "button": "打开展会页面"
     }
   },
   "adminEmail": {
@@ -4748,7 +4754,8 @@
       "announcement": "公告",
       "tourRegistrationApproved": "旅游报名已通过",
       "tourRegistrationRejected": "旅游报名未通过",
-      "registrationReceived": "已收到报名"
+      "registrationReceived": "已收到报名",
+      "registrationStartsSoon": "展会即将开幕"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -5055,6 +5062,10 @@
       "registrationReceived": {
         "title": "已收到报名",
         "body": "我们已收到您的报名：{expo}。目前正在等待审核。"
+      },
+      "registrationStartsSoon": {
+        "title": "您报名的展会即将开幕",
+        "body": "{expo} 将于 {date} 开幕。打开展会页面查看签到信息。"
       }
     }
   },

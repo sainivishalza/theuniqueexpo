@@ -142,6 +142,7 @@ run_mysql schema-migrations/062-email-changes-reminders.sql
 run_mysql schema-migrations/063-admin-two-step-and-activity-log.sql
 run_mysql schema-migrations/064-user-notifications.sql
 run_mysql schema-migrations/065-buyer-extra-info.sql
+run_mysql schema-migrations/066-start-reminder.sql
 
 # Every deploy saves a full copy of the database (uploaded documents included) and
 # nothing ever removed them, so they would slowly fill this account's disk. Keep the

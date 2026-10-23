@@ -4686,6 +4686,12 @@
       "intro": "We received your registration for: {expo}.",
       "body": "It is now waiting for review. We will tell you as soon as it is decided, and you can follow every registration on your registrations page.",
       "button": "Open my registrations"
+    },
+    "registrationStartsSoon": {
+      "subject": "{expo} starts soon",
+      "intro": "{expo} starts on {date} and you are registered.",
+      "body": "Have your passport ready and scan the QR code at the venue to check in. You can add the dates to your calendar from the exhibition page.",
+      "button": "Open the exhibition page"
     }
   },
   "adminEmail": {
@@ -4748,7 +4754,8 @@
       "announcement": "Announcement",
       "tourRegistrationApproved": "Tour registration approved",
       "tourRegistrationRejected": "Tour registration not approved",
-      "registrationReceived": "Registration received"
+      "registrationReceived": "Registration received",
+      "registrationStartsSoon": "Exhibition starts soon"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -5055,6 +5062,10 @@
       "registrationReceived": {
         "title": "Registration received",
         "body": "We received your registration for: {expo}. It is now waiting for review."
+      },
+      "registrationStartsSoon": {
+        "title": "Your exhibition starts soon",
+        "body": "{expo} starts on {date}. Open the exhibition page for your check-in details."
       }
     }
   },

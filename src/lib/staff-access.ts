@@ -31,7 +31,7 @@ const CONTENT_AREAS = ["exhibitions", "tours", "events", "blog", "magazine", "vi
 const RULES: Record<Exclude<StaffPreset, "full">, Rule> = {
   // Looks after registrations and buyers: approves, checks documents, announces, checks tickets at the door.
   reviewer: {
-    read: [...REGISTRATION_AREAS, ...BUYER_AREAS, "exhibitions", "tours", "events", "record-meta", "tickets", "insights", "announcement-templates", "visa-applications", "tour-applications", "business-trip-inquiries"],
+    read: [...REGISTRATION_AREAS, ...BUYER_AREAS, "exhibitions", "tours", "events", "record-meta", "tickets", "insights", "email-bounces", "announcement-templates", "visa-applications", "tour-applications", "business-trip-inquiries"],
     write: [...REGISTRATION_AREAS, "buyer-profiles", "buyers", "record-meta", "tickets", "announcement-templates", "visa-applications", "tour-applications", "business-trip-inquiries"],
     pages: ["/admin/registrations", "/admin/buyer-profiles", "/admin/buyer-expos", "/admin/ticket-check", "/admin/insights", "/admin/exhibitions", "/admin/tours", "/admin/events", "/admin/visa-applications", "/admin/tour-applications", "/admin/business-trip-inquiries", "/admin/buyer-form"],
   },

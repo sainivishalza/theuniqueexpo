@@ -161,6 +161,13 @@ run_mysql schema-migrations/075-buyer-merges.sql
 run_mysql schema-migrations/076-scheduled-exports.sql
 run_mysql schema-migrations/077-staff-access.sql
 run_mysql schema-migrations/078-document-share-links.sql
+run_mysql schema-migrations/079-data-retention.sql
+run_mysql schema-migrations/080-health-and-backups.sql
+run_mysql schema-migrations/081-email-bounces.sql
+
+# Writes down that this deploy's backup exists (Admin -> Health shows when the last one was made). Never fails the job.
+BACKUP_BYTES=$(wc -c < "$BACKUP_FILE" | tr -d ' ')
+$MYSQL -e "INSERT INTO backup_log (kind, file_name, size_bytes, created_at) VALUES ('deploy', '$(basename "$BACKUP_FILE")', ${BACKUP_BYTES:-0}, UTC_TIMESTAMP())" || echo "(could not record the backup in backup_log)"
 
 # Every deploy saves a full copy of the database (uploaded documents included) and
 # nothing ever removed them, so they would slowly fill this account's disk. Keep the

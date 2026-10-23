@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { JWT_SECRET } from "@/lib/auth-server";
+import { isSuppressed } from "@/lib/server/email-bounces";
 
 // Sending e-mail. The settings (mail server, user name, password, sender address) are filled in by an
 // admin on Admin -> Email and kept in the mail_settings table, the password encrypted. Nothing is sent
@@ -165,12 +166,18 @@ async function logMail(mail: OutgoingMail, status: "sent" | "failed", error = ""
   }
 }
 
+// Mails that are still tried for an address that bounced: the person may have fixed the problem, and they cannot sign in without them.
+const ALWAYS_SENT_KINDS = new Set(["passwordReset", "passwordChanged", "confirmEmail", "confirmEmailChange", "emailChanged", "test"]);
+
 // Sends one message with the saved settings. Never throws: the result says what happened.
 export async function sendMail(mail: OutgoingMail, options: { ignoreEnabled?: boolean } = {}): Promise<{ ok: boolean; error?: string }> {
   const s = await readSettings();
   if (!options.ignoreEnabled && !(s.enabled && s.host && s.fromEmail)) return { ok: false, error: "disabled" };
   if (!s.host || !s.fromEmail) return { ok: false, error: "incomplete" };
   if (!EMAIL_RE.test(mail.to) || /[\r\n]/.test(mail.subject)) return { ok: false, error: "invalid_recipient" };
+  // An address that bounced for good is not e-mailed again (until an admin clears it), except the mails a person needs
+  // to sign in or confirm an address, and the admin's own test.
+  if (!ALWAYS_SENT_KINDS.has(mail.kind) && (await isSuppressed(mail.to).catch(() => false))) return { ok: false, error: "bounced" };
   try {
     const transport = nodemailer.createTransport({
       host: s.host,

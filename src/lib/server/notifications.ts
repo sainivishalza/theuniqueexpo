@@ -16,6 +16,8 @@ export type EmailKind =
   | "passwordChanged"
   | "registrationApproved"
   | "registrationRejected"
+  | "tourRegistrationApproved"
+  | "tourRegistrationRejected"
   | "documentRejected"
   | "pointsReceived"
   | "topupApproved"
@@ -197,6 +199,19 @@ export function notifyRegistrationDecision(registrationId: number, approved: boo
   })().catch((err) => console.error("Could not prepare registration e-mail", err));
 }
 
+// A tour registration decided by an admin: the buyer is told on the website and (when e-mail is on) by e-mail.
+export function notifyTourRegistrationDecision(registrationId: number, approved: boolean): void {
+  (async () => {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      "SELECT r.user_id, t.title, t.slug FROM tour_registrations r JOIN tours t ON t.id = r.tour_id WHERE r.id = ?",
+      [registrationId]
+    );
+    const r = rows[0];
+    if (!r) return;
+    notifyUser(r.user_id, approved ? "tourRegistrationApproved" : "tourRegistrationRejected", { tour: String(r.title) }, { path: `/tours/${String(r.slug)}` });
+  })().catch((err) => console.error("Could not prepare tour registration notice", err));
+}
+
 export function notifyPointsReceived(userId: number, points: number, reason: string, balance?: number): void {
   notifyUser(userId, "pointsReceived", { points: formatNumber(points), reason, ...(balance !== undefined ? { balance: formatNumber(balance) } : {}) }, { path: "/dashboard/buyer/wallet" });
 }
@@ -255,11 +270,16 @@ export interface AnnouncementTexts {
 }
 
 export interface AnnouncementResult {
+  /** E-mails being sent. */
   queued: number;
+  /** Selected buyers who get no e-mail (no real address, or e-mail is off). */
   withoutEmail: number;
+  /** Buyers who can read it under Notifications on the website. */
+  notified: number;
+  mailOn: boolean;
 }
 
-// Sends one announcement to the chosen people, each in their own language (English when the admin did not
+// Publishes one announcement to the chosen people on the website and (when e-mail is on) e-mails it, each in their own language (English when the admin did not
 // write that language). People without a real e-mail address are skipped. The sending runs in the
 // background, one message at a time with a short pause, so a long list does not hammer the mail server.
 export async function sendAnnouncement(userIds: number[], texts: AnnouncementTexts): Promise<AnnouncementResult> {
@@ -267,14 +287,11 @@ export async function sendAnnouncement(userIds: number[], texts: AnnouncementTex
     "SELECT id, name, email, status, preferred_locale FROM users WHERE id IN (?) AND role = 'buyer'",
     [userIds]
   ).catch(async () => pool.query<RowDataPacket[]>("SELECT id, name, email, status FROM users WHERE id IN (?) AND role = 'buyer'", [userIds]));
-  // Everyone selected can read it on the website, with or without an e-mail address.
-  void addNotificationForMany(
-    rows.filter((r) => r.status !== "suspended").map((r) => Number(r.id)),
-    "announcement",
-    { subject: texts.subject, message: texts.message },
-    "/dashboard/notifications"
-  );
-  const people = rows.filter((r) => r.status !== "suspended" && r.email && !isPlaceholderEmail(String(r.email)));
+  // Everyone selected can read it on the website, with or without an e-mail address (and with e-mail switched off).
+  const readers = rows.filter((r) => r.status !== "suspended").map((r) => Number(r.id));
+  await addNotificationForMany(readers, "announcement", { subject: texts.subject, message: texts.message }, "/dashboard/notifications");
+  const mailOn = await isMailEnabled();
+  const people = mailOn ? rows.filter((r) => r.status !== "suspended" && r.email && !isPlaceholderEmail(String(r.email))) : [];
   const withoutEmail = userIds.length - people.length;
   (async () => {
     for (const r of people) {
@@ -289,5 +306,5 @@ export async function sendAnnouncement(userIds: number[], texts: AnnouncementTex
       await new Promise((res) => setTimeout(res, 150));
     }
   })().catch((err) => console.error("Announcement run failed:", err));
-  return { queued: people.length, withoutEmail };
+  return { queued: people.length, withoutEmail, notified: readers.length, mailOn };
 }

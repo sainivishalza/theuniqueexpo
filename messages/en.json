@@ -3174,10 +3174,10 @@
       }
     },
     "announce": {
-      "toggle": "Send e-mail",
-      "title": "E-mail {count} selected buyers",
-      "recipients": "{with} of the {total} selected buyers have a real e-mail address and will get it by e-mail. Everyone selected can also read it under Notifications on the website.",
-      "noRecipients": "None of the selected buyers has a real e-mail address.",
+      "toggle": "Send announcement",
+      "title": "Announce to {count} selected buyers",
+      "recipients": "{with} of the {total} selected buyers have a real e-mail address and will also get it by e-mail. Everyone selected can read it under Notifications on the website.",
+      "noRecipients": "None of the selected buyers has a real e-mail address, so no e-mail will be sent. They can read the announcement under Notifications on the website.",
       "languages": "Language of the message",
       "lang": {
         "en": "English",
@@ -3188,11 +3188,11 @@
       "message": "Message",
       "messageHint": "English is required. Russian and Chinese are optional: buyers using those languages get them when written, everyone else gets English. A blank line starts a new paragraph.",
       "send": "Review and send",
-      "confirmQuestion": "Send this e-mail to {count} buyers now? It cannot be taken back.",
+      "confirmQuestion": "Send this announcement to {count} buyers now? It cannot be taken back.",
       "confirmSend": "Yes, send it",
       "sending": "Sending…",
       "back": "Back",
-      "done": "Done: the e-mail is being sent to {count} buyers.",
+      "done": "Done: {count} buyers can now read it under Notifications on the website.",
       "skipped": "{count} buyers have no real e-mail address, so no e-mail was sent to them; they can read it under Notifications on the website. You can see every e-mail in Admin → Email.",
       "errors": {
         "no_buyers": "Select at least one buyer.",
@@ -3201,7 +3201,10 @@
         "english_required": "Write the subject (3 letters or more) and the message (5 letters or more) in English.",
         "mail_off": "E-mail is switched off. Switch it on in Admin → Email first.",
         "rate_limited": "You have sent several announcements in the last hour. Please wait a little."
-      }
+      },
+      "mailOff": "E-mail is switched off, so no e-mails will be sent. Everyone selected can read the announcement under Notifications on the website.",
+      "doneEmail": "The e-mail is being sent to {count} buyers.",
+      "mailOffDone": "E-mail is switched off, so no e-mails were sent."
     }
   },
   "homepageSlideshow": {
@@ -4643,6 +4646,18 @@
       "subject": "{subject}",
       "intro": "{message}",
       "button": "Open the website"
+    },
+    "tourRegistrationApproved": {
+      "subject": "Your registration for {tour} is approved",
+      "intro": "Good news: your registration for {tour} is approved.",
+      "body": "Open the tour page for the details. We will contact you if anything else is needed.",
+      "button": "Open the tour"
+    },
+    "tourRegistrationRejected": {
+      "subject": "About your registration for {tour}",
+      "intro": "We could not approve your registration for {tour}.",
+      "body": "If you think this is a mistake, please contact us and we will look at it again.",
+      "button": "Open the tour"
     }
   },
   "adminEmail": {
@@ -4702,7 +4717,9 @@
       "test": "Test e-mail",
       "confirmEmail": "E-mail confirmation link",
       "registrationReminder": "Registration reminder",
-      "announcement": "Announcement"
+      "announcement": "Announcement",
+      "tourRegistrationApproved": "Tour registration approved",
+      "tourRegistrationRejected": "Tour registration not approved"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -4996,6 +5013,14 @@
       "passwordChanged": {
         "title": "Password changed",
         "body": "The password of your account was changed. If this was not you, please contact us at once."
+      },
+      "tourRegistrationApproved": {
+        "title": "Tour registration approved",
+        "body": "Your registration for {tour} was approved."
+      },
+      "tourRegistrationRejected": {
+        "title": "Tour registration not approved",
+        "body": "Your registration for {tour} was not approved."
       }
     }
   }

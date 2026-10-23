@@ -26,7 +26,7 @@ const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'tok
   r = await send({ userIds: [en.id], subject: { en: 'Hi', ru: '', zh: '' }, message: { en: 'short', ru: '', zh: '' } }); ok(r.status === 400 && (await r.json()).code === 'english_required', 'a subject under 3 letters is refused (English required)');
   r = await send({ userIds: [en.id], subject: { en: 'Hello there', ru: '', zh: '' }, message: { en: '', ru: 'только по-русски', zh: '' } }); ok(r.status === 400, 'only Russian, no English: refused');
   r = await send({ userIds: [en.id], subject: { en: 'Line\nbreak', ru: '', zh: '' }, message: { en: 'long enough message', ru: '', zh: '' } }); ok(r.status === 400, 'a subject with a line break is refused (header injection)');
-  r = await send({ userIds: [en.id], ...texts }); ok(r.status === 503 && (await r.json()).code === 'mail_off', 'with e-mail off: 503');
+  r = await send({ userIds: [en.id], ...texts }); let j0 = await r.json(); ok(r.status === 200 && j0.queued === 0 && j0.mailOn === false && j0.notified === 1, 'with e-mail off it still works: no e-mails, but the buyer can read it on the website', j0);
   await put(settings); await sleep(200);
 
   console.log('\n== sending');
@@ -56,8 +56,8 @@ const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'tok
   await p.getByPlaceholder(/Search by registration no/).fill(`an-`); await sleep(1200);
   const rows = p.locator('tbody tr').filter({ hasText: `-${st}@test.invalid` }); const count = await rows.count(); ok(count >= 3, 'the test buyers are listed', count);
   for (let i = 0; i < count; i++) await rows.nth(i).locator('input[type=checkbox]').check();
-  await p.getByRole('button', { name: 'Send e-mail' }).click(); const dlg = p.getByRole('dialog'); await dlg.waitFor();
-  ok(/E-mail \d+ selected buyers/.test(await dlg.innerText()), 'the dialog opens for the selection'); ok(/have a real e-mail address/.test(await dlg.innerText()), 'it says how many will get it');
+  await p.getByRole('button', { name: 'Send announcement' }).click(); const dlg = p.getByRole('dialog'); await dlg.waitFor();
+  ok(/Announce to \d+ selected buyers/.test(await dlg.innerText()), 'the dialog opens for the selection'); ok(/have a real e-mail address/.test(await dlg.innerText()), 'it says how many will get it');
   ok(await dlg.getByRole('button', { name: 'Review and send' }).isDisabled(), 'sending is disabled until English is written');
   await dlg.getByLabel('Subject', { exact: true }).fill('Hello from the team'); await dlg.getByLabel('Message', { exact: true }).fill('Short note for everyone.'); ok(await dlg.getByRole('button', { name: 'Review and send' }).isEnabled(), 'enabled once English is written');
   await dlg.getByRole('tab', { name: /Русский/ }).click(); ok((await dlg.getByLabel('Subject', { exact: true }).inputValue()) === '', 'the Russian tab starts empty (optional)'); await dlg.getByLabel('Subject', { exact: true }).fill('Привет'); await dlg.getByLabel('Message', { exact: true }).fill('Короткое сообщение.'); await dlg.getByRole('tab', { name: /English/ }).click(); ok((await dlg.getByLabel('Subject', { exact: true }).inputValue()) === 'Hello from the team', 'switching tabs keeps what was typed');
@@ -65,10 +65,23 @@ const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'tok
   await dlg.getByRole('button', { name: 'Review and send' }).click(); ok(/cannot be taken back/.test(await dlg.innerText()), 'a confirmation step asks before sending'); await dlg.getByRole('button', { name: 'Back' }).click(); ok(await dlg.getByRole('button', { name: 'Review and send' }).isVisible(), 'Back returns to editing');
   const nb = srv.messages.length; await dlg.getByRole('button', { name: 'Review and send' }).click(); await dlg.getByRole('button', { name: 'Yes, send it' }).click(); await dlg.getByRole('status').waitFor({ timeout: 10000 }); ok(/being sent to \d+ buyers/.test(await dlg.innerText()), 'the dialog reports how many are being e-mailed', await dlg.innerText());
   for (let i = 0; i < 60 && srv.messages.length === nb; i++) await sleep(150); ok(srv.messages.length > nb, 'the mails go out'); await c.close();
-  for (const [loc, btn] of [['ru', 'Отправить письмо'], ['zh', '发送邮件']]) { c = await ctxFor(u.aT); p = await c.newPage(); await p.goto(`${BASE}/${loc}/admin/buyer-profiles`, { waitUntil: 'networkidle' }); await p.getByPlaceholder(/./).nth(1).fill('an-').catch(() => {}); await sleep(900); await p.locator('tbody tr').first().locator('input[type=checkbox]').check(); ok(await p.getByRole('button', { name: btn }).count() === 1, loc + ': the Send e-mail button is translated'); await c.close(); }
+  for (const [loc, btn] of [['ru', 'Отправить объявление'], ['zh', '发送公告']]) { c = await ctxFor(u.aT); p = await c.newPage(); await p.goto(`${BASE}/${loc}/admin/buyer-profiles`, { waitUntil: 'networkidle' }); await p.getByPlaceholder(/./).nth(1).fill('an-').catch(() => {}); await sleep(900); await p.locator('tbody tr').first().locator('input[type=checkbox]').check(); ok(await p.getByRole('button', { name: btn }).count() === 1, loc + ': the Send e-mail button is translated'); await c.close(); }
   c = await ctxFor(u.aT, { width: 375, height: 800 }); p = await c.newPage(); await p.goto(BASE + '/en/admin/email', { waitUntil: 'networkidle' }); await p.getByRole('heading', { name: 'Daily reminders' }).waitFor(); ok(true, 'the Email page has the Daily reminders card'); const wd = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, vw: innerWidth })); ok(wd.sw <= wd.vw + 1, '375px: no sideways overflow on the Email page', wd);
   vio = await axeViolations(p); ok(vio.length === 0, 'Email page axe 0', vio);
   await p.getByRole('button', { name: 'Make a reminder key' }).click(); await p.getByText('Your reminder key').waitFor(); ok(/REMINDER_KEY/.test(await p.locator('main, body').first().innerText()), 'the key is shown once with the GitHub instructions'); await c.close();
+  // with e-mail switched off the dialog says so and the announcement is published on the website only
+  await put({ ...settings, enabled: false }); await sleep(250); sql('UPDATE rate_limits SET hits=0');
+  c = await ctxFor(u.aT); p = await c.newPage(); await p.goto(BASE + '/en/admin/buyer-profiles', { waitUntil: 'networkidle' });
+  await p.getByPlaceholder(/Search by registration no/).fill('an-'); await sleep(1200);
+  const rows2 = p.locator('tbody tr').filter({ hasText: `-${st}@test.invalid` }); await rows2.first().locator('input[type=checkbox]').check();
+  await p.getByRole('button', { name: 'Send announcement' }).click(); const dlg2 = p.getByRole('dialog'); await dlg2.waitFor();
+  await dlg2.getByText(/E-mail is switched off/).waitFor(); ok(true, 'with e-mail off the dialog says no e-mails will be sent and everyone can read it on the website');
+  await dlg2.getByLabel('Subject', { exact: true }).fill('Website only note'); await dlg2.getByLabel('Message', { exact: true }).fill('Only on the website.');
+  ok(await dlg2.getByRole('button', { name: 'Review and send' }).isEnabled(), 'sending is possible without e-mail');
+  const n2 = srv.messages.length; await dlg2.getByRole('button', { name: 'Review and send' }).click(); await dlg2.getByRole('button', { name: 'Yes, send it' }).click(); await dlg2.getByRole('status').waitFor({ timeout: 10000 });
+  ok(/can now read it under Notifications/.test(await dlg2.innerText()) && /no e-mails were sent/.test(await dlg2.innerText()), 'it reports the website publication and that nothing was e-mailed', await dlg2.innerText());
+  await sleep(500); ok(srv.messages.length === n2, 'and indeed no e-mail went out');
+  ok(Number(sql("SELECT COUNT(*) FROM user_notifications WHERE kind='announcement' AND params LIKE '%Website only note%'")) >= 1, 'the notification is saved for the buyer'); await c.close();
   await br.close(); await srv.close(); sql('DELETE FROM mail_settings');
   done();
 })();

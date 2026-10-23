@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { logAdminAction } from "@/lib/server/audit-log";
 import { requireAdmin } from "@/lib/auth-server";
-import { isMailEnabled } from "@/lib/server/mail";
 import { checkRateLimit } from "@/lib/server/rate-limit";
 import { sendAnnouncement, type AnnouncementTexts, type EmailLocale } from "@/lib/server/notifications";
 
 const MAX_USER_IDS = 500;
 const LOCALES: EmailLocale[] = ["en", "ru", "zh"];
 
-// Sends one e-mail to the selected buyers (in their own language where the admin wrote it).
+// Publishes one announcement to the selected buyers on the website, and e-mails it too when e-mail is on (in
+// their own language where the admin wrote it).
 export async function POST(request: Request) {
   const admin = await requireAdmin(request);
   if (!admin) return NextResponse.json({ error: "Admin access required", code: "unauthorized" }, { status: 401 });
@@ -29,13 +29,12 @@ export async function POST(request: Request) {
   }
   // English is the language everyone falls back to, so it is required.
   if (texts.subject.en.length < 3 || texts.message.en.length < 5) return NextResponse.json({ error: "english_required", code: "english_required" }, { status: 400 });
-  if (!(await isMailEnabled())) return NextResponse.json({ error: "mail_off", code: "mail_off" }, { status: 503 });
 
   // Only real sends count towards the limit (5 per hour per admin), not refused or mistyped requests.
   const limited = await checkRateLimit(`announce:${admin.id}`, 5, 60 * 60_000);
   if (!limited.allowed) return NextResponse.json({ error: "rate_limited", code: "rate_limited" }, { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } });
 
   const result = await sendAnnouncement(userIds, texts);
-  logAdminAction(request, admin, "announcement_sent", { targetType: "user", details: `${userIds.length} buyers: ${texts.subject.en}` });
+  logAdminAction(request, admin, "announcement_sent", { targetType: "user", details: `${userIds.length} buyers${result.mailOn ? "" : " (website only, e-mail is off)"}: ${texts.subject.en}` });
   return NextResponse.json(result);
 }

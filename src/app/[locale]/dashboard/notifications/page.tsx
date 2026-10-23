@@ -16,7 +16,7 @@ interface Item {
 }
 
 const ICONS: Record<string, string> = {
-  registrationApproved: "✅", registrationRejected: "❌", registrationReminder: "⏰", documentRejected: "🪪", pointsReceived: "💰",
+  registrationApproved: "✅", registrationRejected: "❌", registrationReminder: "⏰", tourRegistrationApproved: "✅", tourRegistrationRejected: "❌", documentRejected: "🪪", pointsReceived: "💰",
   topupApproved: "💳", topupRejected: "💳", withdrawalPaid: "💸", withdrawalRejected: "💸", expenseApproved: "🧾", expenseRejected: "🧾",
   passwordChanged: "🔑", announcement: "📣",
 };
@@ -91,7 +91,7 @@ export default function NotificationsPage() {
   const view = (i: Item) => {
     if (!KNOWN.includes(i.kind)) return { title: t("kinds.other.title"), body: "", extra: "" };
     if (i.kind === "announcement") return { title: String(i.params.subject ?? ""), body: String(i.params.message ?? ""), extra: "" };
-    const values = { expo: "", date: "", points: "", reason: "", balance: "", document: "", ...i.params };
+    const values = { expo: "", tour: "", date: "", points: "", reason: "", balance: "", document: "", ...i.params };
     const withDate = (i.kind === "registrationApproved") && !!i.params.date;
     return {
       title: t(`kinds.${i.kind}.title`, values),

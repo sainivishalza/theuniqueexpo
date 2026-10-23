@@ -29,7 +29,7 @@ interface LogRow {
 }
 
 const KINDS = [
-  "passwordReset", "passwordChanged", "registrationApproved", "registrationRejected", "documentRejected", "pointsReceived",
+  "passwordReset", "passwordChanged", "registrationApproved", "registrationRejected", "tourRegistrationApproved", "tourRegistrationRejected", "documentRejected", "pointsReceived",
   "topupApproved", "topupRejected", "withdrawalPaid", "withdrawalRejected", "expenseApproved", "expenseRejected", "confirmEmail", "registrationReminder", "announcement", "test",
 ];
 

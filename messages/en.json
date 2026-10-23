@@ -4709,6 +4709,12 @@
       "alipayQr": "Our Alipay QR code",
       "wechatQr": "Our WeChat Pay QR code",
       "saved": "Saved."
+    },
+    "statement": {
+      "title": "Monthly statement for the accountant",
+      "help": "One month of the rewards wallet in Excel: the balance at the start, what was added and taken away by kind, the balance at the end, a check that the buyers' balances agree with the ledger, and the same per buyer. 1 point = 1 RMB; months are in UTC.",
+      "month": "Month",
+      "download": "Download the statement"
     }
   },
   "searchPage": {

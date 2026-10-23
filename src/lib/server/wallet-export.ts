@@ -160,3 +160,114 @@ export async function buildMovementsExcel(from: string | null, to: string | null
   });
   return { buffer: toBuffer(await workbook.xlsx.writeBuffer()), truncated };
 }
+
+export const MAX_STATEMENT_ROWS = 20_000;
+
+/** "2026-03" -> the first day of that month and of the next, as UTC dates (YYYY-MM-DD); null when it is not a month. */
+export function monthBounds(month: string): { start: string; end: string } | null {
+  const m = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(month);
+  if (!m) return null;
+  const year = Number(m[1]);
+  const index = Number(m[2]) - 1;
+  if (year < 2000 || year > 2100) return null;
+  const day = (d: Date) => d.toISOString().slice(0, 10);
+  return { start: day(new Date(Date.UTC(year, index, 1))), end: day(new Date(Date.UTC(year, index + 1, 1))) };
+}
+
+// One month of the rewards wallet for the accountant (UTC months; 1 point = 1 RMB): the balance at the start, what was
+// added and taken away by kind, the balance at the end, and a check that the buyers' balances agree with the ledger.
+// Second sheet: the same per buyer.
+export async function buildMonthlyStatementExcel(month: string): Promise<{ buffer: Buffer; truncated: boolean } | null> {
+  const bounds = monthBounds(month);
+  if (!bounds) return null;
+  const { start, end } = bounds;
+
+  const [[open]] = await pool.query<RowDataPacket[]>("SELECT COALESCE(SUM(amount), 0) AS total FROM wallet_transactions WHERE created_at < ?", [start]);
+  const [byType] = await pool.query<RowDataPacket[]>(
+    `SELECT type, COALESCE(SUM(CASE WHEN amount > 0 THEN amount ELSE 0 END), 0) AS added, COALESCE(SUM(CASE WHEN amount < 0 THEN -amount ELSE 0 END), 0) AS taken, COUNT(*) AS entries
+     FROM wallet_transactions WHERE created_at >= ? AND created_at < ? GROUP BY type ORDER BY type`,
+    [start, end]
+  );
+  const [[nowRow]] = await pool.query<RowDataPacket[]>("SELECT COALESCE(SUM(balance), 0) AS balances FROM wallets");
+  const [[ledgerNow]] = await pool.query<RowDataPacket[]>("SELECT COALESCE(SUM(amount), 0) AS total FROM wallet_transactions");
+  const [[paid]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS n, COALESCE(SUM(points), 0) AS pts FROM wallet_withdrawals WHERE status = 'paid' AND processed_at >= ? AND processed_at < ?", [start, end]);
+  const [[topups]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS n, COALESCE(SUM(approved_points), 0) AS pts FROM wallet_topups WHERE status = 'approved' AND reviewed_at >= ? AND reviewed_at < ?", [start, end]);
+  const [[pending]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS n, COALESCE(SUM(points), 0) AS pts FROM wallet_withdrawals WHERE status = 'pending'");
+  const [people] = await pool.query<RowDataPacket[]>(
+    `SELECT u.name, u.email, u.buyer_no,
+            COALESCE(SUM(CASE WHEN t.created_at < ? THEN t.amount ELSE 0 END), 0) AS opening,
+            COALESCE(SUM(CASE WHEN t.created_at >= ? AND t.amount > 0 THEN t.amount ELSE 0 END), 0) AS added,
+            COALESCE(SUM(CASE WHEN t.created_at >= ? AND t.amount < 0 THEN -t.amount ELSE 0 END), 0) AS taken
+     FROM wallet_transactions t JOIN users u ON u.id = t.user_id
+     WHERE t.created_at < ?
+     GROUP BY t.user_id, u.name, u.email, u.buyer_no
+     HAVING opening <> 0 OR added <> 0 OR taken <> 0
+     ORDER BY u.buyer_no IS NULL, u.buyer_no, u.id LIMIT ?`,
+    [start, start, start, end, MAX_STATEMENT_ROWS + 1]
+  );
+  const truncated = people.length > MAX_STATEMENT_ROWS;
+
+  const opening = Number(open.total);
+  const added = byType.reduce((n, r) => n + Number(r.added), 0);
+  const taken = byType.reduce((n, r) => n + Number(r.taken), 0);
+  const closing = opening + added - taken;
+  const balances = Number(nowRow.balances);
+  const ledger = Number(ledgerNow.total);
+
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet("Summary");
+  sheet.columns = [{ width: 46 }, { width: 18 }, { width: 18 }, { width: 18 }, { width: 14 }];
+  const FMT = "#,##0";
+  const bold = (row: ExcelJS.Row) => {
+    row.font = { bold: true };
+  };
+  bold(sheet.addRow([`Rewards wallet statement, ${month}`]));
+  sheet.addRow([`Period (UTC): ${start} to ${new Date(Date.parse(end) - 86_400_000).toISOString().slice(0, 10)}. 1 point = 1 RMB. Made ${new Date().toISOString().slice(0, 16).replace("T", " ")} UTC.`]);
+  sheet.addRow([]);
+  const openingRow = sheet.addRow(["Opening balance (all buyers)", opening]);
+  bold(openingRow);
+  sheet.addRow([]);
+  bold(sheet.addRow(["Movements in the month", "Added", "Taken away", "Net", "Entries"]));
+  for (const r of byType) {
+    sheet.addRow([TYPE_LABELS[r.type as string] ?? r.type, Number(r.added), Number(r.taken), Number(r.added) - Number(r.taken), Number(r.entries)]);
+  }
+  if (byType.length === 0) sheet.addRow(["No movements in this month"]);
+  bold(sheet.addRow(["Total", added, taken, added - taken, byType.reduce((n, r) => n + Number(r.entries), 0)]));
+  sheet.addRow([]);
+  bold(sheet.addRow(["Closing balance (all buyers)", closing]));
+  sheet.addRow([]);
+  bold(sheet.addRow(["Check against the buyers' balances (as of now)"]));
+  sheet.addRow(["Sum of all buyers' balances now", balances]);
+  sheet.addRow(["Total of all ledger entries now", ledger]);
+  const diff = sheet.addRow(["Difference (0 means the books agree)", balances - ledger]);
+  bold(diff);
+  sheet.addRow([]);
+  bold(sheet.addRow(["Money side in this month"]));
+  sheet.addRow(["Withdrawals paid out (number of requests)", Number(paid.n)]);
+  sheet.addRow(["Withdrawals paid out (RMB)", Number(paid.pts)]);
+  sheet.addRow(["Top-ups approved (number of requests)", Number(topups.n)]);
+  sheet.addRow(["Top-ups approved (RMB)", Number(topups.pts)]);
+  sheet.addRow([]);
+  sheet.addRow(["Withdrawal requests waiting to be paid now (number)", Number(pending.n)]);
+  sheet.addRow(["...their points, already taken from the buyers' balances (RMB)", Number(pending.pts)]);
+  sheet.eachRow((row) => row.eachCell((cell, col) => { if (col > 1 && typeof cell.value === "number") cell.numFmt = FMT; }));
+
+  const detail = workbook.addWorksheet("By buyer");
+  detail.columns = [
+    { header: "Buyer Registration No.", key: "buyerNo", width: 22 },
+    { header: "Name", key: "name", width: 26 },
+    { header: "Account Email", key: "email", width: 30 },
+    { header: "Opening balance", key: "opening", width: 16 },
+    { header: "Added", key: "added", width: 14 },
+    { header: "Taken away", key: "taken", width: 14 },
+    { header: "Closing balance", key: "closing", width: 16 },
+  ];
+  detail.getRow(1).font = { bold: true };
+  detail.views = [{ state: "frozen", ySplit: 1 }];
+  people.slice(0, MAX_STATEMENT_ROWS).forEach((r) => {
+    const o = Number(r.opening), a = Number(r.added), t = Number(r.taken);
+    detail.addRow({ buyerNo: formatBuyerNumber(r.buyer_no), name: r.name, email: r.email, opening: o, added: a, taken: t, closing: o + a - t });
+  });
+  ["opening", "added", "taken", "closing"].forEach((k) => { detail.getColumn(k).numFmt = FMT; });
+  return { buffer: toBuffer(await workbook.xlsx.writeBuffer()), truncated };
+}

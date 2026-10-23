@@ -14,6 +14,7 @@ import { addNotification, addNotificationForMany, NOTIFICATION_KINDS, type Notif
 export type EmailKind =
   | "passwordReset"
   | "passwordChanged"
+  | "registrationReceived"
   | "registrationApproved"
   | "registrationRejected"
   | "tourRegistrationApproved"
@@ -185,6 +186,16 @@ export function notifyUser(
 
 export function notifyPasswordChanged(userId: number, request: Request): void {
   notifyUser(userId, "passwordChanged", {}, { path: "/login" }, detectLocale(request));
+}
+
+// "Your registration was received": one message for everything a buyer registered for in one go. The names are
+// kept short (the website copy has a size limit): the first few, then how many more.
+export function notifyRegistrationsReceived(userId: number, titles: string[]): void {
+  const names = titles.map((t) => t.trim()).filter(Boolean);
+  if (names.length === 0) return;
+  const SHOWN = 8;
+  const expo = names.length > SHOWN ? `${names.slice(0, SHOWN).join(", ")} (+${names.length - SHOWN})` : names.join(", ");
+  notifyUser(userId, "registrationReceived", { expo }, { path: "/dashboard/buyer/registrations" });
 }
 
 export function notifyRegistrationDecision(registrationId: number, approved: boolean, confirmBy: string | null): void {

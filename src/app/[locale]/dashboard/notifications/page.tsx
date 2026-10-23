@@ -16,7 +16,7 @@ interface Item {
 }
 
 const ICONS: Record<string, string> = {
-  registrationApproved: "✅", registrationRejected: "❌", registrationReminder: "⏰", tourRegistrationApproved: "✅", tourRegistrationRejected: "❌", documentRejected: "🪪", pointsReceived: "💰",
+  registrationReceived: "📝", registrationApproved: "✅", registrationRejected: "❌", registrationReminder: "⏰", tourRegistrationApproved: "✅", tourRegistrationRejected: "❌", documentRejected: "🪪", pointsReceived: "💰",
   topupApproved: "💳", topupRejected: "💳", withdrawalPaid: "💸", withdrawalRejected: "💸", expenseApproved: "🧾", expenseRejected: "🧾",
   passwordChanged: "🔑", announcement: "📣",
 };

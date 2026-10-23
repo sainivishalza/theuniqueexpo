@@ -7,6 +7,7 @@ const list = async (t) => (await (await call('GET', '/api/buyer-registrations', 
 const plan = async (t, slugs) => { const r = await call('POST', '/api/buyer-registrations/plan', t, { slugs }); return { status: r.status, ...(await r.json()) }; };
 const submit = async (t, slugs, answers = {}) => { const r = await call('POST', '/api/buyer-registrations', t, { slugs, answers }); return { status: r.status, ...(await r.json()) }; };
 const J = (v) => (typeof v === 'string' ? JSON.parse(v) : v);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const key = (p, k) => p.questions.find((q) => q.key === k);
 
 (async () => {
@@ -123,7 +124,12 @@ const key = (p, k) => p.questions.find((q) => q.key === k);
   ok(sql(`SELECT company_name FROM buyer_profiles WHERE user_id=${bId}`) === 'Profile Co', 'the profile\'s own details were not touched');
   items = await list(buyer);
   ok(items.find((e) => e.slug === A.slug).status === 'pending' && items.find((e) => e.slug === A.slug).canRegister === false, 'the list now shows it as registered (pending)');
+  const received = async (uid, n) => { for (let i = 0; i < 20; i++) { const rows = sql(`SELECT params FROM user_notifications WHERE user_id=${uid} AND kind='registrationReceived' ORDER BY id`).split('\n').filter(Boolean); if (rows.length >= n) return rows.map((x) => JSON.parse(x)); await sleep(250); } return sql(`SELECT params FROM user_notifications WHERE user_id=${uid} AND kind='registrationReceived' ORDER BY id`).split('\n').filter(Boolean).map((x) => JSON.parse(x)); };
+  let got = await received(bId, 1);
+  ok(got.length === 1 && got[0].expo === `Bulk a ${st}`, 'the buyer is told on the website that the registration was received', got);
   r = await submit(buyer, [A.slug], good); ok(r.status === 200 && r.results[0].outcome === 'already_registered', 'registering again is reported, not duplicated');
+  await sleep(1200);
+  ok((await received(bId, 1)).length === 1, 'and registering again (already registered) sends nothing more');
   ok(Number(sql(`SELECT COUNT(*) FROM expo_registrations WHERE user_id=${bId} AND exhibition_id=${A.id}`)) === 1, 'one registration only');
 
   console.log('\n== the next ones need less');
@@ -138,6 +144,9 @@ const key = (p, k) => p.questions.find((q) => q.key === k);
   const by = Object.fromEntries((r.results || []).map((x) => [x.slug, x.outcome]));
   ok(r.status === 200 && by[B.slug] === 'registered' && by[C.slug] === 'registered' && by[F.slug] === 'registered' && by[closed.slug] === 'closed' && by[ended.slug] === 'closed' && by['no-such-expo'] === 'unknown', 'three registered, the closed ones and the unknown one reported', by);
   ok((r.results || []).map((x) => x.slug).join() === [B.slug, C.slug, F.slug, closed.slug, ended.slug, 'no-such-expo'].join(), 'results in the order chosen');
+  got = await received(bId, 2); await sleep(800); got = await received(bId, 2);
+  ok(got.length === 2 && got[1].expo === `Bulk b ${st}, Bulk c ${st}, Bulk f ${st}`, 'three registered at once give one message naming all three (not three messages, not the closed ones)', got);
+  ok(sql(`SELECT COUNT(*) FROM user_notifications WHERE user_id=${bId} AND kind='registrationReceived' AND path='/dashboard/buyer/registrations'`) === '2', 'it opens the buyer\'s registrations page');
   const [[regB]] = await db.query('SELECT * FROM expo_registrations WHERE user_id=? AND exhibition_id=?', [bId, B.id]);
   ok(regB.company_scale === '21-50' && regB.info_source === 'Other' && regB.info_source_other === 'A friend' && regB.doc_passport_front, 'the second standard-form registration has the newer answers and the saved documents');
   const [[regC]] = await db.query('SELECT * FROM expo_registrations WHERE user_id=? AND exhibition_id=?', [bId, C.id]);

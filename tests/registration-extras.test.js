@@ -238,7 +238,11 @@ const pdfText = (buf) => {
   const dl2 = p.waitForEvent('download');
   await p.getByRole('button', { name: 'Download e-ticket' }).click();
   ok(/e-ticket-/.test((await dl2).suggestedFilename()), 'and the ticket');
-  ok((await axeViolations(p)).length === 0, 'the documents block: axe 0');
+  // The buttons fade back to normal after a download; let the fade finish before measuring contrast.
+  await p.getByRole('button', { name: 'Download e-ticket' }).and(p.locator(':enabled')).waitFor();
+  await sleep(700);
+  const docAxe = await axeViolations(p);
+  ok(docAxe.length === 0, 'the documents block: axe 0', docAxe);
   sql(`UPDATE buyer_profiles SET passport_number='' WHERE user_id=${pd.id}`);
   await p.getByRole('button', { name: 'Download invitation letter' }).click();
   await p.getByText(/add your passport name and passport number/i).waitFor();

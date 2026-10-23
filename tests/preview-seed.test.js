@@ -8,7 +8,14 @@ const run = (password) => execFileSync(process.execPath, ['scripts/preview-seed.
 });
 const login = (email, password) => fetch(BASE + '/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-forwarded-for': '10.8.' + Math.floor(Math.random() * 250) + '.' + (Math.floor(Math.random() * 250) + 1) }, body: JSON.stringify({ email, password }) }).then(async (r) => ({ status: r.status, ...(await r.json().catch(() => ({}))) }));
 
+// The demo data is removed again at the end so other tests do not see these exhibitions and buyers.
+const cleanUp = () => sql(`DELETE r FROM expo_registrations r JOIN users u ON u.id=r.user_id WHERE u.email LIKE '%@preview.invalid';
+  DELETE p FROM buyer_profiles p JOIN users u ON u.id=p.user_id WHERE u.email LIKE '%@preview.invalid';
+  DELETE FROM users WHERE email LIKE '%@preview.invalid';
+  DELETE FROM exhibitions WHERE slug LIKE 'preview-%-demo';`);
+
 (async () => {
+  cleanUp();
   const first = run('Pw-first-1234');
   const accounts = first.split('\n').filter((l) => l.startsWith('ACCOUNT '));
   ok(accounts.length === 2 && accounts[0] === 'ACCOUNT admin preview-admin@preview.invalid Pw-first-1234', 'it prints the two demo sign-ins', accounts);
@@ -34,5 +41,7 @@ const login = (email, password) => fetch(BASE + '/api/auth/login', { method: 'PO
   ok(r.status === 200, 'the new one works');
   const list = await (await fetch(BASE + '/api/exhibitions')).json();
   ok((list.exhibitions || []).some((e) => e.slug === 'preview-canton-demo'), 'the demo exhibitions show on the public list');
+  cleanUp();
+  ok(sql("SELECT COUNT(*) FROM users WHERE email LIKE '%@preview.invalid'") === '0' && sql("SELECT COUNT(*) FROM exhibitions WHERE slug LIKE 'preview-%-demo'") === '0', 'the demo data is removed again');
   done();
 })().catch((e) => { console.error(e); process.exit(1); });

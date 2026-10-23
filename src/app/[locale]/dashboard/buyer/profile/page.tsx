@@ -46,6 +46,7 @@ interface BuyerProfile {
   dateOfBirth: string;
   visaType: string;
   visaExpireDate: string;
+  passportExpireDate: string;
   hasDocument: Record<string, boolean>;
   documentReview: Record<string, DocReview>;
   // Answers to the extra information fields an admin added, by field key.
@@ -86,6 +87,7 @@ const FIELDS: FieldDef[] = [
   { key: "dateOfBirth", kind: "date" },
   { key: "visaType", kind: "select", options: VISA_TYPES, translateOptions: false },
   { key: "visaExpireDate", kind: "date" },
+  { key: "passportExpireDate", kind: "date" },
   { key: "meetingOrVisiting", kind: "select", options: ["meeting", "visiting"] },
   { key: "gender", kind: "select", options: ["male", "female", "other"] },
 ];

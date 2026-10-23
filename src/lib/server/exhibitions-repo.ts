@@ -91,6 +91,8 @@ export function mapExhibitionRow(row: RowDataPacket, locale?: string) {
     registrationDaysToOpen: window.daysToOpen,
     // How many buyers it takes (0 = no limit).
     buyerQuota: Number(row.buyer_quota) > 0 ? Number(row.buyer_quota) : 0,
+    // Editions of one event share a series name (set by the admin).
+    series: String(row.series ?? ""),
     registrationFormSchema: safeParseJson(row.registration_form_schema) as CustomFormSchema | null,
     // Cache-busting value for the image/gallery endpoints below -- their
     // URL is otherwise identical before and after an admin re-uploads a
@@ -112,7 +114,7 @@ export async function listExhibitions(locale?: string) {
             IF(LEFT(image, 5) = 'data:', CONCAT('/api/exhibitions/', slug, '/image?v=', UNIX_TIMESTAMP(updated_at)), image) AS image`;
   let rows: RowDataPacket[];
   try {
-    [rows] = await pool.query<RowDataPacket[]>(`SELECT ${columns}, registration_opens, registration_closes, buyer_quota FROM exhibitions ORDER BY start_date ASC`);
+    [rows] = await pool.query<RowDataPacket[]>(`SELECT ${columns}, registration_opens, registration_closes, buyer_quota, series FROM exhibitions ORDER BY start_date ASC`);
   } catch (err) {
     // Until migration 068 has run there are no opening / closing days or places: the list works as before.
     if ((err as { code?: string }).code !== "ER_BAD_FIELD_ERROR") throw err;
@@ -193,13 +195,13 @@ export async function deleteExhibition(id: number) {
 
 export async function updateRegistrationFormConfig(
   id: number,
-  input: { registrationEnabled: boolean; registrationFormSchema: unknown; registrationOpens?: string | null; registrationCloses?: string | null; buyerQuota?: number | null }
+  input: { registrationEnabled: boolean; registrationFormSchema: unknown; registrationOpens?: string | null; registrationCloses?: string | null; buyerQuota?: number | null; series?: string | null }
 ) {
   const schema = input.registrationFormSchema ? JSON.stringify(input.registrationFormSchema) : null;
   try {
     await pool.query(
-      "UPDATE exhibitions SET registration_enabled = ?, registration_form_schema = ?, registration_opens = ?, registration_closes = ?, buyer_quota = ? WHERE id = ?",
-      [input.registrationEnabled, schema, input.registrationOpens || null, input.registrationCloses || null, input.buyerQuota && input.buyerQuota > 0 ? input.buyerQuota : null, id]
+      "UPDATE exhibitions SET registration_enabled = ?, registration_form_schema = ?, registration_opens = ?, registration_closes = ?, buyer_quota = ?, series = ? WHERE id = ?",
+      [input.registrationEnabled, schema, input.registrationOpens || null, input.registrationCloses || null, input.buyerQuota && input.buyerQuota > 0 ? input.buyerQuota : null, input.series?.trim() || null, id]
     );
   } catch (err) {
     // Before migration 068 only the switch and the form can be saved.

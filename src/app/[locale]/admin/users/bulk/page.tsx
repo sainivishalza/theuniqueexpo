@@ -117,6 +117,7 @@ export default function BulkCreateUsersPage() {
         dateOfBirth: r.dateOfBirth !== undefined ? String(r.dateOfBirth) : undefined,
         visaType: r.visaType !== undefined ? String(r.visaType) : undefined,
         visaExpireDate: r.visaExpireDate !== undefined ? String(r.visaExpireDate) : undefined,
+        passportExpireDate: r.passportExpireDate !== undefined ? String(r.passportExpireDate) : undefined,
       }));
       setFileRows(rows);
       setFileName(file.name);

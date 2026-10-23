@@ -34,6 +34,11 @@ export type EmailKind =
   | "emailChanged"
   | "registrationReminder"
   | "registrationStartsSoon"
+  | "savedRegistrationOpened"
+  | "savedRegistrationClosing"
+  | "passportExpiring"
+  | "visaExpiring"
+  | "groupInvite"
   | "announcement"
   | "test";
 

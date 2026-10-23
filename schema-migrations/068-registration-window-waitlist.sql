@@ -1,6 +1,7 @@
 -- Registration window, places and waiting list, plus the memory of reminders already sent:
 --   exhibitions.registration_opens / registration_closes   optional dates (inclusive) between which buyers can register
 --   exhibitions.buyer_quota                                 how many buyers an exhibition takes (NULL / 0 = no limit)
+--   exhibitions.series                                      a name shared by the editions of one event ("register again for the next edition")
 --   expo_registrations.waitlisted / waitlisted_at           a registration made while every place was taken
 --   saved_exhibition_alerts                                 "registration opens / closes soon" told to someone who saved an exhibition (once)
 --   document_alerts_sent                                    "your passport / visa expires too early" told once per registration and problem
@@ -10,7 +11,8 @@
 ALTER TABLE exhibitions
   ADD COLUMN IF NOT EXISTS registration_opens DATE NULL,
   ADD COLUMN IF NOT EXISTS registration_closes DATE NULL,
-  ADD COLUMN IF NOT EXISTS buyer_quota INT NULL;
+  ADD COLUMN IF NOT EXISTS buyer_quota INT NULL,
+  ADD COLUMN IF NOT EXISTS series VARCHAR(100) NULL;
 
 ALTER TABLE expo_registrations
   ADD COLUMN IF NOT EXISTS waitlisted TINYINT(1) NOT NULL DEFAULT 0,

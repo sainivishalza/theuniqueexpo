@@ -452,7 +452,9 @@
         "close": "Close",
         "error": "Something went wrong. Please try again.",
         "rateLimited": "Too many attempts. Please try again later."
-      }
+      },
+      "showProgress": "Show progress",
+      "waitlisted": "On the waiting list"
     },
     "registrationNumber": "Your registration number",
     "registrationNumberHint": "Quote it whenever you contact us.",
@@ -739,6 +741,10 @@
       "allRegistrations": {
         "title": "All registrations",
         "description": "Every buyer registration for every exhibition in one list, with filters, search and Excel export."
+      },
+      "ticketCheck": {
+        "title": "Check tickets",
+        "description": "Scan a buyer's e-ticket QR code at the entrance to see who it is and let them in."
       }
     },
     "attention": {
@@ -1341,7 +1347,29 @@
     "defaultFormDesc": "The standard form: company info, purpose of visit, documents, etc.",
     "customFormTitle": "Custom Form",
     "customFormDesc": "Build your own questions specific to this exhibition.",
-    "questionPlaceholder": "e.g. Departure City"
+    "questionPlaceholder": "e.g. Departure City",
+    "window": {
+      "title": "Registration window and places",
+      "hint": "Both dates are optional and include the day itself. Leave a date empty for no limit.",
+      "opens": "Registration opens on",
+      "closes": "Last day to register",
+      "quota": "Places for buyers",
+      "quotaHint": "Leave empty for no limit. When every place is taken, new registrations go on a waiting list and move up as places free up.",
+      "places": "{taken} of {quota} places taken",
+      "placesNoLimit": "{taken} places taken, no limit set",
+      "waiting": "{count} waiting",
+      "stateOpen": "Open for registration now",
+      "stateOpensLater": "Not open yet",
+      "stateDeadline": "The deadline has passed, so registration is closed",
+      "stateOff": "Switched off",
+      "invalid_date": "Please enter valid dates.",
+      "closes_before_opens": "The last day to register cannot be before the day registration opens.",
+      "invalid_quota": "Places must be a whole number from 1 to 100000 (empty for no limit).",
+      "series": "Series (editions of the same event)",
+      "seriesPlaceholder": "e.g. canton-fair",
+      "seriesHint": "Give the editions of one event the same name. Buyers who attended one are then offered to register for the next.",
+      "series_too_long": "The series name can be at most 100 characters."
+    }
   },
   "adminRegistrationsCommon": {
     "updateFailed": "Update failed",
@@ -1447,7 +1475,10 @@
       "cancelledAt": "Cancelled",
       "feedback": "Feedback",
       "ticket": "Travel ticket"
-    }
+    },
+    "places": "{taken} of {quota} places taken",
+    "waitingCount": "{count} on the waiting list",
+    "waitingList": "Waiting list"
   },
   "adminToursCrud": {
     "loadFailed": "Failed to load tours",
@@ -3022,7 +3053,8 @@
       "companyField": "Company Field",
       "jobTitle": "Job Title",
       "contactEmail": "Email",
-      "phoneNumber": "Phone Number"
+      "phoneNumber": "Phone Number",
+      "passportExpireDate": "Passport Expiry Date"
     },
     "fieldOptions": {
       "meetingOrVisiting": {
@@ -3125,7 +3157,8 @@
       "companyField": "Company Field",
       "jobTitle": "Job Title",
       "contactEmail": "Email",
-      "phoneNumber": "Phone Number"
+      "phoneNumber": "Phone Number",
+      "passportExpireDate": "Passport Expiry Date"
     },
     "fieldOptions": {
       "meetingOrVisiting": {
@@ -3990,7 +4023,119 @@
       "thanks": "Thank you for your feedback."
     },
     "registrationNumber": "Registration no.",
-    "addToCalendar": "Add to my calendar"
+    "addToCalendar": "Add to my calendar",
+    "timeline": {
+      "title": "Progress of this registration",
+      "dueBy": "Please confirm by {date}",
+      "states": {
+        "done": "done",
+        "current": "now",
+        "todo": "later",
+        "problem": "stopped"
+      },
+      "steps": {
+        "registered": "Registered",
+        "review": "Waiting for review",
+        "waitlisted": "On the waiting list",
+        "approved": "Approved",
+        "confirmed": "Attendance confirmed",
+        "attended": "Attended",
+        "rejected": "Not approved",
+        "cancelled": "Cancelled",
+        "expired": "Confirmation time ran out",
+        "absent": "Did not attend"
+      }
+    },
+    "waitlistedNote": "All places for buyers are taken, so you are on the waiting list. We tell you as soon as a place opens up.",
+    "documentWarnings": {
+      "passport": "Your passport on file expires less than six months after this exhibition. Many countries will not let you in then.",
+      "visa": "Your visa on file expires before this exhibition ends.",
+      "update": "Update my profile"
+    },
+    "nextEdition": {
+      "heading": "The next edition is open",
+      "closes": "Register by {date}",
+      "button": "Register for the next edition"
+    },
+    "downloads": {
+      "heading": "Your documents",
+      "invitationText": "A visa invitation letter (PDF) for your visa application. It uses the passport name and number from your profile.",
+      "invitationButton": "Download invitation letter",
+      "ticketText": "Your e-ticket with a QR code. Print it or keep it on your phone.",
+      "ticketButton": "Download e-ticket",
+      "ticketLater": "Your e-ticket is available once you confirm your attendance.",
+      "preparing": "Preparing…",
+      "openProfile": "Open my profile",
+      "errors": {
+        "profile_incomplete": "Please add your passport name and passport number to your profile first.",
+        "not_available": "This document is not available for this registration yet.",
+        "rate_limited": "Too many downloads. Please try again later.",
+        "failed": "The document could not be created. Please try again."
+      }
+    },
+    "travel": {
+      "heading": "Plan your trip",
+      "intro": "Hotel, tours and an airport pickup, all in one place.",
+      "hotelsTitle": "Hotel",
+      "hotelsText": "Hotels near the venue, with prices per night.",
+      "hotelsLink": "See hotels",
+      "toursTitle": "Tours and help",
+      "toursText": "Business tours, factory visits and local help around the show.",
+      "toursLink": "Plan my trip",
+      "pickupTitle": "Airport pickup",
+      "pickupText": "Tell us when you arrive and we will arrange a pickup.",
+      "pickupOpen": "Request a pickup",
+      "pickupSent": "Request sent. We will contact you about your pickup.",
+      "pickupFormHeading": "Request an airport pickup",
+      "arrivalDate": "Arrival date",
+      "travelers": "Number of travelers",
+      "contact": "WhatsApp or phone (optional)",
+      "contactRequired": "WhatsApp or phone (we need a way to reach you)",
+      "note": "Flight number, arrival time or other details",
+      "notePlaceholder": "e.g. flight CA123, lands at 14:30",
+      "send": "Send request",
+      "sending": "Sending…",
+      "failed": "The request could not be sent. Please try again in a moment."
+    },
+    "group": {
+      "heading": "Register your team",
+      "intro": "Invite colleagues to register for this exhibition too. Each person registers with their own account and documents.",
+      "open": "Invite colleagues",
+      "emailsLabel": "Colleagues' e-mail addresses",
+      "emailsPlaceholder": "anna@company.com\nJohn Lee <john@company.com>",
+      "emailsHint": "One per line, or separated by commas. Up to 10 at a time.",
+      "send": "Send invitations",
+      "sending": "Sending…",
+      "shareLink": "Or send them this link yourself:",
+      "shareLinkLabel": "Registration link to share",
+      "mailOff": "E-mail is switched off on this site, so nothing was e-mailed. Please send them the link below yourself.",
+      "invitedHeading": "Invited colleagues ({count})",
+      "invitedOn": "Invited {date}",
+      "outcomes": {
+        "invited": "invitation sent",
+        "already_invited": "you already invited this person",
+        "already_registered": "already registered",
+        "limit_reached": "invitation limit reached",
+        "invalid": "not a valid e-mail address"
+      },
+      "statuses": {
+        "invited": "Invited",
+        "registered": "Registered",
+        "approved": "Approved",
+        "confirmed": "Confirmed",
+        "attended": "Attended",
+        "rejected": "Not approved"
+      },
+      "errors": {
+        "no_valid_emails": "Please enter at least one valid e-mail address.",
+        "too_many": "You can invite up to {max} colleagues at a time.",
+        "rate_limited": "Too many invitations. Please try again later.",
+        "registration_closed": "Registration for this exhibition is closed, so no more invitations can be sent.",
+        "not_available": "Invitations are not available for this registration.",
+        "too_long": "That list is too long.",
+        "failed": "The invitations could not be sent. Please try again."
+      }
+    }
   },
   "expoCheckIn": {
     "loading": "Loading...",
@@ -4730,6 +4875,48 @@
       "intro": "The e-mail address of your The Unique Expo account was changed to {email}.",
       "body": "From now on you sign in with the new address, and messages go there. If this was not you, contact us at once.",
       "button": "Go to sign in"
+    },
+    "registrationWaitlisted": {
+      "subject": "You are on the waiting list for {expo}",
+      "intro": "All places for buyers at {expo} are taken, so your registration is on the waiting list.",
+      "body": "We are still reviewing it. If a place opens up, we will tell you straight away and your registration moves into the normal review.",
+      "button": "Open my registrations"
+    },
+    "waitlistPlaceOpened": {
+      "subject": "A place opened up at {expo}",
+      "intro": "Good news: a place has opened up for you at {expo}.",
+      "body": "Your registration has left the waiting list and is now being reviewed. We will tell you as soon as it is decided.",
+      "button": "Open my registrations"
+    },
+    "savedRegistrationOpened": {
+      "subject": "Registration is open for {expo}",
+      "intro": "Registration has opened for {expo}, an exhibition you saved.",
+      "body": "Places can fill up, so register while you can.",
+      "button": "Register now"
+    },
+    "savedRegistrationClosing": {
+      "subject": "Registration for {expo} closes on {date}",
+      "intro": "Registration for {expo}, an exhibition you saved, closes on {date}.",
+      "body": "After that day you will not be able to register.",
+      "button": "Register now"
+    },
+    "passportExpiring": {
+      "subject": "Your passport may expire too soon for {expo}",
+      "intro": "Your passport expires on {passportDate}. {expo} ends on {endDate}.",
+      "body": "Most countries ask for a passport that is valid for at least six more months after you arrive. Please check your travel plans and update your profile once you have a new passport.",
+      "button": "Open my profile"
+    },
+    "visaExpiring": {
+      "subject": "Your visa may expire before {expo} ends",
+      "intro": "Your visa expires on {visaDate}. {expo} ends on {endDate}.",
+      "body": "Please check that your visa covers your whole stay, and update your profile once it is renewed.",
+      "button": "Open my profile"
+    },
+    "groupInvite": {
+      "subject": "{inviter} invited you to register for {expo}",
+      "intro": "{inviter} from {company} invited you to register for {expo}.",
+      "body": "Use the button to open the registration page. If you do not have an account yet, you can create one there with this e-mail address.",
+      "button": "Register for the exhibition"
     }
   },
   "adminEmail": {
@@ -4795,7 +4982,14 @@
       "registrationReceived": "Registration received",
       "registrationStartsSoon": "Exhibition starts soon",
       "confirmEmailChange": "Confirm a new e-mail address",
-      "emailChanged": "E-mail address changed"
+      "emailChanged": "E-mail address changed",
+      "registrationWaitlisted": "Put on the waiting list",
+      "waitlistPlaceOpened": "Place opened (waiting list)",
+      "savedRegistrationOpened": "Saved exhibition: registration opened",
+      "savedRegistrationClosing": "Saved exhibition: registration closes soon",
+      "passportExpiring": "Passport expires soon",
+      "visaExpiring": "Visa expires too early",
+      "groupInvite": "Colleague invitation"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -5107,6 +5301,34 @@
       "registrationStartsSoon": {
         "title": "Your exhibition starts soon",
         "body": "{expo} starts on {date}. Open the exhibition page for your check-in details."
+      },
+      "registrationWaitlisted": {
+        "title": "You are on the waiting list",
+        "body": "All places at {expo} are taken. If one opens up, we will tell you."
+      },
+      "waitlistPlaceOpened": {
+        "title": "A place opened up",
+        "body": "A place opened up for you at {expo}. Your registration is now being reviewed."
+      },
+      "savedRegistrationOpened": {
+        "title": "Registration is open",
+        "body": "Registration has opened for {expo}, an exhibition you saved."
+      },
+      "savedRegistrationClosing": {
+        "title": "Registration closes soon",
+        "body": "Registration for {expo} closes on {date}."
+      },
+      "passportExpiring": {
+        "title": "Check your passport",
+        "body": "Your passport expires on {passportDate}, close to {expo} (ends {endDate})."
+      },
+      "visaExpiring": {
+        "title": "Check your visa",
+        "body": "Your visa expires on {visaDate}, before {expo} ends ({endDate})."
+      },
+      "groupInvite": {
+        "title": "You were invited",
+        "body": "{inviter} from {company} invited you to register for {expo}."
       }
     }
   },
@@ -5171,7 +5393,8 @@
       "already_registered": "you were already registered",
       "closed": "registration is closed",
       "unknown": "not found",
-      "failed": "could not be registered, please try again"
+      "failed": "could not be registered, please try again",
+      "waitlisted": "registered: all places are taken, so you are on the waiting list"
     },
     "doneHint": "You will see each registration below, and we will tell you when it is approved.",
     "doneButton": "Register for more",
@@ -5319,6 +5542,25 @@
       "no_email": "Your account has no e-mail address yet. Add one from your profile page.",
       "unavailable": "This is not available for a few minutes. Please try again shortly.",
       "generic": "We could not send the link. Please try again."
+    }
+  },
+  "adminTicketCheck": {
+    "title": "Check tickets",
+    "subtitle": "Scan the QR code on a buyer's e-ticket with the phone camera, or type the code below.",
+    "codeLabel": "Ticket code",
+    "look": "Look up",
+    "checkedInAt": "Checked in {time}",
+    "letIn": "Let them in (mark attended)",
+    "checkingIn": "Saving…",
+    "cannotCheckIn": "This registration has not confirmed attendance, so it cannot be checked in here.",
+    "problems": {
+      "invalid_code": "This code is not a valid ticket.",
+      "failed": "Something went wrong. Please try again."
+    },
+    "messages": {
+      "checked_in": "Checked in. Welcome!",
+      "already_checked_in": "This ticket was already used.",
+      "not_confirmed": "This registration has not confirmed attendance."
     }
   }
 }

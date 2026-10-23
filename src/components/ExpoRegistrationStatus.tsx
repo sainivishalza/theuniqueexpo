@@ -9,6 +9,12 @@ import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { formatDateOnly, formatDateTime, STATUS_TONE } from "@/lib/client/registration-format";
 import { buildIcs } from "@/lib/client/ics";
 import { MAX_ARRIVAL_NOTE_LENGTH, MAX_FEEDBACK_LENGTH, type MyRegistration } from "@/lib/registration-lifecycle";
+import DocumentWarnings from "@/components/DocumentWarnings";
+import GroupInvite from "@/components/GroupInvite";
+import NextEditionOffer from "@/components/NextEditionOffer";
+import RegistrationDownloads from "@/components/RegistrationDownloads";
+import RegistrationTimeline from "@/components/RegistrationTimeline";
+import TravelPack from "@/components/TravelPack";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -146,6 +152,12 @@ export default function ExpoRegistrationStatus({ exhibitionSlug, fallback = null
       </div>
 
       <p className="text-sm text-gray-600">{t(`messages.${status}`, { date: expiredOn })}</p>
+      {status === "pending" && registration.waitlisted && (
+        <p className="mt-2 text-sm font-semibold text-gold-800" data-testid="waitlisted-note">{t("waitlistedNote")}</p>
+      )}
+      <DocumentWarnings registration={registration} />
+      <NextEditionOffer registration={registration} />
+      <RegistrationTimeline registration={registration} className="mt-4" />
       {status === "approved" && registration.confirmBy && (
         <p className="mt-2 text-sm font-semibold text-emerald-900">{t("confirmBy", { date: expiredOn })}</p>
       )}
@@ -207,6 +219,10 @@ export default function ExpoRegistrationStatus({ exhibitionSlug, fallback = null
           {registration.checkedOutAt && <div>{t("details.checkedOut", { time: formatDateTime(registration.checkedOutAt, locale) })}</div>}
         </dl>
       )}
+
+      <RegistrationDownloads registration={registration} />
+      <TravelPack registration={registration} />
+      <GroupInvite registration={registration} registrationEnabled={registrationEnabled} />
 
       {/* After the show: feedback */}
       {actions.feedback && (

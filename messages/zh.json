@@ -452,7 +452,9 @@
         "close": "关闭",
         "error": "出了点问题，请重试。",
         "rateLimited": "尝试次数过多，请稍后再试。"
-      }
+      },
+      "showProgress": "查看进度",
+      "waitlisted": "候补名单中"
     },
     "registrationNumber": "您的注册编号",
     "registrationNumberHint": "联系我们时请提供此编号。",
@@ -739,6 +741,10 @@
       "allRegistrations": {
         "title": "全部报名",
         "description": "所有展会的全部采购商报名集中在一个列表，可筛选、搜索并导出 Excel。"
+      },
+      "ticketCheck": {
+        "title": "验票",
+        "description": "在入口扫描买家电子票的二维码，查看身份并放行。"
       }
     },
     "attention": {
@@ -1341,7 +1347,29 @@
     "defaultFormDesc": "标准表单:公司信息、参观目的、证件等。",
     "customFormTitle": "自定义表单",
     "customFormDesc": "为此展会创建专属问题。",
-    "questionPlaceholder": "例如:出发城市"
+    "questionPlaceholder": "例如:出发城市",
+    "window": {
+      "title": "登记时间与名额",
+      "hint": "两个日期均为可选，且包含当天。留空表示不限。",
+      "opens": "登记开始日期",
+      "closes": "最后登记日期",
+      "quota": "买家名额",
+      "quotaHint": "留空表示不限。名额全部占满后，新登记会进入候补名单，并在名额空出时依次递补。",
+      "places": "已占用名额：{taken} / {quota}",
+      "placesNoLimit": "已占用名额：{taken}，未设上限",
+      "waiting": "候补：{count}",
+      "stateOpen": "目前开放登记",
+      "stateOpensLater": "尚未开放",
+      "stateDeadline": "已过截止日期，登记已关闭",
+      "stateOff": "已关闭",
+      "invalid_date": "请输入有效日期。",
+      "closes_before_opens": "最后登记日期不能早于开始日期。",
+      "invalid_quota": "名额须为 1 至 100000 的整数（留空表示不限）。",
+      "series": "系列（同一展会的各届）",
+      "seriesPlaceholder": "例如 canton-fair",
+      "seriesHint": "给同一展会的各届起相同的名称。参加过其中一届的买家会被提示登记下一届。",
+      "series_too_long": "系列名称最多 100 个字符。"
+    }
   },
   "adminRegistrationsCommon": {
     "updateFailed": "更新失败",
@@ -1447,7 +1475,10 @@
       "cancelledAt": "取消时间",
       "feedback": "反馈",
       "ticket": "行程票据"
-    }
+    },
+    "places": "已占用名额：{taken} / {quota}",
+    "waitingCount": "候补 {count} 人",
+    "waitingList": "候补名单"
   },
   "adminToursCrud": {
     "loadFailed": "加载旅游线路失败",
@@ -3022,7 +3053,8 @@
       "companyField": "公司行业",
       "jobTitle": "职位",
       "contactEmail": "邮箱",
-      "phoneNumber": "电话号码"
+      "phoneNumber": "电话号码",
+      "passportExpireDate": "护照到期日期"
     },
     "fieldOptions": {
       "meetingOrVisiting": {
@@ -3125,7 +3157,8 @@
       "companyField": "公司行业",
       "jobTitle": "职位",
       "contactEmail": "邮箱",
-      "phoneNumber": "电话号码"
+      "phoneNumber": "电话号码",
+      "passportExpireDate": "护照到期日期"
     },
     "fieldOptions": {
       "meetingOrVisiting": {
@@ -3990,7 +4023,119 @@
       "thanks": "感谢您的反馈。"
     },
     "registrationNumber": "注册编号",
-    "addToCalendar": "添加到我的日历"
+    "addToCalendar": "添加到我的日历",
+    "timeline": {
+      "title": "此登记的进度",
+      "dueBy": "请在 {date} 前确认",
+      "states": {
+        "done": "已完成",
+        "current": "当前",
+        "todo": "稍后",
+        "problem": "已中止"
+      },
+      "steps": {
+        "registered": "已登记",
+        "review": "等待审核",
+        "waitlisted": "候补名单中",
+        "approved": "已通过",
+        "confirmed": "已确认出席",
+        "attended": "已到场",
+        "rejected": "未通过",
+        "cancelled": "已取消",
+        "expired": "确认时间已过",
+        "absent": "未到场"
+      }
+    },
+    "waitlistedNote": "买家名额已满，您在候补名单中。有名额空出时我们会立即通知您。",
+    "documentWarnings": {
+      "passport": "您资料中的护照在本展会结束后不足六个月到期，许多国家会因此拒绝入境。",
+      "visa": "您资料中的签证在本展会结束前到期。",
+      "update": "更新我的资料"
+    },
+    "nextEdition": {
+      "heading": "下一届已开放登记",
+      "closes": "请在 {date} 前登记",
+      "button": "登记参加下一届"
+    },
+    "downloads": {
+      "heading": "您的文件",
+      "invitationText": "用于申请签证的邀请函（PDF），使用您资料中的护照姓名和护照号码。",
+      "invitationButton": "下载邀请函",
+      "ticketText": "带二维码的电子票。可以打印，也可以保存在手机上。",
+      "ticketButton": "下载电子票",
+      "ticketLater": "确认出席后即可获取电子票。",
+      "preparing": "正在生成…",
+      "openProfile": "打开我的资料",
+      "errors": {
+        "profile_incomplete": "请先在资料中填写护照姓名和护照号码。",
+        "not_available": "此登记暂时无法获取该文件。",
+        "rate_limited": "下载次数过多，请稍后再试。",
+        "failed": "无法生成文件，请重试。"
+      }
+    },
+    "travel": {
+      "heading": "规划行程",
+      "intro": "酒店、行程和接机，一站办理。",
+      "hotelsTitle": "酒店",
+      "hotelsText": "展馆附近的酒店及每晚价格。",
+      "hotelsLink": "查看酒店",
+      "toursTitle": "考察与协助",
+      "toursText": "商务考察、工厂参观及展会期间的当地协助。",
+      "toursLink": "规划我的行程",
+      "pickupTitle": "接机",
+      "pickupText": "告诉我们您的抵达时间，我们为您安排接机。",
+      "pickupOpen": "申请接机",
+      "pickupSent": "申请已发送，我们会就接机事宜联系您。",
+      "pickupFormHeading": "申请接机",
+      "arrivalDate": "抵达日期",
+      "travelers": "同行人数",
+      "contact": "WhatsApp 或电话（选填）",
+      "contactRequired": "WhatsApp 或电话（需要联系方式）",
+      "note": "航班号、抵达时间或其他信息",
+      "notePlaceholder": "例如：航班 CA123，14:30 落地",
+      "send": "发送申请",
+      "sending": "正在发送…",
+      "failed": "申请未能发送，请稍后再试。"
+    },
+    "group": {
+      "heading": "登记您的团队",
+      "intro": "邀请同事也来登记参加本展会。每个人使用自己的账户和证件登记。",
+      "open": "邀请同事",
+      "emailsLabel": "同事的电子邮箱",
+      "emailsPlaceholder": "anna@company.com\n李明 <li@company.com>",
+      "emailsHint": "每行一个，或用逗号分隔。每次最多 10 个。",
+      "send": "发送邀请",
+      "sending": "发送中…",
+      "shareLink": "或者自己把这个链接发给他们：",
+      "shareLinkLabel": "可分享的登记链接",
+      "mailOff": "本站未开启邮件发送，因此没有发送邮件。请自行把下面的链接发给他们。",
+      "invitedHeading": "已邀请的同事（{count}）",
+      "invitedOn": "邀请于 {date}",
+      "outcomes": {
+        "invited": "邀请已发送",
+        "already_invited": "您已邀请过此人",
+        "already_registered": "已登记",
+        "limit_reached": "已达邀请上限",
+        "invalid": "电子邮箱无效"
+      },
+      "statuses": {
+        "invited": "已邀请",
+        "registered": "已登记",
+        "approved": "已通过",
+        "confirmed": "已确认",
+        "attended": "已到场",
+        "rejected": "未通过"
+      },
+      "errors": {
+        "no_valid_emails": "请至少输入一个有效的电子邮箱。",
+        "too_many": "每次最多可邀请 {max} 位同事。",
+        "rate_limited": "邀请过多，请稍后再试。",
+        "registration_closed": "本展会登记已关闭，无法再发送邀请。",
+        "not_available": "此登记无法发送邀请。",
+        "too_long": "列表过长。",
+        "failed": "邀请未能发送，请重试。"
+      }
+    }
   },
   "expoCheckIn": {
     "loading": "加载中...",
@@ -4730,6 +4875,48 @@
       "intro": "您的 The Unique Expo 账户邮箱已更改为 {email}。",
       "body": "今后请使用新邮箱登录，邮件也会发送到新邮箱。如果这不是您本人操作，请立即联系我们。",
       "button": "前往登录"
+    },
+    "registrationWaitlisted": {
+      "subject": "您已进入 {expo} 的候补名单",
+      "intro": "{expo} 的买家名额已满，您的登记已进入候补名单。",
+      "body": "我们仍在审核。一旦有名额空出，我们会立即通知您，您的登记将转入正常审核。",
+      "button": "打开我的登记"
+    },
+    "waitlistPlaceOpened": {
+      "subject": "{expo} 有名额空出",
+      "intro": "好消息：{expo} 为您空出了一个名额。",
+      "body": "您的登记已移出候补名单，现正在审核中。一有结果我们就会通知您。",
+      "button": "打开我的登记"
+    },
+    "savedRegistrationOpened": {
+      "subject": "{expo} 已开放登记",
+      "intro": "您收藏的展会 {expo} 已开放登记。",
+      "body": "名额有限，请尽早登记。",
+      "button": "立即登记"
+    },
+    "savedRegistrationClosing": {
+      "subject": "{expo} 的登记将于 {date} 截止",
+      "intro": "您收藏的展会 {expo} 将于 {date} 截止登记。",
+      "body": "截止后将无法再登记。",
+      "button": "立即登记"
+    },
+    "passportExpiring": {
+      "subject": "您的护照有效期可能不足以参加 {expo}",
+      "intro": "您的护照将于 {passportDate} 到期，{expo} 将于 {endDate} 结束。",
+      "body": "多数国家要求入境时护照至少还有六个月有效期。请检查行程，并在换发新护照后更新您的资料。",
+      "button": "打开我的资料"
+    },
+    "visaExpiring": {
+      "subject": "您的签证可能在 {expo} 结束前到期",
+      "intro": "您的签证将于 {visaDate} 到期，{expo} 将于 {endDate} 结束。",
+      "body": "请确认签证覆盖整个停留期间，并在续签后更新您的资料。",
+      "button": "打开我的资料"
+    },
+    "groupInvite": {
+      "subject": "{inviter} 邀请您登记参加 {expo}",
+      "intro": "来自 {company} 的 {inviter} 邀请您登记参加 {expo}。",
+      "body": "点击按钮打开登记页面。如果您还没有账户，可以用此电子邮箱在那里创建。",
+      "button": "登记参加展会"
     }
   },
   "adminEmail": {
@@ -4795,7 +4982,14 @@
       "registrationReceived": "已收到报名",
       "registrationStartsSoon": "展会即将开幕",
       "confirmEmailChange": "确认新邮箱",
-      "emailChanged": "邮箱已更改"
+      "emailChanged": "邮箱已更改",
+      "registrationWaitlisted": "进入候补名单",
+      "waitlistPlaceOpened": "名额空出（候补）",
+      "savedRegistrationOpened": "收藏的展会：已开放登记",
+      "savedRegistrationClosing": "收藏的展会：登记即将截止",
+      "passportExpiring": "护照即将到期",
+      "visaExpiring": "签证到期过早",
+      "groupInvite": "同事邀请"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -5107,6 +5301,34 @@
       "registrationStartsSoon": {
         "title": "您报名的展会即将开幕",
         "body": "{expo} 将于 {date} 开幕。打开展会页面查看签到信息。"
+      },
+      "registrationWaitlisted": {
+        "title": "您已进入候补名单",
+        "body": "{expo} 的名额已满。如有名额空出，我们会通知您。"
+      },
+      "waitlistPlaceOpened": {
+        "title": "有名额空出",
+        "body": "{expo} 为您空出了一个名额，您的登记现正在审核。"
+      },
+      "savedRegistrationOpened": {
+        "title": "登记已开放",
+        "body": "您收藏的展会 {expo} 已开放登记。"
+      },
+      "savedRegistrationClosing": {
+        "title": "登记即将截止",
+        "body": "{expo} 的登记将于 {date} 截止。"
+      },
+      "passportExpiring": {
+        "title": "请检查护照",
+        "body": "您的护照将于 {passportDate} 到期，临近 {expo}（{endDate} 结束）。"
+      },
+      "visaExpiring": {
+        "title": "请检查签证",
+        "body": "您的签证将于 {visaDate} 到期，早于 {expo} 结束（{endDate}）。"
+      },
+      "groupInvite": {
+        "title": "您收到邀请",
+        "body": "来自 {company} 的 {inviter} 邀请您登记参加 {expo}。"
       }
     }
   },
@@ -5171,7 +5393,8 @@
       "already_registered": "您之前已报名",
       "closed": "报名已关闭",
       "unknown": "未找到",
-      "failed": "报名失败，请重试"
+      "failed": "报名失败，请重试",
+      "waitlisted": "已登记：名额已满，您在候补名单中"
     },
     "doneHint": "每个报名都显示在下方，审核通过后我们会通知您。",
     "doneButton": "报名更多展会",
@@ -5319,6 +5542,25 @@
       "no_email": "您的账户还没有邮箱，请在个人资料页面添加。",
       "unavailable": "此功能几分钟内暂不可用，请稍后再试。",
       "generic": "无法发送链接，请重试。"
+    }
+  },
+  "adminTicketCheck": {
+    "title": "验票",
+    "subtitle": "用手机相机扫描买家电子票上的二维码，或在下方输入验证码。",
+    "codeLabel": "票号代码",
+    "look": "查询",
+    "checkedInAt": "已于 {time} 签到",
+    "letIn": "放行（标记为已到场）",
+    "checkingIn": "保存中…",
+    "cannotCheckIn": "此登记尚未确认出席，无法在此签到。",
+    "problems": {
+      "invalid_code": "此代码不是有效的电子票。",
+      "failed": "出错了，请重试。"
+    },
+    "messages": {
+      "checked_in": "已签到，欢迎！",
+      "already_checked_in": "此票已使用。",
+      "not_confirmed": "此登记尚未确认出席。"
     }
   }
 }

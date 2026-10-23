@@ -6,6 +6,9 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { formatDateOnly, STATUS_TONE } from "@/lib/client/registration-format";
 import type { MyRegistration } from "@/lib/registration-lifecycle";
+import DocumentWarnings from "@/components/DocumentWarnings";
+import NextEditionOffer from "@/components/NextEditionOffer";
+import RegistrationTimeline from "@/components/RegistrationTimeline";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -113,6 +116,13 @@ export default function BuyerRegistrationsPage() {
                   <Badge tone={STATUS_TONE[r.status] || "gray"} size="status">{t(`statusLabels.${r.status}`)}</Badge>
                 </div>
                 {hint && <p className="mt-3 text-sm font-semibold text-emerald-900">{hint}</p>}
+                {r.status === "pending" && r.waitlisted && <p className="mt-3 text-sm font-semibold text-gold-800">{t("waitlisted")}</p>}
+                <DocumentWarnings registration={r} />
+                <NextEditionOffer registration={r} />
+                <details className="mt-3 group">
+                  <summary className="cursor-pointer text-sm font-semibold text-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">{t("showProgress")}</summary>
+                  <RegistrationTimeline registration={r} className="mt-3" />
+                </details>
                 <div className="mt-4">
                   <Link
                     href={`/exhibitions/${r.exhibitionSlug}`}

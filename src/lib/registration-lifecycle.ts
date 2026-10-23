@@ -52,6 +52,11 @@ export function canRegisterAgain(status: EffectiveStatus): boolean {
   return status === "cancelled";
 }
 
+// Printable documents: the visa invitation letter once the registration is approved, the e-ticket / badge once the
+// buyer has confirmed attending (an approval whose confirm-by day passed reads as "expired" and gets neither).
+export const canGetInvitation = (status: EffectiveStatus): boolean => status === "approved" || status === "confirmed" || status === "attended";
+export const canGetTicket = (status: EffectiveStatus): boolean => status === "confirmed" || status === "attended";
+
 export const MAX_ARRIVAL_NOTE_LENGTH = 500;
 export const MAX_FEEDBACK_LENGTH = 1000;
 
@@ -61,12 +66,26 @@ export function isValidDateOnly(value: unknown): value is string {
   return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
 }
 
+// The next exhibition of the same series, offered to someone who attended an edition.
+export interface NextEdition {
+  slug: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  /** Last day to register, when there is a deadline. */
+  closes: string | null;
+}
+
 // The buyer-facing view of one registration. No uploaded documents here --
 // those are only ever sent to the admin screen and to the owner's own edit form.
 export interface MyRegistration {
   id: string;
   /** Pending and waiting for a place (the exhibition has taken all its buyers). */
   waitlisted?: boolean;
+  /** The buyer's passport / visa on file will not cover this exhibition (see document-expiry). */
+  documentWarnings?: ("passport" | "visa")[];
+  /** Set on an edition the buyer attended: the next edition of the same series, open for registration. */
+  nextEdition?: NextEdition;
   exhibitionId: number;
   exhibitionSlug: string;
   exhibitionTitle: string;

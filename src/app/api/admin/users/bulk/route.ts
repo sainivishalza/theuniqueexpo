@@ -40,6 +40,7 @@ interface BulkUserInput {
   dateOfBirth?: string;
   visaType?: string;
   visaExpireDate?: string;
+  passportExpireDate?: string;
 }
 
 interface BulkUserResult {
@@ -128,6 +129,7 @@ export async function POST(request: Request) {
           dateOfBirth: input.dateOfBirth?.trim() || "",
           visaType: input.visaType?.trim() || "",
           visaExpireDate: input.visaExpireDate?.trim() || "",
+          passportExpireDate: input.passportExpireDate?.trim() || "",
         };
         // Only write a profile row when at least one field was actually
         // provided -- a plain name/email/phone import shouldn't leave

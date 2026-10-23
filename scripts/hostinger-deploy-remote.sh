@@ -151,6 +151,8 @@ run_mysql schema-migrations/065-buyer-extra-info.sql
 run_mysql schema-migrations/066-start-reminder.sql
 run_mysql schema-migrations/067-email-change-old-address.sql
 run_mysql schema-migrations/068-registration-window-waitlist.sql
+run_mysql schema-migrations/069-passport-expiry.sql
+run_mysql schema-migrations/070-group-invites.sql
 
 # Every deploy saves a full copy of the database (uploaded documents included) and
 # nothing ever removed them, so they would slowly fill this account's disk. Keep the

@@ -3284,7 +3284,54 @@
       },
       "mailOff": "邮件发送已关闭，因此不会发送邮件。所有已选买家都可以在网站的“通知”中阅读公告。",
       "doneEmail": "正在向 {count} 位买家发送邮件。",
-      "mailOffDone": "邮件发送已关闭，因此未发送邮件。"
+      "mailOffDone": "邮件发送已关闭，因此未发送邮件。",
+      "templates": {
+        "load": "已保存的文本",
+        "choose": "载入已保存的文本…",
+        "none": "还没有已保存的文本",
+        "delete": "删除此文本",
+        "deleteQuestion": "确定永久删除？",
+        "deleteYes": "是，删除",
+        "deleteKeep": "保留",
+        "saveAs": "将此文本保存为",
+        "save": "保存",
+        "saveHint": "以此名称保存三种语言的主题和内容。同名会覆盖已保存的文本。",
+        "saved": "已保存为“{name}”。",
+        "replaced": "“{name}”已更新。",
+        "deleted": "已删除保存的文本。",
+        "errors": {
+          "bad_name": "请输入不超过 100 个字符的名称。",
+          "too_long": "主题或内容过长。",
+          "english_required": "请先用英文写好主题（至少 3 个字符）和内容（至少 5 个字符）。",
+          "limit": "已达到 100 条保存文本的上限，请先删除一条。",
+          "unavailable": "暂时无法使用保存文本，请几分钟后重试。",
+          "failed": "操作失败，请重试。"
+        }
+      },
+      "fields": {
+        "label": "字段",
+        "insert": "为每位买家填入各自的：",
+        "insertOne": "插入 {field}",
+        "hint": "{name} 是买家姓名，{number} 是其登记编号，{exhibition} 是其已登记的最近一场展会（没有则为“您的展会”）。每位买家收到各自填好的版本。",
+        "unknown": "以下不是字段，将按原样发送：{fields}",
+        "previewFor": "第一位所选买家的预览（{name}）"
+      },
+      "groupToggle": "向一组买家发公告",
+      "group": {
+        "title": "向一组买家发公告",
+        "who": "发送对象",
+        "exhibition": "已登记的展会",
+        "anyExhibition": "任意展会",
+        "status": "登记情况",
+        "anyStatus": "任意登记",
+        "notRegistered": "未登记",
+        "country": "国家",
+        "anyCountry": "任意国家",
+        "counting": "正在统计…",
+        "reach": "将发送给 {count} 位买家，其中 {with} 位有真实邮箱。",
+        "nobody": "没有符合此选择的买家。",
+        "tooMany": "超过 {max} 位买家，请缩小范围。"
+      }
     }
   },
   "homepageSlideshow": {
@@ -5210,7 +5257,9 @@
       "site_page_saved": "保存网站页面",
       "signed_out_everywhere": "退出所有其他设备",
       "expo_registrations_bulk_status": "批量批准或拒绝展会报名",
-      "admin_email_changed": "更改了自己的电子邮箱"
+      "admin_email_changed": "更改了自己的电子邮箱",
+      "announcement_template_saved": "保存了公告文本",
+      "announcement_template_deleted": "删除了已保存的公告文本"
     }
   },
   "notificationsPage": {

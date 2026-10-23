@@ -5,7 +5,9 @@ import { isPlaceholderEmail } from "@/lib/login-id";
 import { formatNumber } from "@/lib/format";
 import { isMailEnabled, sendMail, sendMailInBackground } from "@/lib/server/mail";
 import { getFormItems } from "@/lib/server/buyer-form-repo";
-import { addNotification, addNotificationForMany, NOTIFICATION_KINDS, type NotificationKind } from "@/lib/server/user-notifications";
+import { fillFields, usesFields } from "@/lib/announcement-fields";
+import { loadPersonFields, valuesFor } from "@/lib/server/announcement-people";
+import { addNotification, addNotificationForMany, addPersonalNotifications, NOTIFICATION_KINDS, type NotificationKind } from "@/lib/server/user-notifications";
 
 // The e-mails the site sends, in the language the person last used the site in. Each notify...()
 // call below is made after the thing it reports has already happened, returns at once, and does
@@ -43,6 +45,7 @@ export type EmailKind =
   | "test";
 
 export type EmailLocale = "en" | "ru" | "zh";
+const LOCALE_LIST: EmailLocale[] = ["en", "ru", "zh"];
 const LOCALES: readonly string[] = ["en", "ru", "zh"];
 
 export const SITE_URL = "https://theuniqueexpo.com";
@@ -310,7 +313,28 @@ export async function sendAnnouncement(userIds: number[], texts: AnnouncementTex
   ).catch(async () => pool.query<RowDataPacket[]>("SELECT id, name, email, status FROM users WHERE id IN (?) AND role = 'buyer'", [userIds]));
   // Everyone selected can read it on the website, with or without an e-mail address (and with e-mail switched off).
   const readers = rows.filter((r) => r.status !== "suspended").map((r) => Number(r.id));
-  await addNotificationForMany(readers, "announcement", { subject: texts.subject, message: texts.message }, "/dashboard/notifications");
+  // Texts with {name}, {number} or {exhibition} are written separately for each reader; others are saved in one go.
+  const personal = LOCALE_LIST.some((l) => usesFields(texts.subject[l]) || usesFields(texts.message[l]));
+  const fields = personal ? await loadPersonFields(userIds) : null;
+  const fill = (id: number, locale: EmailLocale, text: string) => {
+    const person = fields?.get(id);
+    return person ? fillFields(text, valuesFor(person, locale)) : text;
+  };
+  if (personal) {
+    await addPersonalNotifications(
+      readers.map((id) => ({
+        userId: id,
+        params: {
+          subject: { en: fill(id, "en", texts.subject.en), ru: fill(id, "ru", texts.subject.ru), zh: fill(id, "zh", texts.subject.zh) },
+          message: { en: fill(id, "en", texts.message.en), ru: fill(id, "ru", texts.message.ru), zh: fill(id, "zh", texts.message.zh) },
+        },
+      })),
+      "announcement",
+      "/dashboard/notifications"
+    );
+  } else {
+    await addNotificationForMany(readers, "announcement", { subject: texts.subject, message: texts.message }, "/dashboard/notifications");
+  }
   const mailOn = await isMailEnabled();
   const people = mailOn ? rows.filter((r) => r.status !== "suspended" && r.email && !isPlaceholderEmail(String(r.email))) : [];
   const withoutEmail = userIds.length - people.length;
@@ -319,7 +343,7 @@ export async function sendAnnouncement(userIds: number[], texts: AnnouncementTex
       const wanted = asLocale(r.preferred_locale);
       const locale: EmailLocale = texts.message[wanted]?.trim() && texts.subject[wanted]?.trim() ? wanted : "en";
       try {
-        const mail = await renderEmail(locale, "announcement", String(r.name || ""), { subject: texts.subject[locale], message: texts.message[locale] }, { url: SITE_URL });
+        const mail = await renderEmail(locale, "announcement", String(r.name || ""), { subject: fill(Number(r.id), locale, texts.subject[locale]), message: fill(Number(r.id), locale, texts.message[locale]) }, { url: SITE_URL });
         await sendMail({ to: String(r.email), kind: "announcement", userId: r.id, ...mail });
       } catch (err) {
         console.error("Announcement e-mail failed for user", r.id, err);

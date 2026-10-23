@@ -68,6 +68,23 @@ export async function addNotificationForMany(userIds: number[], kind: Notificati
   }
 }
 
+/** Like addNotificationForMany, but each person gets their own text (an announcement with their name in it). */
+export async function addPersonalNotifications(items: { userId: number; params: NotificationParams }[], kind: NotificationKind, path: string): Promise<void> {
+  const rows: [number, string, string, string][] = [];
+  for (const item of items) {
+    const json = JSON.stringify(item.params);
+    if (Buffer.byteLength(json) > MAX_PARAMS_BYTES) continue;
+    rows.push([item.userId, kind, json, path.slice(0, 200)]);
+  }
+  try {
+    for (let i = 0; i < rows.length; i += 500) {
+      await pool.query("INSERT INTO user_notifications (user_id, kind, params, path) VALUES ?", [rows.slice(i, i + 500)]);
+    }
+  } catch (err) {
+    if ((err as { code?: string }).code !== "ER_NO_SUCH_TABLE") console.error("could not save notifications:", err);
+  }
+}
+
 export interface NotificationView {
   id: number;
   kind: string;

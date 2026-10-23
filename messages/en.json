@@ -3284,7 +3284,54 @@
       },
       "mailOff": "E-mail is switched off, so no e-mails will be sent. Everyone selected can read the announcement under Notifications on the website.",
       "doneEmail": "The e-mail is being sent to {count} buyers.",
-      "mailOffDone": "E-mail is switched off, so no e-mails were sent."
+      "mailOffDone": "E-mail is switched off, so no e-mails were sent.",
+      "templates": {
+        "load": "Saved texts",
+        "choose": "Load a saved text…",
+        "none": "No saved texts yet",
+        "delete": "Delete this text",
+        "deleteQuestion": "Delete it for good?",
+        "deleteYes": "Yes, delete",
+        "deleteKeep": "Keep it",
+        "saveAs": "Save this text as",
+        "save": "Save",
+        "saveHint": "Saves the subject and message in all three languages under this name. The same name replaces the saved text.",
+        "saved": "Saved as “{name}”.",
+        "replaced": "“{name}” was updated.",
+        "deleted": "The saved text was deleted.",
+        "errors": {
+          "bad_name": "Give it a name of up to 100 characters.",
+          "too_long": "The subject or the message is too long.",
+          "english_required": "Write the subject (3 letters or more) and the message (5 letters or more) in English first.",
+          "limit": "You have reached the limit of 100 saved texts. Delete one first.",
+          "unavailable": "Saved texts are not available yet. Please try again in a few minutes.",
+          "failed": "That did not work. Please try again."
+        }
+      },
+      "fields": {
+        "label": "Fields",
+        "insert": "Put in each buyer's own:",
+        "insertOne": "Insert {field}",
+        "hint": "{name} is the buyer's name, {number} their registration number, {exhibition} the next exhibition they are registered for (or “your exhibition”). Each buyer gets their own filled-in copy.",
+        "unknown": "These are not fields and will be sent as typed: {fields}",
+        "previewFor": "Preview for the first selected buyer ({name})"
+      },
+      "groupToggle": "Announce to a group",
+      "group": {
+        "title": "Announce to a group of buyers",
+        "who": "Who gets it",
+        "exhibition": "Registered for",
+        "anyExhibition": "Any exhibition",
+        "status": "Registration",
+        "anyStatus": "Any registration",
+        "notRegistered": "Not registered",
+        "country": "Country",
+        "anyCountry": "Any country",
+        "counting": "Counting…",
+        "reach": "This reaches {count} buyers; {with} have a real e-mail address.",
+        "nobody": "No buyers match this choice.",
+        "tooMany": "That is more than {max} buyers. Narrow the group down."
+      }
     }
   },
   "homepageSlideshow": {
@@ -5210,7 +5257,9 @@
       "site_page_saved": "Saved a website page",
       "signed_out_everywhere": "Signed out of all other devices",
       "expo_registrations_bulk_status": "Approved or rejected several exhibition registrations",
-      "admin_email_changed": "Changed their own e-mail address"
+      "admin_email_changed": "Changed their own e-mail address",
+      "announcement_template_saved": "Saved an announcement text",
+      "announcement_template_deleted": "Deleted a saved announcement text"
     }
   },
   "notificationsPage": {

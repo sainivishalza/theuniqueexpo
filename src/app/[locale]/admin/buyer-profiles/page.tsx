@@ -306,6 +306,7 @@ export default function AdminBuyerProfilesPage() {
   const [bulkOpen, setBulkOpen] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [announceOpen, setAnnounceOpen] = useState(false);
+  const [groupAnnounceOpen, setGroupAnnounceOpen] = useState(false);
   const [expoOptions, setExpoOptions] = useState<ExpoOption[]>([]);
   const [error, setError] = useState("");
 
@@ -696,6 +697,7 @@ export default function AdminBuyerProfilesPage() {
               <option value="top">{t("pointsFilter.top")}</option>
             </select>
             <Link href="/admin/buyer-expos" className="text-sm font-semibold text-emerald-800 hover:text-emerald-900 underline">{t("manageExpos")}</Link>
+            <Button onClick={() => setGroupAnnounceOpen(true)} variant="secondaryOutline" size="xs">{t("announce.groupToggle")}</Button>
             {selected.size > 0 && (
               <div className="flex flex-wrap items-center gap-2 rounded-xl bg-emerald-50 px-3 py-2">
                 <span className="text-sm font-semibold text-emerald-800">{t("selectedCount", { count: selected.size })}</span>
@@ -1100,6 +1102,7 @@ export default function AdminBuyerProfilesPage() {
       )}
 
       {bulkOpen && <BulkPointsDialog userIds={Array.from(selected)} onClose={() => setBulkOpen(false)} onDone={() => loadRows()} />}
+      {groupAnnounceOpen && <AnnounceDialog group userIds={[]} withEmail={0} onClose={() => setGroupAnnounceOpen(false)} />}
       {announceOpen && (
         <AnnounceDialog
           userIds={Array.from(selected)}

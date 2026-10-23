@@ -154,7 +154,7 @@ const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'tok
   [c, p] = await open('en', { width: 375, height: 1000 }, '/admin/exhibitions');
   const card = p.locator('div,article').filter({ hasText: `Notes Expo ${st}` }).filter({ has: p.getByRole('button', { name: 'History' }) }).last();
   await card.getByRole('button', { name: 'History' }).click();
-  const dlg = p.getByRole('dialog'); await dlg.waitFor();
+  const dlg = p.getByRole('dialog'); await dlg.waitFor(); await dlg.getByTestId('history-list').waitFor();
   ok(/History of/.test(await dlg.innerText()) && (await dlg.getByTestId('history-list').count()) === 1, 'the History button opens the list');
   ok(/Description, City|City, Description/.test(await dlg.getByTestId('history-list').locator('li').first().innerText()), 'newest first, with the names of the fields', await dlg.getByTestId('history-list').locator('li').first().innerText());
   ok(await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'no sideways overflow at 375px');

@@ -130,17 +130,17 @@ const mkU = async (tag) => { const o = await mkUsers(tag); o.aId = Number(sql(`S
   ok((await card.innerText()).includes(`Your current address: ${s.m.a}`), 'the admin account page has the card, with the current address');
   const va = await axeViolations(p); ok(va.length === 0, 'axe 0 violations', va);
   await card.getByLabel('New e-mail address').fill(`ui-new-${st}@test.invalid`);
-  await card.getByLabel('Your password').fill('wrong-password');
+  await card.getByLabel('Account password').fill('wrong-password');
   await card.getByRole('button', { name: 'Send the confirmation link' }).click();
   await card.getByRole('alert').waitFor();
   ok((await card.getByRole('alert').innerText()) === 'That password is not right.', 'a wrong password is explained');
-  await card.getByLabel('Your password').fill('pass1234');
+  await card.getByLabel('Account password').fill('pass1234');
   const n3 = srv.messages.length;
   await card.getByRole('button', { name: 'Send the confirmation link' }).click();
   await card.getByRole('status').waitFor();
   ok((await card.getByRole('status').innerText()).includes(`ui-new-${st}@test.invalid`), 'the right password sends the link and the page says where', await card.getByRole('status').innerText());
   ok(!!(await waitFor(/Confirm your new e-mail/i, n3, `ui-new-${st}`)), 'the mail reaches the new address');
-  ok((await card.getByLabel('Your password').inputValue()) === '' && (await card.getByLabel('New e-mail address').inputValue()) === '', 'and the fields are cleared');
+  ok((await card.getByLabel('Account password').inputValue()) === '' && (await card.getByLabel('New e-mail address').inputValue()) === '', 'and the fields are cleared');
   await p.screenshot({ path: SHOTS + '/change-email-admin.png' });
   // the confirm page in the browser
   const tUi = tokenOf(await waitFor(/Confirm your new e-mail/i, n3, `ui-new-${st}`));

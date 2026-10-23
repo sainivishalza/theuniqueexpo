@@ -5270,7 +5270,7 @@
     "current": "Your current address: {email}",
     "intro": "Type the new address and your password. We send a link to the new address, and your address changes when you open it. Until then you keep signing in with the current one.",
     "newEmail": "New e-mail address",
-    "password": "Your password",
+    "password": "Account password (to confirm)",
     "submit": "Send the confirmation link",
     "sending": "Sending…",
     "sentTitle": "Check your new e-mail",

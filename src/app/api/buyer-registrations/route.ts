@@ -4,6 +4,8 @@ import { asLocale } from "@/lib/server/notifications";
 import { checkRateLimit } from "@/lib/server/rate-limit";
 import { listRegistrable, submitRegistrations } from "@/lib/server/bulk-registration";
 import { MAX_EXHIBITIONS_AT_ONCE } from "@/lib/bulk-registration";
+import { getBuyerProfileOrEmpty } from "@/lib/server/buyer-profile-repo";
+import { profileCompleteness } from "@/lib/profile-completeness";
 
 const noStore = { "Cache-Control": "no-store" };
 
@@ -27,7 +29,8 @@ export async function GET(request: Request) {
   const auth = await buyer(request);
   if (auth.response) return auth.response;
   const locale = asLocale(new URL(request.url).searchParams.get("locale"));
-  return NextResponse.json({ exhibitions: await listRegistrable(auth.user.id, locale) }, { headers: noStore });
+  const [exhibitions, profile] = await Promise.all([listRegistrable(auth.user.id, locale), getBuyerProfileOrEmpty(auth.user.id)]);
+  return NextResponse.json({ exhibitions, completeness: profileCompleteness(profile, auth.user.email) }, { headers: noStore });
 }
 
 // Registers the buyer for the chosen exhibitions at once. { slugs: [...], answers: { <question key>: answer } }

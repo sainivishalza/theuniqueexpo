@@ -9,6 +9,8 @@ import { useBuyerForm } from "@/lib/client/buyer-form";
 import ChangePasswordCard from "../../_components/ChangePasswordCard";
 import AddEmailCard from "../../_components/AddEmailCard";
 import ExtraInfoCard from "../../_components/ExtraInfoCard";
+import ProfileCompleteness from "../../_components/ProfileCompleteness";
+import { profileCompleteness } from "@/lib/profile-completeness";
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
@@ -203,6 +205,7 @@ export default function BuyerProfilePage() {
 
       <section className="py-10 bg-cream-50">
         <div className="mx-auto max-w-4xl px-6 space-y-6">
+          <ProfileCompleteness completeness={profileCompleteness(profile, user.email)} />
           {error && <div className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</div>}
           {saved && <div className="rounded-lg bg-green-50 px-4 py-2.5 text-sm text-green-700">{t("saveSuccess")}</div>}
 

@@ -9,6 +9,8 @@ import { fieldClasses } from "@/components/ui/FormField";
 import { Link } from "@/i18n/navigation";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { formatDateOnly, STATUS_TONE } from "@/lib/client/registration-format";
+import ProfileCompleteness from "./ProfileCompleteness";
+import type { Completeness } from "@/lib/profile-completeness";
 import { findOverlaps, type Plan, type PlanKnown, type PlanQuestion, type SubmitResult } from "@/lib/bulk-registration";
 
 interface Listed {
@@ -38,6 +40,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
   const ids = { search: useId(), known: useId() };
   const topRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<Listed[] | null>(null);
+  const [completeness, setCompleteness] = useState<Completeness | null>(null);
   const [failed, setFailed] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [open, setOpen] = useState<string | null>(null);
@@ -56,6 +59,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((d) => {
         setItems(d.exhibitions);
+        setCompleteness(d.completeness ?? null);
         setFailed(false);
       })
       .catch(() => setFailed(true));
@@ -227,6 +231,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
         <Card shadow="sm" bordered={false} className="p-5 sm:p-6">
           <h2 className="text-xl font-bold text-heading">{t("title")}</h2>
           <p className="mt-1 text-sm text-gray-600">{t("intro")}</p>
+          {completeness && completeness.missing.length > 0 && <div className="mt-4"><ProfileCompleteness completeness={completeness} link /></div>}
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <label className="flex items-center gap-2 text-sm font-semibold text-gray-800">

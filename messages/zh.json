@@ -5223,5 +5223,12 @@
     "next": "下一页",
     "pageOf": "第 {page} / {pages} 页",
     "loadFailed": "无法加载报名，请重试。"
+  },
+  "profileCompleteness": {
+    "title": "您的资料已完成 {percent}%",
+    "complete": "您的资料已包含展会所需的全部信息。",
+    "missing": "还缺少：",
+    "hint": "只需添加一次，之后每次报名都会使用这些信息，不会再次询问。",
+    "completeProfile": "完善我的资料"
   }
 }

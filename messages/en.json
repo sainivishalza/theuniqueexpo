@@ -5223,5 +5223,12 @@
     "next": "Next",
     "pageOf": "Page {page} of {pages}",
     "loadFailed": "Could not load the registrations. Please try again."
+  },
+  "profileCompleteness": {
+    "title": "Your profile is {percent}% complete",
+    "complete": "Your profile has everything exhibitions ask for.",
+    "missing": "Still missing:",
+    "hint": "Add these once and every registration uses them, so you are not asked again.",
+    "completeProfile": "Complete my profile"
   }
 }

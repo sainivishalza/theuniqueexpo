@@ -69,7 +69,7 @@ const reset=()=>sql(`DELETE FROM buyer_custom_documents; DELETE FROM buyer_custo
  await p.getByRole('textbox').first().fill(`-${u.st}@`); await p.waitForTimeout(500);
  await p.locator('tbody tr').first().getByRole('button',{name:/Edit/}).evaluate(e=>e.click()); await p.waitForSelector('#ebp-purchaseIntention');
  const panel=p.locator('div.fixed.inset-0').last(); ok(/additional information/i.test(await panel.innerText())&&await p.getByLabel('Favourite city').inputValue()==='Shanghai','the edit panel shows the question with the buyer\'s answer');
- await p.getByLabel('Favourite city').selectOption('Guangzhou'); await panel.getByRole('button',{name:'Save'}).click(); await p.getByRole('status').filter({hasText:'Saved.'}).waitFor({timeout:8000});
+ await p.getByLabel('Favourite city').selectOption('Guangzhou'); await panel.getByRole('button',{name:'Save',exact:true}).click(); await p.getByRole('status').filter({hasText:'Saved.'}).waitFor({timeout:8000});
  ok(sql(`SELECT value FROM buyer_custom_values WHERE user_id=${u.bId}`)==='Guangzhou','an admin edit of the answer is saved');
  ok(/Health Certificate/.test(await panel.innerText()),'the edit panel shows the new document too');
  await p.screenshot({path:SHOTS+'/form_admin_panel.png'});

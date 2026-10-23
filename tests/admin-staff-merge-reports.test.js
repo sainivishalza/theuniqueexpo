@@ -30,6 +30,8 @@ const denied = (r) => r.status === 401 || r.status === 403;
   sql(`INSERT INTO exhibition_favorites (user_id,exhibition_id) VALUES (${old.id},${e2}),(${old.id},${e1}),(${keep.id},${e1})`);
   sql(`INSERT INTO user_notifications (user_id,kind,params,path) VALUES (${old.id},'announcement','{"title":"Hello old"}','/dashboard')`);
   sql(`INSERT INTO wallets (user_id,wallet_code,balance,frozen,created_at) VALUES (${old.id},LPAD(CONCAT('SMO',${old.id}),24,'0'),70,0,NOW()),(${keep.id},LPAD(CONCAT('SMK',${keep.id}),24,'0'),30,0,NOW())`);
+  // a balance always has its ledger entry (the reconciliation tests add every balance up against the ledger)
+  sql(`INSERT INTO wallet_transactions (user_id,amount,balance_after,type,note,idem_key,created_at) VALUES (${old.id},70,70,'adjustment','seed','adj:seed-${st}',NOW()),(${keep.id},30,30,'adjustment','seed','adj:seed-${st}',NOW())`);
 
   ok((await api('GET', '/api/admin/duplicates', null, u.bT)).status === 401, 'a buyer cannot see the list');
   let r = await api('GET', '/api/admin/duplicates', null, u.aT);

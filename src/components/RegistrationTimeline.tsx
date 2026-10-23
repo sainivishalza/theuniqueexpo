@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { formatDateOnly, formatDateTime } from "@/lib/client/registration-format";
+import { formatDateTime } from "@/lib/client/registration-format";
 import { buildTimeline, type TimelineState } from "@/lib/registration-timeline";
 import type { MyRegistration } from "@/lib/registration-lifecycle";
 
@@ -29,7 +29,6 @@ export default function RegistrationTimeline({ registration, className = "" }: {
               <span className="sr-only"> ({t(`states.${s.state}`)})</span>
             </p>
             {s.at && <p className="text-xs text-gray-500">{formatDateTime(s.at, locale)}</p>}
-            {s.dueDay && <p className="text-xs font-semibold text-emerald-900">{t("dueBy", { date: formatDateOnly(s.dueDay, locale) })}</p>}
           </div>
         </li>
       ))}

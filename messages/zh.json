@@ -4026,7 +4026,6 @@
     "addToCalendar": "添加到我的日历",
     "timeline": {
       "title": "此登记的进度",
-      "dueBy": "请在 {date} 前确认",
       "states": {
         "done": "已完成",
         "current": "当前",

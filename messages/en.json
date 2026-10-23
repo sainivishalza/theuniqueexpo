@@ -4026,7 +4026,6 @@
     "addToCalendar": "Add to my calendar",
     "timeline": {
       "title": "Progress of this registration",
-      "dueBy": "Please confirm by {date}",
       "states": {
         "done": "done",
         "current": "now",

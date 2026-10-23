@@ -90,6 +90,10 @@ async function signIn(context, email, password) {
   ok(robots.status === 200 && /sitemap/i.test(robots.text), 'robots.txt lists the sitemap');
   const sitemap = await get('/sitemap.xml');
   ok(sitemap.status === 200 && /<urlset/.test(sitemap.text) && (sitemap.text.match(/<loc>/g) || []).length > 20, 'sitemap.xml has pages');
+  const health = await get('/api/health');
+  ok(health.status === 200 && /"ok":\s*true/.test(health.text), 'the site reaches its database (/api/health)', [health.status, health.text.slice(0, 80)]);
+  const manifest = await get('/manifest.webmanifest');
+  ok(manifest.status === 200 && /"The Unique Expo"/.test(manifest.text), 'the app manifest is served', manifest.status);
   const me = await get('/api/auth/me');
   ok(me.status === 200 && /"user":null/.test(me.text), 'signed out: /api/auth/me answers "no user"');
   const wallet = await get('/api/wallet/balance');

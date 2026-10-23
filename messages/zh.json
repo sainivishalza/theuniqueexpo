@@ -3915,7 +3915,8 @@
       "submitting": "提交中...",
       "thanks": "感谢您的反馈。"
     },
-    "registrationNumber": "注册编号"
+    "registrationNumber": "注册编号",
+    "addToCalendar": "添加到我的日历"
   },
   "expoCheckIn": {
     "loading": "加载中...",
@@ -4490,7 +4491,24 @@
     "pageSubtitle": "用只有您知道的密码保护您的账户。",
     "menu": "账户与密码",
     "adminCardTitle": "我的账户",
-    "adminCardDescription": "修改您自己的登录密码"
+    "adminCardDescription": "修改您自己的登录密码",
+    "sessions": {
+      "title": "在其他设备上登录过？",
+      "intro": "退出您在其他手机和电脑上的所有登录。当前设备保持登录。",
+      "button": "退出其他设备",
+      "working": "处理中…",
+      "confirm": "要退出所有其他设备吗？当前设备将保持登录。",
+      "done": "完成。所有其他设备已退出登录。",
+      "failed": "无法退出其他设备，请重试。"
+    },
+    "myData": {
+      "title": "您的数据",
+      "intro": "下载我们保存的与您有关的数据副本：账户、资料、报名记录和积分记录，合并为一个文件。已上传的证件照片不包含在内，请在个人资料中查看。",
+      "button": "下载我的数据",
+      "working": "正在准备…",
+      "failed": "无法准备您的数据，请重试。",
+      "tooMany": "您已多次请求，请一小时后再试。"
+    }
   },
   "emails": {
     "greeting": "{name}，您好！",
@@ -4879,7 +4897,8 @@
       "blog_post_created": "添加博客文章",
       "blog_post_updated": "编辑博客文章",
       "blog_post_deleted": "删除博客文章",
-      "site_page_saved": "保存网站页面"
+      "site_page_saved": "保存网站页面",
+      "signed_out_everywhere": "退出所有其他设备"
     }
   }
 }

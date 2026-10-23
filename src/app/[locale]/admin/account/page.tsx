@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import ChangePasswordCard from "../../dashboard/_components/ChangePasswordCard";
 import TwoStepCard from "./TwoStepCard";
+import SessionsCard from "../../dashboard/_components/SessionsCard";
 
 // The admin's own account: change the password they sign in with, and the two-step sign-in.
 export default function AdminAccountPage() {
@@ -35,6 +36,7 @@ export default function AdminAccountPage() {
           <div className="space-y-6">
             <ChangePasswordCard />
             <TwoStepCard />
+            <SessionsCard />
           </div>
         </div>
       </section>

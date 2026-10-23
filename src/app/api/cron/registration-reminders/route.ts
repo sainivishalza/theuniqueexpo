@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "@/lib/server/rate-limit";
+import { runHousekeepingInBackground } from "@/lib/server/housekeeping";
 import { reminderKeyMatches, runRegistrationReminders } from "@/lib/server/reminders";
 
 // Started by the nightly "Registration reminders" GitHub workflow with the key from Admin -> Email.
@@ -8,5 +9,6 @@ export async function POST(request: Request) {
   if (!limited.allowed) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   const key = request.headers.get("x-reminder-key") ?? "";
   if (!(await reminderKeyMatches(key))) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  runHousekeepingInBackground();
   return NextResponse.json(await runRegistrationReminders());
 }

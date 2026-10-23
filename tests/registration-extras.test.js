@@ -22,7 +22,7 @@ const pdfText = (buf) => {
     const chunk = buf.subarray(start, end);
     try { all += zlib.inflateSync(chunk).toString('latin1'); } catch { all += chunk.toString('latin1'); }
   }
-  return (all.match(/\(([^)]*)\)\s*Tj/g) || []).map((x) => x.replace(/^\(|\)\s*Tj$/g, '')).join('\n');
+  return (all.match(/<([0-9A-Fa-f]+)>\s*Tj/g) || []).map((x) => Buffer.from(/<([0-9A-Fa-f]+)>/.exec(x)[1], 'hex').toString('latin1')).join('\n');
 };
 
 (async () => {
@@ -90,6 +90,7 @@ const pdfText = (buf) => {
   await p.goto(BASE + '/en/dashboard/buyer/registrations', { waitUntil: 'networkidle' });
   await p.getByText('Show progress').first().click();
   ok(await p.getByTestId('registration-timeline').first().isVisible(), 'My registrations shows the same timeline under "Show progress"');
+  ok(!/expoRegistrationStatus\./.test(await p.locator('main').innerText()) && /Registered/.test(await p.getByTestId('registration-timeline').first().innerText()), 'with real words, not message keys');
   ok((await axeViolations(p)).length === 0, 'My registrations with a timeline open: axe 0');
   await c.close();
 
@@ -130,7 +131,8 @@ const pdfText = (buf) => {
   ok(href.endsWith(`/exhibitions/${cfb.slug}/register`), 'with a button to its register page', href);
   ok((await axeViolations(p)).length === 0, 'axe 0');
   await p.goto(BASE + '/ru/dashboard/buyer/registrations', { waitUntil: 'networkidle' });
-  ok(await p.getByText('Открыта регистрация на следующий выпуск').first().isVisible(), 'My registrations offers it too (in Russian)');
+  await p.getByText('Открыта регистрация на следующий выпуск').first().waitFor();
+  ok(true, 'My registrations offers it too (in Russian)');
   await c.close();
 
   console.log('\n== passport and visa alerts');
@@ -207,7 +209,7 @@ const pdfText = (buf) => {
   const letter = Buffer.from(await r.arrayBuffer());
   ok(r.status === 200 && r.headers.get('content-type') === 'application/pdf' && letter.subarray(0, 5).toString() === '%PDF-', 'an approved registration gets a PDF', r.status);
   ok(/attachment; filename="UE-INV-\d{6}\.pdf"/.test(r.headers.get('content-disposition') || '') && /no-store/.test(r.headers.get('cache-control') || ''), 'as a download, not cached');
-  const lt = pdfText(letter);
+  const lt = pdfText(letter).replace(/\n/g, ' ');
   ok(lt.includes('INVITATION LETTER') && lt.includes('PETROV IVAN') && lt.includes('AB123456') && lt.includes('PDF Show') && lt.includes('Zaryad Trading') && lt.includes('Russia') && lt.includes('9 March 1985'), 'the letter names the visitor, passport, company, birth date and the exhibition', lt.slice(0, 500));
   ok(lt.includes(`UE-INV-${String(rid).padStart(6, '0')}`), 'and carries a reference number');
   sql(`UPDATE buyer_profiles SET company_name='公司 Zaryad 日本' WHERE user_id=${pd.id}`);
@@ -219,7 +221,7 @@ const pdfText = (buf) => {
   r = await get(`/api/expo-registrations/${rid}/ticket`, pd.t);
   const ticket = Buffer.from(await r.arrayBuffer());
   ok(r.status === 200 && ticket.subarray(0, 5).toString() === '%PDF-' && /ticket-\d{6}\.pdf/.test(r.headers.get('content-disposition') || ''), 'a confirmed registration gets the e-ticket PDF');
-  const tt = pdfText(ticket);
+  const tt = pdfText(ticket).replace(/\n/g, ' ');
   ok(tt.includes('PETROV IVAN') && tt.includes('PDF Show') && tt.includes('Show this code at the entrance'), 'with the name and the exhibition', tt.slice(0, 400));
   ok(/\/Subtype\s*\/Image/.test(ticket.toString('latin1')), 'and an image (the QR code)');
   sql(`UPDATE expo_registrations SET status='approved', confirm_by='${day(-3)}' WHERE id=${rid}`);
@@ -275,10 +277,11 @@ const pdfText = (buf) => {
   ok(await p.getByRole('link', { name: 'See hotels' }).getAttribute('href').then((x) => x.endsWith(`/exhibitions/${trav.slug}/hotels`)), 'hotels link to the exhibition\'s hotel page');
   ok(await p.getByRole('link', { name: 'Plan my trip' }).getAttribute('href').then((x) => x.includes('plan-business-trip') && x.includes(trav.slug)), 'tours link to trip planning for this exhibition');
   await p.getByRole('button', { name: 'Request a pickup' }).click();
-  await p.getByLabel('Arrival date').fill(day(29));
-  await p.getByLabel('Number of travelers').fill('2');
-  await p.getByLabel('Flight number, arrival time or other details').fill('CA123 14:30');
-  await p.getByLabel(/WhatsApp or phone/).fill('+7 900 111 22 33');
+  const tpk = p.getByTestId('travel-pack');
+  await tpk.getByLabel('Arrival date').fill(day(29));
+  await tpk.getByLabel('Number of travelers').fill('2');
+  await tpk.getByLabel('Flight number, arrival time or other details').fill('CA123 14:30');
+  await tpk.getByLabel(/WhatsApp or phone/).fill('+7 900 111 22 33');
   ok((await axeViolations(p)).length === 0, 'the pickup form: axe 0');
   await p.getByRole('button', { name: 'Send request' }).click();
   await p.getByText('Request sent. We will contact you about your pickup.').waitFor();

@@ -211,13 +211,13 @@ export default function ExpoRegistrationStatus({ exhibitionSlug, fallback = null
 
       {/* Confirmed / attended: what they told us, and the check-in times */}
       {(status === "confirmed" || status === "attended") && (
-        <dl className="mt-4 space-y-1 text-sm text-gray-600">
+        <div className="mt-4 space-y-1 text-sm text-gray-600">
           {registration.arrivalDate && <div>{t("details.arrival", { date: formatDateOnly(registration.arrivalDate, locale) })}</div>}
           {registration.arrivalNote && <div className="[overflow-wrap:anywhere]">{t("details.note", { note: registration.arrivalNote })}</div>}
           {registration.hasTicket && <div>{t("details.ticketUploaded")}</div>}
           {registration.checkedInAt && <div>{t("details.checkedIn", { time: formatDateTime(registration.checkedInAt, locale) })}</div>}
           {registration.checkedOutAt && <div>{t("details.checkedOut", { time: formatDateTime(registration.checkedOutAt, locale) })}</div>}
-        </dl>
+        </div>
       )}
 
       <RegistrationDownloads registration={registration} />

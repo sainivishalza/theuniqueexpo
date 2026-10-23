@@ -301,7 +301,7 @@ export default function ExhibitionDetailView({ expo }: { expo: Exhibition | null
                     {t("viewFloorPlanAndBook")}
                   </Button>
                 ) : (
-                  <div className="block w-full text-center rounded-[var(--radius-button)] bg-gray-200 py-3 text-sm font-semibold text-gray-500">
+                  <div className="block w-full text-center rounded-[var(--radius-button)] bg-gray-200 py-3 text-sm font-semibold text-gray-700">
                     {t("exhibitionEnded")}
                   </div>
                 )}

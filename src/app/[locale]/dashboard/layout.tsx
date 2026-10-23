@@ -13,7 +13,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   // bundle (see src/lib/client-message-namespaces.ts) -- add them back just
   // for this subtree. "common" is also used by dashboard client components.
   const messages = await getMessages();
-  const dashboardMessages = pickMessages(messages, [...DASHBOARD_NAMESPACES, "common"]);
+  const dashboardMessages = pickMessages(messages, [...DASHBOARD_NAMESPACES, "common", "expoRegistrationStatus"]);
 
   return (
     <NextIntlClientProvider messages={dashboardMessages}>

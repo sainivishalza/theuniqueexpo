@@ -23,3 +23,12 @@ Settings (environment variables, all optional):
 Every test creates its own accounts (`helpers/common.js`) and does not depend on existing data, so the
 tests can be run in any order and more than once. `helpers/fake-smtp.js` is a tiny mail server the e-mail
 tests send through.
+
+## Preview of a change
+
+`.github/workflows/preview.yml` builds a branch on a throwaway database of made-up demo data
+(`scripts/preview-seed.mjs`) and keeps screenshots of the main pages (public, a signed-in buyer, a signed-in
+admin; phone and laptop size; English, Russian, Chinese) as a download on the run (`scripts/preview-shots.mjs`).
+Add the label `preview` to a pull request, or run the workflow by hand (Actions, Preview, Run workflow). Nothing is
+published to the internet and nothing touches the real site or its database. `tests/preview-seed.test.js` checks the
+demo data.

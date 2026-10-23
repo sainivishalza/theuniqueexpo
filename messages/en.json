@@ -403,12 +403,12 @@
     },
     "registrations": {
       "title": "My Registrations",
-      "subtitle": "Every exhibition you've registered for, and what to do next.",
+      "subtitle": "Register for upcoming exhibitions and follow every registration.",
       "back": "← Back to dashboard",
       "loading": "Loading...",
       "loadFailed": "Couldn't load your registrations. Please try again.",
       "emptyTitle": "No registrations yet",
-      "emptyHint": "Pick an exhibition and register, and it will show up here.",
+      "emptyHint": "Tick the exhibitions above and register: they will show up here.",
       "browse": "Browse exhibitions",
       "manage": "Open exhibition page →",
       "statusLabels": {
@@ -426,7 +426,8 @@
         "confirmBy": "Please confirm attendance by {date}.",
         "confirmed": "Attendance confirmed. Scan the QR code at the venue to check in.",
         "feedback": "Share your feedback about the exhibition."
-      }
+      },
+      "yourRegistrations": "Your registrations"
     },
     "registrationNumber": "Your registration number",
     "registrationNumberHint": "Quote it whenever you contact us.",
@@ -5023,5 +5024,108 @@
         "body": "Your registration for {tour} was not approved."
       }
     }
+  },
+  "bulkRegister": {
+    "title": "Register for upcoming exhibitions",
+    "intro": "Tick the exhibitions you want and press Register. We use the details already in your profile and only ask for what is missing, once. Your answers are saved to your profile, so you will not be asked again.",
+    "selectAll": "Select all ({count})",
+    "search": "Search exhibitions",
+    "noMatch": "No exhibition matches your search.",
+    "details": "Details",
+    "hideDetails": "Hide details",
+    "openPage": "Open the exhibition page",
+    "opensNewTab": "(opens in a new tab)",
+    "alreadyRegistered": "You are already registered.",
+    "when": "Dates",
+    "venue": "Venue",
+    "where": "City",
+    "industry": "Industry",
+    "about": "About",
+    "selectedCount": "{count, plural, =0 {No exhibition selected} one {# exhibition selected} other {# exhibitions selected}}",
+    "nothingToRegister": "You are registered for every open exhibition.",
+    "clear": "Clear",
+    "checking": "Checking…",
+    "register": "{count, plural, =0 {Register} one {Register for # exhibition} other {Register for # exhibitions}}",
+    "planFailed": "We could not check what these exhibitions need. Please try again.",
+    "noneOpen": "No exhibition is open for registration right now. New ones appear here as soon as they open.",
+    "loading": "Loading exhibitions…",
+    "loadFailed": "The exhibitions could not be loaded. Please try again.",
+    "reviewTitle": "Check and register",
+    "again": "(registering again)",
+    "states": {
+      "already_registered": "already registered, left out",
+      "closed": "registration is closed, left out",
+      "unknown": "not found, left out"
+    },
+    "needMore": "These exhibitions need a few details that are not in your profile yet. Fill them in once: they are saved to your profile, and the next registration will not ask again.",
+    "neededFor": "Needed for: {names}.",
+    "optional": "optional",
+    "choose": "Choose…",
+    "fileChosen": "File chosen: {name}",
+    "fileSaved": "A file is already saved. Choose another one only if you want to replace it.",
+    "fileTooLarge": "This file is too large (over 8 MB).",
+    "fileUnreadable": "This file could not be read.",
+    "savedToProfile": "Saved to your profile.",
+    "savedForNext": "Saved so you are not asked again.",
+    "allKnown": "Everything these exhibitions need is already in your profile. Press the button to register.",
+    "submitting": "Registering…",
+    "submit": "{count, plural, one {Register for # exhibition} other {Register for # exhibitions}}",
+    "back": "Back to the list",
+    "errors": {
+      "missing": "Please answer the questions marked in red.",
+      "file": "One of the files is not a valid image or PDF, or is too large.",
+      "invalid": "Some answers are not valid. Please check the questions marked in red.",
+      "form": "{expo}: {message}",
+      "tooMany": "Too many attempts. Please wait a little and try again.",
+      "generic": "We could not register you. Please try again."
+    },
+    "doneTitle": "Your registrations",
+    "outcomes": {
+      "registered": "registered: it is now waiting for review",
+      "registered_again": "registered again: it is waiting for review",
+      "already_registered": "you were already registered",
+      "closed": "registration is closed",
+      "unknown": "not found",
+      "failed": "could not be registered, please try again"
+    },
+    "doneHint": "You will see each registration below, and we will tell you when it is approved.",
+    "doneButton": "Register for more",
+    "genders": {
+      "male": "Male",
+      "female": "Female"
+    },
+    "core": {
+      "gender": "Gender",
+      "nationality": "Nationality",
+      "passportNumber": "Passport number",
+      "phone": "Phone number",
+      "email": "E-mail address",
+      "companyName": "Company name",
+      "companyType": "Company type",
+      "companyTypeOther": "Please specify your company type",
+      "companyScale": "Company size (number of employees)",
+      "purposeOfVisit": "Purpose of visit",
+      "infoSource": "Where did you hear about this event?",
+      "infoSourceOther": "Please specify where you heard about it",
+      "exportingMarkets": "Markets you export to",
+      "exportingMarketOther": "Please specify the market",
+      "docPassportFront": "Passport front page",
+      "docBusinessCard": "Business card",
+      "docVisaPage": "Visa page",
+      "docBusinessLicense": "Business license",
+      "fullName": "Full name"
+    },
+    "extra": {
+      "title": "More information asked by exhibitions",
+      "intro": "Answers you gave when registering for exhibitions. They are used the next time, so you are not asked again. You can change them the next time you register.",
+      "file": "File saved",
+      "empty": "—"
+    },
+    "fromProfile": "Already in your profile",
+    "fromProfileHelp": "We send these with your registration. You do not need to fill them in again.",
+    "onFile": "On file",
+    "forExhibitions": "Sent to: {names}",
+    "allExhibitions": "all chosen exhibitions",
+    "editProfile": "Check or change them in your profile"
   }
 }

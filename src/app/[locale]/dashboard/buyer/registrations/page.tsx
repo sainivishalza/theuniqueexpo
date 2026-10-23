@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -9,6 +9,7 @@ import type { MyRegistration } from "@/lib/registration-lifecycle";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import BulkRegister from "../../_components/BulkRegister";
 
 // Every exhibition this buyer has registered for, with where each one stands and the
 // next step. The steps themselves (confirm, check in, feedback) are done on the
@@ -20,13 +21,20 @@ export default function BuyerRegistrationsPage() {
   const [items, setItems] = useState<MyRegistration[] | null>(null);
   const [failed, setFailed] = useState(false);
 
-  useEffect(() => {
-    if (authLoading || !user) return;
+  const loadMine = useCallback(() => {
     fetch(`/api/expo-registrations/mine?locale=${locale}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data) => setItems(data.registrations || []))
+      .then((data) => {
+        setItems(data.registrations || []);
+        setFailed(false);
+      })
       .catch(() => setFailed(true));
-  }, [authLoading, user, locale]);
+  }, [locale]);
+
+  useEffect(() => {
+    if (authLoading || !user) return;
+    loadMine();
+  }, [authLoading, user, loadMine]);
 
   function nextStep(r: MyRegistration): string {
     if (r.actions.confirm) return r.confirmBy ? t("hints.confirmBy", { date: formatDateOnly(r.confirmBy, locale) }) : t("hints.approved");
@@ -47,6 +55,8 @@ export default function BuyerRegistrationsPage() {
 
       <section className="py-10 bg-cream-50 min-h-[40vh]">
         <div className="mx-auto max-w-4xl px-6 space-y-4">
+          {user?.role === "buyer" && <BulkRegister onChanged={loadMine} />}
+          <h2 className="pt-4 text-2xl font-extrabold text-heading">{t("yourRegistrations")}</h2>
           {failed && <p role="alert" className="text-center text-red-600">{t("loadFailed")}</p>}
           {!failed && items === null && <p className="text-center text-gray-500">{t("loading")}</p>}
           {items && items.length === 0 && (

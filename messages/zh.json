@@ -753,6 +753,10 @@
       "duplicates": {
         "title": "重复买家",
         "description": "找出重复注册的买家（相同护照或电话号码），并合并为一个账户。"
+      },
+      "scheduledExports": {
+        "title": "定时报表",
+        "description": "每天、每周或每月把 Excel 报表（登记、提现、积分变动）通过电子邮件发给指定的人。"
       }
     },
     "attention": {
@@ -5054,7 +5058,8 @@
       "savedRegistrationClosing": "收藏的展会：登记即将截止",
       "passportExpiring": "护照即将到期",
       "visaExpiring": "签证到期过早",
-      "groupInvite": "同事邀请"
+      "groupInvite": "同事邀请",
+      "scheduledReport": "定时报表"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -5285,7 +5290,10 @@
       "internal_tags_set": "更改了内部标签",
       "internal_assigned": "指派了负责人",
       "exhibition_change_undone": "撤销了展会的一次更改",
-      "buyers_merged": "合并了两个买家账户"
+      "buyers_merged": "合并了两个买家账户",
+      "scheduled_export_saved": "保存了定时报表",
+      "scheduled_export_deleted": "删除了定时报表",
+      "scheduled_export_sent_now": "立即发送了定时报表"
     }
   },
   "notificationsPage": {
@@ -5826,6 +5834,96 @@
       "already_merged": "其中一个账户已被合并过。",
       "rate_limited": "一小时内合并次数过多，请稍候。",
       "failed": "合并未成功。除可能的积分外未更改任何内容，请检查后重试。"
+    }
+  },
+  "adminScheduledExports": {
+    "title": "定时报表",
+    "subtitle": "每天、每周或每月把 Excel 文件发给您指定的人。",
+    "back": "← 返回管理后台",
+    "mailOff": "邮件发送已关闭，开启之前不会发送任何内容。",
+    "openEmail": "打开邮件设置",
+    "newReport": "新建报表",
+    "editReport": "修改此报表",
+    "name": "报表名称",
+    "what": "发送内容",
+    "kinds": {
+      "registrations": "展会登记",
+      "withdrawals": "提现申请（待支付）",
+      "movements": "最近 7 天的积分变动"
+    },
+    "exhibition": "展会",
+    "allExhibitions": "所有展会",
+    "status": {
+      "sent": "已发送",
+      "sending": "发送中",
+      "failed": "失败",
+      "partly_failed": "部分地址失败",
+      "too_large": "文件过大无法作为附件"
+    },
+    "anyStatus": "任意状态",
+    "withdrawalStatus": "申请状态",
+    "withdrawalStatuses": {
+      "pending": "等待支付",
+      "paid": "已支付",
+      "rejected": "已拒绝",
+      "all": "全部"
+    },
+    "how": "频率",
+    "frequencies": {
+      "daily": "每天",
+      "weekly": "每周",
+      "monthly": "每月"
+    },
+    "weekday": "星期",
+    "weekdays": {
+      "0": "星期日",
+      "1": "星期一",
+      "2": "星期二",
+      "3": "星期三",
+      "4": "星期四",
+      "5": "星期五",
+      "6": "星期六"
+    },
+    "monthDay": "每月的几号",
+    "recipients": "发送给（电子邮箱）",
+    "recipientsHint": "每行一个，或用逗号分隔，最多 10 个。",
+    "enabled": "已开启",
+    "timeNote": "每日检查在所选日期当天或之后首次运行时发出（UTC）。新报表从其下一个日期开始。",
+    "create": "添加报表",
+    "saveChanges": "保存更改",
+    "created": "报表已添加。第一份将在其下一个日期发出。",
+    "updated": "报表已保存。",
+    "paused": "报表已暂停。",
+    "resumed": "报表已重新开启。",
+    "deleted": "报表已删除。",
+    "sentNow": "“{name}”已发送。",
+    "yourReports": "您的报表",
+    "none": "还没有定时报表。",
+    "pausedBadge": "已暂停",
+    "to": "发送至：",
+    "last": "上次发送 {when}（{status}）",
+    "neverSent": "尚未发送",
+    "sendNow": "立即发送",
+    "pause": "暂停",
+    "resume": "开启",
+    "edit": "修改",
+    "delete": "删除",
+    "deleteQuestion": "确定永久删除？",
+    "deleteYes": "是，删除",
+    "deleteKeep": "保留",
+    "errors": {
+      "load": "无法加载报表。",
+      "bad_name": "请输入不超过 100 个字符的报表名称。",
+      "bad_kind": "请选择发送内容。",
+      "bad_frequency": "请选择频率。",
+      "bad_day": "请选择有效的日期。",
+      "bad_recipients": "请输入 1 至 10 个有效的电子邮箱。",
+      "limit": "已达到 20 份报表的上限，请先删除一份。",
+      "unavailable": "暂时无法使用定时报表，请几分钟后重试。",
+      "mail_off": "邮件发送已关闭。请先在“管理后台 → 邮件”中开启。",
+      "rate_limited": "一小时内发送次数过多，请稍候。",
+      "not_found": "该报表已不存在。",
+      "failed": "操作失败，请重试。"
     }
   }
 }

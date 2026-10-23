@@ -3,6 +3,7 @@ import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { decryptSecret, encryptSecret, isMailEnabled } from "@/lib/server/mail";
 import { notifyUser } from "@/lib/server/notifications";
+import { runScheduledExports } from "@/lib/server/scheduled-exports";
 import { sendDocumentExpiryAlerts, sendSavedExhibitionAlerts } from "@/lib/server/registration-alerts";
 import { exhibitionsWithWaitlist, promoteFromWaitlist } from "@/lib/server/waitlist";
 
@@ -68,12 +69,17 @@ export interface ReminderRun {
 // The alerts that do not need e-mail (they are always shown on the website, and e-mailed too when e-mail is on): people
 // moved up the waiting list, saved exhibitions whose registration opens or closes, passports and visas that expire too
 // early. Each is told once, so running this often is harmless.
-export async function runDailyAlerts(): Promise<{ promoted: number; saved: number; documents: number }> {
+export async function runDailyAlerts(): Promise<{ promoted: number; saved: number; documents: number; reports: number }> {
   let promoted = 0;
   for (const exhibitionId of await exhibitionsWithWaitlist()) promoted += await promoteFromWaitlist(exhibitionId);
   const saved = await sendSavedExhibitionAlerts();
   const documents = await sendDocumentExpiryAlerts();
-  return { promoted, saved: saved.opened + saved.closing, documents: documents.passport + documents.visa };
+  // Excel reports that are due go out by e-mail (only when e-mail is on).
+  const reports = await runScheduledExports().catch((err) => {
+    console.error("Scheduled exports failed:", err);
+    return 0;
+  });
+  return { promoted, saved: saved.opened + saved.closing, documents: documents.passport + documents.visa, reports };
 }
 
 let lastAlertsRun = 0;
@@ -114,7 +120,7 @@ export async function runRegistrationReminders(options: { force?: boolean } = {}
   const startSent = await sendStartReminders();
   const alerts = await runDailyAlerts().catch((err) => {
     console.error("Daily alerts failed:", err);
-    return { promoted: 0, saved: 0, documents: 0 };
+    return { promoted: 0, saved: 0, documents: 0, reports: 0 };
   });
   return { ran: true, sent, startSent, savedSent: alerts.saved, documentSent: alerts.documents };
 }

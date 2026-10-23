@@ -753,6 +753,10 @@
       "duplicates": {
         "title": "Duplicate buyers",
         "description": "Find buyers who signed up twice (same passport or phone number) and merge them into one account."
+      },
+      "scheduledExports": {
+        "title": "Scheduled reports",
+        "description": "Excel reports (registrations, withdrawals, points movements) e-mailed to chosen people every day, week or month."
       }
     },
     "attention": {
@@ -5054,7 +5058,8 @@
       "savedRegistrationClosing": "Saved exhibition: registration closes soon",
       "passportExpiring": "Passport expires soon",
       "visaExpiring": "Visa expires too early",
-      "groupInvite": "Colleague invitation"
+      "groupInvite": "Colleague invitation",
+      "scheduledReport": "Scheduled report"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -5285,7 +5290,10 @@
       "internal_tags_set": "Changed internal tags",
       "internal_assigned": "Assigned a record to an admin",
       "exhibition_change_undone": "Undid a change to an exhibition",
-      "buyers_merged": "Merged two buyer accounts"
+      "buyers_merged": "Merged two buyer accounts",
+      "scheduled_export_saved": "Saved a scheduled report",
+      "scheduled_export_deleted": "Deleted a scheduled report",
+      "scheduled_export_sent_now": "Sent a scheduled report now"
     }
   },
   "notificationsPage": {
@@ -5826,6 +5834,96 @@
       "already_merged": "One of these accounts was already merged.",
       "rate_limited": "Too many merges in the last hour. Please wait.",
       "failed": "The merge did not work. Nothing was changed except possibly the points; please check and try again."
+    }
+  },
+  "adminScheduledExports": {
+    "title": "Scheduled reports",
+    "subtitle": "An Excel file sent to the people you choose, every day, week or month.",
+    "back": "← Back to Admin",
+    "mailOff": "E-mail is switched off, so nothing is sent until you switch it on.",
+    "openEmail": "Open the e-mail settings",
+    "newReport": "New report",
+    "editReport": "Change this report",
+    "name": "Name of the report",
+    "what": "What to send",
+    "kinds": {
+      "registrations": "Exhibition registrations",
+      "withdrawals": "Withdrawal requests (to pay)",
+      "movements": "Points movements of the last 7 days"
+    },
+    "exhibition": "Exhibition",
+    "allExhibitions": "All exhibitions",
+    "status": {
+      "sent": "sent",
+      "sending": "sending",
+      "failed": "failed",
+      "partly_failed": "some addresses failed",
+      "too_large": "too large to attach"
+    },
+    "anyStatus": "Any status",
+    "withdrawalStatus": "Requests that are",
+    "withdrawalStatuses": {
+      "pending": "Waiting to be paid",
+      "paid": "Paid",
+      "rejected": "Rejected",
+      "all": "All of them"
+    },
+    "how": "How often",
+    "frequencies": {
+      "daily": "Every day",
+      "weekly": "Every week",
+      "monthly": "Every month"
+    },
+    "weekday": "On",
+    "weekdays": {
+      "0": "Sunday",
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday"
+    },
+    "monthDay": "On day of the month",
+    "recipients": "Send to (e-mail addresses)",
+    "recipientsHint": "One per line or separated by commas. Up to 10.",
+    "enabled": "Switched on",
+    "timeNote": "Reports go out the first time the daily check runs on or after the chosen day (UTC). A new report starts from its next day.",
+    "create": "Add the report",
+    "saveChanges": "Save changes",
+    "created": "The report was added. The first one goes out on its next day.",
+    "updated": "The report was saved.",
+    "paused": "The report is paused.",
+    "resumed": "The report is switched on again.",
+    "deleted": "The report was deleted.",
+    "sentNow": "“{name}” was sent.",
+    "yourReports": "Your reports",
+    "none": "No scheduled reports yet.",
+    "pausedBadge": "Paused",
+    "to": "To:",
+    "last": "Last sent {when} ({status})",
+    "neverSent": "Not sent yet",
+    "sendNow": "Send now",
+    "pause": "Pause",
+    "resume": "Switch on",
+    "edit": "Change",
+    "delete": "Delete",
+    "deleteQuestion": "Delete it for good?",
+    "deleteYes": "Yes, delete",
+    "deleteKeep": "Keep it",
+    "errors": {
+      "load": "Could not load the reports.",
+      "bad_name": "Give the report a name of up to 100 characters.",
+      "bad_kind": "Choose what to send.",
+      "bad_frequency": "Choose how often.",
+      "bad_day": "Choose a valid day.",
+      "bad_recipients": "Enter 1 to 10 valid e-mail addresses.",
+      "limit": "You have reached the limit of 20 reports. Delete one first.",
+      "unavailable": "Scheduled reports are not available yet. Please try again in a few minutes.",
+      "mail_off": "E-mail is switched off. Switch it on in Admin → Email first.",
+      "rate_limited": "Too many sends in the last hour. Please wait.",
+      "not_found": "That report no longer exists.",
+      "failed": "That did not work. Please try again."
     }
   }
 }

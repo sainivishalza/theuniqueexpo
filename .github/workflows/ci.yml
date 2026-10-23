@@ -83,6 +83,9 @@ jobs:
       - name: End-to-end tests
         run: npm run test:e2e
 
+      - name: Backup and restore check (the data the tests just made is dumped, restored into a scratch database and compared)
+        run: bash scripts/restore-check.sh
+
       - name: Keep screenshots and the site log when something failed
         if: failure()
         uses: actions/upload-artifact@v4

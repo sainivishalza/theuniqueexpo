@@ -11,6 +11,8 @@ import { notifyUser } from "@/lib/server/notifications";
 
 const MIN_HOURS_BETWEEN_RUNS = 6;
 const DAYS_AHEAD = 2;
+// "Starts soon": a confirmed registration is reminded once in the week before the exhibition opens.
+const START_DAYS_AHEAD = 7;
 const MAX_PER_RUN = 200;
 
 export interface ReminderStatus {
@@ -51,7 +53,10 @@ export async function reminderKeyMatches(candidate: string): Promise<boolean> {
 
 export interface ReminderRun {
   ran: boolean;
+  /** "Please confirm your attendance" e-mails. */
   sent: number;
+  /** "Your exhibition starts soon" e-mails. */
+  startSent?: number;
 }
 
 export async function runRegistrationReminders(options: { force?: boolean } = {}): Promise<ReminderRun> {
@@ -81,7 +86,35 @@ export async function runRegistrationReminders(options: { force?: boolean } = {}
     sent += 1;
   }
   await pool.query("UPDATE mail_settings SET reminders_last_count = ? WHERE id = 1", [sent]);
-  return { ran: true, sent };
+  const startSent = await sendStartReminders();
+  return { ran: true, sent, startSent };
+}
+
+// Confirmed registrations whose exhibition opens within the week, not yet checked in and not yet reminded.
+async function sendStartReminders(): Promise<number> {
+  let rows: RowDataPacket[];
+  try {
+    [rows] = await pool.query<RowDataPacket[]>(
+      `SELECT r.id, r.user_id, e.title, e.slug, e.start_date
+       FROM expo_registrations r JOIN exhibitions e ON e.id = r.exhibition_id
+       WHERE r.status = 'confirmed' AND r.checked_in_at IS NULL AND r.start_reminder_sent_at IS NULL
+         AND e.start_date >= UTC_DATE() AND e.start_date <= DATE_ADD(UTC_DATE(), INTERVAL ${START_DAYS_AHEAD} DAY)
+       ORDER BY e.start_date LIMIT ${MAX_PER_RUN}`
+    );
+  } catch (err) {
+    // The column does not exist until migration 066 has run: nothing to send yet.
+    if ((err as { code?: string }).code === "ER_BAD_FIELD_ERROR") return 0;
+    throw err;
+  }
+  let sent = 0;
+  for (const r of rows) {
+    const [mark] = await pool.query<ResultSetHeader>("UPDATE expo_registrations SET start_reminder_sent_at = NOW() WHERE id = ? AND start_reminder_sent_at IS NULL", [r.id]);
+    if (mark.affectedRows !== 1) continue;
+    const date = r.start_date instanceof Date ? r.start_date.toISOString().slice(0, 10) : String(r.start_date).slice(0, 10);
+    notifyUser(r.user_id, "registrationStartsSoon", { expo: String(r.title), date }, { path: `/exhibitions/${String(r.slug)}` });
+    sent += 1;
+  }
+  return sent;
 }
 
 // Started in the background by the admin home; never delays or fails the page.

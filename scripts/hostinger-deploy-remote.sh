@@ -45,6 +45,12 @@ BACKUP_FILE=~/theuniqueexpo-backup-$(date +%Y%m%d-%H%M%S).sql
 echo "Backing up database to $BACKUP_FILE ..."
 mysqldump --default-character-set=utf8mb4 -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$BACKUP_FILE"
 ls -lh "$BACKUP_FILE"
+# A backup that stopped half way (disk full, lost connection) has no closing line. Stop here, before anything is changed,
+# rather than deploy on top of a backup that could not be restored.
+if ! tail -n 5 "$BACKUP_FILE" | grep -q -- '-- Dump completed'; then
+  echo "The database backup is incomplete (no closing line) -- stopping the deploy before anything is changed."
+  exit 1
+fi
 
 if ! git diff --quiet || ! git diff --cached --quiet; then
   echo "Server has uncommitted local changes — stashing them (recoverable via 'git stash list') before checkout:"
@@ -142,6 +148,7 @@ run_mysql schema-migrations/062-email-changes-reminders.sql
 run_mysql schema-migrations/063-admin-two-step-and-activity-log.sql
 run_mysql schema-migrations/064-user-notifications.sql
 run_mysql schema-migrations/065-buyer-extra-info.sql
+run_mysql schema-migrations/066-start-reminder.sql
 
 # Every deploy saves a full copy of the database (uploaded documents included) and
 # nothing ever removed them, so they would slowly fill this account's disk. Keep the

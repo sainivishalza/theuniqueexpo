@@ -7,7 +7,7 @@
 // their own nested provider that adds them back just for that subtree.
 
 export const ADMIN_NAMESPACES = [
-  "adminAbout", "adminBlogCrud", "adminCommon", "adminCompanyProfile", "adminConsultations",
+  "adminAbout", "adminAllRegistrations", "adminBlogCrud", "adminBulkDecision", "adminCommon", "adminCompanyProfile", "adminConsultations",
   "adminEventRegistrations", "adminEventsCrud", "adminExhibitionRegForm", "adminExhibitionRegistrations",
   "adminExhibitionsCrud", "adminFaq", "adminHome", "adminHotels", "adminNewsletter", "adminMovingQuotes", "adminPagesIndex",
   "adminPhotoOrganizer",
@@ -23,7 +23,7 @@ export const ADMIN_NAMESPACES = [
 ];
 
 export const DASHBOARD_NAMESPACES = [
-  "accountEmail", "accountPassword", "notificationsPage", "bulkRegister", "buyerDashboard", "buyerProfile", "buyerWallet", "exhibitorDashboard", "partnerDashboard",
+  "accountEmail", "accountPassword", "notificationsPage", "bulkRegister", "profileCompleteness", "buyerDashboard", "buyerProfile", "buyerWallet", "exhibitorDashboard", "partnerDashboard",
   // The buyer profile page reuses its Save / error strings.
   "adminCommon",
 ];

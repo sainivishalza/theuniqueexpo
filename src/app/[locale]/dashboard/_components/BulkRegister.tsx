@@ -9,7 +9,9 @@ import { fieldClasses } from "@/components/ui/FormField";
 import { Link } from "@/i18n/navigation";
 import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { formatDateOnly, STATUS_TONE } from "@/lib/client/registration-format";
-import type { Plan, PlanKnown, PlanQuestion, SubmitResult } from "@/lib/bulk-registration";
+import ProfileCompleteness from "./ProfileCompleteness";
+import type { Completeness } from "@/lib/profile-completeness";
+import { findOverlaps, type Plan, type PlanKnown, type PlanQuestion, type SubmitResult } from "@/lib/bulk-registration";
 
 interface Listed {
   slug: string;
@@ -24,6 +26,7 @@ interface Listed {
   description: string;
   status: string | null;
   canRegister: boolean;
+  suggestion: { reason: "history" | "profile"; field?: string } | null;
 }
 
 type Step = "choose" | "details" | "done";
@@ -38,6 +41,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
   const ids = { search: useId(), known: useId() };
   const topRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<Listed[] | null>(null);
+  const [completeness, setCompleteness] = useState<Completeness | null>(null);
   const [failed, setFailed] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [open, setOpen] = useState<string | null>(null);
@@ -56,6 +60,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((d) => {
         setItems(d.exhibitions);
+        setCompleteness(d.completeness ?? null);
         setFailed(false);
       })
       .catch(() => setFailed(true));
@@ -67,9 +72,15 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
     const q = filter.trim().toLowerCase();
     return (items ?? []).filter((e) => !q || `${e.title} ${e.city} ${e.country} ${e.industry}`.toLowerCase().includes(q));
   }, [items, filter]);
+  // Suggested ones first (the order they come in is otherwise kept).
+  const ordered = useMemo(() => shown.map((e, i) => ({ e, i })).sort((a, b) => Number(!!b.e.suggestion) - Number(!!a.e.suggestion) || a.i - b.i).map((x) => x.e), [shown]);
   const shownSelectable = shown.filter((e) => e.canRegister);
   const allShownSelected = shownSelectable.length > 0 && shownSelectable.every((e) => selected.has(e.slug));
   const chosen = (items ?? []).filter((e) => selected.has(e.slug));
+  // Exhibitions held on the same days: a warning only (a buyer may register for both and decide later).
+  const overlaps = useMemo(() => findOverlaps(items ?? [], selected), [items, selected]);
+  const overlapNames = (slug: string) =>
+    (overlaps.get(slug) ?? []).map((o) => (o.registered ? t("overlapRegistered", { name: o.title }) : o.title)).join(", ");
 
   function toggle(slug: string) {
     setSelected((s) => {
@@ -223,6 +234,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
         <Card shadow="sm" bordered={false} className="p-5 sm:p-6">
           <h2 className="text-xl font-bold text-heading">{t("title")}</h2>
           <p className="mt-1 text-sm text-gray-600">{t("intro")}</p>
+          {completeness && completeness.missing.length > 0 && <div className="mt-4"><ProfileCompleteness completeness={completeness} link /></div>}
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <label className="flex items-center gap-2 text-sm font-semibold text-gray-800">
@@ -237,7 +249,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
 
           <ul className="mt-4 divide-y divide-gray-100 rounded-xl border border-gray-200">
             {shown.length === 0 && <li className="p-4 text-sm text-gray-600">{t("noMatch")}</li>}
-            {shown.map((e) => {
+            {ordered.map((e) => {
               const isOpen = open === e.slug;
               const cid = `be-${e.slug}`;
               return (
@@ -255,11 +267,14 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <label htmlFor={cid} className={`min-w-0 font-semibold [overflow-wrap:anywhere] ${e.canRegister ? "cursor-pointer text-heading" : "text-gray-600"}`}>{e.title}</label>
                         {e.status && <Badge tone={STATUS_TONE[e.status] || "gray"} size="status">{statusText(e.status)}</Badge>}
+                        {e.suggestion && <Badge tone="gold" size="status">{t("suggested")}</Badge>}
                       </div>
                       <p className="text-sm text-gray-600">
                         {e.dates}
                         {[e.city, e.country].filter(Boolean).length > 0 ? ` · ${[e.city, e.country].filter(Boolean).join(", ")}` : ""}
                       </p>
+                      {e.suggestion && <p className="mt-1 text-sm text-gray-700 [overflow-wrap:anywhere]">{e.suggestion.reason === "history" ? t("suggestedHistory", { industry: e.industry }) : t("suggestedProfile", { field: e.suggestion.field ?? "" })}</p>}
+                      {overlaps.has(e.slug) && <p className="mt-1 text-sm font-medium text-amber-900 [overflow-wrap:anywhere]"><span aria-hidden="true">⚠ </span>{t("overlapRow", { names: overlapNames(e.slug) })}</p>}
                       <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm">
                         <button
                           type="button"
@@ -291,6 +306,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
             })}
           </ul>
 
+          {overlaps.size > 0 && <p role="status" className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">{t("overlapWarning", { count: overlaps.size })}</p>}
           {error && <p role="alert" className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
           <div className="sticky bottom-0 -mx-5 mt-4 flex flex-wrap items-center gap-3 border-t border-gray-100 bg-white/95 px-5 py-3 backdrop-blur sm:-mx-6 sm:px-6">
             <p role="status" aria-live="polite" className="text-sm font-semibold text-gray-800">{selectable.length === 0 ? t("nothingToRegister") : t("selectedCount", { count: selected.size })}</p>

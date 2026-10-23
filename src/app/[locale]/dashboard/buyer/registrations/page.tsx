@@ -10,6 +10,7 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import BulkRegister from "../../_components/BulkRegister";
+import CancelManyDialog from "../../_components/CancelManyDialog";
 
 // Every exhibition this buyer has registered for, with where each one stands and the
 // next step. The steps themselves (confirm, check in, feedback) are done on the
@@ -20,6 +21,9 @@ export default function BuyerRegistrationsPage() {
   const { user, loading: authLoading } = useAuth();
   const [items, setItems] = useState<MyRegistration[] | null>(null);
   const [failed, setFailed] = useState(false);
+  // Registrations ticked for "cancel several".
+  const [ticked, setTicked] = useState<Set<string>>(new Set());
+  const [cancelling, setCancelling] = useState(false);
 
   const loadMine = useCallback(() => {
     fetch(`/api/expo-registrations/mine?locale=${locale}`)
@@ -35,6 +39,19 @@ export default function BuyerRegistrationsPage() {
     if (authLoading || !user) return;
     loadMine();
   }, [authLoading, user, loadMine]);
+
+  // The ones that can still be cancelled; the ticks only appear when there are at least two (a single one is cancelled on its exhibition page).
+  const cancellable = (items ?? []).filter((r) => r.actions.cancel);
+  const canTick = cancellable.length >= 2;
+  const chosen = cancellable.filter((r) => ticked.has(r.id));
+  function toggleTick(id: string) {
+    setTicked((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
 
   function nextStep(r: MyRegistration): string {
     if (r.actions.confirm) return r.confirmBy ? t("hints.confirmBy", { date: formatDateOnly(r.confirmBy, locale) }) : t("hints.approved");
@@ -67,12 +84,26 @@ export default function BuyerRegistrationsPage() {
               <Button href="/exhibitions" variant="gradientCta" size="wide">{t("browse")}</Button>
             </Card>
           )}
+          {canTick && (
+            <div className="flex flex-wrap items-center gap-3 rounded-xl bg-white px-4 py-3 shadow-sm">
+              <p className="text-sm text-gray-700">{chosen.length === 0 ? t("cancelMany.hint") : t("cancelMany.selectedCount", { count: chosen.length })}</p>
+              {chosen.length > 0 && (
+                <div className="ml-auto flex gap-3">
+                  <Button type="button" variant="ghostDanger" size="xs" onClick={() => setCancelling(true)}>{t("cancelMany.cancelSelected", { count: chosen.length })}</Button>
+                  <Button type="button" variant="secondaryOutline" size="xs" onClick={() => setTicked(new Set())}>{t("cancelMany.clear")}</Button>
+                </div>
+              )}
+            </div>
+          )}
           {items?.map((r) => {
             const hint = nextStep(r);
             return (
               <Card key={r.id} shadow="sm" bordered={false} className="p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0">
+                  {canTick && r.actions.cancel && (
+                    <input type="checkbox" checked={ticked.has(r.id)} onChange={() => toggleTick(r.id)} className="mt-1 h-5 w-5 shrink-0 rounded border-gray-400 accent-emerald-700" aria-label={t("cancelMany.select", { title: r.exhibitionTitle })} />
+                  )}
+                  <div className="min-w-0 flex-1">
                     <h2 className="font-bold text-heading [overflow-wrap:anywhere]">{r.exhibitionTitle}</h2>
                     <p className="text-sm text-gray-500">
                       {formatDateOnly(r.exhibitionStart, locale)}
@@ -95,6 +126,13 @@ export default function BuyerRegistrationsPage() {
           })}
         </div>
       </section>
+      {cancelling && (
+        <CancelManyDialog
+          items={chosen.map((r) => ({ id: r.id, title: r.exhibitionTitle }))}
+          onClose={(done) => { setCancelling(false); if (done) setTicked(new Set()); }}
+          onDone={loadMine}
+        />
+      )}
     </div>
   );
 }

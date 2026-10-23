@@ -90,3 +90,47 @@ export function customQuestionKey(label: string, type: string, options: string[]
 }
 
 export const isFileQuestion = (kind: QuestionKind) => kind === "file";
+
+// ----- exhibitions on the same days -----
+
+export interface DatedExhibition {
+  slug: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  /** The buyer's own registration for it, if any. */
+  status?: string | null;
+}
+
+// A registration that still holds a place (cancelled, rejected and absent ones do not).
+const HOLDS_A_PLACE = new Set(["pending", "approved", "confirmed", "attended"]);
+
+const day = (value: string) => (/^\d{4}-\d{2}-\d{2}/.test(value) ? value.slice(0, 10) : "");
+
+/**
+ * For each exhibition the buyer ticked: the other exhibitions held on some of the same days, whether ticked as
+ * well or already registered for. Only exhibitions with a known date take part; an end date of its own is optional.
+ */
+export function findOverlaps(all: DatedExhibition[], chosen: ReadonlySet<string>): Map<string, { title: string; registered: boolean }[]> {
+  const out = new Map<string, { title: string; registered: boolean }[]>();
+  const span = (e: DatedExhibition) => {
+    const start = day(e.startDate);
+    const end = day(e.endDate) || start;
+    return start ? { start, end: end < start ? start : end } : null;
+  };
+  for (const a of all) {
+    if (!chosen.has(a.slug)) continue;
+    const sa = span(a);
+    if (!sa) continue;
+    const clashes: { title: string; registered: boolean }[] = [];
+    for (const b of all) {
+      if (b.slug === a.slug) continue;
+      const registered = !chosen.has(b.slug) && !!b.status && HOLDS_A_PLACE.has(b.status);
+      if (!chosen.has(b.slug) && !registered) continue;
+      const sb = span(b);
+      if (sb && sa.start <= sb.end && sb.start <= sa.end) clashes.push({ title: b.title, registered });
+    }
+    if (clashes.length > 0) out.set(a.slug, clashes);
+  }
+  return out;
+}

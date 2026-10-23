@@ -427,7 +427,24 @@
         "confirmed": "已确认参加。请在现场扫描二维码签到。",
         "feedback": "请分享您对展会的反馈。"
       },
-      "yourRegistrations": "您的报名"
+      "yourRegistrations": "您的报名",
+      "cancelMany": {
+        "hint": "勾选您想取消的报名。",
+        "select": "选择 {title}",
+        "selectedCount": "{count, plural, other {已选择 # 条报名}}",
+        "cancelSelected": "{count, plural, other {取消 # 条报名}}",
+        "clear": "清除",
+        "title": "{count, plural, other {取消 # 条报名？}}",
+        "body": "您将放弃这些展会的名额。报名开放期间，您之后可以重新报名。",
+        "confirm": "是，取消",
+        "keep": "保留",
+        "working": "取消中…",
+        "done": "{count, plural, =0 {没有取消任何报名。} other {已取消 # 条报名。}}",
+        "notCancelled": "{count, plural, other {# 条无法取消：已经审核或不能再更改。}}",
+        "close": "关闭",
+        "error": "出了点问题，请重试。",
+        "rateLimited": "尝试次数过多，请稍后再试。"
+      }
     },
     "registrationNumber": "您的注册编号",
     "registrationNumberHint": "联系我们时请提供此编号。",
@@ -710,12 +727,17 @@
       "activity": {
         "title": "操作记录",
         "description": "谁在管理后台做了什么"
+      },
+      "allRegistrations": {
+        "title": "全部报名",
+        "description": "所有展会的全部采购商报名集中在一个列表，可筛选、搜索并导出 Excel。"
       }
     },
     "attention": {
       "title": "需要您处理",
       "allClear": "目前没有待处理的事项。",
       "loading": "正在检查待处理事项…",
+      "staleRegistrations": "{count, plural, other {# 条展会报名已等待超过 3 天}}",
       "registrations": "{count} 个展会报名待审批",
       "tourRegistrations": "{count} 个旅游团报名待审批",
       "topups": "{count} 笔积分充值待核对",
@@ -4665,6 +4687,12 @@
       "intro": "我们已收到您的报名：{expo}。",
       "body": "报名正在等待审核。审核结果出来后我们会立即通知您，您也可以在“我的报名”页面查看所有报名。",
       "button": "打开我的报名"
+    },
+    "registrationStartsSoon": {
+      "subject": "{expo} 即将开幕",
+      "intro": "{expo} 将于 {date} 开幕，您已报名。",
+      "body": "请准备好护照，并在展馆扫描二维码签到。您可以在展会页面把日期添加到日历。",
+      "button": "打开展会页面"
     }
   },
   "adminEmail": {
@@ -4727,7 +4755,8 @@
       "announcement": "公告",
       "tourRegistrationApproved": "旅游报名已通过",
       "tourRegistrationRejected": "旅游报名未通过",
-      "registrationReceived": "已收到报名"
+      "registrationReceived": "已收到报名",
+      "registrationStartsSoon": "展会即将开幕"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -4947,7 +4976,8 @@
       "blog_post_updated": "编辑博客文章",
       "blog_post_deleted": "删除博客文章",
       "site_page_saved": "保存网站页面",
-      "signed_out_everywhere": "退出所有其他设备"
+      "signed_out_everywhere": "退出所有其他设备",
+      "expo_registrations_bulk_status": "批量批准或拒绝展会报名"
     }
   },
   "notificationsPage": {
@@ -5033,6 +5063,10 @@
       "registrationReceived": {
         "title": "已收到报名",
         "body": "我们已收到您的报名：{expo}。目前正在等待审核。"
+      },
+      "registrationStartsSoon": {
+        "title": "您报名的展会即将开幕",
+        "body": "{expo} 将于 {date} 开幕。打开展会页面查看签到信息。"
       }
     }
   },
@@ -5137,6 +5171,82 @@
     "onFile": "已上传",
     "forExhibitions": "提交至：{names}",
     "allExhibitions": "所有已选展会",
-    "editProfile": "在个人资料中查看或修改"
+    "editProfile": "在个人资料中查看或修改",
+    "overlapRow": "与以下展会日期重叠：{names}",
+    "overlapRegistered": "{name}（已报名）",
+    "overlapWarning": "{count, plural, other {您勾选的展会中有 # 个与其他展会日期重叠。}}您仍可以全部报名，但无法同时参加。",
+    "suggested": "为您推荐",
+    "suggestedHistory": "您之前报名过同属“{industry}”行业的其他展会。",
+    "suggestedProfile": "与您的业务相符：{field}。"
+  },
+  "adminBulkDecision": {
+    "selectedCount": "{count, plural, other {已选择 # 条报名}}",
+    "approve": "批准",
+    "reject": "拒绝",
+    "clear": "取消选择",
+    "selectAll": "选择当前显示的全部",
+    "selectRow": "选择 {name}",
+    "approveTitle": "{count, plural, other {批准 # 条报名}}",
+    "rejectTitle": "{count, plural, other {拒绝 # 条报名}}",
+    "approveHint": "每位采购商会收到电子邮件和网站通知，并被要求在下面的日期前确认出席。已确认、已出席或已取消的报名保持不变。",
+    "rejectHint": "每位采购商会收到报名未获批准的通知。已确认、已出席或已取消的报名保持不变。",
+    "confirmBy": "采购商确认出席的截止日期",
+    "leaveEmpty": "留空则使用每个展会开幕前一天。",
+    "approveSubmit": "{count, plural, other {批准 # 条报名}}",
+    "rejectSubmit": "{count, plural, other {拒绝 # 条报名}}",
+    "working": "处理中…",
+    "done": "{count, plural, =0 {没有更改任何报名。} other {已更新 # 条报名。}}",
+    "unchanged": "{count, plural, other {# 条本来就是该状态。}}",
+    "skipped": "{count, plural, other {# 条保持不变（已确认、已出席、已取消或刚刚被更改）。}}",
+    "notFound": "{count, plural, other {# 条报名已不存在。}}",
+    "errors": {
+      "none": "请至少选择一条报名。",
+      "too_many": "一次最多选择 200 条报名。",
+      "invalid_date": "请输入有效日期。",
+      "invalid_status": "无效的选择。"
+    }
+  },
+  "adminAllRegistrations": {
+    "title": "全部报名",
+    "backToAdmin": "← 返回管理后台",
+    "count": "{count, plural, other {# 条报名}}",
+    "exportToExcel": "⬇ 导出到 Excel",
+    "exhibitionLabel": "展会",
+    "allExhibitions": "全部展会",
+    "countryLabel": "国家/地区",
+    "allCountries": "全部国家/地区",
+    "searchLabel": "搜索报名",
+    "searchPlaceholder": "姓名、邮箱、公司、采购商编号…",
+    "filterByStatus": "按状态筛选",
+    "filterAll": "全部（{count}）",
+    "columns": {
+      "buyer": "采购商",
+      "exhibition": "展会",
+      "company": "公司",
+      "contact": "联系方式",
+      "status": "状态",
+      "registered": "报名时间"
+    },
+    "confirmBy": "确认截止 {date}",
+    "noResultsTitle": "没有找到报名",
+    "noResultsFiltered": "没有符合这些筛选条件的报名。请换一个展会、状态或搜索词。",
+    "noResultsEmpty": "采购商报名后，报名会显示在这里。",
+    "clearFilters": "清除筛选",
+    "pagination": "分页",
+    "showing": "第 {from}–{to} 条，共 {total} 条",
+    "previous": "上一页",
+    "next": "下一页",
+    "pageOf": "第 {page} / {pages} 页",
+    "loadFailed": "无法加载报名，请重试。",
+    "sortLabel": "排序",
+    "newest": "最新优先",
+    "oldest": "最早优先"
+  },
+  "profileCompleteness": {
+    "title": "您的资料已完成 {percent}%",
+    "complete": "您的资料已包含展会所需的全部信息。",
+    "missing": "还缺少：",
+    "hint": "只需添加一次，之后每次报名都会使用这些信息，不会再次询问。",
+    "completeProfile": "完善我的资料"
   }
 }

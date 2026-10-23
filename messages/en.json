@@ -427,7 +427,24 @@
         "confirmed": "Attendance confirmed. Scan the QR code at the venue to check in.",
         "feedback": "Share your feedback about the exhibition."
       },
-      "yourRegistrations": "Your registrations"
+      "yourRegistrations": "Your registrations",
+      "cancelMany": {
+        "hint": "Tick the registrations you want to cancel.",
+        "select": "Select {title}",
+        "selectedCount": "{count, plural, one {# registration selected} other {# registrations selected}}",
+        "cancelSelected": "{count, plural, one {Cancel # registration} other {Cancel # registrations}}",
+        "clear": "Clear",
+        "title": "{count, plural, one {Cancel # registration?} other {Cancel # registrations?}}",
+        "body": "You give up your place at these exhibitions. You can register again later while registration is open.",
+        "confirm": "{count, plural, one {Yes, cancel it} other {Yes, cancel them}}",
+        "keep": "Keep them",
+        "working": "Cancelling…",
+        "done": "{count, plural, =0 {Nothing was cancelled.} one {# registration cancelled.} other {# registrations cancelled.}}",
+        "notCancelled": "{count, plural, one {# could not be cancelled: it has already been reviewed or can no longer be changed.} other {# could not be cancelled: they have already been reviewed or can no longer be changed.}}",
+        "close": "Close",
+        "error": "Something went wrong. Please try again.",
+        "rateLimited": "Too many attempts. Please try again later."
+      }
     },
     "registrationNumber": "Your registration number",
     "registrationNumberHint": "Quote it whenever you contact us.",
@@ -710,12 +727,17 @@
       "activity": {
         "title": "Activity",
         "description": "Who did what in the admin area"
+      },
+      "allRegistrations": {
+        "title": "All registrations",
+        "description": "Every buyer registration for every exhibition in one list, with filters, search and Excel export."
       }
     },
     "attention": {
       "title": "Needs your attention",
       "allClear": "Nothing is waiting for you right now.",
       "loading": "Checking what is waiting…",
+      "staleRegistrations": "{count, plural, one {# exhibition registration has waited more than 3 days} other {# exhibition registrations have waited more than 3 days}}",
       "registrations": "{count, plural, one {# exhibition registration waits for approval} other {# exhibition registrations wait for approval}}",
       "tourRegistrations": "{count, plural, one {# tour registration waits for approval} other {# tour registrations wait for approval}}",
       "topups": "{count, plural, one {# points top-up to check} other {# points top-ups to check}}",
@@ -4665,6 +4687,12 @@
       "intro": "We received your registration for: {expo}.",
       "body": "It is now waiting for review. We will tell you as soon as it is decided, and you can follow every registration on your registrations page.",
       "button": "Open my registrations"
+    },
+    "registrationStartsSoon": {
+      "subject": "{expo} starts soon",
+      "intro": "{expo} starts on {date} and you are registered.",
+      "body": "Have your passport ready and scan the QR code at the venue to check in. You can add the dates to your calendar from the exhibition page.",
+      "button": "Open the exhibition page"
     }
   },
   "adminEmail": {
@@ -4727,7 +4755,8 @@
       "announcement": "Announcement",
       "tourRegistrationApproved": "Tour registration approved",
       "tourRegistrationRejected": "Tour registration not approved",
-      "registrationReceived": "Registration received"
+      "registrationReceived": "Registration received",
+      "registrationStartsSoon": "Exhibition starts soon"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -4947,7 +4976,8 @@
       "blog_post_updated": "Edited a blog post",
       "blog_post_deleted": "Deleted a blog post",
       "site_page_saved": "Saved a website page",
-      "signed_out_everywhere": "Signed out of all other devices"
+      "signed_out_everywhere": "Signed out of all other devices",
+      "expo_registrations_bulk_status": "Approved or rejected several exhibition registrations"
     }
   },
   "notificationsPage": {
@@ -5033,6 +5063,10 @@
       "registrationReceived": {
         "title": "Registration received",
         "body": "We received your registration for: {expo}. It is now waiting for review."
+      },
+      "registrationStartsSoon": {
+        "title": "Your exhibition starts soon",
+        "body": "{expo} starts on {date}. Open the exhibition page for your check-in details."
       }
     }
   },
@@ -5137,6 +5171,82 @@
     "onFile": "On file",
     "forExhibitions": "Sent to: {names}",
     "allExhibitions": "all chosen exhibitions",
-    "editProfile": "Check or change them in your profile"
+    "editProfile": "Check or change them in your profile",
+    "overlapRow": "Same days as: {names}",
+    "overlapRegistered": "{name} (already registered)",
+    "overlapWarning": "{count, plural, one {# exhibition you ticked takes place on the same days as another one.} other {# exhibitions you ticked take place on the same days as another one.}} You can still register for all of them, but you will not be able to attend both.",
+    "suggested": "Suggested for you",
+    "suggestedHistory": "You registered for another {industry} exhibition.",
+    "suggestedProfile": "Matches your business: {field}."
+  },
+  "adminBulkDecision": {
+    "selectedCount": "{count, plural, one {# registration selected} other {# registrations selected}}",
+    "approve": "Approve",
+    "reject": "Reject",
+    "clear": "Clear selection",
+    "selectAll": "Select all shown",
+    "selectRow": "Select {name}",
+    "approveTitle": "{count, plural, one {Approve # registration} other {Approve # registrations}}",
+    "rejectTitle": "{count, plural, one {Reject # registration} other {Reject # registrations}}",
+    "approveHint": "Each buyer is told by e-mail and on the website, and asked to confirm attendance by the date below. Registrations that are already confirmed, attended or cancelled are left as they are.",
+    "rejectHint": "Each buyer is told that the registration was not approved. Registrations that are already confirmed, attended or cancelled are left as they are.",
+    "confirmBy": "Buyers confirm attendance by",
+    "leaveEmpty": "Leave empty to use the day before each exhibition starts.",
+    "approveSubmit": "{count, plural, one {Approve # registration} other {Approve # registrations}}",
+    "rejectSubmit": "{count, plural, one {Reject # registration} other {Reject # registrations}}",
+    "working": "Working…",
+    "done": "{count, plural, =0 {No registration was changed.} one {# registration updated.} other {# registrations updated.}}",
+    "unchanged": "{count, plural, one {# was already in that status.} other {# were already in that status.}}",
+    "skipped": "{count, plural, one {# was left as it is (already confirmed, attended, cancelled, or changed a moment ago).} other {# were left as they are (already confirmed, attended, cancelled, or changed a moment ago).}}",
+    "notFound": "{count, plural, one {# registration no longer exists.} other {# registrations no longer exist.}}",
+    "errors": {
+      "none": "Select at least one registration.",
+      "too_many": "Select at most 200 registrations at a time.",
+      "invalid_date": "Please enter a valid date.",
+      "invalid_status": "Invalid choice."
+    }
+  },
+  "adminAllRegistrations": {
+    "title": "All registrations",
+    "backToAdmin": "← Back to admin",
+    "count": "{count, plural, one {# registration} other {# registrations}}",
+    "exportToExcel": "⬇ Export to Excel",
+    "exhibitionLabel": "Exhibition",
+    "allExhibitions": "All exhibitions",
+    "countryLabel": "Country",
+    "allCountries": "All countries",
+    "searchLabel": "Search registrations",
+    "searchPlaceholder": "Name, e-mail, company, buyer number…",
+    "filterByStatus": "Filter by status",
+    "filterAll": "All ({count})",
+    "columns": {
+      "buyer": "Buyer",
+      "exhibition": "Exhibition",
+      "company": "Company",
+      "contact": "Contact",
+      "status": "Status",
+      "registered": "Registered"
+    },
+    "confirmBy": "Confirm by {date}",
+    "noResultsTitle": "No registrations found",
+    "noResultsFiltered": "Nothing matches these filters. Try another exhibition, status or search.",
+    "noResultsEmpty": "Registrations will appear here as soon as buyers register.",
+    "clearFilters": "Clear filters",
+    "pagination": "Pages",
+    "showing": "{from}–{to} of {total}",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {pages}",
+    "loadFailed": "Could not load the registrations. Please try again.",
+    "sortLabel": "Sort",
+    "newest": "Newest first",
+    "oldest": "Oldest first"
+  },
+  "profileCompleteness": {
+    "title": "Your profile is {percent}% complete",
+    "complete": "Your profile has everything exhibitions ask for.",
+    "missing": "Still missing:",
+    "hint": "Add these once and every registration uses them, so you are not asked again.",
+    "completeProfile": "Complete my profile"
   }
 }

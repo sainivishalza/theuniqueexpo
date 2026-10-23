@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 
 interface Counts {
   registrations: number;
+  staleRegistrations?: number;
   tourRegistrations: number;
   topups: number;
   withdrawals: number;
@@ -15,8 +16,10 @@ interface Counts {
   twoStepOff?: boolean;
 }
 
-const ROWS: { key: Exclude<keyof Counts, "twoStepOff">; icon: string; href: string }[] = [
-  { key: "registrations", icon: "🎪", href: "/admin/exhibitions" },
+const ROWS: { key: Exclude<keyof Counts, "twoStepOff">; icon: string; href: string; urgent?: boolean }[] = [
+  // Waiting too long comes first, in red; both lead to the oldest pending registrations.
+  { key: "staleRegistrations", icon: "⏳", href: "/admin/registrations?status=pending&sort=oldest", urgent: true },
+  { key: "registrations", icon: "🎪", href: "/admin/registrations?status=pending&sort=oldest" },
   { key: "tourRegistrations", icon: "🧳", href: "/admin/tours" },
   { key: "topups", icon: "💳", href: "/admin/wallet?tab=topups" },
   { key: "withdrawals", icon: "💸", href: "/admin/wallet?tab=withdrawals" },
@@ -42,7 +45,7 @@ export default function AttentionPanel() {
     };
   }, []);
 
-  const waiting = counts ? ROWS.filter((r) => counts[r.key] > 0) : [];
+  const waiting = counts ? ROWS.filter((r) => (counts[r.key] ?? 0) > 0) : [];
 
   return (
     <section aria-labelledby="attention-title" className="mx-auto max-w-7xl px-6 pt-8">
@@ -56,9 +59,9 @@ export default function AttentionPanel() {
           <ul className="mt-3 grid gap-2 sm:grid-cols-2">
             {waiting.map((r) => (
               <li key={r.key}>
-                <Link href={r.href} className="flex items-center gap-3 rounded-xl border border-emerald-600 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900 hover:bg-emerald-100">
+                <Link href={r.href} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-semibold ${r.urgent ? "border-red-700 bg-red-50 text-red-900 hover:bg-red-100" : "border-emerald-600 bg-emerald-50 text-emerald-900 hover:bg-emerald-100"}`}>
                   <span aria-hidden="true" className="text-xl">{r.icon}</span>
-                  <span>{t(r.key, { count: counts[r.key] })}</span>
+                  <span>{t(r.key, { count: counts[r.key] ?? 0 })}</span>
                 </Link>
               </li>
             ))}

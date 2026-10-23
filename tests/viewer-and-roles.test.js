@@ -74,7 +74,7 @@ const AXE=async(p)=>{ await p.evaluate(axeSrc); return p.evaluate(async()=>(awai
  sql(`INSERT IGNORE INTO buyer_profiles (user_id) VALUES (${u.bId})`);
  c=await mk(u.aT); p=await c.newPage(); await p.goto(BASE+'/en/admin/exhibitions',{waitUntil:'networkidle'});
  await p.waitForSelector('main li, main article, main h3',{timeout:15000}).catch(()=>{}); await sleep(1500); const edit=p.getByRole('button',{name:'Edit'}).first(); const eb=await edit.evaluate(e=>getComputedStyle(e).backgroundImage); ok(/linear-gradient/.test(eb),'exhibitions: Edit is green',eb);
- const reg=p.getByRole('link',{name:'Registrations'}).first(); const rb=await reg.evaluate(e=>getComputedStyle(e).backgroundColor); ok(rb!=='rgba(0, 0, 0, 0)','exhibitions: Registrations is tinted',rb);
+ const reg=p.locator('main').getByRole('link',{name:'Registrations',exact:true}).first(); const rb=await reg.evaluate(e=>getComputedStyle(e).backgroundColor); ok(rb!=='rgba(0, 0, 0, 0)','exhibitions: Registrations is tinted',rb);
  const del=p.getByRole('button',{name:'Delete'}).first(); ok(!/linear-gradient/.test(await del.evaluate(e=>getComputedStyle(e).backgroundImage)),'Delete stays red outline, not green');
  let vio=await AXE(p); ok(vio.length===0,'exhibitions list axe 0',vio);
  await p.goto(BASE+'/en/admin/buyer-profiles',{waitUntil:'networkidle'}); await p.getByPlaceholder(/Search/).first().fill(u.m.b); await sleep(600);

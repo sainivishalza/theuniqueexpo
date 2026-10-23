@@ -4659,6 +4659,12 @@
       "intro": "We could not approve your registration for {tour}.",
       "body": "If you think this is a mistake, please contact us and we will look at it again.",
       "button": "Open the tour"
+    },
+    "registrationReceived": {
+      "subject": "We received your registration",
+      "intro": "We received your registration for: {expo}.",
+      "body": "It is now waiting for review. We will tell you as soon as it is decided, and you can follow every registration on your registrations page.",
+      "button": "Open my registrations"
     }
   },
   "adminEmail": {
@@ -4720,7 +4726,8 @@
       "registrationReminder": "Registration reminder",
       "announcement": "Announcement",
       "tourRegistrationApproved": "Tour registration approved",
-      "tourRegistrationRejected": "Tour registration not approved"
+      "tourRegistrationRejected": "Tour registration not approved",
+      "registrationReceived": "Registration received"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -5022,6 +5029,10 @@
       "tourRegistrationRejected": {
         "title": "Tour registration not approved",
         "body": "Your registration for {tour} was not approved."
+      },
+      "registrationReceived": {
+        "title": "Registration received",
+        "body": "We received your registration for: {expo}. It is now waiting for review."
       }
     }
   },

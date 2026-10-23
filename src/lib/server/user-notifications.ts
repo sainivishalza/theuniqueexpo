@@ -5,6 +5,7 @@ import pool from "@/lib/db";
 // Writing one never delays or fails the action it reports.
 
 export type NotificationKind =
+  | "registrationReceived"
   | "registrationApproved"
   | "registrationRejected"
   | "registrationReminder"
@@ -22,7 +23,7 @@ export type NotificationKind =
   | "announcement";
 
 export const NOTIFICATION_KINDS: readonly string[] = [
-  "registrationApproved", "registrationRejected", "registrationReminder", "tourRegistrationApproved", "tourRegistrationRejected", "documentRejected", "pointsReceived",
+  "registrationReceived", "registrationApproved", "registrationRejected", "registrationReminder", "tourRegistrationApproved", "tourRegistrationRejected", "documentRejected", "pointsReceived",
   "topupApproved", "topupRejected", "withdrawalPaid", "withdrawalRejected", "expenseApproved", "expenseRejected",
   "passwordChanged", "announcement",
 ];

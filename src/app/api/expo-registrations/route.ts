@@ -1,3 +1,4 @@
+import { notifyRegistrationsReceived } from "@/lib/server/notifications";
 import { NextResponse } from "next/server";
 import type { RowDataPacket } from "mysql2/promise";
 import pool, { isDuplicateEntryError } from "@/lib/db";
@@ -131,6 +132,7 @@ async function handlePost(request: Request): Promise<NextResponse> {
     }
     throw err;
   }
+  notifyRegistrationsReceived(user.id, [String(exhibition.title)]);
   const response = NextResponse.json({ id, user });
 
   if (newSessionToken) setSessionCookie(response, newSessionToken);

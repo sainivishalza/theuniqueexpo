@@ -19,6 +19,7 @@ import {
 } from "@/lib/server/buyer-profile-repo";
 import { getExtraValue, listExtraInfo, saveExtraInfo, type ExtraInfoRow } from "@/lib/server/buyer-extra-info";
 import { createCustomExpoRegistration, createExpoRegistration, rewriteRegistration } from "@/lib/server/expo-registrations-repo";
+import { notifyRegistrationsReceived } from "@/lib/server/notifications";
 import { upgradeReferralStatus } from "@/lib/server/partner-referrals-repo";
 
 // ---------------------------------------------------------------------------------------------------------
@@ -543,6 +544,8 @@ export async function submitRegistrations(user: Person, slugs: string[], answers
     }
   }
   if (created > 0) upgradeReferralStatus(ctx.user.id, "booked_booth").catch((err) => console.error("Referral status upgrade error:", err));
+  // One message for everything that was registered (not one per exhibition).
+  notifyRegistrationsReceived(ctx.user.id, results.filter((r) => r.outcome === "registered" || r.outcome === "registered_again").map((r) => r.title));
   // In the order the buyer chose them.
   results.sort((x, y) => slugs.indexOf(x.slug) - slugs.indexOf(y.slug));
   return { results };

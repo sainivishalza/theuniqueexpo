@@ -25,7 +25,7 @@ const day = (n) => new Date(Date.now() + n * 86400000).toISOString().slice(0, 10
   ok(!event(longGone), 'one that ended two months ago is not');
   const e1 = event(may).replace(/\r\n /g, '');
   ok(/DTSTART;VALUE=DATE:20990510/.test(e1) && /DTEND;VALUE=DATE:20990513/.test(e1), 'dates are whole days, the end is the day after (as the format requires)', e1);
-  ok(/SUMMARY:Calendar may /.test(e1) && /LOCATION:Hall A\\, Gate 2\\, Guangzhou\\, China/.test(e1) && /DESCRIPTION:English text\; with\\, commas/.test(e1), 'title, place and description, with commas and semicolons escaped', e1);
+  ok(/SUMMARY:Calendar may /.test(e1) && /LOCATION:Hall A\\, Gate 2\\, Guangzhou\\, China/.test(e1) && /DESCRIPTION:English text\\; with\\, commas/.test(e1), 'title, place and description, with commas and semicolons escaped', e1);
   ok(new RegExp(`UID:exhibition-\\d+@theuniqueexpo.com`).test(e1) && /URL:https:\/\/theuniqueexpo.com\/en\/exhibitions\/cal-may-/.test(e1), 'a lasting id (so a change updates the entry instead of doubling it) and a link to the page');
   ok(text.split('\r\n').every((l) => Buffer.byteLength(l) <= 75), 'no line is longer than 75 bytes');
   r = await get('?locale=ru'); text = await r.text();

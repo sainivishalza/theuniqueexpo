@@ -154,7 +154,7 @@ const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'tok
   await p.getByLabel('Save the current filters as').fill(`Second ${st}`);
   await p.getByRole('button', { name: 'Save', exact: true }).click();
   await p.getByText(`Saved as “Second ${st}”.`).waitFor(); ok(true, 'saving a second view says so');
-  vio = await axeViolations(p); ok(vio.length === 0, 'axe 0 with the panel open', vio);
+  await sleep(900); vio = await axeViolations(p); ok(vio.length === 0, 'axe 0 with the panel open', vio);
   ok(await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'no sideways overflow at 375px');
   await p.getByRole('button', { name: 'Delete this view' }).click(); await p.getByRole('button', { name: 'Yes, delete' }).click();
   await p.getByText('The view was deleted.').waitFor(); ok(Number(sql(`SELECT COUNT(*) FROM admin_saved_views WHERE name='Second ${st}'`)) === 0, 'deleting asks and removes it');

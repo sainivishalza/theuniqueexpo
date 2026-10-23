@@ -45,6 +45,12 @@ BACKUP_FILE=~/theuniqueexpo-backup-$(date +%Y%m%d-%H%M%S).sql
 echo "Backing up database to $BACKUP_FILE ..."
 mysqldump --default-character-set=utf8mb4 -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" > "$BACKUP_FILE"
 ls -lh "$BACKUP_FILE"
+# A backup that stopped half way (disk full, lost connection) has no closing line. Stop here, before anything is changed,
+# rather than deploy on top of a backup that could not be restored.
+if ! tail -n 5 "$BACKUP_FILE" | grep -q -- '-- Dump completed'; then
+  echo "The database backup is incomplete (no closing line) -- stopping the deploy before anything is changed."
+  exit 1
+fi
 
 if ! git diff --quiet || ! git diff --cached --quiet; then
   echo "Server has uncommitted local changes — stashing them (recoverable via 'git stash list') before checkout:"

@@ -3176,7 +3176,7 @@
     "announce": {
       "toggle": "发送邮件",
       "title": "向已选的 {count} 位买家发送邮件",
-      "recipients": "已选的 {total} 位买家中有 {with} 位有真实邮箱地址，将收到邮件，其余的将被跳过。",
+      "recipients": "已选的 {total} 位买家中有 {with} 位有真实邮箱地址，将收到邮件。所有已选买家也可以在网站的“通知”中阅读。",
       "noRecipients": "所选买家都没有真实邮箱地址。",
       "languages": "邮件语言",
       "lang": {
@@ -3193,7 +3193,7 @@
       "sending": "发送中…",
       "back": "返回",
       "done": "完成：邮件正在发送给 {count} 位买家。",
-      "skipped": "有 {count} 位买家没有真实邮箱地址，已跳过。您可以在“管理 → 邮件”中查看所有邮件。",
+      "skipped": "有 {count} 位买家没有真实邮箱地址，因此未向其发送邮件；他们可以在网站的“通知”中阅读。您可以在“管理 → 邮件”中查看所有邮件。",
       "errors": {
         "no_buyers": "请至少选择一位买家。",
         "too_many": "最多选择 500 位买家。",
@@ -4923,6 +4923,80 @@
       "blog_post_deleted": "删除博客文章",
       "site_page_saved": "保存网站页面",
       "signed_out_everywhere": "退出所有其他设备"
+    }
+  },
+  "notificationsPage": {
+    "menu": "通知",
+    "title": "通知",
+    "subtitle": "网站告诉您的事：审批结果、退回的文件、积分和公告。",
+    "loading": "加载中…",
+    "loadFailed": "无法加载通知，请重试。",
+    "emptyTitle": "暂无通知",
+    "emptyBody": "当您的报名、文件或积分有变化时，会显示在这里。",
+    "unreadCount": "{count, plural, other {# 条未读通知}}",
+    "allRead": "您已读完所有通知。",
+    "markAll": "全部标为已读",
+    "markRead": "标为已读",
+    "open": "打开",
+    "new": "新",
+    "older": "显示更早的",
+    "extra": {
+      "reason": "原因：{text}",
+      "reference": "付款凭证：{text}"
+    },
+    "kinds": {
+      "other": {
+        "title": "通知"
+      },
+      "registrationApproved": {
+        "title": "报名已通过",
+        "body": "您报名的 {expo} 已通过审核，请确认您的出席。",
+        "bodyDeadline": "您报名的 {expo} 已通过审核，请在 {date} 前确认您的出席。"
+      },
+      "registrationRejected": {
+        "title": "报名未通过",
+        "body": "您报名的 {expo} 未通过审核。"
+      },
+      "registrationReminder": {
+        "title": "请确认您的出席",
+        "body": "请在 {date} 前确认出席 {expo}，否则您的名额可能会让给他人。"
+      },
+      "documentRejected": {
+        "title": "有文件需要您处理",
+        "body": "“{document}”已被退回，请重新上传。"
+      },
+      "pointsReceived": {
+        "title": "收到积分",
+        "body": "您收到 {points} 积分。"
+      },
+      "topupApproved": {
+        "title": "充值已通过",
+        "body": "您的充值已通过：钱包已增加 {points} 积分。"
+      },
+      "topupRejected": {
+        "title": "充值未通过",
+        "body": "您的充值申请未通过。"
+      },
+      "withdrawalPaid": {
+        "title": "提现已支付",
+        "body": "您提现 {points} 积分已支付。"
+      },
+      "withdrawalRejected": {
+        "title": "提现未支付",
+        "body": "您提现 {points} 积分未支付，积分已退回钱包。"
+      },
+      "expenseApproved": {
+        "title": "费用申请已通过",
+        "body": "您的费用申请已通过：钱包已增加 {points} 积分。"
+      },
+      "expenseRejected": {
+        "title": "费用申请未通过",
+        "body": "您的费用申请未通过。"
+      },
+      "passwordChanged": {
+        "title": "密码已更改",
+        "body": "您账户的密码已被更改。如果不是您本人操作，请立即联系我们。"
+      }
     }
   }
 }

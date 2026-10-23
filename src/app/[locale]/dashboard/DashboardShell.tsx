@@ -7,6 +7,7 @@ import { shellAppliesTo } from "@/lib/app-shell";
 import { formatNumber } from "@/lib/format";
 import { useWalletBalance } from "@/lib/client/wallet-balance";
 import WalletChip from "@/components/wallet/WalletChip";
+import { useUnreadNotifications } from "@/lib/client/unread-notifications";
 
 // The signed-in customer's frame: a list of their tools down the left on a laptop,
 // the menu on a phone. Links to public pages (exhibitions, messages, ...) simply
@@ -16,9 +17,12 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const te = useTranslations("exhibitorDashboard");
   const tc = useTranslations("common");
   const tp = useTranslations("accountPassword");
+  const tn = useTranslations("notificationsPage");
   const { user, loading } = useAuth();
   // A buyer sees their wallet balance in the phone top bar and next to "Rewards Wallet" in the menu.
   const wallet = useWalletBalance(!!user && user.role === "buyer");
+  // The number of unread website notifications shows next to "Notifications" in the menu.
+  const { unread } = useUnreadNotifications(!!user);
   if (loading || !user || !shellAppliesTo("dashboard", user)) return <>{children}</>;
 
   const role = user.role;
@@ -53,6 +57,9 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       { key: "account", href: "/dashboard/account", label: tp("menu"), icon: "🔑", group: "account" },
     ];
   }
+
+  // Right under "Dashboard" so a new message is the first thing seen in the menu.
+  items.splice(1, 0, { key: "notifications", href: "/dashboard/notifications", label: tn("menu"), icon: "🔔", count: unread });
 
   return (
     <AppShell

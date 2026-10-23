@@ -5,6 +5,7 @@ import { isPlaceholderEmail } from "@/lib/login-id";
 import { formatNumber } from "@/lib/format";
 import { isMailEnabled, sendMail, sendMailInBackground } from "@/lib/server/mail";
 import { getFormItems } from "@/lib/server/buyer-form-repo";
+import { addNotification, addNotificationForMany, NOTIFICATION_KINDS, type NotificationKind } from "@/lib/server/user-notifications";
 
 // The e-mails the site sends, in the language the person last used the site in. Each notify...()
 // call below is made after the thing it reports has already happened, returns at once, and does
@@ -165,6 +166,8 @@ export function notifyUser(
   link: { path: string } | { url: string },
   requestLocale?: EmailLocale | null
 ): void {
+  // The same news is kept on the website for the person, whether or not e-mail is on or they have an address.
+  if ("path" in link && NOTIFICATION_KINDS.includes(kind)) addNotification(userId, kind as NotificationKind, vars, link.path);
   (async () => {
     if (!(await isMailEnabled())) return;
     const who = await loadRecipient(userId);
@@ -220,6 +223,13 @@ export function notifyWalletRequest(
 
 // A rejected document: the document's name is written in the person's own language.
 export function notifyDocumentRejected(userId: number, documentKey: string, reason: string): void {
+  // On the website the document's name is shown in the language of whoever reads it.
+  getFormItems()
+    .then((items) => {
+      const item = items.find((i) => i.key === documentKey);
+      addNotification(userId, "documentRejected", { document: item ? { en: item.labels.en, ru: item.labels.ru || item.labels.en, zh: item.labels.zh || item.labels.en } : documentKey, reason }, "/dashboard/buyer/profile");
+    })
+    .catch((err) => console.error("Could not save the document notification", err));
   (async () => {
     if (!(await isMailEnabled())) return;
     const who = await loadRecipient(userId);
@@ -257,6 +267,13 @@ export async function sendAnnouncement(userIds: number[], texts: AnnouncementTex
     "SELECT id, name, email, status, preferred_locale FROM users WHERE id IN (?) AND role = 'buyer'",
     [userIds]
   ).catch(async () => pool.query<RowDataPacket[]>("SELECT id, name, email, status FROM users WHERE id IN (?) AND role = 'buyer'", [userIds]));
+  // Everyone selected can read it on the website, with or without an e-mail address.
+  void addNotificationForMany(
+    rows.filter((r) => r.status !== "suspended").map((r) => Number(r.id)),
+    "announcement",
+    { subject: texts.subject, message: texts.message },
+    "/dashboard/notifications"
+  );
   const people = rows.filter((r) => r.status !== "suspended" && r.email && !isPlaceholderEmail(String(r.email)));
   const withoutEmail = userIds.length - people.length;
   (async () => {

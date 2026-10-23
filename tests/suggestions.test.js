@@ -57,7 +57,7 @@ const patch = (t, body) => fetch(BASE + '/api/buyer-profile', { method: 'PATCH',
   };
   let [ctx, p] = await open();
   await p.getByLabel('Search exhibitions').fill('Suggest');
-  await p.getByLabel(a.title).waitFor();
+  await p.getByLabel(a.title, { exact: true }).waitFor();
   const titles = await p.locator('ul li label[for^="be-"]').allInnerTexts();
   const order = titles.filter((t) => t.startsWith('Suggest')).map((t) => t.split(' ')[1]);
   ok(order.slice(0, 3).sort().join() === ['b', 'c', 'f'].join(), 'the suggested ones come first', order);
@@ -66,7 +66,7 @@ const patch = (t, body) => fetch(BASE + '/api/buyer-profile', { method: 'PATCH',
   ok(await p.getByText('Matches your business: Machinery/Equipments/Automation.').isVisible() && await p.getByText('You registered for another Electronics exhibition.').isVisible(), 'and says why');
   const vv = await axeViolations(p); ok(vv.length === 0, 'axe 0 violations', vv);
   await p.screenshot({ path: SHOTS + '/suggested.png' });
-  await p.getByLabel(b.title).check();
+  await p.getByLabel(b.title, { exact: true }).check();
   ok(await p.getByText('1 exhibition selected').isVisible(), 'a suggested exhibition is ticked like any other');
   await ctx.close();
 

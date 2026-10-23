@@ -1,0 +1,77 @@
+// Registering for several exhibitions at once from the buyer dashboard. Shared by the server and the screen.
+//
+// Every exhibition asks for some details: the standard sign-up form, or a form its organiser wrote. Most of
+// that is already in the buyer's profile; what is not is asked once, for all the chosen exhibitions together,
+// and then kept on the profile so it is never asked twice.
+
+export type QuestionKind = "text" | "textarea" | "select" | "radio" | "checkbox" | "file";
+
+export interface PlanQuestion {
+  /** "core:companyScale" (the standard form) or "custom:<question>|<type>|<options>" (an organiser's own question). */
+  key: string;
+  kind: QuestionKind;
+  /** The standard form's questions are named by the screen from this; an organiser's own carry their own text. */
+  core?: string;
+  label?: string;
+  help?: string;
+  required: boolean;
+  options?: string[];
+  /** The answer on file (empty when there is none). Never a file: see hasFile. */
+  value: string | string[];
+  /** A file is already saved for this question (it is kept unless a new one is chosen). */
+  hasFile?: boolean;
+  /** Only asked when another answer says so (the "please specify" after "Other"). */
+  showIf?: { key: string; equals?: string; includes?: string };
+  /** The exhibitions (slugs) that need it. */
+  exhibitions: string[];
+  /** Where the answer is kept: a field of the buyer profile, or the saved answers on it. */
+  savedTo: "profile" | "saved";
+}
+
+export interface PlanExhibition {
+  slug: string;
+  title: string;
+  /** "new", or why it is left out. */
+  state: "new" | "resubmit" | "already_registered" | "closed" | "unknown";
+}
+
+export interface Plan {
+  exhibitions: PlanExhibition[];
+  questions: PlanQuestion[];
+}
+
+export type SubmitOutcome = "registered" | "registered_again" | "already_registered" | "closed" | "unknown" | "failed";
+
+export interface SubmitResult {
+  slug: string;
+  title: string;
+  outcome: SubmitOutcome;
+  error?: string;
+}
+
+export const MAX_EXHIBITIONS_AT_ONCE = 40;
+
+/** A question's text reduced to lower-case words, so "Company  Name:" and "company name" are the same question. */
+export function normalizeLabel(label: string): string {
+  return label
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+}
+
+/** A short fingerprint of a list of choices (two questions with different choices are different questions). */
+export function optionsFingerprint(options: string[] | undefined): string {
+  const text = (options ?? []).map((o) => normalizeLabel(o)).join("|");
+  let h = 5381;
+  for (let i = 0; i < text.length; i++) h = ((h << 5) + h + text.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(16).padStart(8, "0");
+}
+
+export function customQuestionKey(label: string, type: string, options: string[] | undefined): string {
+  const base = `custom:${normalizeLabel(label).slice(0, 120)}|${type}`;
+  return type === "radio" || type === "checkbox" ? `${base}|${optionsFingerprint(options)}` : base;
+}
+
+export const isFileQuestion = (kind: QuestionKind) => kind === "file";

@@ -8,6 +8,7 @@ import { readDocumentAsDataUrl } from "@/lib/client/image-upload";
 import { useBuyerForm } from "@/lib/client/buyer-form";
 import ChangePasswordCard from "../../_components/ChangePasswordCard";
 import AddEmailCard from "../../_components/AddEmailCard";
+import ExtraInfoCard from "../../_components/ExtraInfoCard";
 import { NATIONALITIES } from "@/lib/expo-registrations";
 import { DEPARTURE_CITIES, JOB_TITLES, VISA_TYPES } from "@/lib/buyer-profile-options";
 import Button from "@/components/ui/Button";
@@ -343,6 +344,7 @@ export default function BuyerProfilePage() {
             </div>
           </div>
 
+          <ExtraInfoCard />
           <AddEmailCard />
           <ChangePasswordCard />
         </div>

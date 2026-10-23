@@ -403,12 +403,12 @@
     },
     "registrations": {
       "title": "我的报名",
-      "subtitle": "您报名的所有展会,以及接下来要做的事。",
+      "subtitle": "报名即将举办的展会，并跟踪每一个报名。",
       "back": "← 返回会员中心",
       "loading": "加载中...",
       "loadFailed": "无法加载您的报名,请重试。",
       "emptyTitle": "暂无报名",
-      "emptyHint": "选择一个展会并报名后,会显示在这里。",
+      "emptyHint": "请在上方勾选展会并报名，它们会显示在这里。",
       "browse": "浏览展会",
       "manage": "打开展会页面 →",
       "statusLabels": {
@@ -426,7 +426,8 @@
         "confirmBy": "请在 {date} 前确认参加。",
         "confirmed": "已确认参加。请在现场扫描二维码签到。",
         "feedback": "请分享您对展会的反馈。"
-      }
+      },
+      "yourRegistrations": "您的报名"
     },
     "registrationNumber": "您的注册编号",
     "registrationNumberHint": "联系我们时请提供此编号。",
@@ -5022,6 +5023,102 @@
         "title": "旅游报名未通过",
         "body": "您报名的 {tour} 未通过审核。"
       }
+    }
+  },
+  "bulkRegister": {
+    "title": "报名即将举办的展会",
+    "intro": "勾选您想参加的展会，然后点击“报名”。我们会使用您资料中已有的信息，只询问缺少的内容，并且只问一次。您的回答会保存到资料中，下次不会再问。",
+    "selectAll": "全选（{count}）",
+    "search": "搜索展会",
+    "noMatch": "没有符合搜索条件的展会。",
+    "details": "详情",
+    "hideDetails": "收起详情",
+    "openPage": "打开展会页面",
+    "opensNewTab": "（在新标签页中打开）",
+    "alreadyRegistered": "您已报名。",
+    "when": "日期",
+    "venue": "场馆",
+    "where": "城市",
+    "industry": "行业",
+    "about": "简介",
+    "selectedCount": "{count, plural, =0 {未选择展会} other {已选择 # 个展会}}",
+    "nothingToRegister": "您已报名所有开放的展会。",
+    "clear": "清除",
+    "checking": "检查中…",
+    "register": "{count, plural, =0 {报名} other {报名 # 个展会}}",
+    "planFailed": "无法检查这些展会所需的信息，请重试。",
+    "noneOpen": "目前没有开放报名的展会。新展会开放后会显示在这里。",
+    "loading": "正在加载展会…",
+    "loadFailed": "无法加载展会，请重试。",
+    "reviewTitle": "检查并报名",
+    "again": "（重新报名）",
+    "states": {
+      "already_registered": "已报名，已略过",
+      "closed": "报名已关闭，已略过",
+      "unknown": "未找到，已略过"
+    },
+    "needMore": "这些展会需要一些您资料中尚没有的信息。请填写一次：它们会保存到您的资料中，下次报名不会再问。",
+    "neededFor": "用于：{names}。",
+    "optional": "选填",
+    "choose": "请选择…",
+    "fileChosen": "已选择文件：{name}",
+    "fileSaved": "已保存文件。只有想替换时才需要重新选择。",
+    "fileTooLarge": "文件太大（超过 8 MB）。",
+    "fileUnreadable": "无法读取该文件。",
+    "savedToProfile": "将保存到您的资料中。",
+    "savedForNext": "将被保存，下次不会再问。",
+    "allKnown": "这些展会所需的信息您的资料中都已有。点击按钮即可报名。",
+    "submitting": "正在报名…",
+    "submit": "{count, plural, other {报名 # 个展会}}",
+    "back": "返回列表",
+    "errors": {
+      "missing": "请回答标红的问题。",
+      "file": "其中一个文件不是有效的图片或 PDF，或文件过大。",
+      "invalid": "部分回答无效，请检查标红的问题。",
+      "form": "{expo}：{message}",
+      "tooMany": "尝试次数过多，请稍后再试。",
+      "generic": "无法为您报名，请重试。"
+    },
+    "doneTitle": "您的报名",
+    "outcomes": {
+      "registered": "已报名：正在等待审核",
+      "registered_again": "已重新报名：正在等待审核",
+      "already_registered": "您之前已报名",
+      "closed": "报名已关闭",
+      "unknown": "未找到",
+      "failed": "报名失败，请重试"
+    },
+    "doneHint": "每个报名都显示在下方，审核通过后我们会通知您。",
+    "doneButton": "报名更多展会",
+    "genders": {
+      "male": "男",
+      "female": "女"
+    },
+    "core": {
+      "gender": "性别",
+      "nationality": "国籍",
+      "passportNumber": "护照号码",
+      "phone": "电话号码",
+      "email": "电子邮箱",
+      "companyName": "公司名称",
+      "companyType": "公司类型",
+      "companyTypeOther": "请说明您的公司类型",
+      "companyScale": "公司规模（员工人数）",
+      "purposeOfVisit": "参观目的",
+      "infoSource": "您从哪里得知本次活动？",
+      "infoSourceOther": "请说明您从哪里得知",
+      "exportingMarkets": "您出口的市场",
+      "exportingMarketOther": "请说明市场",
+      "docPassportFront": "护照首页",
+      "docBusinessCard": "名片",
+      "docVisaPage": "签证页",
+      "docBusinessLicense": "营业执照"
+    },
+    "extra": {
+      "title": "展会所需的更多信息",
+      "intro": "您在报名展会时给出的回答。它们会在下次使用，所以不会再次询问。下次报名时可以修改。",
+      "file": "已保存文件",
+      "empty": "—"
     }
   }
 }

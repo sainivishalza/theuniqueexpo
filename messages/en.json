@@ -135,7 +135,17 @@
     "viewGrid": "All together",
     "viewMonths": "By month",
     "subscribe": "Add all exhibitions to my calendar",
-    "subscribeHelp": "It updates by itself when exhibitions are added or change."
+    "subscribeHelp": "It updates by itself when exhibitions are added or change.",
+    "viewCalendar": "Calendar",
+    "calendar": {
+      "prev": "Previous month",
+      "next": "Next month",
+      "day": "{date}: {count, plural, one {# exhibition} other {# exhibitions}}",
+      "listMonth": "Exhibitions in {month}",
+      "listDay": "Exhibitions on {date}",
+      "wholeMonth": "Show the whole month",
+      "empty": "No exhibitions this month with the filters you chose."
+    }
   },
   "toursPage": {
     "title": "Tours",

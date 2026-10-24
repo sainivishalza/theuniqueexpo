@@ -75,6 +75,9 @@ jobs:
         run: node scripts/check-bundle-size.mjs
 
       - name: Start the site
+        # With a key set, the documents the tests upload are stored encrypted, so every test also checks that encryption is invisible.
+        env:
+          DOCUMENT_ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
         run: |
           nohup npx next start -p 3100 > site.log 2>&1 &
           for i in $(seq 1 60); do curl -s -o /dev/null http://localhost:3100/api/auth/me && exit 0; sleep 1; done

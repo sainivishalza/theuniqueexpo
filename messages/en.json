@@ -807,6 +807,10 @@
       "pictures": {
         "title": "Pictures",
         "description": "Make the stored website pictures smaller so pages load faster."
+      },
+      "documentProtection": {
+        "title": "Document protection",
+        "description": "Keep passport photos and other documents encrypted in the database."
       }
     },
     "attention": {
@@ -5122,6 +5126,12 @@
       "link": "Turn them off",
       "digest": "You get this weekly e-mail because news about new exhibitions is on in your account. {url}",
       "savedAlerts": "You get this because alerts about saved exhibitions are on in your account. {url}"
+    },
+    "accountDeleted": {
+      "subject": "Your account was deleted",
+      "intro": "Your The Unique Expo account was deleted at your request.",
+      "body": "Your personal details, documents and sign-in were removed. Records we must keep for our accounts, such as reward-point entries, no longer show your name. If this was not you, contact us at once.",
+      "button": "Visit the site"
     }
   },
   "adminEmail": {
@@ -5198,7 +5208,9 @@
       "scheduledReport": "Scheduled report",
       "dailyHealth": "Daily health report",
       "adminSignIn": "New admin sign-in alert",
-      "errorAlert": "New website error alert"
+      "errorAlert": "New website error alert",
+      "digest": "Weekly new exhibitions",
+      "accountDeleted": "Account deleted"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -5448,7 +5460,9 @@
       "weekly_digest_setting_changed": "Changed the weekly new-exhibitions e-mail setting",
       "weekly_digest_preview_sent": "Sent the weekly e-mail preview to themselves",
       "images_optimize_started": "Started making stored pictures smaller",
-      "images_optimize_finished": "Finished making stored pictures smaller"
+      "images_optimize_finished": "Finished making stored pictures smaller",
+      "documents_protect_started": "Started encrypting stored documents",
+      "documents_protect_finished": "Finished encrypting stored documents"
     }
   },
   "notificationsPage": {
@@ -6574,5 +6588,79 @@
     "checkDone": "Done. Making them smaller would save about {saved} MB.",
     "applyDone": "Done. About {saved} MB saved.",
     "failed": "That did not work. Please try again."
+  },
+  "accountDelete": {
+    "title": "Delete my account",
+    "intro": "This permanently removes your personal details, documents, profile, requests, reviews and sign-in. It cannot be undone.",
+    "keepNote": "Records we must keep for our accounts (for example reward-point entries) stay, without your name. Exhibition registrations stay only as anonymous counts.",
+    "checking": "Checking whether your account can be deleted…",
+    "blocked": "Before you can delete your account:",
+    "wallet_balance": "You still have {points} reward points. Withdraw them, spend them on a package or send them to someone first.",
+    "pending_money": "You have {count, plural, one {# top-up, withdrawal or expense claim} other {# top-ups, withdrawals or expense claims}} waiting. Wait until they are processed (or cancel them), then come back.",
+    "admin_account": "This is an administrator account. Ask another administrator to remove it.",
+    "already_deleted": "This account has already been deleted.",
+    "upcoming": "{count, plural, one {Your # upcoming registration will be cancelled.} other {Your # upcoming registrations will be cancelled.}}",
+    "understand": "I understand that this cannot be undone.",
+    "password": "Your password",
+    "button": "Delete my account for good",
+    "working": "Deleting…",
+    "wrong_password": "That password is not right.",
+    "rate_limited": "Too many attempts. Please wait a few minutes.",
+    "failed": "That did not work. Nothing was deleted. Please try again.",
+    "done": "Your account was deleted. Goodbye.",
+    "openWallet": "Open the wallet"
+  },
+  "adminDocProtection": {
+    "title": "Document protection",
+    "subtitle": "Passport pages, visas, licences, e-tickets, receipts and payout codes, encrypted where they are stored.",
+    "back": "← Back to Admin",
+    "how": "With a key set, new documents are stored encrypted (AES-256), so a copy of the database or a backup file does not expose them. The website opens them as it needs them, so nothing looks different. Documents stored before the key was set stay as they were until you press the button below.",
+    "keyOn": "Encryption is on",
+    "keyOff": "Encryption is off: no key is set",
+    "keyId": "Key in use: {id}. Check that it is the key you saved.",
+    "keyHowTo": "To turn it on, set the environment variable DOCUMENT_ENCRYPTION_KEY on the server (Hostinger) to a long random secret, for example the output of: openssl rand -hex 32, then restart the site. Keep a copy of the key somewhere safe.",
+    "keyWarning": "If the key is lost, the encrypted documents cannot be recovered. When you change the key, keep the old one in DOCUMENT_ENCRYPTION_OLD_KEYS so older documents can still be opened.",
+    "storedTitle": "Stored now",
+    "totals": "{protected} encrypted, {unprotected} not yet.",
+    "counts": "{protected} encrypted · {unprotected} not yet",
+    "protect": "Encrypt the documents stored so far",
+    "working": "Working… keep this page open",
+    "allProtected": "Every stored document is encrypted.",
+    "progress": "{done} documents encrypted so far; {failed} could not be encrypted safely and were left as they are.",
+    "finished": "Done.",
+    "finishedWithFailures": "Done, except {failed} that were left as they are.",
+    "failed": "That did not work. Please try again.",
+    "source": {
+      "profile": {
+        "doc_passport_front": "Passport pages (profiles)",
+        "doc_visa_page": "Visa pages (profiles)",
+        "doc_business_license": "Business licences (profiles)",
+        "doc_business_card": "Business cards (profiles)",
+        "doc_buyer_photo": "Buyer photos (profiles)",
+        "doc_canton_fair_card": "Canton Fair cards (profiles)",
+        "doc_invoice_order_list": "Invoices and order lists (profiles)",
+        "doc_latest_entry_stamp": "Latest entry stamps (profiles)"
+      },
+      "custom": {
+        "data": "Documents added in Buyer form settings"
+      },
+      "registration": {
+        "doc_passport_front": "Passport pages (registrations)",
+        "doc_business_card": "Business cards (registrations)",
+        "doc_visa_page": "Visa pages (registrations)",
+        "doc_business_license": "Business licences (registrations)",
+        "doc_order_list": "Order lists (registrations)",
+        "doc_ticket": "E-tickets (registrations)",
+        "custom_answers": "Files in registration answers"
+      },
+      "tour": {
+        "custom_answers": "Files in tour registration answers"
+      },
+      "wallet": {
+        "topup_proof": "Top-up payment proofs",
+        "expense_receipts": "Expense receipts",
+        "payout_qr": "Payout QR codes"
+      }
+    }
   }
 }

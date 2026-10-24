@@ -85,3 +85,23 @@ Set it up once (on your own computer, not on the server):
 To restore: download the artifact `database-backup-encrypted` from a run, then
 `age -d -i theuniqueexpo-backup-key.txt theuniqueexpo-YYYYMMDD-HHMMSS.sql.gz.age | gunzip > backup.sql`, copy `backup.sql` to the
 server and use `scripts/restore-backup.sh backup.sql` (it makes a safety copy first and asks for the database name).
+
+## Encrypting identity documents (Admin → Document protection)
+
+Passport pages, visas, licences, e-tickets, receipts and payout QR codes are kept in the database. With a key set they are stored
+encrypted (AES-256-GCM), so a copy of the database or a backup file does not expose them. The website opens them as it reads them,
+so nothing looks different to buyers or admins.
+
+1. Make a key and **keep a copy of it somewhere safe, apart from the server** (a password manager): `openssl rand -hex 32`
+2. Set it on the server as the environment variable `DOCUMENT_ENCRYPTION_KEY` (the same place as `JWT_SECRET`) and restart the site.
+3. Open **Admin → Document protection**. It shows the key in use (an 8-character id) and how many documents are encrypted. New
+   documents are encrypted from now on; press **Encrypt the documents stored so far** to do the older ones (a few at a time; each is
+   checked by opening it again before it replaces the original; safe to repeat).
+
+**If the key is lost, the encrypted documents cannot be recovered**, and backups of them are useless without it.
+
+Changing the key later (for example when rotating secrets): move the current key into `DOCUMENT_ENCRYPTION_OLD_KEYS` (comma separated
+if there are several), put the new one in `DOCUMENT_ENCRYPTION_KEY`, restart, then run **Encrypt the documents stored so far** again
+(it re-reads old documents with the old key). Keep the old key until nothing is left encrypted with it.
+
+Without a key nothing is encrypted and the site works as before.

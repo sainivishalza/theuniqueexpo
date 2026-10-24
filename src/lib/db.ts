@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise";
 import fs from "fs";
 import { createHash } from "node:crypto";
+import { openAll, protectParams, writesDocumentTable } from "@/lib/server/document-crypto";
 
 // DB_SOCKET connects over a Unix socket instead of TCP -- needed in build
 // sandboxes (like Hostinger's hbuilds) that are network-isolated from the
@@ -83,15 +84,53 @@ function noteSlowQuery(first: unknown, ms: number): void {
   }
 }
 
+// Documents kept in the database are protected when a key is set (see src/lib/server/document-crypto.ts): values written to the
+// document tables are encrypted on the way in, and every value read is opened on the way out, so the rest of the code never sees
+// the difference. `queryRaw` skips both, for the screens that need to see what is really stored.
+type QueryFn = (...args: unknown[]) => Promise<unknown>;
+
+function sqlText(first: unknown): string {
+  return typeof first === "string" ? first : typeof (first as { sql?: unknown })?.sql === "string" ? (first as { sql: string }).sql : "";
+}
+
+function withProtection(run: QueryFn): QueryFn {
+  return async (...args: unknown[]) => {
+    const text = sqlText(args[0]);
+    if (text && writesDocumentTable(text)) {
+      if (typeof args[0] === "string" && args.length > 1 && typeof args[1] !== "function") args[1] = protectParams(args[1]);
+      else if (typeof args[0] === "object" && args[0] !== null && "values" in (args[0] as object)) (args[0] as { values: unknown }).values = protectParams((args[0] as { values: unknown }).values);
+    }
+    const result = await run(...args);
+    // [rows, fields] for a SELECT: open protected values in the rows (an array of rows; an OK packet is left alone).
+    if (Array.isArray(result) && Array.isArray(result[0])) openAll(result[0]);
+    return result;
+  };
+}
+
+export const queryRaw: QueryFn = (...args) => rawQuery(...args);
+const protectedQuery = withProtection(rawQuery);
+
 (pool as unknown as { query: (...args: unknown[]) => unknown }).query = (...args: unknown[]) => {
   const started = performance.now();
-  const result = rawQuery(...args);
+  const result = protectedQuery(...args);
   const done = () => {
     const ms = performance.now() - started;
     if (ms >= SLOW_MS) noteSlowQuery(args[0], ms);
   };
   result.then(done, done);
   return result;
+};
+
+// The same protection for the connections used in transactions.
+const rawGetConnection = pool.getConnection.bind(pool);
+const protectedConnections = new WeakSet<object>();
+(pool as unknown as { getConnection: () => Promise<unknown> }).getConnection = async () => {
+  const conn = (await rawGetConnection()) as unknown as { query: QueryFn };
+  if (!protectedConnections.has(conn)) {
+    protectedConnections.add(conn);
+    conn.query = withProtection(conn.query.bind(conn));
+  }
+  return conn;
 };
 
 const flushTimer = setInterval(() => void flushSlowQueries(), FLUSH_MS);

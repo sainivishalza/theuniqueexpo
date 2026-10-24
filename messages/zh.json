@@ -813,6 +813,10 @@
       "documentProtection": {
         "title": "证件保护",
         "description": "将护照照片等证件加密存放在数据库中。"
+      },
+      "support": {
+        "title": "买家留言",
+        "description": "回答买家关于报名、车票、积分和证件的问题。"
       }
     },
     "attention": {
@@ -5323,6 +5327,11 @@
       "subject": "您的火车票电子发票已就绪",
       "intro": "我们已为您的火车票（{exhibition}）附上电子发票。我们核对金额期间，您可以在钱包中下载。",
       "button": "打开我的车票报销"
+    },
+    "supportReply": {
+      "subject": "我们的团队已回复您的留言",
+      "intro": "我们的团队已回复您的留言“{subject}”。请打开对话查看回复。",
+      "button": "查看回复"
     }
   },
   "adminEmail": {
@@ -5402,7 +5411,8 @@
       "errorAlert": "网站新错误提醒",
       "digest": "每周新展会",
       "accountDeleted": "账户已删除",
-      "ticketInvoiceReady": "电子发票就绪"
+      "ticketInvoiceReady": "电子发票就绪",
+      "supportReply": "留言回复"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -5661,7 +5671,10 @@
       "referral_exhibition_points": "设置了展会的邀请奖励积分",
       "ticket_refund_rules": "设置了展会的车票报销规则",
       "ticket_invoice_attached": "为车票报销附上了电子发票",
-      "points_bulk_topup": "按护照号码为多位买家充值"
+      "points_bulk_topup": "按护照号码为多位买家充值",
+      "support_replied": "回复了买家留言",
+      "support_closed": "关闭了买家对话",
+      "support_reopened": "重新打开了买家对话"
     }
   },
   "notificationsPage": {
@@ -5783,6 +5796,10 @@
       "ticketInvoiceReady": {
         "title": "电子发票已就绪",
         "body": "“{exhibition}”的电子发票已附上，现在可以下载。"
+      },
+      "supportReply": {
+        "title": "团队已回复",
+        "body": "“{subject}”有新的回复。"
       }
     }
   },
@@ -6767,6 +6784,11 @@
         "title": "为车票报销获取电子发票",
         "steps": "打开“奖励积分钱包”，再打开“报销申请”：标有“需要电子发票”的申请在等您处理（“概览”页会统计数量）。\n点击“审核”。用手机扫描开票单上的二维码，或打开页面上显示的链接。\n12306 要求输入证件号码时，输入屏幕上显示的护照后几位（买家护照号码的后 6 位）。\n下载电子发票（PDF），在此上传，填写发票上的金额并点击“保存”。\n查看展会规则建议的积分，需要时修改，然后通过或拒绝。买家会收到通知，并可下载电子发票。",
         "open": "打开奖励积分钱包"
+      },
+      "support": {
+        "title": "回复买家留言",
+        "steps": "打开“买家留言”：菜单项上的数字是等待回复的数量。\n打开一条留言，阅读对话及上方的买家信息。\n写下回复并点击“发送回复”：买家会收到网站通知和邮件。\n问题解决后点击“关闭对话”。买家再次留言时会自动重新打开。",
+        "open": "打开买家留言"
       }
     }
   },
@@ -6870,5 +6892,78 @@
         "payout_qr": "收款二维码"
       }
     }
+  },
+  "buyerSupport": {
+    "menu": "联系我们的团队",
+    "title": "联系我们的团队",
+    "subtitle": "关于报名、车票、积分或证件，请在此留言。我们会在这里并通过邮件回复。",
+    "back": "← 返回我的主页",
+    "loading": "加载中…",
+    "signInHint": "请登录后给我们的团队留言。",
+    "signIn": "登录",
+    "buyersOnly": "给团队留言仅限买家账户使用。",
+    "newMessage": "新留言",
+    "empty": "暂无留言。点击“新留言”向我们提问。",
+    "topic": "留言主题",
+    "topics": {
+      "registration": "报名",
+      "tickets": "车票与报销",
+      "points": "奖励积分",
+      "documents": "证件",
+      "other": "其他"
+    },
+    "subject": "标题",
+    "message": "留言内容",
+    "charsLeft": "还可输入 {count} 个字符",
+    "send": "发送",
+    "sending": "发送中…",
+    "cancel": "取消",
+    "backToList": "← 全部留言",
+    "status": {
+      "waiting": "等待团队回复",
+      "answered": "已回复",
+      "closed": "已关闭"
+    },
+    "newAnswer": "新回复",
+    "fromTeam": "我们的团队",
+    "fromYou": "您",
+    "yourReply": "您的回复",
+    "closedNote": "此对话已关闭。再次留言将重新打开。",
+    "sent": "已发送。我们会在这里并通过邮件回复。"
+  },
+  "adminSupport": {
+    "title": "买家留言",
+    "subtitle": "买家在个人主页给团队留言。等待回复的排在最前。",
+    "filterLabel": "筛选",
+    "filters": {
+      "waiting": "等待我们回复",
+      "answered": "已回复",
+      "closed": "已关闭",
+      "all": "全部"
+    },
+    "search": "按标题、姓名或邮箱搜索",
+    "empty": "这里没有内容。",
+    "messages": "{count} 条消息",
+    "topics": {
+      "registration": "报名",
+      "tickets": "车票与报销",
+      "points": "奖励积分",
+      "documents": "证件",
+      "other": "其他"
+    },
+    "status": {
+      "waiting": "等待我们回复",
+      "answered": "已回复",
+      "closed": "已关闭"
+    },
+    "open": "打开",
+    "close": "关闭对话",
+    "reopen": "重新打开",
+    "loading": "加载中…",
+    "fromTeam": "我们的团队",
+    "fromBuyer": "买家",
+    "yourReply": "给买家的回复",
+    "send": "发送回复",
+    "sending": "发送中…"
   }
 }

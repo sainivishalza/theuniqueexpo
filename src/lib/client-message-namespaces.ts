@@ -16,14 +16,14 @@ export const ADMIN_NAMESPACES = [
   "adminBusinessTripInquiries", "adminChinaTravel", "adminPartnerInquiries", "adminSlideshow",
   "adminRegFormBuilder", "adminRegistrationsCommon", "adminRfqs", "adminServiceTours", "adminServicesHome",
   "adminCityPartnershipInquiries", "adminCityPartnershipsContent", "adminConferenceHostingContent", "adminConferenceInquiries", "adminMagazine", "adminVideos",
-  "accountPassword", "accountChangeEmail", "adminTicketCheck", "adminInsights", "adminBulkOther", "adminSavedViews", "adminSlowQueries", "adminDocProtection", "adminPictures", "adminGuide", "adminPageSpeed", "adminDigest", "adminDocShare", "adminDataRetention", "adminHealth", "adminBounces", "adminSecurity", "adminSignIns", "adminErrors", "adminRecordNotes", "adminExhibitionHistory", "adminDuplicates", "adminScheduledExports", "adminStaffAccess", "adminEmail", "adminTwoStep", "adminActivity", "adminBuyerProfiles", "adminBuyerExpos", "adminBuyerForm", "adminImportBuyers", "adminWallet",
+  "accountPassword", "accountChangeEmail", "adminTicketCheck", "adminInsights", "adminBulkOther", "adminSavedViews", "adminSlowQueries", "adminDocProtection", "adminPictures", "adminGuide", "adminPageSpeed", "adminDigest", "adminDocShare", "adminDataRetention", "adminHealth", "adminBounces", "adminSecurity", "adminSignIns", "adminErrors", "adminRecordNotes", "adminExhibitionHistory", "adminDuplicates", "adminScheduledExports", "adminStaffAccess", "adminEmail", "adminTwoStep", "adminActivity", "adminBuyerProfiles", "adminBuyerExpos", "adminBuyerForm", "adminImportBuyers", "adminWallet", "adminSupport",
   "adminPartnerApplications", "adminPartnerReferrals", "adminPartnerTiers", "adminUsers", "adminUsersBulk",
   "adminSitePageEditor", "adminSiteTheme", "adminSubsidies", "adminSubsidyApplications", "adminTeam", "adminTourApplications",
   "adminTourRegForm", "adminTourRegistrations", "adminToursCrud", "adminVisaApplications",
 ];
 
 export const DASHBOARD_NAMESPACES = [
-  "accountEmail", "accountMailPrefs", "accountDelete", "accountPassword", "accountChangeEmail", "notificationsPage", "bulkRegister", "profileCompleteness", "buyerDashboard", "buyerProfile", "buyerWallet", "exhibitorDashboard", "partnerDashboard",
+  "accountEmail", "accountMailPrefs", "accountDelete", "accountPassword", "accountChangeEmail", "notificationsPage", "bulkRegister", "profileCompleteness", "buyerDashboard", "buyerProfile", "buyerWallet", "buyerSupport", "exhibitorDashboard", "partnerDashboard",
   // The buyer profile page reuses its Save / error strings.
   "adminCommon",
 ];

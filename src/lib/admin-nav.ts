@@ -58,5 +58,6 @@ export const ADMIN_SECTIONS: AdminSection[] = [
   { key: "buyerExpos", href: "/admin/buyer-expos", icon: "🏷️", color: "from-teal-600 to-emerald-700", group: "people" },
   { key: "buyerForm", href: "/admin/buyer-form", icon: "🧾", color: "from-teal-600 to-cyan-700", group: "people" },
   { key: "rewardsWallet", href: "/admin/wallet", icon: "💰", color: "from-amber-500 to-yellow-600", group: "people" },
+  { key: "support", href: "/admin/support", icon: "💬", color: "from-sky-500 to-blue-600", group: "people" },
   { key: "homepageSlideshow", href: "/admin/slideshow", icon: "🖼️", color: "from-cyan-500 to-teal-600", group: "content" },
 ];

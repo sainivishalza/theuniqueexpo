@@ -27,6 +27,7 @@ export type EmailKind =
   | "documentRejected"
   | "pointsReceived"
   | "ticketInvoiceReady"
+  | "supportReply"
   | "topupApproved"
   | "topupRejected"
   | "withdrawalPaid"
@@ -315,6 +316,11 @@ export function notifyPointsReceived(userId: number, points: number, reason: str
 // A train-ticket refund: our team got the e-invoice from 12306 and attached it, so the buyer can download it.
 export function notifyTicketInvoiceReady(userId: number, exhibition: string): void {
   notifyUser(userId, "ticketInvoiceReady", { exhibition: exhibition.slice(0, 150) }, { path: "/dashboard/buyer/wallet/ticket" });
+}
+
+// Our team answered a buyer's message: the link opens that conversation.
+export function notifySupportReply(userId: number, subject: string, threadId: number): void {
+  notifyUser(userId, "supportReply", { subject: subject.slice(0, 150) }, { path: `/dashboard/buyer/support?thread=${threadId}` });
 }
 
 export function notifyWalletRequest(

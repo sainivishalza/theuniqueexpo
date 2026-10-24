@@ -44,11 +44,32 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     };
   }, [isAdmin, seesWallet, pathname]);
 
+  // How many buyers' messages are waiting for an answer, shown on the "Messages from buyers" entry.
+  const [supportWaiting, setSupportWaiting] = useState(0);
+  const seesSupport = canCallAdminApi(preset, "GET", "/api/admin/support/waiting");
+  useEffect(() => {
+    if (!isAdmin || !seesSupport) return;
+    let live = true;
+    const load = () =>
+      fetch("/api/admin/support/waiting")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((o) => {
+          if (live && o) setSupportWaiting(Number(o.waiting) || 0);
+        })
+        .catch(() => {});
+    load();
+    const timer = setInterval(load, 60_000);
+    return () => {
+      live = false;
+      clearInterval(timer);
+    };
+  }, [isAdmin, seesSupport, pathname]);
+
   if (!isAdmin) return <>{children}</>;
 
   const items: ShellItem[] = [
     { key: "dashboard", href: "/admin", label: tc("shell.dashboard"), icon: "🏠" },
-    ...ADMIN_SECTIONS.filter((s) => canOpenAdminPage(preset, s.href)).map((s) => ({ key: s.key, href: s.href, label: t(`sections.${s.key}.title`), icon: s.icon, group: s.group, count: s.key === "rewardsWallet" ? waiting : undefined })),
+    ...ADMIN_SECTIONS.filter((s) => canOpenAdminPage(preset, s.href)).map((s) => ({ key: s.key, href: s.href, label: t(`sections.${s.key}.title`), icon: s.icon, group: s.group, count: s.key === "rewardsWallet" ? waiting : s.key === "support" ? supportWaiting : undefined })),
   ];
   const groups = ADMIN_GROUPS.map((g) => ({ key: g, label: tc(`shell.groups.${g}`) }));
 

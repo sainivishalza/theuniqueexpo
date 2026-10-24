@@ -813,6 +813,10 @@
       "documentProtection": {
         "title": "Document protection",
         "description": "Keep passport photos and other documents encrypted in the database."
+      },
+      "support": {
+        "title": "Messages from buyers",
+        "description": "Answer buyers' questions about registrations, tickets, points and documents."
       }
     },
     "attention": {
@@ -5323,6 +5327,11 @@
       "subject": "Your train-ticket e-invoice is ready",
       "intro": "We attached the e-invoice for your train ticket ({exhibition}). You can download it from your wallet while we check the amount.",
       "button": "Open my ticket refunds"
+    },
+    "supportReply": {
+      "subject": "Our team replied to your message",
+      "intro": "Our team replied to your message “{subject}”. Open the conversation to read the answer.",
+      "button": "Read the reply"
     }
   },
   "adminEmail": {
@@ -5402,7 +5411,8 @@
       "errorAlert": "New website error alert",
       "digest": "Weekly new exhibitions",
       "accountDeleted": "Account deleted",
-      "ticketInvoiceReady": "E-invoice ready"
+      "ticketInvoiceReady": "E-invoice ready",
+      "supportReply": "Reply to a message"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -5661,7 +5671,10 @@
       "referral_exhibition_points": "Set referral points of an exhibition",
       "ticket_refund_rules": "Set the train-ticket refund rule of an exhibition",
       "ticket_invoice_attached": "Attached the e-invoice to a ticket refund",
-      "points_bulk_topup": "Topped up several buyers by passport number"
+      "points_bulk_topup": "Topped up several buyers by passport number",
+      "support_replied": "Answered a buyer's message",
+      "support_closed": "Closed a buyer's conversation",
+      "support_reopened": "Opened a buyer's conversation again"
     }
   },
   "notificationsPage": {
@@ -5783,6 +5796,10 @@
       "ticketInvoiceReady": {
         "title": "Your e-invoice is ready",
         "body": "The e-invoice for {exhibition} is attached. You can download it now."
+      },
+      "supportReply": {
+        "title": "Our team replied",
+        "body": "There is a new answer to “{subject}”."
       }
     }
   },
@@ -6767,6 +6784,11 @@
         "title": "Get the e-invoice for a train-ticket refund",
         "steps": "Open Rewards wallet, then Expense claims: requests marked Needs e-invoice are waiting for you (the Overview tab counts them).\nPress Review on one. Scan the QR code on the receipt with your phone, or open the link shown.\nWhen 12306 asks for the ID number, type the passport ending shown on the screen (the last 6 characters of the buyer's passport number).\nDownload the e-invoice (PDF), attach it here, type the amount printed on it and press Save.\nCheck the points the exhibition's rule suggests, change them if needed, then Approve or Reject. The buyer is told and can download the e-invoice.",
         "open": "Open Rewards wallet"
+      },
+      "support": {
+        "title": "Answer buyers' messages",
+        "steps": "Open Messages from buyers: the number on the menu entry is how many are waiting for an answer.\nOpen a message, read the conversation and the buyer's details above it.\nWrite your answer and press Send answer: the buyer is told on the website and by e-mail.\nPress Close the conversation when it is settled. If the buyer writes again, it opens by itself.",
+        "open": "Open Messages from buyers"
       }
     }
   },
@@ -6870,5 +6892,78 @@
         "payout_qr": "Payout QR codes"
       }
     }
+  },
+  "buyerSupport": {
+    "menu": "Ask our team",
+    "title": "Ask our team",
+    "subtitle": "Write to us about your registration, tickets, points or documents. We answer here and by e-mail.",
+    "back": "← Back to my dashboard",
+    "loading": "Loading…",
+    "signInHint": "Please sign in to write to our team.",
+    "signIn": "Sign in",
+    "buyersOnly": "Messages to our team are for buyer accounts.",
+    "newMessage": "New message",
+    "empty": "No messages yet. Press New message to ask us something.",
+    "topic": "What is it about?",
+    "topics": {
+      "registration": "Registration",
+      "tickets": "Tickets and refunds",
+      "points": "Reward points",
+      "documents": "Documents",
+      "other": "Something else"
+    },
+    "subject": "Subject",
+    "message": "Your message",
+    "charsLeft": "{count} characters left",
+    "send": "Send",
+    "sending": "Sending…",
+    "cancel": "Cancel",
+    "backToList": "← All my messages",
+    "status": {
+      "waiting": "Waiting for our team",
+      "answered": "Answered",
+      "closed": "Closed"
+    },
+    "newAnswer": "New answer",
+    "fromTeam": "Our team",
+    "fromYou": "You",
+    "yourReply": "Your reply",
+    "closedNote": "This conversation is closed. Writing again opens it.",
+    "sent": "Sent. We will answer here and by e-mail."
+  },
+  "adminSupport": {
+    "title": "Messages from buyers",
+    "subtitle": "Buyers write to the team from their dashboard. Those waiting for an answer come first.",
+    "filterLabel": "Show",
+    "filters": {
+      "waiting": "Waiting for us",
+      "answered": "Answered",
+      "closed": "Closed",
+      "all": "All"
+    },
+    "search": "Search by subject, name or e-mail",
+    "empty": "Nothing here.",
+    "messages": "{count, plural, one {# message} other {# messages}}",
+    "topics": {
+      "registration": "Registration",
+      "tickets": "Tickets and refunds",
+      "points": "Reward points",
+      "documents": "Documents",
+      "other": "Something else"
+    },
+    "status": {
+      "waiting": "Waiting for us",
+      "answered": "Answered",
+      "closed": "Closed"
+    },
+    "open": "Open",
+    "close": "Close the conversation",
+    "reopen": "Open again",
+    "loading": "Loading…",
+    "fromTeam": "Our team",
+    "fromBuyer": "Buyer",
+    "yourReply": "Your answer to the buyer",
+    "send": "Send answer",
+    "sending": "Sending…"
   }
 }

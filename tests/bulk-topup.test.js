@@ -112,12 +112,16 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
     await page.getByTestId('bulk-stale').waitFor();
     ok(await page.getByTestId('bulk-pay').count() === 0, 'a changed list cannot be paid before it is checked again');
     await page.locator('textarea').fill(screenList);
+    // buttons fade for 300 ms after the layout changes: look at the page once it has settled
+    await page.mouse.move(0, 0);
+    await sleep(900);
     const vio = await axeViolations(page);
     ok(vio.length === 0, 'accessible (axe)', vio);
     ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'fits a 375 px phone');
     if (locale === 'en') {
       await page.getByTestId('bulk-check').click();
-      await page.getByTestId('bulk-found').waitFor();
+      // the earlier result is still on screen while the new check runs: wait until paying is possible again
+      await page.waitForFunction(() => { const b = document.querySelector('[data-testid=bulk-pay]'); return !!b && !b.disabled; }, null, { timeout: 15000 });
       ok(await page.getByTestId('bulk-pay').isEnabled(), 'checked again, paying works');
       await page.getByTestId('bulk-pay').click();
       await page.getByTestId('bulk-done').waitFor();

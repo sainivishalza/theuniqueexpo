@@ -120,7 +120,7 @@ export default function BuyerRegistrationsPage() {
                 <DocumentWarnings registration={r} />
                 <NextEditionOffer registration={r} />
                 <details className="mt-3 group">
-                  <summary className="cursor-pointer text-sm font-semibold text-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">{t("showProgress")}</summary>
+                  <summary className="py-1 cursor-pointer text-sm font-semibold text-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">{t("showProgress")}</summary>
                   <RegistrationTimeline registration={r} className="mt-3" />
                 </details>
                 <div className="mt-4">

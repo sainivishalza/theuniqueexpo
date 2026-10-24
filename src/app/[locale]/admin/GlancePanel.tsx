@@ -100,7 +100,7 @@ export default function GlancePanel() {
                 {stats.topExhibitions.map((e) => (
                   <li key={e.id}>
                     <div className="flex items-baseline justify-between gap-3 text-sm">
-                      <Link href={`/admin/exhibitions/${e.slug}/registrations`} className="min-w-0 truncate font-semibold text-emerald-900 underline hover:text-emerald-800">{e.title}</Link>
+                      <Link href={`/admin/exhibitions/${e.slug}/registrations`} className="py-1 min-w-0 truncate font-semibold text-emerald-900 underline hover:text-emerald-800">{e.title}</Link>
                       <span className="shrink-0 font-bold text-heading">{n(e.registrations)}</span>
                     </div>
                     <div className="mt-1 h-2 rounded-full bg-gray-100" aria-hidden="true">

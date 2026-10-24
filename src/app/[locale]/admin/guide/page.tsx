@@ -16,7 +16,7 @@ const GUIDE: { role: Role; tasks: Task[] }[] = [
   { role: "everyone", tasks: [{ key: "twoStep", href: "/admin/account" }, { key: "findThings", href: "/admin" }] },
   { role: "reviewer", tasks: [
     { key: "approve", href: "/admin/registrations" }, { key: "documents", href: "/admin/buyer-profiles" }, { key: "announce", href: "/admin/buyer-profiles" },
-    { key: "doorCheck", href: "/admin/ticket-check" }, { key: "exportList", href: "/admin/registrations" },
+    { key: "doorCheck", href: "/admin/ticket-check" }, { key: "exportList", href: "/admin/registrations" }, { key: "support", href: "/admin/support" },
   ] },
   { role: "content", tasks: [
     { key: "addExhibition", href: "/admin/exhibitions" }, { key: "editPages", href: "/admin/pages" }, { key: "helpAnswers", href: "/admin/pages" }, { key: "blog", href: "/admin/blog" },

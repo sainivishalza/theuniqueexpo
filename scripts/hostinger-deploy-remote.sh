@@ -172,6 +172,7 @@ run_mysql schema-migrations/086-web-vitals.sql
 run_mysql schema-migrations/087-account-deletion.sql
 run_mysql schema-migrations/088-referrals.sql
 run_mysql schema-migrations/089-ticket-refunds.sql
+run_mysql schema-migrations/090-support-messages.sql
 
 # Writes down that this deploy's backup exists (Admin -> Health shows when the last one was made). Never fails the job.
 BACKUP_BYTES=$(wc -c < "$BACKUP_FILE" | tr -d ' ')

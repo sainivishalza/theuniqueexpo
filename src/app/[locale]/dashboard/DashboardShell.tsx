@@ -8,6 +8,7 @@ import { formatNumber } from "@/lib/format";
 import { useWalletBalance } from "@/lib/client/wallet-balance";
 import WalletChip from "@/components/wallet/WalletChip";
 import { useUnreadNotifications } from "@/lib/client/unread-notifications";
+import { useSupportUnread } from "@/lib/client/support-unread";
 
 // The signed-in customer's frame: a list of their tools down the left on a laptop,
 // the menu on a phone. Links to public pages (exhibitions, messages, ...) simply
@@ -18,11 +19,14 @@ export default function DashboardShell({ children }: { children: React.ReactNode
   const tc = useTranslations("common");
   const tp = useTranslations("accountPassword");
   const tn = useTranslations("notificationsPage");
+  const ts = useTranslations("buyerSupport");
   const { user, loading } = useAuth();
   // A buyer sees their wallet balance in the phone top bar and next to "Rewards Wallet" in the menu.
   const wallet = useWalletBalance(!!user && user.role === "buyer");
   // The number of unread website notifications shows next to "Notifications" in the menu.
   const { unread } = useUnreadNotifications(!!user);
+  // The number of answers from our team the buyer has not opened shows next to "Ask our team".
+  const supportUnread = useSupportUnread(!!user && user.role === "buyer");
   if (loading || !user || !shellAppliesTo("dashboard", user)) return <>{children}</>;
 
   const role = user.role;
@@ -40,6 +44,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
       { key: "messages", href: "/messages", label: tb("actions.messages.title"), icon: "💬", group: "explore" },
       { key: "postBuyRequest", href: "/marketplace/new", label: tb("actions.postBuyRequest.title"), icon: "📋", group: "explore" },
       { key: "marketplace", href: "/marketplace", label: tb("actions.marketplace.title"), icon: "🛒", group: "explore" },
+      { key: "support", href: "/dashboard/buyer/support", label: ts("menu"), icon: "🛟", group: "account", count: supportUnread },
       { key: "account", href: "/dashboard/account", label: tp("menu"), icon: "🔑", group: "account" },
     ];
   } else if (role === "exhibitor") {

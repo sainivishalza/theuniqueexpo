@@ -31,9 +31,9 @@ const CONTENT_AREAS = ["exhibitions", "tours", "events", "blog", "magazine", "vi
 const RULES: Record<Exclude<StaffPreset, "full">, Rule> = {
   // Looks after registrations and buyers: approves, checks documents, announces, checks tickets at the door.
   reviewer: {
-    read: [...REGISTRATION_AREAS, ...BUYER_AREAS, "exhibitions", "tours", "events", "record-meta", "tickets", "insights", "email-bounces", "announcement-templates", "visa-applications", "tour-applications", "business-trip-inquiries"],
-    write: [...REGISTRATION_AREAS, "buyer-profiles", "buyers", "record-meta", "tickets", "announcement-templates", "visa-applications", "tour-applications", "business-trip-inquiries"],
-    pages: ["/admin/registrations", "/admin/buyer-profiles", "/admin/buyer-expos", "/admin/ticket-check", "/admin/insights", "/admin/exhibitions", "/admin/tours", "/admin/events", "/admin/visa-applications", "/admin/tour-applications", "/admin/business-trip-inquiries", "/admin/buyer-form"],
+    read: [...REGISTRATION_AREAS, ...BUYER_AREAS, "exhibitions", "tours", "events", "record-meta", "tickets", "insights", "email-bounces", "announcement-templates", "visa-applications", "tour-applications", "business-trip-inquiries", "support"],
+    write: [...REGISTRATION_AREAS, "buyer-profiles", "buyers", "record-meta", "tickets", "announcement-templates", "visa-applications", "tour-applications", "business-trip-inquiries", "support"],
+    pages: ["/admin/registrations", "/admin/buyer-profiles", "/admin/buyer-expos", "/admin/ticket-check", "/admin/insights", "/admin/exhibitions", "/admin/tours", "/admin/events", "/admin/visa-applications", "/admin/tour-applications", "/admin/business-trip-inquiries", "/admin/buyer-form", "/admin/support"],
   },
   // Writes the website: exhibitions, tours, events, articles, pages, pictures.
   content: {
@@ -43,9 +43,9 @@ const RULES: Record<Exclude<StaffPreset, "full">, Rule> = {
   },
   // Looks after the rewards wallet and the money reports.
   finance: {
-    read: ["wallet", "insights", "scheduled-exports", "expo-registrations"],
-    write: ["wallet", "scheduled-exports"],
-    pages: ["/admin/wallet", "/admin/insights", "/admin/scheduled-exports", "/admin/registrations"],
+    read: ["wallet", "insights", "scheduled-exports", "expo-registrations", "support"],
+    write: ["wallet", "scheduled-exports", "support"],
+    pages: ["/admin/wallet", "/admin/insights", "/admin/scheduled-exports", "/admin/registrations", "/admin/support"],
   },
   // Can look at registrations and the reports but change nothing.
   viewer: {

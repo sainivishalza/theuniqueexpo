@@ -11,6 +11,8 @@ interface Counts {
   topups: number;
   withdrawals: number;
   expenses: number;
+  ticketsNeedInvoice?: number;
+  supportWaiting?: number;
   documents: number;
   failedEmails: number;
   twoStepOff?: boolean;
@@ -24,6 +26,8 @@ const ROWS: { key: Exclude<keyof Counts, "twoStepOff">; icon: string; href: stri
   { key: "topups", icon: "💳", href: "/admin/wallet?tab=topups" },
   { key: "withdrawals", icon: "💸", href: "/admin/wallet?tab=withdrawals" },
   { key: "expenses", icon: "🧾", href: "/admin/wallet?tab=expenses" },
+  { key: "ticketsNeedInvoice", icon: "🚆", href: "/admin/wallet?tab=expenses" },
+  { key: "supportWaiting", icon: "💬", href: "/admin/support?filter=waiting" },
   { key: "documents", icon: "🪪", href: "/admin/buyer-profiles?docs=waiting_review" },
   { key: "failedEmails", icon: "📭", href: "/admin/email" },
 ];

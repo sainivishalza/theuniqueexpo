@@ -427,6 +427,14 @@
       "myWallet": {
         "title": "Rewards Wallet",
         "description": "Points, QR code, top-up and withdrawals"
+      },
+      "support": {
+        "title": "Ask our team",
+        "description": "Questions about your registration, tickets, points or documents: write to us and we answer here."
+      },
+      "inviteFriends": {
+        "title": "Invite friends",
+        "description": "Share your personal link: when a friend joins and takes part, you both earn reward points."
       }
     },
     "registrations": {
@@ -474,7 +482,9 @@
         "rateLimited": "Too many attempts. Please try again later."
       },
       "showProgress": "Show progress",
-      "waitlisted": "On the waiting list"
+      "waitlisted": "On the waiting list",
+      "ticketRefund": "Bought your own train ticket for this exhibition?",
+      "ticketRefundLink": "Claim it back as points"
     },
     "registrationNumber": "Your registration number",
     "registrationNumberHint": "Quote it whenever you contact us.",
@@ -832,7 +842,9 @@
       "documents": "{count, plural, one {# buyer document to review} other {# buyer documents to review}}",
       "failedEmails": "{count, plural, one {# e-mail could not be sent this week} other {# e-mails could not be sent this week}}",
       "twoStepOff": "Your admin account is protected by a password only.",
-      "twoStepAction": "Turn on two-step sign-in"
+      "twoStepAction": "Turn on two-step sign-in",
+      "ticketsNeedInvoice": "{count, plural, one {# ticket refund waiting for its e-invoice} other {# ticket refunds waiting for their e-invoice}}",
+      "supportWaiting": "{count, plural, one {# buyer message waiting for an answer} other {# buyer messages waiting for an answer}}"
     },
     "glance": {
       "title": "At a glance",
@@ -5332,6 +5344,11 @@
       "subject": "Our team replied to your message",
       "intro": "Our team replied to your message “{subject}”. Open the conversation to read the answer.",
       "button": "Read the reply"
+    },
+    "supportNewMessage": {
+      "subject": "New message from a buyer: {subject}",
+      "intro": "{buyer} wrote to the team: “{subject}”. It is waiting for an answer.",
+      "button": "Open the message"
     }
   },
   "adminEmail": {
@@ -5412,7 +5429,8 @@
       "digest": "Weekly new exhibitions",
       "accountDeleted": "Account deleted",
       "ticketInvoiceReady": "E-invoice ready",
-      "supportReply": "Reply to a message"
+      "supportReply": "Reply to a message",
+      "supportNewMessage": "New buyer message (to staff)"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",

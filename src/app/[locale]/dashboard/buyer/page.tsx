@@ -25,6 +25,9 @@ const ACTION_KEYS = [
   { key: "messages", href: "/messages", icon: "💬", color: "from-pink-500 to-rose-500" },
   { key: "myRegistrations", href: "/dashboard/buyer/registrations", icon: "🎫", color: "from-emerald-500 to-green-600" },
   { key: "myWallet", href: "/dashboard/buyer/wallet", icon: "💰", color: "from-amber-500 to-yellow-600" },
+  { key: "support", href: "/dashboard/buyer/support", icon: "🛟", color: "from-sky-500 to-blue-600" },
+  // Only while the referral programme is switched on (see the effect below).
+  { key: "inviteFriends", href: "/dashboard/buyer/wallet/invite", icon: "🤝", color: "from-emerald-500 to-teal-600" },
   { key: "visitPlanner", icon: "📅", color: "from-purple-500 to-purple-600", comingSoon: true },
   { key: "meetings", icon: "📅", color: "from-pink-500 to-rose-500", comingSoon: true },
 ];
@@ -44,7 +47,8 @@ export default function BuyerDashboard() {
   const t = useTranslations("buyerDashboard");
   const tp = useTranslations("buyerProfile");
   const tc = useTranslations("common");
-  const actions = ACTION_KEYS.map((a) => ({
+  const [inviteOn, setInviteOn] = useState(false);
+  const actions = ACTION_KEYS.filter((a) => a.key !== "inviteFriends" || inviteOn).map((a) => ({
     ...a,
     title: t(`actions.${a.key}.title`),
     description: t(`actions.${a.key}.description`),
@@ -65,6 +69,11 @@ export default function BuyerDashboard() {
         setBuyerNumber(data?.buyerNumber || "");
         if (data?.profile?.hasDocument && data.profile.documentReview) setDocs({ hasDocument: data.profile.hasDocument, documentReview: data.profile.documentReview });
       })
+      .catch(() => {});
+    // The "Invite friends" card is shown only while the programme is on.
+    fetch("/api/referrals/offer")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => setInviteOn(!!data?.enabled))
       .catch(() => {});
     // Recent reward news; the card stays hidden if it cannot be loaded.
     fetch("/api/wallet/news")

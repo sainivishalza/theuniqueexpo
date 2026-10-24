@@ -117,6 +117,12 @@ export default function BuyerRegistrationsPage() {
                 </div>
                 {hint && <p className="mt-3 text-sm font-semibold text-emerald-900">{hint}</p>}
                 {r.status === "pending" && r.waitlisted && <p className="mt-3 text-sm font-semibold text-gold-800">{t("waitlisted")}</p>}
+                {r.ticketRefund && (
+                  <p className="mt-3 text-sm text-gray-800" data-testid={`ticket-refund-link-${r.id}`}>
+                    {t("ticketRefund")}{" "}
+                    <Link href="/dashboard/buyer/wallet/ticket" className="inline-block py-1 font-semibold text-emerald-800 underline">{t("ticketRefundLink")}</Link>
+                  </p>
+                )}
                 <DocumentWarnings registration={r} />
                 <NextEditionOffer registration={r} />
                 <details className="mt-3 group">

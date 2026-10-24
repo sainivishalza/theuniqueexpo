@@ -283,6 +283,20 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
     return [ctx, p];
   };
 
+  console.log('\n== the buyer home points to the programme');
+  { const [ctx, p] = await open(u.bT, '/en/dashboard/buyer');
+    await p.getByText('Ask our team').first().waitFor();
+    await sleep(800);
+    ok((await p.getByText('Invite friends').count()) >= 1, 'with the programme on, the buyer home has an "Invite friends" card');
+    await ctx.close();
+    await putRules({ enabled: false, maxPerReferrer: 0 });
+    const [ctx2, p2] = await open(u.bT, '/en/dashboard/buyer');
+    await p2.getByText('Ask our team').first().waitFor();
+    await sleep(800);
+    ok((await p2.getByText('Invite friends').count()) === 0, 'with it off, the card is not there');
+    await ctx2.close();
+    await putRules({ trigger: 'attended', referrerPoints: 50, referredPoints: 20, maxPerReferrer: 3 }); }
+
   for (const locale of ['en', 'ru', 'zh']) {
     console.log(`\n== ${locale}: buyer invite page`);
     const [ctx, p] = await open(u.bT, `/${locale}/dashboard/buyer/wallet/invite`);

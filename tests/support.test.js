@@ -1,6 +1,7 @@
 // "Ask our team": a buyer writes to the staff inside the site, staff answer from the admin. Who can do what, whose turn it is, unread
 // answers, the notification, staff roles, deleting an account, and the screens in en/ru/zh.
-const { BASE, sql, ok, done, mkUsers } = require('./helpers/common.js');
+const { BASE, sql, ok, done, mkUsers, onlyAdmins } = require('./helpers/common.js');
+const smtp = require('./helpers/fake-smtp.js');
 const { launch, axeViolations } = require('./helpers/browser.js');
 const bcrypt = require('bcryptjs');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -99,6 +100,38 @@ const num = (q) => Number(sql(q) || 0);
     const w = await call('POST', `/api/admin/support/${made.id}`, s.aT, { action: 'reply', body: `Answer from ${preset}` });
     ok(allowed ? r.status === 200 && w.status === 200 : r.status === 401 && w.status === 401, `${preset}: ${allowed ? 'can read and answer' : 'has no access'}`, [r.status, w.status]);
   }
+
+  console.log('\n== the staff are e-mailed');
+  { const cs = await mkStaff('content');
+    const rs = await mkStaff('reviewer');
+    const restore = onlyAdmins([u.m.a, cs.m.a, rs.m.a]);
+    const srv = await smtp.start(2541);
+    await call('PUT', '/api/admin/email', u.aT, { enabled: true, host: '127.0.0.1', port: 2541, secure: false, username: 'm', password: 'x', fromName: 'The Unique Expo', fromEmail: 'noreply@theuniqueexpo.test' });
+    await sleep(300);
+    sql('UPDATE rate_limits SET hits=0');
+    // only the "new message from a buyer" e-mails: the daily health e-mail goes to the same admins when e-mail is switched on
+    const staffMails = () => srv.messages.filter((m) => m.to.some((t) => t.includes(u.m.a) || t.includes(rs.m.a) || t.includes(cs.m.a)) && (smtp.decode(m.raw).subject || '').startsWith('New message from a buyer'));
+    const to = () => staffMails().flatMap((m) => m.to).join(' ');
+    const waitMails = async (n) => { for (let i = 0; i < 50 && staffMails().length < n; i++) await sleep(150); };
+    const n0 = (await call('POST', '/api/support/threads', u.bT, { topic: 'points', subject: 'Mail test ' + tag, body: 'Please look at my points.' })).id;
+    await waitMails(2);
+    const first = srv.messages.find((m) => m.to.some((t) => t.includes(u.m.a)));
+    const decoded = first && smtp.decode(first.raw);
+    ok(staffMails().length === 2 && to().includes(u.m.a) && to().includes(rs.m.a) && !to().includes(cs.m.a), 'a new question e-mails the full-access admin and the reviewer, not content staff', to());
+    ok(decoded && decoded.subject.includes('New message from a buyer') && decoded.subject.includes('Mail test ' + tag) && /\/admin\/support/.test(decoded.text), 'with the subject and a link to the messages', decoded && decoded.subject);
+    await call('POST', `/api/support/threads/${n0}`, u.bT, { body: 'Second line.' });
+    await call('POST', `/api/support/threads/${n0}`, u.bT, { body: 'Third line.' });
+    await sleep(1500);
+    ok(staffMails().length === 2, 'two more lines in a row are not e-mailed again');
+    ok((await call('GET', '/api/admin/attention', u.aT)).supportWaiting >= 1, 'the admin home counts it as waiting');
+    await call('POST', `/api/admin/support/${n0}`, u.aT, { action: 'reply', body: 'Looking at it.' });
+    await sleep(500);
+    await call('POST', `/api/support/threads/${n0}`, u.bT, { body: 'Thank you.' });
+    await waitMails(4);
+    ok(staffMails().length === 4, 'after the team answered, the next message from the buyer is e-mailed again', staffMails().map((m) => [m.to.join(','), (smtp.decode(m.raw) || {}).subject]));
+    await srv.close();
+    sql('DELETE FROM mail_settings');
+    restore(); }
 
   console.log('\n== deleting an account');
   const gone = await mkBuyer('gone');

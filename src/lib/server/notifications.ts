@@ -28,6 +28,7 @@ export type EmailKind =
   | "pointsReceived"
   | "ticketInvoiceReady"
   | "supportReply"
+  | "supportNewMessage"
   | "topupApproved"
   | "topupRejected"
   | "withdrawalPaid"
@@ -321,6 +322,11 @@ export function notifyTicketInvoiceReady(userId: number, exhibition: string): vo
 // Our team answered a buyer's message: the link opens that conversation.
 export function notifySupportReply(userId: number, subject: string, threadId: number): void {
   notifyUser(userId, "supportReply", { subject: subject.slice(0, 150) }, { path: `/dashboard/buyer/support?thread=${threadId}` });
+}
+
+// A buyer wrote to the team: the staff who answer messages are told by e-mail (the website shows the count on the menu).
+export function notifySupportStaff(adminIds: number[], buyer: string, subject: string): void {
+  for (const id of adminIds) notifyUser(id, "supportNewMessage", { buyer: buyer.slice(0, 100), subject: subject.slice(0, 150) }, { path: "/admin/support?filter=waiting" });
 }
 
 export function notifyWalletRequest(

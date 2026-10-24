@@ -2860,7 +2860,17 @@
     "googleAnalyticsId": "Google Analytics ID",
     "googleAnalyticsIdHint": "Your GA4 Measurement ID (starts with G-). When set, visitor statistics are collected on public pages; leave blank to turn analytics off.",
     "googleSiteVerification": "Google Search Console verification code",
-    "googleSiteVerificationHint": "The code from Search Console → Add property → URL prefix → \"HTML tag\". You can paste the whole <meta> tag or just the content value. Leave blank if you verify another way."
+    "googleSiteVerificationHint": "The code from Search Console → Add property → URL prefix → \"HTML tag\". You can paste the whole <meta> tag or just the content value. Leave blank if you verify another way.",
+    "wechat": "WeChat",
+    "wechatHint": "Upload the QR code of your WeChat (WeChat → Me → My QR code → save the picture). Visitors see a “Chat with us on WeChat” button in the help box. It is saved as soon as you choose the picture; remove it to hide the button.",
+    "wechatQr": "WeChat QR code (picture)",
+    "wechatQrAlt": "The WeChat QR code visitors see",
+    "wechatRemove": "Remove the QR code",
+    "wechatSaved": "The QR code is saved. Visitors see it within a few minutes.",
+    "wechatRemoved": "The QR code is removed.",
+    "wechatNotPicture": "Choose a picture (PNG, JPG or WebP).",
+    "wechatId": "WeChat ID (optional)",
+    "wechatIdHint": "Shown under the QR code. Saved with the Save button below."
   },
   "adminFaq": {
     "title": "FAQ Management",
@@ -6603,7 +6613,14 @@
     "whatsappQuestion": "Hello! I have a question about theuniqueexpo.com: {question}",
     "opensNewTab": "(opens in a new tab)",
     "contact": "Contact us",
-    "helpCenter": "Open the Help Center"
+    "helpCenter": "Open the Help Center",
+    "wechat": "Chat with us on WeChat",
+    "wechatTitle": "Chat with us on WeChat",
+    "wechatScan": "Open WeChat and scan this code to add us as a friend. On a phone, save the picture, then in WeChat choose Scan and pick it from your photos.",
+    "wechatId": "WeChat ID:",
+    "wechatSave": "Save the QR code picture",
+    "wechatQrAlt": "WeChat QR code of The Unique Expo",
+    "back": "Back to the answers"
   },
   "accountMailPrefs": {
     "title": "E-mails I get",

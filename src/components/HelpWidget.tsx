@@ -16,7 +16,7 @@ const MAX_SHOWN = 4;
 // A small help box on every public page: type a question, read the matching answers from the Help Center
 // (the same text the admin edits there), and if nothing fits, carry the question over to WhatsApp.
 // No guessing and no AI: it only ever shows what is written in the Help Center.
-export default function HelpWidget({ number }: { number: string }) {
+export default function HelpWidget({ number, wechatQrVersion = "", wechatId = "" }: { number: string; wechatQrVersion?: string; wechatId?: string }) {
   const t = useTranslations("helpWidget");
   const tw = useTranslations("whatsappButton");
   const locale = useLocale();
@@ -25,9 +25,12 @@ export default function HelpWidget({ number }: { number: string }) {
   const [query, setQuery] = useState("");
   const [answers, setAnswers] = useState<Answer[] | null>(null);
   const [failed, setFailed] = useState(false);
+  // "wechat" shows the QR code in place of the answers
+  const [view, setView] = useState<"help" | "wechat">("help");
   const panelId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
+  const backRef = useRef<HTMLButtonElement>(null);
 
   // The answers are fetched the first time the box is opened, not with every page.
   useEffect(() => {
@@ -42,12 +45,16 @@ export default function HelpWidget({ number }: { number: string }) {
     };
   }, [open, answers, failed, locale]);
 
+  // The cursor follows the view, so Escape and the keyboard keep working after switching to the QR code and back.
   useEffect(() => {
-    if (open) inputRef.current?.focus();
-  }, [open]);
+    if (!open) return;
+    if (view === "wechat") backRef.current?.focus();
+    else inputRef.current?.focus();
+  }, [open, view]);
 
   const close = () => {
     setOpen(false);
+    setView("help");
     launcherRef.current?.focus();
   };
 
@@ -82,6 +89,17 @@ export default function HelpWidget({ number }: { number: string }) {
             </button>
           </div>
 
+          {view === "wechat" ? (
+            <div className="flex-1 overflow-y-auto px-4 py-3" data-testid="wechat-view">
+              <button ref={backRef} type="button" onClick={() => setView("help")} className="mb-2 inline-flex min-h-[2rem] items-center py-1 text-sm font-semibold text-emerald-800 underline underline-offset-2">{t("back")}</button>
+              <p className="text-sm font-bold text-gray-900">{t("wechatTitle")}</p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`/api/wechat-qr?v=${wechatQrVersion}`} alt={t("wechatQrAlt")} width={240} height={240} className="mx-auto mt-3 h-auto w-full max-w-[15rem] rounded-lg border border-gray-200 bg-white p-2" data-testid="wechat-qr" />
+              <p className="mt-3 text-sm text-gray-700">{t("wechatScan")}</p>
+              {wechatId && <p className="mt-2 text-sm text-gray-700" data-testid="wechat-id">{t("wechatId")} <span className="font-semibold text-gray-900 [overflow-wrap:anywhere]">{wechatId}</span></p>}
+              <a href={`/api/wechat-qr?v=${wechatQrVersion}`} download="theuniqueexpo-wechat-qr" className="mt-3 inline-flex min-h-[2rem] items-center py-1 text-sm font-semibold text-emerald-800 underline underline-offset-2">{t("wechatSave")}</a>
+            </div>
+          ) : (
           <div className="flex-1 overflow-y-auto px-4 py-3">
             <label htmlFor={`${panelId}-q`} className="sr-only">{t("searchLabel")}</label>
             <input
@@ -118,7 +136,9 @@ export default function HelpWidget({ number }: { number: string }) {
               )}
             </div>
           </div>
+          )}
 
+          {view === "help" && (
           <div className="space-y-2 border-t border-gray-200 bg-cream-50 px-4 py-3">
             <p className="text-xs text-gray-700">{t("notFound")}</p>
             {whatsapp ? (
@@ -129,8 +149,14 @@ export default function HelpWidget({ number }: { number: string }) {
             ) : (
               <Link href="/contact" className="flex items-center justify-center rounded-[var(--radius-button)] bg-emerald-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-800">{t("contact")}</Link>
             )}
+            {wechatQrVersion && (
+              <button type="button" onClick={() => setView("wechat")} className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-[#07C160] px-4 py-2.5 text-sm font-bold text-emerald-950 hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-900" data-testid="help-wechat">
+                {t("wechat")}
+              </button>
+            )}
             <Link href="/help" className="block text-center py-1 text-sm font-semibold text-emerald-800 underline underline-offset-2">{t("helpCenter")}</Link>
           </div>
+          )}
         </div>
       )}
 

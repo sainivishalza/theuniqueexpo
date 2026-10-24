@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { errorMessage } from "@/lib/format";
+import { compressImageViaDataUrl, readFileAsDataUrl } from "@/lib/client/image-upload";
 import { DEFAULT_COMPANY_PROFILE, type CompanyProfile } from "@/lib/company-profile";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -17,6 +18,8 @@ export default function AdminCompanyProfilePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [qrBusy, setQrBusy] = useState(false);
+  const [qrMessage, setQrMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
@@ -52,6 +55,32 @@ export default function AdminCompanyProfilePage() {
       setError(errorMessage(err, ta("somethingWentWrong")));
     } finally {
       setSaving(false);
+    }
+  }
+
+  // The WeChat QR code is saved on its own, the moment it is chosen (it is not part of the Save button below).
+  async function changeQr(file: File | undefined, remove = false) {
+    if (!remove && !file) return;
+    setQrBusy(true);
+    setQrMessage(null);
+    try {
+      let res: Response;
+      if (remove) {
+        res = await fetch("/api/admin/wechat-qr", { method: "DELETE" });
+      } else {
+        if (!file!.type.startsWith("image/")) throw new Error(t("wechatNotPicture"));
+        const image = await compressImageViaDataUrl(file!, 1800, 0.92).catch(() => readFileAsDataUrl(file!));
+        res = await fetch("/api/admin/wechat-qr", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image }) });
+      }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || t("saveFailed"));
+      const fresh = await (await fetch("/api/admin/company-profile")).json();
+      update({ wechatQrVersion: fresh.profile?.wechatQrVersion ?? "" });
+      setQrMessage({ ok: true, text: remove ? t("wechatRemoved") : t("wechatSaved") });
+    } catch (err) {
+      setQrMessage({ ok: false, text: errorMessage(err, ta("somethingWentWrong")) });
+    } finally {
+      setQrBusy(false);
     }
   }
 
@@ -104,6 +133,32 @@ export default function AdminCompanyProfilePage() {
                 <p className="text-xs text-gray-500 -mt-3">{t("googleAnalyticsIdHint")}</p>
                 {field("googleSiteVerification", t("googleSiteVerification"), "abc123...")}
                 <p className="text-xs text-gray-500 -mt-3">{t("googleSiteVerificationHint")}</p>
+              </Card>
+
+              <Card shadow="sm" bordered={false} className="p-6 space-y-4">
+                <h2 className="font-bold text-heading">{t("wechat")}</h2>
+                <p className="text-xs text-gray-500">{t("wechatHint")}</p>
+                <div>
+                  <label htmlFor="company-wechatQr" className="block text-xs font-semibold text-gray-500 mb-1">{t("wechatQr")}</label>
+                  <input
+                    id="company-wechatQr"
+                    type="file"
+                    accept="image/*"
+                    disabled={qrBusy}
+                    onChange={(e) => { changeQr(e.target.files?.[0]); e.target.value = ""; }}
+                    className="block w-full text-sm text-gray-700"
+                  />
+                </div>
+                {profile.wechatQrVersion && (
+                  <div className="flex items-center gap-4">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`/api/wechat-qr?v=${profile.wechatQrVersion}`} alt={t("wechatQrAlt")} className="h-28 w-28 rounded-lg border border-gray-200 bg-white object-contain p-1" data-testid="wechat-preview" />
+                    <button type="button" disabled={qrBusy} onClick={() => changeQr(undefined, true)} className="rounded-sm py-1 text-sm font-semibold text-red-700 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-700">{t("wechatRemove")}</button>
+                  </div>
+                )}
+                {qrMessage && <p role={qrMessage.ok ? "status" : "alert"} className={`text-sm ${qrMessage.ok ? "text-emerald-700" : "text-red-700"}`} data-testid="wechat-message">{qrMessage.text}</p>}
+                {field("wechatId", t("wechatId"), "")}
+                <p className="text-xs text-gray-500 -mt-3">{t("wechatIdHint")}</p>
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-6 space-y-5">

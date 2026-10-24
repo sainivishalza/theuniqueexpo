@@ -48,7 +48,7 @@ function Frame({
         <main id="main-content" tabIndex={-1} className={`flex-1 focus:outline-none ${showChrome ? "pt-16" : ""}`}>{children}</main>
       )}
       {showChrome && <Footer companyProfile={companyProfile} analyticsEnabled={GA_MEASUREMENT_ID_RE.test(analyticsId)} sections={navSections} />}
-      {!inApp && <HelpWidget number={companyProfile.whatsapp} />}
+      {!inApp && <HelpWidget number={companyProfile.whatsapp} wechatQrVersion={companyProfile.wechatQrVersion} wechatId={companyProfile.wechatId} />}
     </div>
   );
 }

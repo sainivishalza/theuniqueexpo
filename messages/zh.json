@@ -2860,7 +2860,17 @@
     "googleAnalyticsId": "Google Analytics ID",
     "googleAnalyticsIdHint": "您的 GA4 衡量 ID(以 G- 开头)。填写后将在公开页面收集访客统计;留空则关闭分析。",
     "googleSiteVerification": "Google Search Console 验证码",
-    "googleSiteVerificationHint": "来自 Search Console →添加资源→网址前缀→“HTML 标记”的代码。可粘贴整个 <meta> 标签,或只粘贴 content 的值。若用其他方式验证,请留空。"
+    "googleSiteVerificationHint": "来自 Search Console →添加资源→网址前缀→“HTML 标记”的代码。可粘贴整个 <meta> 标签,或只粘贴 content 的值。若用其他方式验证,请留空。",
+    "wechat": "微信",
+    "wechatHint": "上传您的微信二维码（微信 → 我 → 我的二维码 → 保存图片）。访客会在帮助窗口看到“通过微信联系我们”按钮。选择图片后立即保存；删除后按钮将隐藏。",
+    "wechatQr": "微信二维码（图片）",
+    "wechatQrAlt": "访客看到的微信二维码",
+    "wechatRemove": "删除二维码",
+    "wechatSaved": "二维码已保存，访客几分钟内即可看到。",
+    "wechatRemoved": "二维码已删除。",
+    "wechatNotPicture": "请选择图片（PNG、JPG 或 WebP）。",
+    "wechatId": "微信号（可选）",
+    "wechatIdHint": "显示在二维码下方。通过下方的保存按钮保存。"
   },
   "adminFaq": {
     "title": "常见问题管理",
@@ -6603,7 +6613,14 @@
     "whatsappQuestion": "您好！我对 theuniqueexpo.com 有一个问题：{question}",
     "opensNewTab": "（在新标签页打开）",
     "contact": "联系我们",
-    "helpCenter": "打开帮助中心"
+    "helpCenter": "打开帮助中心",
+    "wechat": "通过微信联系我们",
+    "wechatTitle": "通过微信联系我们",
+    "wechatScan": "打开微信扫描此二维码添加我们为好友。在手机上请先保存图片，然后在微信中选择“扫一扫”，从相册中选取。",
+    "wechatId": "微信号：",
+    "wechatSave": "保存二维码图片",
+    "wechatQrAlt": "The Unique Expo 的微信二维码",
+    "back": "返回答案"
   },
   "accountMailPrefs": {
     "title": "我收到的邮件",

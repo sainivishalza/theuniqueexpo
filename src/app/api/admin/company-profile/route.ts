@@ -35,7 +35,9 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Search Console verification code looks wrong -- paste the code from the HTML tag option" }, { status: 400 });
   }
 
-  await updateCompanyProfile(normalizeCompanyProfile(body));
+  // The QR code stamp is set by the upload screen, never by this form.
+  const current = await getCompanyProfile();
+  await updateCompanyProfile(normalizeCompanyProfile({ ...body, wechatQrVersion: current.wechatQrVersion }));
   logAdminAction(request, admin, "company_profile_saved", { targetType: "settings" });
   return NextResponse.json({ ok: true });
 }

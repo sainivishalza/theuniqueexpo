@@ -2860,7 +2860,17 @@
     "googleAnalyticsId": "ID Google Analytics",
     "googleAnalyticsIdHint": "Идентификатор измерения GA4 (начинается с G-). Если указан, на публичных страницах собирается статистика посетителей; оставьте пустым, чтобы отключить аналитику.",
     "googleSiteVerification": "Код подтверждения Google Search Console",
-    "googleSiteVerificationHint": "Код из Search Console → Добавить ресурс → Префикс URL → «Тег HTML». Можно вставить весь тег <meta> или только значение content. Оставьте пустым, если подтверждаете иначе."
+    "googleSiteVerificationHint": "Код из Search Console → Добавить ресурс → Префикс URL → «Тег HTML». Можно вставить весь тег <meta> или только значение content. Оставьте пустым, если подтверждаете иначе.",
+    "wechat": "WeChat",
+    "wechatHint": "Загрузите QR-код вашего WeChat (WeChat → Я → Мой QR-код → сохраните картинку). Посетители увидят в окне помощи кнопку «Написать нам в WeChat». Он сохраняется сразу после выбора картинки; удалите его, чтобы скрыть кнопку.",
+    "wechatQr": "QR-код WeChat (картинка)",
+    "wechatQrAlt": "QR-код WeChat, который видят посетители",
+    "wechatRemove": "Удалить QR-код",
+    "wechatSaved": "QR-код сохранён. Посетители увидят его в течение нескольких минут.",
+    "wechatRemoved": "QR-код удалён.",
+    "wechatNotPicture": "Выберите картинку (PNG, JPG или WebP).",
+    "wechatId": "ID в WeChat (необязательно)",
+    "wechatIdHint": "Показывается под QR-кодом. Сохраняется кнопкой «Сохранить» ниже."
   },
   "adminFaq": {
     "title": "Управление FAQ",
@@ -6603,7 +6613,14 @@
     "whatsappQuestion": "Здравствуйте! У меня вопрос по сайту theuniqueexpo.com: {question}",
     "opensNewTab": "(откроется в новой вкладке)",
     "contact": "Связаться с нами",
-    "helpCenter": "Открыть Центр помощи"
+    "helpCenter": "Открыть Центр помощи",
+    "wechat": "Написать нам в WeChat",
+    "wechatTitle": "Напишите нам в WeChat",
+    "wechatScan": "Откройте WeChat и отсканируйте этот код, чтобы добавить нас в друзья. На телефоне сохраните картинку, затем в WeChat выберите «Сканировать» и откройте её из фотографий.",
+    "wechatId": "ID в WeChat:",
+    "wechatSave": "Сохранить картинку с QR-кодом",
+    "wechatQrAlt": "QR-код WeChat The Unique Expo",
+    "back": "Назад к ответам"
   },
   "accountMailPrefs": {
     "title": "Какие письма я получаю",

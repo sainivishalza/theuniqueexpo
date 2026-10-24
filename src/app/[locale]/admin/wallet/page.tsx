@@ -47,7 +47,7 @@ export default function AdminWalletPage() {
     <div>
       <section className="bg-[var(--color-hero-bg)] py-8">
         <div className="mx-auto max-w-5xl px-6">
-          <Link href="/admin" className="inline-flex items-center gap-1.5 text-sm text-gray-300 hover:text-white transition-colors mb-4">{ta("backToAdmin")}</Link>
+          <Link href="/admin" className="py-1 inline-flex items-center gap-1.5 text-sm text-gray-300 hover:text-white transition-colors mb-4">{ta("backToAdmin")}</Link>
           <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
           <p className="mt-1 text-gray-300">{t("subtitle")}</p>
         </div>

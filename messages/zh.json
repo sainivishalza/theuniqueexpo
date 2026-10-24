@@ -135,7 +135,17 @@
     "viewGrid": "全部",
     "viewMonths": "按月份",
     "subscribe": "将所有展会添加到我的日历",
-    "subscribeHelp": "展会新增或变更时会自动更新。"
+    "subscribeHelp": "展会新增或变更时会自动更新。",
+    "viewCalendar": "日历",
+    "calendar": {
+      "prev": "上个月",
+      "next": "下个月",
+      "day": "{date}：{count} 个展会",
+      "listMonth": "{month}的展会",
+      "listDay": "{date}的展会",
+      "wholeMonth": "显示整月",
+      "empty": "按所选筛选条件，本月没有展会。"
+    }
   },
   "toursPage": {
     "title": "旅游",
@@ -793,6 +803,10 @@
       "guide": {
         "title": "员工指南",
         "description": "针对您角色日常工作的分步指南。"
+      },
+      "pictures": {
+        "title": "图片",
+        "description": "压缩网站已存储的图片，让页面加载更快。"
       }
     },
     "attention": {
@@ -4325,7 +4339,8 @@
       "topup": "充值",
       "withdraw": "提现",
       "expenses": "差旅费用",
-      "shop": "积分支付"
+      "shop": "积分支付",
+      "use": "能做什么"
     },
     "balance": "您的余额",
     "pointsUnit": "积分",
@@ -4520,6 +4535,53 @@
       "noCity": "请在资料中填写出发城市，以便按您所在地区的标准计算。",
       "editProfile": "编辑资料",
       "howEarned": "您在展会签到后，积分会进入您的钱包。"
+    },
+    "use": {
+      "title": "积分能做什么？",
+      "subtitle": "获取和使用积分的所有方式，以及您目前可以做的事。",
+      "rate": "1 积分 = 1 元。",
+      "spendTitle": "使用积分",
+      "earnTitle": "获取积分",
+      "help": "余额和每一笔变动都在“钱包”标签页中。",
+      "switchedOff": "暂时关闭。",
+      "tours": {
+        "title": "支付旅行套餐",
+        "text": "用积分代替现金预订商务或城市行程。",
+        "open": "查看套餐"
+      },
+      "toursStatus": "共 {count} 个套餐可用积分支付，最低 {cheapest} 积分。您的余额可支付其中 {affordable} 个。",
+      "toursNone": "目前没有可用积分支付的套餐。",
+      "send": {
+        "title": "向其他买家转赠积分",
+        "text": "扫描同事的二维码或输入其买家编号即可付款。",
+        "open": "转赠积分"
+      },
+      "sendStatus": "单次最多 {max} 积分，每天最多 {daily} 积分。",
+      "withdraw": {
+        "title": "把积分换成现金",
+        "text": "我们会人工付款到您的支付宝、微信或中国银行账户。",
+        "open": "提现"
+      },
+      "withdrawStatus": "最低 {min} 积分起提。您有 {balance} 积分。",
+      "attend": {
+        "title": "出席展会",
+        "text": "在展会签到后，积分会自动加入钱包。数额取决于您所在的地区。",
+        "open": "查看可获得的积分"
+      },
+      "attendStatus": "{count} 个展会可获得积分，最高 {points}。",
+      "attendNone": "目前没有即将举行的展会提供积分。",
+      "expenses": {
+        "title": "报销差旅费用",
+        "text": "上传您的差旅收据，我们审核后会为您添加奖励积分。",
+        "open": "上传收据"
+      },
+      "expensesStatus": "由我们的团队审核后加入您的钱包。",
+      "topup": {
+        "title": "购买积分",
+        "text": "向我们付款并告知金额，确认后积分即会到账。",
+        "open": "充值"
+      },
+      "topupStatus": "管理员核对您的付款凭证后，积分才会到账。"
     }
   },
   "adminWallet": {
@@ -5384,7 +5446,9 @@
       "error_resolved": "将网站错误标记为已解决",
       "error_reopened": "重新打开了网站错误",
       "weekly_digest_setting_changed": "更改了每周新展会邮件设置",
-      "weekly_digest_preview_sent": "给自己发送了每周邮件预览"
+      "weekly_digest_preview_sent": "给自己发送了每周邮件预览",
+      "images_optimize_started": "开始压缩已存储的图片",
+      "images_optimize_finished": "完成压缩已存储的图片"
     }
   },
   "notificationsPage": {
@@ -6483,5 +6547,32 @@
         "open": "打开“报表”"
       }
     }
+  },
+  "adminPictures": {
+    "title": "图片",
+    "subtitle": "保持网站图片体积小巧。",
+    "back": "← 返回管理后台",
+    "how": "新上传的图片在保存时会被缩放到最长边 1800 px 并压缩。本页对已存储的图片（海报、图库、封面、团队照片）执行同样操作。只有新副本明显更小时才会替换；透明图片仍保持透明。",
+    "storedTitle": "当前存储",
+    "mb": "{n} MB",
+    "count": "{count} 张图片",
+    "source": {
+      "exhibitions": "展会海报与图库",
+      "tours": "行程图片与图库",
+      "events": "活动图片",
+      "blog_posts": "博客封面",
+      "team_members": "团队照片",
+      "homepage_slideshow_photos": "首页轮播图",
+      "magazine_issues": "杂志封面"
+    },
+    "check": "检查可节省的空间",
+    "apply": "压缩已存储的图片",
+    "working": "处理中…请保持本页打开",
+    "checkResult": "检查结果（未做任何更改）",
+    "applyResult": "图片已压缩",
+    "resultLine": "共检查 {scanned} 张大图；{changed} 张可压缩或已压缩：{before} MB → {after} MB。",
+    "checkDone": "完成。压缩后预计可节省约 {saved} MB。",
+    "applyDone": "完成。已节省约 {saved} MB。",
+    "failed": "操作失败，请重试。"
   }
 }

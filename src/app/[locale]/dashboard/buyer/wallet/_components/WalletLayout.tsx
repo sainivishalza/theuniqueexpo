@@ -13,9 +13,10 @@ const TABS = [
   { key: "withdraw", href: "/dashboard/buyer/wallet/withdraw" },
   { key: "expenses", href: "/dashboard/buyer/wallet/expenses" },
   { key: "shop", href: "/dashboard/buyer/wallet/shop" },
+  { key: "use", href: "/dashboard/buyer/wallet/use" },
 ] as const;
 
-// The frame every rewards-wallet page shares: a header, the six sections as tabs, and
+// The frame every rewards-wallet page shares: a header, the sections as tabs, and
 // a sign-in prompt for anyone who is not signed in as a buyer.
 export default function WalletLayout({ title, subtitle, signInNext, children }: { title: string; subtitle?: string; signInNext?: string; children: React.ReactNode }) {
   const t = useTranslations("buyerWallet");
@@ -26,7 +27,7 @@ export default function WalletLayout({ title, subtitle, signInNext, children }: 
     <div>
       <section className="gradient-hero py-10">
         <div className="mx-auto max-w-4xl px-6">
-          <Link href="/dashboard/buyer" className="text-sm text-emerald-200 hover:text-white mb-3 inline-block">{t("back")}</Link>
+          <Link href="/dashboard/buyer" className="py-1 text-sm text-emerald-200 hover:text-white mb-3 inline-block">{t("back")}</Link>
           <h1 className="text-3xl font-extrabold text-white">{title}</h1>
           {subtitle && <p className="mt-1 text-emerald-200/80">{subtitle}</p>}
         </div>

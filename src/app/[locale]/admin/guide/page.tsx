@@ -46,7 +46,7 @@ export default function AdminGuidePage() {
     <div>
       <section className="gradient-hero py-10">
         <div className="mx-auto max-w-3xl px-6">
-          <Link href="/admin" className="text-sm text-emerald-200 hover:text-white mb-3 inline-block">{t("back")}</Link>
+          <Link href="/admin" className="py-1 text-sm text-emerald-200 hover:text-white mb-3 inline-block">{t("back")}</Link>
           <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
           <p className="mt-1 text-emerald-200/80">{t("subtitle")}</p>
         </div>
@@ -66,7 +66,7 @@ export default function AdminGuidePage() {
                       {t(`tasks.${task.key}.steps`).split("\n").map((step) => <li key={step}>{step}</li>)}
                     </ol>
                     {canOpenAdminPage(preset, task.href) && (
-                      <p className="mt-3"><Link href={task.href} className="text-sm font-semibold text-emerald-800 underline">{t(`tasks.${task.key}.open`)}</Link></p>
+                      <p className="mt-3"><Link href={task.href} className="py-1 text-sm font-semibold text-emerald-800 underline">{t(`tasks.${task.key}.open`)}</Link></p>
                     )}
                   </li>
                 ))}

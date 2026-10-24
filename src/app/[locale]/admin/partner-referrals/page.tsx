@@ -71,7 +71,7 @@ export default function AdminPartnerReferralsPage() {
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-7xl px-6">
-          <Link href="/admin/partner-tiers" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToTiers")}</Link>
+          <Link href="/admin/partner-tiers" className="py-1 text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToTiers")}</Link>
           <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
           <p className="mt-1 text-emerald-200/80">{loading ? ta("loading") : t("referralsFound", { count: referrals.length })}</p>
         </div>
@@ -126,7 +126,7 @@ export default function AdminPartnerReferralsPage() {
                         <button
                           disabled={updatingId === r.id}
                           onClick={() => updateReferral(r.id, { commission: Number(commissionDrafts[r.id]) || 0 })}
-                          className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 disabled:opacity-50"
+                          className="text-xs py-1 font-semibold text-emerald-600 hover:text-emerald-700 disabled:opacity-50"
                         >
                           {ta("save")}
                         </button>

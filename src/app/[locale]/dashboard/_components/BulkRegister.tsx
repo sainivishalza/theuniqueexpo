@@ -287,11 +287,11 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
                           aria-expanded={isOpen}
                           aria-controls={`bd-${e.slug}`}
                           onClick={() => setOpen(isOpen ? null : e.slug)}
-                          className="font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
+                          className="py-1 font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2"
                         >
                           {isOpen ? t("hideDetails") : t("details")}
                         </button>
-                        <Link href={`/exhibitions/${e.slug}`} target="_blank" rel="noopener" className="font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">
+                        <Link href={`/exhibitions/${e.slug}`} target="_blank" rel="noopener" className="py-1 font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">
                           {t("openPage")}<span className="sr-only"> {t("opensNewTab")}</span>
                         </Link>
                         {!e.canRegister && e.status && <span className="text-gray-600">{t("alreadyRegistered")}</span>}
@@ -358,7 +358,7 @@ export default function BulkRegister({ onChanged }: { onChanged: () => void }) {
                 })}
               </dl>
               <p className="mt-3 text-xs">
-                <Link href="/dashboard/buyer/profile" target="_blank" rel="noopener" className="font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">{t("editProfile")}</Link>
+                <Link href="/dashboard/buyer/profile" target="_blank" rel="noopener" className="py-1 font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">{t("editProfile")}</Link>
               </p>
             </section>
           )}

@@ -121,7 +121,7 @@ export default function RegisterPage() {
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500">{t("alreadyHaveAccount")}{" "}
-              <Link href="/login" className="font-semibold text-emerald-600 hover:text-emerald-700">{t("signIn")}</Link>
+              <Link href="/login" className="py-1 font-semibold text-emerald-600 hover:text-emerald-700">{t("signIn")}</Link>
             </p>
           </div>
         </div>

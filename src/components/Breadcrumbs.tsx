@@ -29,7 +29,7 @@ export default function Breadcrumbs({ items, homeLabel, tone = "dark" }: { items
   // Escape "<" so admin-entered titles can never close the script tag early.
   const json = JSON.stringify(schema).replace(/</g, "\\u003c");
 
-  const linkClass = tone === "dark" ? "text-emerald-200 hover:text-white hover:underline" : "text-emerald-700 hover:underline";
+  const linkClass = tone === "dark" ? "py-1 text-emerald-200 hover:text-white hover:underline" : "text-emerald-700 hover:underline";
   const textClass = tone === "dark" ? "text-gray-300" : "text-gray-500";
   const sepClass = tone === "dark" ? "text-gray-500" : "text-gray-300";
 

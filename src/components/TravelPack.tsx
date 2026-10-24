@@ -50,7 +50,7 @@ export default function TravelPack({ registration }: { registration: MyRegistrat
   }
 
   const card = "rounded-[var(--radius-button)] border border-gray-200 p-4";
-  const link = "mt-2 inline-block text-sm font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm";
+  const link = "mt-2 inline-block py-1 text-sm font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm";
   const field = "w-full rounded-[var(--radius-button)] border border-gray-200 px-3 py-2 text-sm";
   return (
     <div className="mt-5 border-t border-gray-100 pt-5" data-testid="travel-pack">

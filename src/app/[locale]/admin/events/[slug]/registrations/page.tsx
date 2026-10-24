@@ -73,7 +73,7 @@ export default function AdminEventRegistrationsPage({ params }: { params: Promis
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-7xl px-6">
-          <Link href="/admin/events" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToEvents")}</Link>
+          <Link href="/admin/events" className="py-1 text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToEvents")}</Link>
           <h1 className="text-3xl font-extrabold text-white">{event ? t("titleWithName", { name: event.title }) : t("title")}</h1>
           <p className="mt-1 text-emerald-200/80">{loading ? ta("loading") : t("registeredCount", { count: registrations.length })}</p>
         </div>

@@ -14,6 +14,7 @@ import Button from "@/components/ui/Button";
 import SearchBox from "@/components/search/ListSearch";
 import { filterByQuery } from "@/lib/search";
 import { COMPARE_MAX, COMPARE_MIN, compareHref } from "@/lib/compare";
+import ExhibitionsCalendar from "./ExhibitionsCalendar";
 
 export interface Exhibition {
   id: string; slug: string; title: string; dates: string; startDate: string; endDate: string;
@@ -50,7 +51,7 @@ export default function ExhibitionsView({
   // Only exhibitions that overlap the days chosen here (YYYY-MM-DD; empty = no limit), and a list grouped by month.
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-  const [view, setView] = useState<"grid" | "months">("grid");
+  const [view, setView] = useState<"grid" | "months" | "calendar">("grid");
   // Exhibitions ticked for the side-by-side page (in the order ticked).
   const [picked, setPicked] = useState<string[]>([]);
   const togglePick = (slug: string) => setPicked((p) => (p.includes(slug) ? p.filter((x) => x !== slug) : p.length < COMPARE_MAX ? [...p, slug] : p));
@@ -259,10 +260,10 @@ export default function ExhibitionsView({
             <input type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-2 py-1.5 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none" />
           </label>
           {(from || to) && (
-            <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="text-sm font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900">{t("clearDates")}</button>
+            <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="py-1 text-sm font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900">{t("clearDates")}</button>
           )}
           <div className="flex rounded-[var(--radius-button)] border border-gray-700 overflow-hidden" role="group" aria-label={t("viewLabel")}>
-            {(["grid", "months"] as const).map((v) => (
+            {(["grid", "months", "calendar"] as const).map((v) => (
               <button
                 key={v}
                 type="button"
@@ -270,7 +271,7 @@ export default function ExhibitionsView({
                 onClick={() => setView(v)}
                 className={`px-4 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 ${view === v ? "bg-gray-900 text-white" : "bg-white text-gray-600 hover:bg-cream-50"}`}
               >
-                {v === "grid" ? t("viewGrid") : t("viewMonths")}
+                {v === "grid" ? t("viewGrid") : v === "months" ? t("viewMonths") : t("viewCalendar")}
               </button>
             ))}
           </div>
@@ -289,7 +290,9 @@ export default function ExhibitionsView({
       {/* Exhibition Grid */}
       <section className="py-12 bg-cream-50">
         <div className="mx-auto max-w-7xl px-6">
-          {view === "months" ? (
+          {view === "calendar" ? (
+            <ExhibitionsCalendar exhibitions={filtered} />
+          ) : view === "months" ? (
             <div className="space-y-12" data-testid="exhibitions-by-month">
               {byMonth.map(([key, items]) => (
                 <section key={key} aria-labelledby={`month-${key}`}>

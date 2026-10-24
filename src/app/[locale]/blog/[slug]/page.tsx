@@ -164,7 +164,7 @@ export default async function BlogPostPage({
             </Card>
           )}
 
-          <Link href="/blog" className="mt-6 inline-block text-sm font-semibold text-emerald-600 hover:underline">
+          <Link href="/blog" className="py-1 mt-6 inline-block text-sm font-semibold text-emerald-600 hover:underline">
             {t("browseAll")}
           </Link>
         </div>

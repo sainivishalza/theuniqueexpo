@@ -146,7 +146,7 @@ export default function NotificationsPage() {
                           {v.extra && <p className="mt-1 text-sm text-gray-600 [overflow-wrap:anywhere]">{v.extra}</p>}
                           <div className="mt-2 flex flex-wrap gap-3 text-sm">
                             {i.path && (
-                              <Link href={i.path} onClick={() => !i.read && markOne(i.id)} className="font-semibold text-emerald-800 underline hover:text-emerald-900">{t("open")}</Link>
+                              <Link href={i.path} onClick={() => !i.read && markOne(i.id)} className="py-1 font-semibold text-emerald-800 underline hover:text-emerald-900">{t("open")}</Link>
                             )}
                             {!i.read && (
                               <button type="button" onClick={() => markOne(i.id)} className="font-semibold text-gray-700 underline hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900">{t("markRead")}</button>

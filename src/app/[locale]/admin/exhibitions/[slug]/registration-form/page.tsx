@@ -139,7 +139,7 @@ export default function RegistrationFormBuilderPage({ params }: { params: Promis
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-4xl px-6">
-          <Link href="/admin/exhibitions" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToExhibitions")}</Link>
+          <Link href="/admin/exhibitions" className="py-1 text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToExhibitions")}</Link>
           <h1 className="text-3xl font-extrabold text-white">{exhibition ? t("titleWithName", { name: exhibition.title }) : t("title")}</h1>
           <p className="mt-1 text-emerald-200/80">{t("subtitle")}</p>
         </div>

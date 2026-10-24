@@ -55,7 +55,7 @@ export default function AdminConferenceInquiriesPage() {
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-7xl px-6">
-          <Link href="/admin/services" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToServicesAdmin")}</Link>
+          <Link href="/admin/services" className="py-1 text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToServicesAdmin")}</Link>
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
             <Link href="/admin/services/conference-hosting-content" className="text-sm text-emerald-200 hover:text-white underline">{t("editPageContent")}</Link>

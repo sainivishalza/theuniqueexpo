@@ -70,7 +70,7 @@ export default function AttentionPanel() {
         {counts?.twoStepOff && (
           <p className="mt-4 border-t border-gray-100 pt-3 text-sm text-gray-700">
             🔐 {t("twoStepOff")}{" "}
-            <Link href="/admin/account#two-step" className="font-semibold text-emerald-800 underline hover:text-emerald-900">{t("twoStepAction")}</Link>
+            <Link href="/admin/account#two-step" className="py-1 font-semibold text-emerald-800 underline hover:text-emerald-900">{t("twoStepAction")}</Link>
           </p>
         )}
       </div>

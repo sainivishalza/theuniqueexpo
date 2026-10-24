@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth-server";
 import { isDuplicateEntryError } from "@/lib/db";
 import { getPostById, updatePost, deletePost } from "@/lib/server/blog-repo";
 import { slugify } from "@/lib/slugify";
+import { optimizeImageFields } from "@/lib/server/site-image";
 import { isValidImageField } from "@/lib/server/validate-upload";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -29,6 +30,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   if (!body.slug) {
     return NextResponse.json({ error: "Slug must contain at least one letter or number" }, { status: 400 });
   }
+  await optimizeImageFields(body, ["coverImage"]);
   if (!isValidImageField(body.coverImage)) {
     return NextResponse.json({ error: "Cover image must be a valid image file or URL" }, { status: 400 });
   }

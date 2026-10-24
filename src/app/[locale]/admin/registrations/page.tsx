@@ -179,7 +179,7 @@ export default function AdminAllRegistrationsPage() {
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-7xl px-6">
-          <Link href="/admin" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToAdmin")}</Link>
+          <Link href="/admin" className="py-1 text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToAdmin")}</Link>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
@@ -309,7 +309,7 @@ export default function AdminAllRegistrationsPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <Link href={`/admin/exhibitions/${r.exhibitionSlug}/registrations`} className="font-semibold text-emerald-800 underline hover:text-emerald-900 [overflow-wrap:anywhere]">{r.exhibitionTitle}</Link>
+                          <Link href={`/admin/exhibitions/${r.exhibitionSlug}/registrations`} className="py-1 font-semibold text-emerald-800 underline hover:text-emerald-900 [overflow-wrap:anywhere]">{r.exhibitionTitle}</Link>
                         </td>
                         <td className="px-6 py-4 text-gray-600 [overflow-wrap:anywhere]">{r.company || "—"}</td>
                         <td className="px-6 py-4 text-gray-600 [overflow-wrap:anywhere]">{r.email || "—"}<span className="block text-xs text-gray-500">{r.phone}</span></td>

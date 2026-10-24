@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { isDuplicateEntryError } from "@/lib/db";
 import { updateIssue, deleteIssue } from "@/lib/server/magazine-repo";
+import { optimizeImageFields } from "@/lib/server/site-image";
 import { isValidImageField } from "@/lib/server/validate-upload";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -13,6 +14,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   if (!body.issueNumber || !body.title) {
     return NextResponse.json({ error: "issueNumber and title are required" }, { status: 400 });
   }
+  await optimizeImageFields(body, ["coverImage"]);
   if (!isValidImageField(body.coverImage)) {
     return NextResponse.json({ error: "Cover image must be a valid image file or URL" }, { status: 400 });
   }

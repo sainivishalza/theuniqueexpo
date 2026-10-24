@@ -18,7 +18,7 @@ export default function ProfileCompleteness({ completeness, link = false }: { co
     <section aria-labelledby={labelId} className="rounded-xl border border-amber-200 bg-amber-50 p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h3 id={labelId} className="text-sm font-bold text-amber-950">{t("title", { percent })}</h3>
-        {link && <Link href="/dashboard/buyer/profile" className="text-sm font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">{t("completeProfile")}</Link>}
+        {link && <Link href="/dashboard/buyer/profile" className="py-1 text-sm py-1 font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2">{t("completeProfile")}</Link>}
       </div>
       <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} aria-labelledby={labelId} className="mt-2 h-2.5 overflow-hidden rounded-full bg-white ring-1 ring-amber-200">
         <div className="h-full rounded-full bg-emerald-600" style={{ width: `${percent}%` }} />

@@ -36,7 +36,7 @@ export default function SitePageView({ content }: { content: SitePageContent }) 
                       <div className="w-10 h-10 rounded-[var(--radius-icon-sm)] gradient-brand flex items-center justify-center text-white text-sm flex-shrink-0">✉</div>
                       <div className="min-w-0 [overflow-wrap:anywhere]">
                         <div className="text-xs text-gray-500">{t("email")}</div>
-                        <a href={`mailto:${content.contactEmail}`} className="text-sm font-semibold text-gray-900 hover:text-emerald-600">{content.contactEmail}</a>
+                        <a href={`mailto:${content.contactEmail}`} className="py-1 text-sm font-semibold text-gray-900 hover:text-emerald-600">{content.contactEmail}</a>
                       </div>
                     </div>
                   )}
@@ -45,7 +45,7 @@ export default function SitePageView({ content }: { content: SitePageContent }) 
                       <div className="w-10 h-10 rounded-[var(--radius-icon-sm)] gradient-brand flex items-center justify-center text-white text-sm flex-shrink-0">☎</div>
                       <div className="min-w-0 [overflow-wrap:anywhere]">
                         <div className="text-xs text-gray-500">{t("phone")}</div>
-                        <a href={telHref(content.contactPhone)} className="text-sm font-semibold text-gray-900 hover:text-emerald-600">{content.contactPhone}</a>
+                        <a href={telHref(content.contactPhone)} className="py-1 text-sm font-semibold text-gray-900 hover:text-emerald-600">{content.contactPhone}</a>
                       </div>
                     </div>
                   )}

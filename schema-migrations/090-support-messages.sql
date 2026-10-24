@@ -29,3 +29,6 @@ CREATE TABLE IF NOT EXISTS support_messages (
   KEY idx_support_messages_thread (thread_id, id),
   CONSTRAINT fk_support_message_thread FOREIGN KEY (thread_id) REFERENCES support_threads(id) ON DELETE CASCADE
 );
+
+-- When the staff were last e-mailed about this thread: one e-mail per half hour per thread, and it starts again after an answer.
+ALTER TABLE support_threads ADD COLUMN IF NOT EXISTS staff_notified_at DATETIME(6) NULL;

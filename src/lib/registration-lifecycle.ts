@@ -82,6 +82,8 @@ export interface MyRegistration {
   id: string;
   /** Pending and waiting for a place (the exhibition has taken all its buyers). */
   waitlisted?: boolean;
+  /** The exhibition refunds train tickets bought by the buyer themselves, and the buyer is approved for it. */
+  ticketRefund?: boolean;
   /** The buyer's passport / visa on file will not cover this exhibition (see document-expiry). */
   documentWarnings?: ("passport" | "visa")[];
   /** Set on an edition the buyer attended: the next edition of the same series, open for registration. */

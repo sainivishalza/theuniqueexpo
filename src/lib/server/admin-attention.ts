@@ -9,6 +9,10 @@ export interface AttentionCounts {
   topups: number;
   withdrawals: number;
   expenses: number;
+  /** Train-ticket refunds still waiting for their e-invoice from 12306. */
+  ticketsNeedInvoice: number;
+  /** Buyers' messages waiting for an answer from the team. */
+  supportWaiting: number;
   documents: number;
   /** E-mails that could not be sent in the last 7 days. */
   failedEmails: number;
@@ -32,7 +36,7 @@ const DOC_COLUMNS = [
 export async function getAttentionCounts(): Promise<AttentionCounts> {
   // A buyer's uploaded documents still waiting for review (an upload counts as verified unless an admin set it back).
   const docSql = DOC_COLUMNS.map((c) => `(SELECT COUNT(*) FROM buyer_profiles WHERE has_doc_${c} = 1 AND doc_${c}_status = 'pending')`).join(" + ");
-  const [registrations, staleRegistrations, tourRegistrations, topups, withdrawals, expenses, builtinDocs, customDocs, failedEmails] = await Promise.all([
+  const [registrations, staleRegistrations, tourRegistrations, topups, withdrawals, expenses, builtinDocs, customDocs, failedEmails, ticketsNeedInvoice, supportWaiting] = await Promise.all([
     count("SELECT COUNT(*) AS n FROM expo_registrations WHERE status = 'pending'"),
     count("SELECT COUNT(*) AS n FROM expo_registrations WHERE status = 'pending' AND created_at < DATE_SUB(NOW(), INTERVAL 3 DAY)"),
     count("SELECT COUNT(*) AS n FROM tour_registrations WHERE status = 'pending'"),
@@ -42,6 +46,8 @@ export async function getAttentionCounts(): Promise<AttentionCounts> {
     count(`SELECT ${docSql} AS n`),
     count("SELECT COUNT(*) AS n FROM buyer_custom_documents WHERE status = 'pending'"),
     count("SELECT COUNT(*) AS n FROM email_log WHERE status = 'failed' AND created_at > DATE_SUB(NOW(), INTERVAL 7 DAY)"),
+    count("SELECT COUNT(*) AS n FROM wallet_expense_claims WHERE kind = 'train' AND status = 'pending' AND receipt_count < 2"),
+    count("SELECT COUNT(*) AS n FROM support_threads WHERE status = 'open' AND waiting_on = 'staff'"),
   ]);
-  return { registrations, staleRegistrations, tourRegistrations, topups, withdrawals, expenses, documents: builtinDocs + customDocs, failedEmails };
+  return { registrations, staleRegistrations, tourRegistrations, topups, withdrawals, expenses, ticketsNeedInvoice, supportWaiting, documents: builtinDocs + customDocs, failedEmails };
 }

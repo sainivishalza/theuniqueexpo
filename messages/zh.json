@@ -427,6 +427,14 @@
       "myWallet": {
         "title": "奖励积分钱包",
         "description": "积分、二维码、充值与提现"
+      },
+      "support": {
+        "title": "联系我们的团队",
+        "description": "关于报名、车票、积分或证件的问题：给我们留言，我们会在这里回复。"
+      },
+      "inviteFriends": {
+        "title": "邀请好友",
+        "description": "分享您的专属链接：好友加入并参与后，你们都会获得奖励积分。"
       }
     },
     "registrations": {
@@ -474,7 +482,9 @@
         "rateLimited": "尝试次数过多，请稍后再试。"
       },
       "showProgress": "查看进度",
-      "waitlisted": "候补名单中"
+      "waitlisted": "候补名单中",
+      "ticketRefund": "自己购买了这次展会的火车票？",
+      "ticketRefundLink": "以积分报销"
     },
     "registrationNumber": "您的注册编号",
     "registrationNumberHint": "联系我们时请提供此编号。",
@@ -832,7 +842,9 @@
       "documents": "{count} 份买家文档待审核",
       "failedEmails": "本周有 {count} 封邮件发送失败",
       "twoStepOff": "您的管理员账户目前仅由密码保护。",
-      "twoStepAction": "开启两步验证"
+      "twoStepAction": "开启两步验证",
+      "ticketsNeedInvoice": "{count} 份车票报销等待电子发票",
+      "supportWaiting": "{count} 条买家留言等待回复"
     },
     "glance": {
       "title": "概览",
@@ -5332,6 +5344,11 @@
       "subject": "我们的团队已回复您的留言",
       "intro": "我们的团队已回复您的留言“{subject}”。请打开对话查看回复。",
       "button": "查看回复"
+    },
+    "supportNewMessage": {
+      "subject": "买家的新留言：{subject}",
+      "intro": "{buyer} 给团队留言：“{subject}”。正在等待回复。",
+      "button": "打开留言"
     }
   },
   "adminEmail": {
@@ -5412,7 +5429,8 @@
       "digest": "每周新展会",
       "accountDeleted": "账户已删除",
       "ticketInvoiceReady": "电子发票就绪",
-      "supportReply": "留言回复"
+      "supportReply": "留言回复",
+      "supportNewMessage": "买家新留言（发给员工）"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",

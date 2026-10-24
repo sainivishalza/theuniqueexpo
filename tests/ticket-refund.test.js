@@ -197,6 +197,17 @@ const pngUrl = () => 'data:image/png;base64,' + makePng().toString('base64');
   const mism = await (await fetch(BASE + '/api/admin/wallet/overview', { headers: AH })).json();
   ok(!mism.mismatches || mism.mismatches.length === 0, 'every balance still equals its statement');
 
+  console.log('\n== pointers for the buyer and the admin');
+  const mineRegs = await (await fetch(BASE + '/api/expo-registrations/mine?locale=en', { headers: BH })).json();
+  const regOf = (expo) => mineRegs.registrations.find((x) => x.exhibitionId === expo);
+  ok(regOf(expoA).ticketRefund === true && regOf(expoB).ticketRefund === false, 'the registration list says which exhibition refunds train tickets (A yes, B no)');
+  ok(regOf(expoC).ticketRefund === false, 'and not for an exhibition where the buyer is only pending');
+  ok((await (await fetch(BASE + '/api/admin/attention', { headers: AH })).json()).ticketsNeedInvoice >= 0, 'the admin home counts ticket refunds waiting for their e-invoice');
+  { const waitingBefore2 = (await (await fetch(BASE + '/api/admin/attention', { headers: AH })).json()).ticketsNeedInvoice;
+    const extra = await (await send({})).json();
+    ok((await (await fetch(BASE + '/api/admin/attention', { headers: AH })).json()).ticketsNeedInvoice === waitingBefore2 + 1, 'a new request waiting for its e-invoice adds one');
+    await decide(extra.id, { action: 'reject', note: 'Test' }); }
+
   console.log('\n== the Excel file');
   const readSheet = async (res, name) => { const wb = new ExcelJS.Workbook(); await wb.xlsx.load(Buffer.from(await res.arrayBuffer())); return wb.getWorksheet(name); };
   ok((await fetch(BASE + '/api/admin/wallet/export/ticket-refunds', { headers: BH })).status === 401, 'a buyer cannot download it');
@@ -239,6 +250,13 @@ const pngUrl = () => 'data:image/png;base64,' + makePng().toString('base64');
     const opts = await p.locator('select option').allInnerTexts();
     ok(opts.length === 2 && opts.includes('Ticket Expo A') && opts.includes('Ticket Expo C'), 'the exhibitions that refund and the buyer is approved for are offered', opts);
     ok((await p.getByTestId('ticket-passport').innerText()).includes('234567'), 'the passport ending is shown, so the buyer can check it');
+    if (locale === 'en') {
+      const pr = await ctx.newPage();
+      await pr.goto(`${BASE}/en/dashboard/buyer/registrations`, { waitUntil: 'domcontentloaded' });
+      await pr.getByTestId(`ticket-refund-link-${regOf(expoA).id}`).waitFor();
+      ok(/train ticket/i.test(await pr.getByTestId(`ticket-refund-link-${regOf(expoA).id}`).innerText()) && (await pr.locator(`[data-testid="ticket-refund-link-${regOf(expoB).id}"]`).count()) === 0, 'the buyer\'s registrations page offers the claim for A, not for B');
+      await pr.close();
+    }
     ok((await p.getByTestId('ticket-history').locator('li').count()) >= 1, 'earlier requests are listed');
     ok((await p.getByTestId(`ticket-invoice-${first.id}`).count()) === 1, 'an approved request with an e-invoice offers the download');
     ok((await p.locator('nav a[aria-current="page"]').count()) >= 1, 'the tab is marked as the current one');

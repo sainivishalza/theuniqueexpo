@@ -1,7 +1,7 @@
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { formatBuyerNumber } from "@/lib/buyer-number";
-import { notifySupportReply } from "@/lib/server/notifications";
+import { notifySupportReply, notifySupportStaff } from "@/lib/server/notifications";
 import type { SupportStatus, SupportTopic, SupportWaitingOn } from "@/lib/support";
 
 // "Ask our team": threads of messages between a buyer and the staff. A thread is waiting on the staff after the buyer writes
@@ -27,6 +27,29 @@ export interface SupportThreadSummary {
   waitingOn: SupportWaitingOn;
   lastMessageAt: string;
   unread: boolean; // for the buyer: an answer they have not opened yet
+}
+
+// The staff who answer messages (full access, reviewers and finance), told when a buyer writes. At most one e-mail per thread
+// every half hour -- a buyer sending three lines in a row is one e-mail -- and the clock starts again once the team answers.
+// Never fails the buyer's message: before migration 090 has added the column this just does nothing.
+async function tellStaffQuietly(threadId: number, userId: number, subject: string): Promise<void> {
+  try {
+    const [res] = await pool.query<ResultSetHeader>(
+      "UPDATE support_threads SET staff_notified_at = UTC_TIMESTAMP(6) WHERE id = ? AND (staff_notified_at IS NULL OR staff_notified_at < DATE_SUB(UTC_TIMESTAMP(6), INTERVAL 30 MINUTE))",
+      [threadId]
+    );
+    if (res.affectedRows !== 1) return;
+    const [people] = await pool.query<RowDataPacket[]>(
+      `SELECT u.id FROM users u LEFT JOIN admin_staff_access a ON a.user_id = u.id
+       WHERE u.role = 'admin' AND u.status <> 'suspended' AND u.deleted_at IS NULL AND (a.preset IS NULL OR a.preset IN ('full', 'reviewer', 'finance'))
+       ORDER BY u.id LIMIT 10`
+    );
+    const [buyer] = await pool.query<RowDataPacket[]>("SELECT name FROM users WHERE id = ?", [userId]);
+    notifySupportStaff(people.map((p) => Number(p.id)), String(buyer[0]?.name ?? ""), subject);
+  } catch (err) {
+    const code = (err as { code?: string }).code;
+    if (code !== "ER_BAD_FIELD_ERROR" && code !== "ER_NO_SUCH_TABLE") console.error("Could not tell the staff about a message", err);
+  }
 }
 
 // ---------- the buyer ----------
@@ -58,6 +81,7 @@ export async function createThread(userId: number, input: { topic: SupportTopic;
     );
     await conn.query("INSERT INTO support_messages (thread_id, sender_id, from_staff, body, created_at) VALUES (?, ?, 0, ?, UTC_TIMESTAMP(6))", [ins.insertId, userId, input.body]);
     await conn.commit();
+    void tellStaffQuietly(ins.insertId, userId, input.subject);
     return ins.insertId;
   } catch (err) {
     await conn.rollback().catch(() => {});
@@ -89,10 +113,11 @@ export async function getMyThread(userId: number, id: number): Promise<{ thread:
 
 // The buyer writes again in one of their own threads (a closed one is opened again). false when it is not theirs.
 export async function buyerReply(userId: number, id: number, body: string): Promise<boolean> {
-  const [rows] = await pool.query<RowDataPacket[]>("SELECT id FROM support_threads WHERE id = ? AND user_id = ?", [id, userId]);
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT id, subject FROM support_threads WHERE id = ? AND user_id = ?", [id, userId]);
   if (!rows[0]) return false;
   await pool.query("INSERT INTO support_messages (thread_id, sender_id, from_staff, body, created_at) VALUES (?, ?, 0, ?, UTC_TIMESTAMP(6))", [id, userId, body]);
   await pool.query("UPDATE support_threads SET status = 'open', waiting_on = 'staff', last_message_at = UTC_TIMESTAMP(6), buyer_read_at = UTC_TIMESTAMP(6) WHERE id = ?", [id]);
+  void tellStaffQuietly(id, userId, String(rows[0].subject));
   return true;
 }
 
@@ -169,6 +194,8 @@ export async function staffReply(adminId: number, id: number, body: string): Pro
   if (!rows[0]) return false;
   await pool.query("INSERT INTO support_messages (thread_id, sender_id, from_staff, body, created_at) VALUES (?, ?, 1, ?, UTC_TIMESTAMP(6))", [id, adminId, body]);
   await pool.query("UPDATE support_threads SET status = 'open', waiting_on = 'buyer', last_message_at = UTC_TIMESTAMP(6) WHERE id = ?", [id]);
+  // The next message from the buyer tells the staff again, however soon it comes.
+  await pool.query("UPDATE support_threads SET staff_notified_at = NULL WHERE id = ?", [id]).catch(() => {});
   notifySupportReply(Number(rows[0].user_id), String(rows[0].subject), id);
   return true;
 }

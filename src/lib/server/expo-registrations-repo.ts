@@ -144,6 +144,7 @@ function mapMyRow(row: RowDataPacket, locale?: string): MyRegistration {
     arrivalDate: dateOnly(row.arrival_date),
     arrivalNote: row.arrival_note ?? null,
     hasTicket: !!row.has_ticket,
+    ticketRefund: row.ticket_refund_mode === "refund" && (status === "approved" || status === "confirmed" || status === "attended"),
     checkedInAt,
     checkedOutAt,
     cancelledAt: iso(row.cancelled_at),
@@ -162,7 +163,7 @@ const MY_SELECT = `
          r.checked_in_at, r.checked_out_at, r.cancelled_at, r.feedback_rating, r.feedback_comment, r.feedback_at,
          ${EFFECTIVE_STATUS_SQL} AS effective_status,
          e.slug AS exhibition_slug, e.title AS exhibition_title, e.start_date AS exhibition_start, e.end_date AS exhibition_end,
-         (e.end_date < UTC_DATE()) AS expo_ended,
+         e.ticket_refund_mode, (e.end_date < UTC_DATE()) AS expo_ended,
          (UTC_DATE() BETWEEN DATE_SUB(e.start_date, INTERVAL 1 DAY) AND DATE_ADD(e.end_date, INTERVAL 1 DAY)) AS check_in_open
   FROM expo_registrations r
   JOIN exhibitions e ON e.id = r.exhibition_id`;

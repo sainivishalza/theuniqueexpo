@@ -4971,12 +4971,12 @@
     },
     "bulkTopup": {
       "title": "Top up several buyers by passport number",
-      "intro": "Paste the passport numbers (one per line, or separated by commas), type one amount for everyone and a reason. First check who is found; then pay all of them at once. A number nobody has is shown as an alert, and the buyers who were found are still paid.",
+      "intro": "Paste the passport numbers (one per line, or separated by commas), type one amount for everyone and choose the expo. First check who is found; then pay all of them at once. A number nobody has is shown as an alert, and the buyers who were found are still paid.",
       "passports": "Passport numbers",
       "passportsHint": "Up to {max}. Capital letters, spaces and dashes do not matter.",
       "amount": "Points for each buyer",
       "amountHint": "Whole points, up to {max}. 1 point = 1 RMB.",
-      "reason": "Reason (shown in each buyer's wallet)",
+      "reason": "Note (optional)",
       "check": "Check passport numbers",
       "checking": "Checking…",
       "foundTitle": "Found: {count} of {typed}",
@@ -4990,7 +4990,16 @@
       "recheck": "The list changed: check the passport numbers again before paying.",
       "done": "Done: {amount} points added to {paid} buyers.",
       "doneFailed": "{failed} buyers could not be paid. Check them in the Wallets tab.",
-      "noneFound": "None of these passport numbers belongs to a buyer."
+      "noneFound": "None of these passport numbers belongs to a buyer.",
+      "expo": "Expo",
+      "expoPlaceholder": "Search or choose an expo",
+      "expoHint": "Shown in each buyer's wallet. Not in the list? Type its name and choose “Use …”.",
+      "expoWebsite": "On the website",
+      "expoOther": "Other expos",
+      "expoEmpty": "Nothing matches. Keep typing the name to use it as it is.",
+      "expoUseTyped": "Use “{name}”",
+      "expoClear": "Clear the expo",
+      "reasonHint": "Added after the expo name, for example “Welcome bonus”. Choose an expo or write a note (at least 3 letters)."
     }
   },
   "searchPage": {

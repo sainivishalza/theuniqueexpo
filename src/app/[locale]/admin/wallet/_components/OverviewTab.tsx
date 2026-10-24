@@ -9,7 +9,7 @@ import { fieldClasses } from "@/components/ui/FormField";
 import { DownloadExcel } from "./shared";
 
 interface Overview {
-  wallets: number; outstandingPoints: number; pendingTopups: number; pendingWithdrawals: number; pendingWithdrawalPoints: number; pendingExpenses: number;
+  wallets: number; outstandingPoints: number; pendingTopups: number; pendingWithdrawals: number; pendingWithdrawalPoints: number; pendingExpenses: number; ticketsNeedInvoice: number;
   mismatches: { userId: number; balance: number; ledgerTotal: number; lastBalanceAfter: number | null }[];
 }
 
@@ -38,6 +38,7 @@ export default function OverviewTab({ onOpen }: { onOpen: (tab: string) => void 
     { key: "pendingTopups", value: formatNumber(data.pendingTopups), label: t("overview.pendingTopups"), tab: "topups", alert: data.pendingTopups > 0 },
     { key: "pendingWithdrawals", value: formatNumber(data.pendingWithdrawals), label: t("overview.pendingWithdrawals", { points: formatNumber(data.pendingWithdrawalPoints) }), tab: "withdrawals", alert: data.pendingWithdrawals > 0 },
     { key: "pendingExpenses", value: formatNumber(data.pendingExpenses), label: t("overview.pendingExpenses"), tab: "expenses", alert: data.pendingExpenses > 0 },
+    { key: "ticketsNeedInvoice", value: formatNumber(data.ticketsNeedInvoice), label: t("overview.ticketsNeedInvoice"), tab: "expenses", alert: data.ticketsNeedInvoice > 0 },
     { key: "outstanding", value: `¥${formatNumber(data.outstandingPoints)}`, label: t("overview.outstanding"), tab: "wallets" },
     { key: "wallets", value: formatNumber(data.wallets), label: t("overview.wallets"), tab: "wallets" },
   ];

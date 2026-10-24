@@ -792,10 +792,13 @@ export async function createTrainClaim(userId: number, input: TrainClaimInput): 
 
 // Admin: the e-invoice downloaded from 12306 (when the buyer did not send it) and the amount printed on it. Only while the
 // request is waiting. Returns the buyer's id so they can be told.
-export async function completeTrainClaim(id: number, input: { invoice: string | null; amountCny: number; ticketNo: string }): Promise<void> {
-  await withTx(async (conn) => {
+export async function completeTrainClaim(
+  id: number,
+  input: { invoice: string | null; amountCny: number; ticketNo: string }
+): Promise<{ userId: number; exhibition: string; invoiceAttached: boolean }> {
+  return withTx(async (conn) => {
     const [rows] = await conn.query<RowDataPacket[]>(
-      "SELECT status, kind, receipts, receipt_hash, invoice_hash, ticket_no, qr_text FROM wallet_expense_claims WHERE id = ? FOR UPDATE",
+      "SELECT user_id, title, status, kind, receipts, receipt_hash, invoice_hash, ticket_no, qr_text FROM wallet_expense_claims WHERE id = ? FOR UPDATE",
       [id]
     );
     const claim = rows[0];
@@ -803,6 +806,14 @@ export async function completeTrainClaim(id: number, input: { invoice: string | 
     if (claim.status !== "pending") throw new WalletError("already_processed", 409);
     if (claim.kind !== "train") throw new WalletError("invalid_input");
     let files: string[] = [];
+    const hadInvoice = (() => {
+      try {
+        const parsed = JSON.parse(String(claim.receipts));
+        return Array.isArray(parsed) && parsed.length >= 2;
+      } catch {
+        return false;
+      }
+    })();
     try {
       const parsed = JSON.parse(String(claim.receipts));
       files = Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
@@ -823,6 +834,8 @@ export async function completeTrainClaim(id: number, input: { invoice: string | 
       "UPDATE wallet_expense_claims SET receipts = ?, receipt_count = ?, amount_cny = ?, amount_text = ?, ticket_no = ?, invoice_hash = ? WHERE id = ?",
       [JSON.stringify(files), files.length, input.amountCny, `¥${input.amountCny.toFixed(2)}`, ticketNo, invoiceHash, id]
     );
+    // The buyer is told only when the invoice is attached for the first time, not when an amount is corrected.
+    return { userId: Number(claim.user_id), exhibition: String(claim.title ?? ""), invoiceAttached: !hadInvoice && files.length >= 2 };
   });
 }
 

@@ -4685,7 +4685,9 @@
       "to": "To date",
       "rangeHint": "Leave the dates empty to include everything. Times in the file are UTC.",
       "working": "Preparing…",
-      "failed": "Could not download the file. Please try again."
+      "failed": "Could not download the file. Please try again.",
+      "referrals": "Download referrals (Excel)",
+      "ticketRefunds": "Download ticket refund requests (Excel)"
     },
     "loading": "Loading…",
     "saving": "Saving…",
@@ -4767,7 +4769,8 @@
       "booksTitle": "Do the books balance?",
       "booksOk": "Yes — every wallet's balance equals the sum of its statement.",
       "booksBad": "{count} wallet(s) don't add up. Stop and investigate before paying anything out:",
-      "mismatch": "User #{id}: balance {balance}, statement total {ledger}"
+      "mismatch": "User #{id}: balance {balance}, statement total {ledger}",
+      "ticketsNeedInvoice": "Ticket refunds waiting for the e-invoice"
     },
     "topups": {
       "empty": "No top-up requests here.",
@@ -5315,6 +5318,11 @@
       "intro": "Your The Unique Expo account was deleted at your request.",
       "body": "Your personal details, documents and sign-in were removed. Records we must keep for our accounts, such as reward-point entries, no longer show your name. If this was not you, contact us at once.",
       "button": "Visit the site"
+    },
+    "ticketInvoiceReady": {
+      "subject": "Your train-ticket e-invoice is ready",
+      "intro": "We attached the e-invoice for your train ticket ({exhibition}). You can download it from your wallet while we check the amount.",
+      "button": "Open my ticket refunds"
     }
   },
   "adminEmail": {
@@ -5393,7 +5401,8 @@
       "adminSignIn": "New admin sign-in alert",
       "errorAlert": "New website error alert",
       "digest": "Weekly new exhibitions",
-      "accountDeleted": "Account deleted"
+      "accountDeleted": "Account deleted",
+      "ticketInvoiceReady": "E-invoice ready"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -5770,6 +5779,10 @@
       "groupInvite": {
         "title": "You were invited",
         "body": "{inviter} from {company} invited you to register for {expo}."
+      },
+      "ticketInvoiceReady": {
+        "title": "Your e-invoice is ready",
+        "body": "The e-invoice for {exhibition} is attached. You can download it now."
       }
     }
   },
@@ -6749,6 +6762,11 @@
         "title": "Read the numbers",
         "steps": "Open Reports.\nChoose the period (for example the last 28 days) and an exhibition, or all of them.\nRead the figures: registrations per day or week, by country, by exhibition, and how far registrations get.",
         "open": "Open Reports"
+      },
+      "ticketInvoice": {
+        "title": "Get the e-invoice for a train-ticket refund",
+        "steps": "Open Rewards wallet, then Expense claims: requests marked Needs e-invoice are waiting for you (the Overview tab counts them).\nPress Review on one. Scan the QR code on the receipt with your phone, or open the link shown.\nWhen 12306 asks for the ID number, type the passport ending shown on the screen (the last 6 characters of the buyer's passport number).\nDownload the e-invoice (PDF), attach it here, type the amount printed on it and press Save.\nCheck the points the exhibition's rule suggests, change them if needed, then Approve or Reject. The buyer is told and can download the e-invoice.",
+        "open": "Open Rewards wallet"
       }
     }
   },

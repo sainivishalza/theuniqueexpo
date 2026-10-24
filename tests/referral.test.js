@@ -3,6 +3,7 @@
 const { BASE, sql, ok, done, mkUsers } = require('./helpers/common.js');
 const { launch, axeViolations } = require('./helpers/browser.js');
 const bcrypt = require('bcryptjs');
+const ExcelJS = require('exceljs');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const ipn = () => '198.61.' + Math.floor(Math.random() * 256) + '.' + (Math.floor(Math.random() * 250) + 2);
 const num = (q) => Number(sql(q) || 0);
@@ -249,6 +250,21 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
   ok(kids.every((k) => (refRow(k).startsWith('rewarded') ? balance(k) === 5 && ledger(k) === '1' : balance(k) === 0)), 'each rewarded friend got exactly one +5');
   const mism2 = await (await fetch(BASE + '/api/admin/wallet/overview', { headers: AH })).json();
   ok(!mism2.mismatches || mism2.mismatches.length === 0, 'the ledger still balances after the race', mism2.mismatches);
+
+  console.log('\n== the Excel file');
+  ok((await fetch(BASE + '/api/admin/wallet/export/referrals', { headers: BH })).status === 401, 'a buyer cannot download it');
+  r = await fetch(BASE + '/api/admin/wallet/export/referrals', { headers: AH });
+  ok(r.status === 200 && /spreadsheetml/.test(r.headers.get('content-type')) && /referrals-/.test(r.headers.get('content-disposition')), 'an Excel file');
+  const wb = new ExcelJS.Workbook(); await wb.xlsx.load(Buffer.from(await r.arrayBuffer()));
+  const sh = wb.getWorksheet('Referrals');
+  const head = sh.getRow(1).values.slice(1);
+  ok(['Referral No.', 'Inviter', 'New buyer', 'Points to inviter', 'Points to new buyer', 'Paid for exhibition'].every((h) => head.includes(h)), 'with the headings', head);
+  const lines = []; sh.eachRow((row, i) => { if (i > 1) lines.push(row.values.slice(1)); });
+  const byNew = (name) => lines.find((l) => l[6] === name);
+  const paidViaB = lines.find((l) => l[9] === 'Referral Expo B' && l[2] === 'rewarded');
+  ok(lines.some((l) => l[2] === 'rewarded' && l[7] === 40 && l[8] === 10) && paidViaB && paidViaB[7] === 70 && paidViaB[8] === 10, 'rewarded rows carry both amounts and the exhibition that paid them', paidViaB);
+  ok(lines.some((l) => l[2] === 'rejected' && l[7] == null) && lines.some((l) => l[2] === 'pending'), 'rejected and waiting ones are listed without points');
+  void byNew;
 
   console.log('\n== screens');
   // a state the buyer screen shows well: attended stage, 50 + 20, cap 3 (the buyer has already been rewarded more often than that)

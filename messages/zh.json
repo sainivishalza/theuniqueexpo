@@ -4685,7 +4685,9 @@
       "to": "结束日期",
       "rangeHint": "日期留空则包含全部。文件中的时间为 UTC。",
       "working": "正在准备…",
-      "failed": "无法下载文件，请重试。"
+      "failed": "无法下载文件，请重试。",
+      "referrals": "下载邀请记录（Excel）",
+      "ticketRefunds": "下载车票报销申请（Excel）"
     },
     "loading": "加载中…",
     "saving": "保存中…",
@@ -4767,7 +4769,8 @@
       "booksTitle": "账目是否平衡？",
       "booksOk": "是——每个钱包的余额都等于其明细之和。",
       "booksBad": "有 {count} 个钱包对不上账。请先停止付款并排查：",
-      "mismatch": "用户 #{id}：余额 {balance}，明细合计 {ledger}"
+      "mismatch": "用户 #{id}：余额 {balance}，明细合计 {ledger}",
+      "ticketsNeedInvoice": "等待电子发票的车票报销"
     },
     "topups": {
       "empty": "没有充值申请。",
@@ -5315,6 +5318,11 @@
       "intro": "您的 The Unique Expo 账户已应您的要求删除。",
       "body": "您的个人信息、证件和登录信息已被删除。我们因账务需要而保留的记录（如积分流水）不再显示您的姓名。如果这不是您本人的操作，请立即联系我们。",
       "button": "访问网站"
+    },
+    "ticketInvoiceReady": {
+      "subject": "您的火车票电子发票已就绪",
+      "intro": "我们已为您的火车票（{exhibition}）附上电子发票。我们核对金额期间，您可以在钱包中下载。",
+      "button": "打开我的车票报销"
     }
   },
   "adminEmail": {
@@ -5393,7 +5401,8 @@
       "adminSignIn": "管理员新登录提醒",
       "errorAlert": "网站新错误提醒",
       "digest": "每周新展会",
-      "accountDeleted": "账户已删除"
+      "accountDeleted": "账户已删除",
+      "ticketInvoiceReady": "电子发票就绪"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -5770,6 +5779,10 @@
       "groupInvite": {
         "title": "您收到邀请",
         "body": "来自 {company} 的 {inviter} 邀请您登记参加 {expo}。"
+      },
+      "ticketInvoiceReady": {
+        "title": "电子发票已就绪",
+        "body": "“{exhibition}”的电子发票已附上，现在可以下载。"
       }
     }
   },
@@ -6749,6 +6762,11 @@
         "title": "查看数据",
         "steps": "打开“报表”。\n选择时间范围（如最近 28 天）以及某个展会或全部展会。\n查看数据：按天或周的报名数、按国家、按展会，以及报名的推进情况。",
         "open": "打开“报表”"
+      },
+      "ticketInvoice": {
+        "title": "为车票报销获取电子发票",
+        "steps": "打开“奖励积分钱包”，再打开“报销申请”：标有“需要电子发票”的申请在等您处理（“概览”页会统计数量）。\n点击“审核”。用手机扫描开票单上的二维码，或打开页面上显示的链接。\n12306 要求输入证件号码时，输入屏幕上显示的护照后几位（买家护照号码的后 6 位）。\n下载电子发票（PDF），在此上传，填写发票上的金额并点击“保存”。\n查看展会规则建议的积分，需要时修改，然后通过或拒绝。买家会收到通知，并可下载电子发票。",
+        "open": "打开奖励积分钱包"
       }
     }
   },

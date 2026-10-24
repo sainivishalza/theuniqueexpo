@@ -157,10 +157,10 @@ export default function LoginPage() {
                 </Button>
               </form>
               <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                <button type="button" onClick={() => { setUseRecovery(!useRecovery); setCode(""); setError(""); }} className="font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
+                <button type="button" onClick={() => { setUseRecovery(!useRecovery); setCode(""); setError(""); }} className="py-1 font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
                   {useRecovery ? t("secondStep.useApp") : t("secondStep.useRecovery")}
                 </button>
-                <button type="button" onClick={() => { setChallenge(null); setCode(""); setPassword(""); setError(""); setUseRecovery(false); }} className="font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
+                <button type="button" onClick={() => { setChallenge(null); setCode(""); setPassword(""); setError(""); setUseRecovery(false); }} className="py-1 font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
                   {t("secondStep.back")}
                 </button>
               </div>
@@ -179,11 +179,11 @@ export default function LoginPage() {
             <FormField label={t("password")} htmlFor="password">
               <input id="password" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={fieldClasses()} placeholder={t("passwordPlaceholder")} />
               {mailOn ? (
-                <Link href="/forgot-password" className="mt-1.5 inline-block text-xs font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
+                <Link href="/forgot-password" className="mt-1.5 inline-block text-xs py-1 font-semibold text-emerald-800 underline hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
                   {t("forgotPassword")}
                 </Link>
               ) : (
-                <button type="button" onClick={() => setShowForgot(true)} className="mt-1.5 text-xs font-semibold text-emerald-800 hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
+                <button type="button" onClick={() => setShowForgot(true)} className="py-1 mt-1.5 text-xs font-semibold text-emerald-800 hover:text-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
                   {t("forgotPassword")}
                 </button>
               )}
@@ -212,7 +212,7 @@ export default function LoginPage() {
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500">{t("noAccount")}{" "}
-              <Link href="/register" className="font-semibold text-emerald-600 hover:text-emerald-700">{t("createOne")}</Link>
+              <Link href="/register" className="py-1 font-semibold text-emerald-600 hover:text-emerald-700">{t("createOne")}</Link>
             </p>
           </div>
         </div>

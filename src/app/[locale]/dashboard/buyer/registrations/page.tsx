@@ -67,7 +67,7 @@ export default function BuyerRegistrationsPage() {
     <div>
       <section className="gradient-hero py-10">
         <div className="mx-auto max-w-4xl px-6">
-          <Link href="/dashboard/buyer" className="text-sm text-emerald-200 hover:text-white mb-3 inline-block">{t("back")}</Link>
+          <Link href="/dashboard/buyer" className="py-1 text-sm text-emerald-200 hover:text-white mb-3 inline-block">{t("back")}</Link>
           <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
           <p className="mt-1 text-emerald-200/80">{t("subtitle")}</p>
         </div>

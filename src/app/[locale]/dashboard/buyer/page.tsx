@@ -148,7 +148,7 @@ export default function BuyerDashboard() {
             <div className="rounded-2xl bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 className="text-xl font-bold text-heading">{t("news.title")}</h2>
-                <Link href="/dashboard/buyer/wallet" className="text-sm font-semibold text-emerald-800 underline hover:text-emerald-900">{t("news.openWallet")}</Link>
+                <Link href="/dashboard/buyer/wallet" className="py-1 text-sm py-1 font-semibold text-emerald-800 underline hover:text-emerald-900">{t("news.openWallet")}</Link>
               </div>
               <ul className="mt-4 divide-y divide-gray-100">
                 {news.map((n, i) => (

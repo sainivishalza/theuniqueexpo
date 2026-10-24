@@ -93,7 +93,7 @@ export default function ExhibitionsCalendar({ exhibitions }: { exhibitions: Item
       <div className="mx-auto mt-6 max-w-3xl" data-testid="cal-list">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="text-lg font-bold text-heading">{day ? t("listDay", { date: fmtDay(day) }) : t("listMonth", { month: fmtMonth(cursor) })}</h3>
-          {day && <button type="button" onClick={() => setDay(null)} className="text-sm font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900">{t("wholeMonth")}</button>}
+          {day && <button type="button" onClick={() => setDay(null)} className="py-1 text-sm font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900">{t("wholeMonth")}</button>}
         </div>
         {listed.length === 0 ? (
           <p className="mt-3 text-gray-700">{t("empty")}</p>

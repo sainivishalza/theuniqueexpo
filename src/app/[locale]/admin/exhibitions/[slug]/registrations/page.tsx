@@ -232,7 +232,7 @@ export default function AdminExpoRegistrationsPage({ params }: { params: Promise
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-7xl px-6">
-          <Link href="/admin/exhibitions" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToExhibitions")}</Link>
+          <Link href="/admin/exhibitions" className="py-1 text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToExhibitions")}</Link>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-extrabold text-white">{exhibition ? t("titleWithName", { name: exhibition.title }) : t("title")}</h1>

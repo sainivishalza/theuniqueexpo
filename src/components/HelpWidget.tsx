@@ -129,7 +129,7 @@ export default function HelpWidget({ number }: { number: string }) {
             ) : (
               <Link href="/contact" className="flex items-center justify-center rounded-[var(--radius-button)] bg-emerald-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-800">{t("contact")}</Link>
             )}
-            <Link href="/help" className="block text-center text-sm font-semibold text-emerald-800 underline underline-offset-2">{t("helpCenter")}</Link>
+            <Link href="/help" className="block text-center py-1 text-sm font-semibold text-emerald-800 underline underline-offset-2">{t("helpCenter")}</Link>
           </div>
         </div>
       )}

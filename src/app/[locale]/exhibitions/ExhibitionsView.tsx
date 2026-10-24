@@ -260,7 +260,7 @@ export default function ExhibitionsView({
             <input type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} className="rounded-[var(--radius-button)] border border-gray-700 bg-cream-50 px-2 py-1.5 text-sm text-gray-700 focus:border-emerald-900 focus:ring-2 focus:ring-emerald-900/10 outline-none" />
           </label>
           {(from || to) && (
-            <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="text-sm font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900">{t("clearDates")}</button>
+            <button type="button" onClick={() => { setFrom(""); setTo(""); }} className="py-1 text-sm font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900">{t("clearDates")}</button>
           )}
           <div className="flex rounded-[var(--radius-button)] border border-gray-700 overflow-hidden" role="group" aria-label={t("viewLabel")}>
             {(["grid", "months", "calendar"] as const).map((v) => (

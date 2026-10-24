@@ -85,7 +85,7 @@ export default function SavedViews({
 
   return (
     <div data-testid="saved-views">
-      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="text-sm font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="py-1 text-sm font-semibold text-emerald-800 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm">
         {t("toggle", { count: views.length })}
       </button>
       {open && (

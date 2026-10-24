@@ -110,7 +110,7 @@ export default function AdminSitePageEditor({ params }: { params: Promise<{ slug
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-4xl px-6">
-          <Link href="/admin/pages" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToWebsitePages")}</Link>
+          <Link href="/admin/pages" className="py-1 text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToWebsitePages")}</Link>
           <h1 className="text-3xl font-extrabold text-white">{pageDef.navLabel}</h1>
           <p className="mt-1 text-emerald-200/80">
             {t.rich("subtitle", { path: pageDef.path, link: (chunks) => <Link href={pageDef.path} target="_blank" className="underline hover:text-white">{chunks}</Link> })}

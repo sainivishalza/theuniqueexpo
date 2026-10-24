@@ -84,7 +84,7 @@ export default function WalletUsePage() {
               <h3 className="font-bold text-heading">{tu(`${i.key}.title`)}</h3>
               <p className="mt-1 text-sm text-gray-800">{tu(`${i.key}.text`)}</p>
               <p className={`mt-3 rounded-lg px-3 py-2 text-sm font-medium ${i.off ? "bg-gray-100 text-gray-800" : "bg-emerald-50 text-emerald-900"}`}>{i.status}</p>
-              {!i.off && <p className="mt-3"><Link href={i.href} className="text-sm font-semibold text-emerald-800 underline">{tu(`${i.key}.open`)}</Link></p>}
+              {!i.off && <p className="mt-3"><Link href={i.href} className="py-1 text-sm font-semibold text-emerald-800 underline">{tu(`${i.key}.open`)}</Link></p>}
             </Card>
           </li>
         ))}

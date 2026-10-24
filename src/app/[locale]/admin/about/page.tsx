@@ -98,7 +98,7 @@ export default function AdminAboutPage() {
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-4xl px-6">
-          <Link href="/admin" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{ta("backToAdmin")}</Link>
+          <Link href="/admin" className="py-1 text-sm text-emerald-200 hover:text-white mb-4 inline-block">{ta("backToAdmin")}</Link>
           <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
           <p className="mt-1 text-emerald-200/80">
             {t.rich("subtitle", { link: (chunks) => <Link href="/about" target="_blank" className="underline hover:text-white">{chunks}</Link> })}

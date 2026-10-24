@@ -63,7 +63,7 @@ export default function ChangeEmailCard() {
       {mailOn === false ? (
         <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
           {t("mailOff")}{" "}
-          {user.role === "admin" && <Link href="/admin/email" className="font-semibold text-emerald-800 underline hover:text-emerald-900">{t("setUpEmail")}</Link>}
+          {user.role === "admin" && <Link href="/admin/email" className="py-1 font-semibold text-emerald-800 underline hover:text-emerald-900">{t("setUpEmail")}</Link>}
         </p>
       ) : (
         <>

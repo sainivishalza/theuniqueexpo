@@ -161,7 +161,7 @@ export default function AdminUsersPage() {
     <div>
       <section className="bg-[var(--color-hero-bg)] py-8">
         <div className="mx-auto max-w-6xl px-6">
-          <Link href="/admin" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4">
+          <Link href="/admin" className="py-1 inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             {t("backToAdmin")}
           </Link>
@@ -311,7 +311,7 @@ export default function AdminUsersPage() {
               <button
                 type="button"
                 onClick={() => navigator.clipboard?.writeText(resetResult.password)}
-                className="text-xs font-semibold text-emerald-600 hover:text-emerald-700"
+                className="text-xs py-1 font-semibold text-emerald-600 hover:text-emerald-700"
               >
                 {t("copy")}
               </button>

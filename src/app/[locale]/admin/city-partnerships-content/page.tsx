@@ -79,7 +79,7 @@ export default function AdminCityPartnershipsContentPage() {
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-4xl px-6">
-          <Link href="/admin/city-partnership-inquiries" className="text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToInquiries")}</Link>
+          <Link href="/admin/city-partnership-inquiries" className="py-1 text-sm text-emerald-200 hover:text-white mb-4 inline-block">{t("backToInquiries")}</Link>
           <h1 className="text-3xl font-extrabold text-white">{t("title")}</h1>
           <p className="mt-1 text-emerald-200/80">
             {t.rich("subtitle", { link: (chunks) => <Link href="/city-partnerships" target="_blank" className="underline hover:text-white">{chunks}</Link> })}

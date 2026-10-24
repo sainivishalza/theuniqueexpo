@@ -150,7 +150,7 @@ export default function BuyerWalletPage() {
               <button
                 type="button"
                 onClick={copyLink}
-                className="mt-3 text-sm font-semibold text-emerald-700 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
+                className="py-1 mt-3 text-sm font-semibold text-emerald-700 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-900 focus-visible:outline-offset-2 rounded-sm"
               >
                 {copied ? t("copied") : t("copyLink")}
               </button>

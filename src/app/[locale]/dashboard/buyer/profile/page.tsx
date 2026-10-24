@@ -186,7 +186,7 @@ export default function BuyerProfilePage() {
     <div>
       <section className="gradient-hero py-12">
         <div className="mx-auto max-w-4xl px-6">
-          <Link href="/dashboard/buyer" className="inline-flex items-center gap-1.5 text-sm text-emerald-200/70 hover:text-white transition-colors mb-4">
+          <Link href="/dashboard/buyer" className="py-1 inline-flex items-center gap-1.5 text-sm text-emerald-200/70 hover:text-white transition-colors mb-4">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             {t("backToDashboard")}
           </Link>

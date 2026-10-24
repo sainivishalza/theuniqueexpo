@@ -663,7 +663,7 @@ export default function AdminBuyerProfilesPage() {
     <div>
       <section className="bg-[var(--color-hero-bg)] py-8">
         <div className="mx-auto max-w-6xl px-6">
-          <Link href="/admin" className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4">
+          <Link href="/admin" className="py-1 inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors mb-4">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
             {t("backToAdmin")}
           </Link>
@@ -745,7 +745,7 @@ export default function AdminBuyerProfilesPage() {
                 {meta!.allTags.map((tag) => <option key={tag} value={tag}>{tag}</option>)}
               </select>
             )}
-            <Link href="/admin/buyer-expos" className="text-sm font-semibold text-emerald-800 hover:text-emerald-900 underline">{t("manageExpos")}</Link>
+            <Link href="/admin/buyer-expos" className="py-1 text-sm font-semibold text-emerald-800 hover:text-emerald-900 underline">{t("manageExpos")}</Link>
             <Button onClick={() => setGroupAnnounceOpen(true)} variant="secondaryOutline" size="xs">{t("announce.groupToggle")}</Button>
             {selected.size > 0 && (
               <div className="flex flex-wrap items-center gap-2 rounded-xl bg-emerald-50 px-3 py-2">
@@ -769,7 +769,7 @@ export default function AdminBuyerProfilesPage() {
               type="button"
               onClick={() => setNumbersOpen((open) => !open)}
               aria-expanded={numbersOpen}
-              className="text-sm font-semibold text-emerald-800 hover:text-emerald-900 underline"
+              className="py-1 text-sm font-semibold text-emerald-800 hover:text-emerald-900 underline"
             >
               {t("selectByNumbers.toggle")}
             </button>
@@ -954,7 +954,7 @@ export default function AdminBuyerProfilesPage() {
                     <p className="mt-1 text-sm text-gray-700">
                       <span className="font-semibold">{t("rewardPointsShort", { points: formatNumber(open.rewardPoints) })}</span>
                       {" · "}
-                      <Link href="/admin/wallet?tab=wallets" className="font-semibold text-emerald-800 underline hover:text-emerald-900">{t("openWallet")}</Link>
+                      <Link href="/admin/wallet?tab=wallets" className="py-1 font-semibold text-emerald-800 underline hover:text-emerald-900">{t("openWallet")}</Link>
                     </p>
                   ) : null;
                 })()}

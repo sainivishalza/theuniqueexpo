@@ -37,7 +37,7 @@ export default function UnsubscribeForm({ u, k, token }: { u: string; k: string;
           <p className="text-gray-800">{t(`${kind}.ask`)}</p>
           <Button type="button" variant="gradientCta" disabled={state === "busy"} onClick={confirm}>{state === "busy" ? t("working") : t(`${kind}.button`)}</Button>
           {state === "failed" && <p role="alert" className="text-sm font-medium text-red-700">{t("failed")}</p>}
-          <p><Link href="/dashboard/account" className="text-sm font-semibold text-emerald-800 underline">{t("keep")}</Link></p>
+          <p><Link href="/dashboard/account" className="py-1 text-sm font-semibold text-emerald-800 underline">{t("keep")}</Link></p>
         </div>
       )}
     </div>

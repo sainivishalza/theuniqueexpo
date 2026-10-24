@@ -35,6 +35,7 @@ export type EmailKind =
   | "confirmEmail"
   | "confirmEmailChange"
   | "emailChanged"
+  | "accountDeleted"
   | "registrationReminder"
   | "registrationStartsSoon"
   | "savedRegistrationOpened"

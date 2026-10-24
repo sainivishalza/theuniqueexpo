@@ -5122,6 +5122,12 @@
       "link": "Turn them off",
       "digest": "You get this weekly e-mail because news about new exhibitions is on in your account. {url}",
       "savedAlerts": "You get this because alerts about saved exhibitions are on in your account. {url}"
+    },
+    "accountDeleted": {
+      "subject": "Your account was deleted",
+      "intro": "Your The Unique Expo account was deleted at your request.",
+      "body": "Your personal details, documents and sign-in were removed. Records we must keep for our accounts, such as reward-point entries, no longer show your name. If this was not you, contact us at once.",
+      "button": "Visit the site"
     }
   },
   "adminEmail": {
@@ -5198,7 +5204,9 @@
       "scheduledReport": "Scheduled report",
       "dailyHealth": "Daily health report",
       "adminSignIn": "New admin sign-in alert",
-      "errorAlert": "New website error alert"
+      "errorAlert": "New website error alert",
+      "digest": "Weekly new exhibitions",
+      "accountDeleted": "Account deleted"
     },
     "errors": {
       "invalid_host": "The mail server name is not valid.",
@@ -6574,5 +6582,26 @@
     "checkDone": "Done. Making them smaller would save about {saved} MB.",
     "applyDone": "Done. About {saved} MB saved.",
     "failed": "That did not work. Please try again."
+  },
+  "accountDelete": {
+    "title": "Delete my account",
+    "intro": "This permanently removes your personal details, documents, profile, requests, reviews and sign-in. It cannot be undone.",
+    "keepNote": "Records we must keep for our accounts (for example reward-point entries) stay, without your name. Exhibition registrations stay only as anonymous counts.",
+    "checking": "Checking whether your account can be deleted…",
+    "blocked": "Before you can delete your account:",
+    "wallet_balance": "You still have {points} reward points. Withdraw them, spend them on a package or send them to someone first.",
+    "pending_money": "You have {count, plural, one {# top-up, withdrawal or expense claim} other {# top-ups, withdrawals or expense claims}} waiting. Wait until they are processed (or cancel them), then come back.",
+    "admin_account": "This is an administrator account. Ask another administrator to remove it.",
+    "already_deleted": "This account has already been deleted.",
+    "upcoming": "{count, plural, one {Your # upcoming registration will be cancelled.} other {Your # upcoming registrations will be cancelled.}}",
+    "understand": "I understand that this cannot be undone.",
+    "password": "Your password",
+    "button": "Delete my account for good",
+    "working": "Deleting…",
+    "wrong_password": "That password is not right.",
+    "rate_limited": "Too many attempts. Please wait a few minutes.",
+    "failed": "That did not work. Nothing was deleted. Please try again.",
+    "done": "Your account was deleted. Goodbye.",
+    "openWallet": "Open the wallet"
   }
 }

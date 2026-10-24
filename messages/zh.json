@@ -5122,6 +5122,12 @@
       "link": "关闭",
       "digest": "您收到这封每周邮件，是因为您的账户开启了新展会通知。{url}",
       "savedAlerts": "您收到这封邮件，是因为您的账户开启了已收藏展会的提醒。{url}"
+    },
+    "accountDeleted": {
+      "subject": "您的账户已删除",
+      "intro": "您的 The Unique Expo 账户已应您的要求删除。",
+      "body": "您的个人信息、证件和登录信息已被删除。我们因账务需要而保留的记录（如积分流水）不再显示您的姓名。如果这不是您本人的操作，请立即联系我们。",
+      "button": "访问网站"
     }
   },
   "adminEmail": {
@@ -5198,7 +5204,9 @@
       "scheduledReport": "定时报表",
       "dailyHealth": "每日运行状况报告",
       "adminSignIn": "管理员新登录提醒",
-      "errorAlert": "网站新错误提醒"
+      "errorAlert": "网站新错误提醒",
+      "digest": "每周新展会",
+      "accountDeleted": "账户已删除"
     },
     "errors": {
       "invalid_host": "邮件服务器名称无效。",
@@ -6574,5 +6582,26 @@
     "checkDone": "完成。压缩后预计可节省约 {saved} MB。",
     "applyDone": "完成。已节省约 {saved} MB。",
     "failed": "操作失败，请重试。"
+  },
+  "accountDelete": {
+    "title": "删除我的账户",
+    "intro": "这将永久删除您的个人信息、证件、资料、申请、评价和登录信息，且无法撤销。",
+    "keepNote": "我们因账务需要而保留的记录（如积分流水）将保留，但不再显示您的姓名。展会报名仅作为匿名统计保留。",
+    "checking": "正在检查您的账户是否可以删除…",
+    "blocked": "删除账户之前：",
+    "wallet_balance": "您还有 {points} 积分。请先提现、用于购买套餐或转赠他人。",
+    "pending_money": "您有 {count} 笔充值、提现或费用申请正在处理。请等处理完成（或取消）后再回来。",
+    "admin_account": "这是管理员账户。请让其他管理员来删除。",
+    "already_deleted": "此账户已被删除。",
+    "upcoming": "您的 {count} 个即将到来的报名将被取消。",
+    "understand": "我明白此操作无法撤销。",
+    "password": "您的密码",
+    "button": "永久删除我的账户",
+    "working": "正在删除…",
+    "wrong_password": "密码不正确。",
+    "rate_limited": "尝试次数过多，请稍候几分钟。",
+    "failed": "操作失败，未删除任何内容。请重试。",
+    "done": "您的账户已删除。再见。",
+    "openWallet": "打开钱包"
   }
 }

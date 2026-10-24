@@ -218,7 +218,7 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
   sum = await me();
   const byExpo = Object.fromEntries(sum.byExhibition.map((x) => [x.title, x]));
   ok(byExpo['Referral Expo A'].mine === 100 && byExpo['Referral Expo A'].theirs === 25 && byExpo['Referral Expo B'].mine === 70 && byExpo['Referral Expo B'].theirs === 10 && byExpo['Referral Expo C'].mine === 0 && byExpo['Referral Expo C'].theirs === 15, 'the inviter sees what each exhibition pays', sum.byExhibition);
-  admin = await (await fetch(BASE + '/api/admin/wallet/referrals?status=rewarded&q=' + encodeURIComponent(`${tag}-${seq}`), { headers: AH })).json();
+  admin = await (await fetch(BASE + '/api/admin/wallet/referrals?status=rewarded&q=' + encodeURIComponent(fLate.email), { headers: AH })).json();
   ok(admin.items.some((i) => i.exhibitionTitle === 'Referral Expo B'), 'the admin list says which exhibition paid it');
 
   console.log('\n== accounts that cannot be paid');
@@ -365,14 +365,14 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
     await p.getByLabel('Points for the buyer who invites').fill('77');
     await p.getByLabel('Find an exhibition').fill('Referral Expo B');
     await sleep(300);
-    await p.getByLabel('Inviter points for Referral Expo B').fill('');
-    await p.getByLabel('New buyer points for Referral Expo B').fill('12');
-    await p.getByRole('button', { name: 'Save Referral Expo B' }).click();
+    await p.getByTestId(`referral-expo-${expoB}`).getByLabel('Inviter points for Referral Expo B').fill('');
+    await p.getByTestId(`referral-expo-${expoB}`).getByLabel('New buyer points for Referral Expo B').fill('12');
+    await p.getByTestId(`referral-expo-${expoB}`).getByRole('button', { name: 'Save Referral Expo B' }).click();
     await p.getByTestId(`referral-expo-${expoB}`).getByRole('status').waitFor();
     const row = (await (await fetch(BASE + '/api/admin/wallet/referrals?status=none', { headers: AH })).json()).exhibitions.find((x) => x.id === expoB);
     ok(row.referrerPoints === null && row.referredPoints === 12, 'an exhibition\'s points are edited on screen (empty = default)', row);
-    await p.getByLabel('New buyer points for Referral Expo B').fill('abc');
-    ok(await p.getByRole('button', { name: 'Save Referral Expo B' }).isDisabled(), 'text cannot be saved');
+    await p.getByTestId(`referral-expo-${expoB}`).getByLabel('New buyer points for Referral Expo B').fill('abc');
+    ok(await p.getByTestId(`referral-expo-${expoB}`).getByRole('button', { name: 'Save Referral Expo B' }).isDisabled(), 'text cannot be saved');
     await p.getByLabel('Find an exhibition').fill('');
     p.on('dialog', (dlg) => dlg.accept());
     await p.getByLabel('Show').selectOption('pending');

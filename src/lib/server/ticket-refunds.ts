@@ -71,6 +71,7 @@ export interface TrainClaimSummary {
   exhibitionTitle: string;
   amountCny: number | null;
   status: string;
+  hasInvoice: boolean; // the e-invoice is attached and can be downloaded
   pointsAwarded: number | null;
   adminNote: string;
   createdAt: string;
@@ -78,7 +79,7 @@ export interface TrainClaimSummary {
 
 export async function listMyTrainClaims(userId: number): Promise<TrainClaimSummary[]> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT c.id, c.amount_cny, c.status, c.points_awarded, c.admin_note, c.created_at, e.title AS exhibition_title
+    `SELECT c.id, c.amount_cny, c.status, c.receipt_count, c.points_awarded, c.admin_note, c.created_at, e.title AS exhibition_title
      FROM wallet_expense_claims c LEFT JOIN exhibitions e ON e.id = c.exhibition_id
      WHERE c.user_id = ? AND c.kind = 'train' ORDER BY c.id DESC LIMIT 50`,
     [userId]
@@ -88,6 +89,7 @@ export async function listMyTrainClaims(userId: number): Promise<TrainClaimSumma
     exhibitionTitle: r.exhibition_title ? String(r.exhibition_title) : "",
     amountCny: r.amount_cny === null ? null : Number(r.amount_cny),
     status: String(r.status),
+    hasInvoice: Number(r.receipt_count) >= 2,
     pointsAwarded: r.points_awarded === null ? null : Number(r.points_awarded),
     adminNote: String(r.admin_note ?? ""),
     createdAt: String(r.created_at).replace(" ", "T") + "Z",
@@ -97,4 +99,21 @@ export async function listMyTrainClaims(userId: number): Promise<TrainClaimSumma
 // What an approval of this invoice would pay under the exhibition's rule, after what the buyer already got back there.
 export function suggestedPoints(amountCny: number | null, rules: RefundRules, refundedBefore: number): number {
   return amountCny === null ? 0 : refundPoints(amountCny, rules, refundedBefore);
+}
+
+// The e-invoice of one of this buyer's own requests, as the file they can download (null when there is none yet).
+export async function getMyInvoice(userId: number, id: number): Promise<{ bytes: Buffer; contentType: string; extension: string } | null> {
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT receipts FROM wallet_expense_claims WHERE id = ? AND user_id = ? AND kind = 'train'", [id, userId]);
+  if (!rows[0]) return null;
+  let files: unknown;
+  try {
+    files = JSON.parse(String(rows[0].receipts));
+  } catch {
+    return null;
+  }
+  const invoice = Array.isArray(files) ? files[1] : null;
+  const match = typeof invoice === "string" ? /^data:([a-z/+.-]+);base64,(.+)$/i.exec(invoice) : null;
+  if (!match) return null;
+  const contentType = match[1].toLowerCase();
+  return { bytes: Buffer.from(match[2], "base64"), contentType, extension: contentType === "application/pdf" ? "pdf" : contentType.split("/")[1].replace("jpeg", "jpg") };
 }

@@ -4414,7 +4414,8 @@
       "rate_limited": "尝试次数过多，请稍后再试。",
       "unauthorized": "请重新登录。",
       "duplicate_ticket": "这张车票已提交过报销。",
-      "refund_not_available": "该展会不按积分报销车票，或您尚未报名该展会。"
+      "refund_not_available": "该展会不按积分报销车票，或您尚未报名该展会。",
+      "invoice_missing": "我们仍需附上电子发票及其金额。"
     },
     "send": {
       "title": "转账积分",
@@ -4623,7 +4624,7 @@
     },
     "ticket": {
       "title": "火车票报销",
-      "subtitle": "自己购买了火车票？提交扫码开票单和电子发票，我们将以积分报销。",
+      "subtitle": "自己购买了火车票？把车站的开票单发给我们。我们会在 12306 获取电子发票、核对金额，并以积分报销。",
       "noneTitle": "暂无可报销的展会",
       "noneText": "您已报名的展会都不报销火车票。由我们安排交通的展会无需报销。",
       "arranged": "由我们安排交通：{names}。",
@@ -4634,19 +4635,13 @@
       "step2": "2. 上传车站的扫码开票单",
       "step2Help": "请清晰拍摄纸质的“扫码开票单（Receipt of E-invoice generation QR code）”。",
       "receipt": "车站扫码开票单照片",
-      "qrFound": "已读取您开票单上的二维码。",
-      "qrOpen": "打开 12306 页面",
-      "qrText": "二维码内容：",
-      "qrFail": "无法从这张照片读取二维码。请用手机相机或 12306 应用扫描纸质开票单，或上传更清晰的照片。",
-      "step3": "3. 在 12306 获取电子发票",
-      "step3Help": "打开 12306 页面（或扫描纸质开票单上的二维码）。系统要求输入证件号码时，请输入护照号码的后 6 位：",
+      "step3": "3. 您的护照号码",
+      "step3Help": "我们使用您资料中的护照号码在 12306 下载电子发票，请确认无误。",
       "passportEnding": "护照号码后 6 位：{ending}",
-      "passportMissing": "请在个人资料中填写护照号码，此处将会显示后 6 位。",
+      "passportMissing": "请先在个人资料中填写护照号码：获取电子发票需要用到。",
       "openProfile": "打开我的资料",
-      "step3Download": "然后下载电子发票（PDF），用于下一步。",
-      "step4": "4. 上传电子发票",
+      "step4": "4. 已有电子发票？（选填）",
       "invoice": "电子发票（PDF 或图片）",
-      "step5": "5. 确认金额",
       "amount": "电子发票金额（元）",
       "amountHint": "请填写发票上的票价，例如 536.00。",
       "ticketNo": "电子客票号（选填）",
@@ -4655,13 +4650,15 @@
       "estimateNone": "该展会的报销额度您已用完。",
       "submit": "提交审核",
       "sending": "提交中…",
-      "sent": "已提交。我们会核对金额并通过或拒绝申请。",
+      "sent": "已提交。我们会在 12306 获取电子发票、核对金额，并通过或拒绝申请。",
       "historyTitle": "您的申请",
       "historyEmpty": "暂无申请。",
       "historyRow": "{expo} · ¥{amount}",
       "points": "+{points} 积分",
-      "copy": "复制",
-      "copied": "已复制。"
+      "step4Help": "没有可跳过：我们会替您获取。如已上传，请填写发票上的金额。",
+      "stageGetting": "我们正在 12306 为您获取电子发票。",
+      "stageWaiting": "电子发票已附上，等待审核。",
+      "downloadInvoice": "下载电子发票"
     }
   },
   "adminWallet": {
@@ -4757,7 +4754,8 @@
       "rate_limited": "尝试次数过多，请稍候。",
       "unauthorized": "需要管理员权限。",
       "duplicate_ticket": "这张车票已提交过报销。",
-      "refund_not_available": "该展会不按积分报销车票。"
+      "refund_not_available": "该展会不按积分报销车票。",
+      "invoice_missing": "请先附上电子发票并填写金额。"
     },
     "overview": {
       "pendingTopups": "待处理的充值",
@@ -4819,7 +4817,19 @@
       "sameTicket": "同一张车票出现在其他申请中。",
       "receiptLabel": "车站开票单",
       "invoiceLabel": "电子发票",
-      "qrLink": "打开二维码链接"
+      "qrLink": "打开二维码链接",
+      "needsInvoiceBadge": "需要电子发票",
+      "getInvoiceTitle": "在 12306 获取电子发票",
+      "getInvoiceSteps": "1. 用手机扫描下方开票单上的二维码（或打开链接）。2. 12306 要求输入证件号码时，输入此处显示的护照后几位。3. 下载电子发票，在此上传并填写发票上的金额。",
+      "passportEnding": "需输入的护照后 6 位：{ending}",
+      "passportMissing": "买家资料中没有护照号码：请让买家补充。",
+      "invoiceFile": "电子发票（PDF 或图片）",
+      "amountField": "电子发票金额（元）",
+      "ticketNoField": "电子客票号（选填）",
+      "attach": "保存发票和金额",
+      "attached": "已保存，现在可以审核通过。",
+      "approveBlocked": "通过前请先附上电子发票并填写金额。",
+      "readQr": "开票单上的二维码：{text}"
     },
     "wallets": {
       "empty": "暂无钱包。买家第一次打开钱包时会自动创建。",
@@ -5616,7 +5626,8 @@
       "referrals_settled": "发放了待发的邀请奖励",
       "referral_rejected": "拒绝了一条邀请记录",
       "referral_exhibition_points": "设置了展会的邀请奖励积分",
-      "ticket_refund_rules": "设置了展会的车票报销规则"
+      "ticket_refund_rules": "设置了展会的车票报销规则",
+      "ticket_invoice_attached": "为车票报销附上了电子发票"
     }
   },
   "notificationsPage": {

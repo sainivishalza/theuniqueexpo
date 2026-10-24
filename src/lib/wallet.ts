@@ -58,6 +58,7 @@ export type WalletErrorCode =
   | "wrong_password"
   | "rate_limited"
   | "duplicate_ticket"
+  | "invoice_missing"
   | "refund_not_available"
   | "unauthorized";
 

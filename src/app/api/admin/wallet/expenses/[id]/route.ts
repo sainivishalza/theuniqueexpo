@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { logAdminAction } from "@/lib/server/audit-log";
 import { parsePoints } from "@/lib/wallet";
-import { reviewExpenseClaim } from "@/lib/server/wallet-repo";
+import { completeTrainClaim, reviewExpenseClaim } from "@/lib/server/wallet-repo";
+import { isValidUploadedDocument } from "@/lib/server/validate-upload";
+import { parseCny, parseTicketNo } from "@/lib/ticket-refund";
 import { getExpenseReceipts } from "@/lib/server/wallet-admin-repo";
 import { notifyWalletRequest } from "@/lib/server/notifications";
-import { positiveId, readJson, requireWalletAdmin, text, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
+import { MAX_WALLET_IMAGE_BYTES, positiveId, readJson, requireWalletAdmin, text, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
 
 // The receipts the buyer uploaded.
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -21,7 +23,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   }
 }
 
-// Approve with a number of points, or reject.
+// Approve with a number of points, reject, or (train-ticket refunds) attach the e-invoice and its amount.
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const auth = await requireWalletAdmin(request);
   if (auth.response) return auth.response;
@@ -29,7 +31,17 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   const body = await readJson(request);
   if (!id || !body) return walletFail("invalid_input");
   try {
-    if (body.action === "approve") {
+    if (body.action === "complete") {
+      // A train-ticket refund: the e-invoice our team got from 12306 (when the buyer did not send it) and the amount printed on it.
+      const amountCny = parseCny(body.amount);
+      if (amountCny === null) return walletFail("invalid_amount");
+      const ticketNo = parseTicketNo(body.ticketNo);
+      if (ticketNo === null) return walletFail("invalid_input");
+      const hasInvoice = body.invoice !== undefined && body.invoice !== null && body.invoice !== "";
+      if (hasInvoice && !isValidUploadedDocument(body.invoice, MAX_WALLET_IMAGE_BYTES)) return walletFail("invalid_input");
+      await completeTrainClaim(id, { invoice: hasInvoice ? (body.invoice as string) : null, amountCny, ticketNo });
+      logAdminAction(request, auth.admin, "ticket_invoice_attached", { targetType: "expense", targetId: id, details: `¥${amountCny.toFixed(2)}` });
+    } else if (body.action === "approve") {
       const points = parsePoints(body.points);
       if (points === null) return walletFail("invalid_amount");
       await reviewExpenseClaim(auth.admin.id, id, { approve: true, points, adminNote: text(body.note, 500) });

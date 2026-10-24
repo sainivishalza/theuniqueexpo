@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { formatNumber } from "@/lib/format";
 import { formatInstantDateTime, localizeDay } from "@/lib/date-format";
@@ -8,7 +8,9 @@ import { fieldClasses } from "@/components/ui/FormField";
 import { errorKey, pointsFromText, walletApi } from "@/lib/client/wallet-client";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
-import { qrLink } from "@/lib/ticket-refund";
+import { parseCny, qrLink } from "@/lib/ticket-refund";
+import { decodeQrFromDataUrl } from "@/lib/client/qr-decode";
+import UploadField from "@/components/wallet/UploadField";
 import Badge from "@/components/ui/Badge";
 import { ImageViewer, ListFilters, PersonLine, ShowMore, StatusBadge, useAdminList, useDebounced, type Person } from "./shared";
 
@@ -17,6 +19,7 @@ interface Claim extends Person {
   pointsAwarded: number | null; adminNote: string; exhibitionTitle: string; createdAt: string;
   kind: string; amountCny: number | null; ticketNo: string; qrText: string;
   refundMode: string; refundPercent: number; refundMax: number; refundedBefore: number; sameTicket: number; suggestedPoints: number;
+  needsInvoice: boolean; passportEnding: string;
 }
 
 export default function ExpensesTab() {
@@ -33,6 +36,12 @@ export default function ExpensesTab() {
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  // Getting the e-invoice for a train-ticket refund: the file, the amount and the ticket number staff typed, and the QR code read from the receipt.
+  const [invoiceFile, setInvoiceFile] = useState("");
+  const [invoiceAmount, setInvoiceAmount] = useState("");
+  const [invoiceTicketNo, setInvoiceTicketNo] = useState("");
+  const [qrRead, setQrRead] = useState<Record<number, string>>({});
+  const prefillAfterSave = useRef<number | null>(null);
 
   async function open(row: Claim) {
     setMessage("");
@@ -40,11 +49,54 @@ export default function ExpensesTab() {
     // A train-ticket refund starts from what the exhibition's rule says; the admin can change it.
     setPointsText(row.kind === "train" && row.suggestedPoints > 0 ? String(row.suggestedPoints) : "");
     setNote("");
-    if (!receipts[row.id]) {
-      const res = await walletApi<{ receipts: string[] }>(`/api/admin/wallet/expenses/${row.id}`);
-      if (res.ok) setReceipts((p) => ({ ...p, [row.id]: res.data.receipts }));
-      else setMessage(t(`errors.${errorKey(res.data.code)}`));
+    setInvoiceFile("");
+    setInvoiceAmount(row.amountCny === null ? "" : String(row.amountCny));
+    setInvoiceTicketNo(row.ticketNo);
+    if (!receipts[row.id]) await loadReceipts(row);
+  }
+
+  async function loadReceipts(row: Claim) {
+    const res = await walletApi<{ receipts: string[] }>(`/api/admin/wallet/expenses/${row.id}`);
+    if (!res.ok) {
+      setMessage(t(`errors.${errorKey(res.data.code)}`));
+      return;
     }
+    setReceipts((p) => ({ ...p, [row.id]: res.data.receipts }));
+    // Where the browser can read QR codes, the link on the receipt is read for the staff member.
+    if (row.kind === "train" && res.data.receipts[0] && !row.qrText) {
+      const text = await decodeQrFromDataUrl(res.data.receipts[0]);
+      if (text) setQrRead((p) => ({ ...p, [row.id]: text }));
+    }
+  }
+
+  // After the e-invoice is saved the list reloads; the points box then starts from the rule's suggestion.
+  useEffect(() => {
+    const id = prefillAfterSave.current;
+    if (id === null) return;
+    const row = items.find((x) => x.id === id);
+    if (row && !row.needsInvoice && row.amountCny !== null) {
+      prefillAfterSave.current = null;
+      setPointsText(row.suggestedPoints > 0 ? String(row.suggestedPoints) : "");
+    }
+  }, [items]);
+
+  async function saveInvoice(row: Claim) {
+    if (parseCny(invoiceAmount) === null || (row.needsInvoice && !invoiceFile)) return;
+    setBusy(true);
+    setMessage("");
+    const res = await walletApi(`/api/admin/wallet/expenses/${row.id}`, {
+      method: "PATCH",
+      body: { action: "complete", invoice: invoiceFile || undefined, amount: invoiceAmount, ticketNo: invoiceTicketNo },
+    });
+    setBusy(false);
+    if (!res.ok) {
+      setMessage(t(`errors.${errorKey(res.data.code)}`));
+      return;
+    }
+    setInvoiceFile("");
+    prefillAfterSave.current = row.id;
+    await loadReceipts(row);
+    reload();
   }
 
   async function decide(row: Claim, action: "approve" | "reject") {
@@ -82,7 +134,7 @@ export default function ExpensesTab() {
                   <StatusBadge status={row.status} label={t(`status.${row.status}`)} />
                 </div>
               </div>
-              <p className="mt-2 font-semibold text-heading [overflow-wrap:anywhere]">{row.kind === "train" && <Badge tone="emerald" size="status">{t("expenses.trainTag")}</Badge>} {row.title}</p>
+              <p className="mt-2 font-semibold text-heading [overflow-wrap:anywhere]">{row.kind === "train" && <Badge tone="emerald" size="status">{t("expenses.trainTag")}</Badge>} {row.kind === "train" && row.needsInvoice && row.status === "pending" && <Badge tone="warning" size="status">{t("expenses.needsInvoiceBadge")}</Badge>} {row.title}</p>
               <p className="text-sm text-gray-700 [overflow-wrap:anywhere]">
                 {t(`expenses.categories.${row.category}`)}
                 {row.amountText ? ` · ${row.amountText}` : ""}
@@ -94,7 +146,7 @@ export default function ExpensesTab() {
                   {row.amountCny !== null && <p className="font-bold text-heading">{t("expenses.invoiceAmount", { amount: row.amountCny.toFixed(2) })}</p>}
                   {row.ticketNo && <p className="text-gray-700 [overflow-wrap:anywhere]">{t("expenses.ticketNo", { no: row.ticketNo })}</p>}
                   {row.refundMode === "refund" ? (
-                    <p className="text-gray-700">{t("expenses.suggested", { points: formatNumber(row.suggestedPoints), percent: row.refundPercent, max: row.refundMax > 0 ? formatNumber(row.refundMax) : t("expenses.noLimit"), done: formatNumber(row.refundedBefore) })}</p>
+                    row.amountCny !== null && <p className="text-gray-700">{t("expenses.suggested", { points: formatNumber(row.suggestedPoints), percent: row.refundPercent, max: row.refundMax > 0 ? formatNumber(row.refundMax) : t("expenses.noLimit"), done: formatNumber(row.refundedBefore) })}</p>
                   ) : (
                     <p role="alert" className="font-semibold text-red-700">{t("expenses.notRefunded")}</p>
                   )}
@@ -120,8 +172,45 @@ export default function ExpensesTab() {
                     ) : (
                       <p className="text-gray-600">{t("loading")}</p>
                     )}
+                    {row.kind === "train" && row.status === "pending" && (
+                      <div className="space-y-3 rounded-lg border border-emerald-200 bg-white p-3" data-testid={`expense-invoice-panel-${row.id}`}>
+                        {(row.needsInvoice || row.amountCny === null) && (
+                          <>
+                            <p className="font-semibold text-heading">{t("expenses.getInvoiceTitle")}</p>
+                            <p className="text-sm text-gray-800">{t("expenses.getInvoiceSteps")}</p>
+                            {row.passportEnding ? (
+                              <p className="rounded-lg bg-cream-50 px-3 py-2 text-lg font-extrabold tracking-wider text-heading" data-testid={`expense-passport-${row.id}`}>{t("expenses.passportEnding", { ending: row.passportEnding })}</p>
+                            ) : (
+                              <p role="alert" className="text-sm font-semibold text-red-700">{t("expenses.passportMissing")}</p>
+                            )}
+                            {(row.qrText || qrRead[row.id]) && (
+                              <p className="text-sm text-gray-800 [overflow-wrap:anywhere]">
+                                {qrLink(row.qrText || qrRead[row.id]) ? (
+                                  <a href={qrLink(row.qrText || qrRead[row.id]) ?? undefined} target="_blank" rel="noopener noreferrer" className="inline-block py-1 font-semibold text-emerald-800 underline">{t("expenses.qrLink")}</a>
+                                ) : (
+                                  t("expenses.readQr", { text: row.qrText || qrRead[row.id] })
+                                )}
+                              </p>
+                            )}
+                            {row.needsInvoice && <UploadField label={t("expenses.invoiceFile")} value={invoiceFile} onChange={setInvoiceFile} onError={setMessage} allowPdf invalidMessage={t("errors.invalid_input")} removeLabel={t("remove")} />}
+                            <div className="grid gap-3 sm:grid-cols-2">
+                              <div>
+                                <label htmlFor={`${ids.points}-amt`} className="block text-sm font-medium text-gray-700 mb-1.5">{t("expenses.amountField")}</label>
+                                <input id={`${ids.points}-amt`} inputMode="decimal" value={invoiceAmount} onChange={(e) => setInvoiceAmount(e.target.value)} className={fieldClasses(invoiceAmount !== "" && parseCny(invoiceAmount) === null)} placeholder="536.00" />
+                              </div>
+                              <div>
+                                <label htmlFor={`${ids.points}-tno`} className="block text-sm font-medium text-gray-700 mb-1.5">{t("expenses.ticketNoField")}</label>
+                                <input id={`${ids.points}-tno`} value={invoiceTicketNo} onChange={(e) => setInvoiceTicketNo(e.target.value)} className={fieldClasses()} />
+                              </div>
+                            </div>
+                            <Button type="button" variant="save" size="compact" disabled={busy || parseCny(invoiceAmount) === null || (row.needsInvoice && !invoiceFile)} onClick={() => saveInvoice(row)} data-testid={`expense-invoice-save-${row.id}`}>{t("expenses.attach")}</Button>
+                          </>
+                        )}
+                      </div>
+                    )}
                     {row.status === "pending" && (
                       <>
+                        {row.kind === "train" && (row.needsInvoice || row.amountCny === null) && <p className="text-sm font-semibold text-amber-900" data-testid={`expense-blocked-${row.id}`}>{t("expenses.approveBlocked")}</p>}
                         <div>
                           <label htmlFor={ids.points} className="block text-sm font-medium text-gray-700 mb-1.5">{t("expenses.awardPoints")}</label>
                           <input id={ids.points} inputMode="numeric" value={pointsText} onChange={(e) => setPointsText(e.target.value)} className={fieldClasses()} />
@@ -132,7 +221,7 @@ export default function ExpensesTab() {
                           <input id={ids.note} value={note} maxLength={500} onChange={(e) => setNote(e.target.value)} className={fieldClasses()} />
                         </div>
                         <div className="flex flex-wrap gap-3">
-                          <Button type="button" variant="gradientCta" size="compact" disabled={busy} onClick={() => decide(row, "approve")}>{t("expenses.approve")}</Button>
+                          <Button type="button" variant="gradientCta" size="compact" disabled={busy || (row.kind === "train" && (row.needsInvoice || row.amountCny === null))} onClick={() => decide(row, "approve")}>{t("expenses.approve")}</Button>
                           <Button type="button" variant="ghostDanger" size="compact" disabled={busy} onClick={() => decide(row, "reject")}>{t("reject")}</Button>
                         </div>
                       </>

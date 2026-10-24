@@ -1,7 +1,7 @@
 import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { suggestedPoints } from "@/lib/server/ticket-refunds";
-import type { RefundMode } from "@/lib/ticket-refund";
+import { passportLast6, type RefundMode } from "@/lib/ticket-refund";
 import { formatBuyerNumber, parseBuyerNumber } from "@/lib/buyer-number";
 import { findLedgerMismatches } from "@/lib/server/wallet-repo";
 
@@ -136,7 +136,7 @@ export async function listExpenseClaims(status: string, q: string, page: number)
   const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT c.id, c.user_id, c.category, c.title, c.expense_date, c.amount_text, c.note, c.receipt_count, c.status, c.points_awarded,
             c.admin_note, c.created_at, c.reviewed_at, e.title AS exhibition_title, u.name, u.email, u.buyer_no,
-            c.kind, c.amount_cny, c.ticket_no, c.qr_text,
+            c.kind, c.amount_cny, c.ticket_no, c.qr_text, bp.passport_number,
             e.ticket_refund_mode, e.ticket_refund_percent, e.ticket_refund_max_points,
             (SELECT COALESCE(SUM(a.points_awarded), 0) FROM wallet_expense_claims a
                WHERE a.user_id = c.user_id AND a.exhibition_id = c.exhibition_id AND a.kind = 'train' AND a.status = 'approved' AND a.id <> c.id) AS refunded_before,
@@ -144,6 +144,7 @@ export async function listExpenseClaims(status: string, q: string, page: number)
                WHERE d.id <> c.id AND d.kind = 'train' AND c.kind = 'train' AND d.status <> 'rejected'
                  AND ((c.invoice_hash IS NOT NULL AND d.invoice_hash = c.invoice_hash) OR (c.ticket_no <> '' AND d.ticket_no = c.ticket_no))) AS same_ticket
      FROM wallet_expense_claims c JOIN users u ON u.id = c.user_id LEFT JOIN exhibitions e ON e.id = c.exhibition_id
+          LEFT JOIN buyer_profiles bp ON bp.user_id = c.user_id
      WHERE 1 = 1${where}${filter.sql} ORDER BY c.id DESC LIMIT ? OFFSET ?`,
     [...params, ADMIN_PAGE_SIZE + 1, pageOffset(page)]
   );
@@ -159,6 +160,9 @@ export async function listExpenseClaims(status: string, q: string, page: number)
       amountCny: r.amount_cny === null ? null : Number(r.amount_cny),
       ticketNo: r.ticket_no as string,
       qrText: r.qr_text as string,
+      // What staff need to get the e-invoice from 12306: the e-invoice is not attached yet, and the buyer's passport ending.
+      needsInvoice: r.kind === "train" && Number(r.receipt_count) < 2,
+      passportEnding: r.kind === "train" ? passportLast6(r.passport_number as string | null) : "",
       refundMode: (r.ticket_refund_mode as string | null) ?? "none",
       refundPercent: r.ticket_refund_percent === null ? 100 : Number(r.ticket_refund_percent),
       refundMax: r.ticket_refund_max_points === null ? 0 : Number(r.ticket_refund_max_points),

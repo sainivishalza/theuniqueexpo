@@ -10,7 +10,7 @@ import { fieldClasses } from "@/components/ui/FormField";
 import { errorKey, walletApi } from "@/lib/client/wallet-client";
 import { decodeQrFromDataUrl } from "@/lib/client/qr-decode";
 import { newClientKey } from "@/lib/wallet";
-import { parseCny, parseTicketNo, qrLink, refundPoints } from "@/lib/ticket-refund";
+import { parseCny, parseTicketNo, refundPoints } from "@/lib/ticket-refund";
 import Badge, { type BadgeTone } from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -18,13 +18,14 @@ import UploadField from "@/components/wallet/UploadField";
 import WalletLayout from "../_components/WalletLayout";
 
 interface Option { id: number; title: string; mode: "none" | "refund"; percent: number; maxPoints: number; refundedPoints: number }
-interface Claim { id: number; exhibitionTitle: string; amountCny: number | null; status: string; pointsAwarded: number | null; adminNote: string; createdAt: string }
+interface Claim { id: number; exhibitionTitle: string; amountCny: number | null; status: string; hasInvoice: boolean; pointsAwarded: number | null; adminNote: string; createdAt: string }
 interface Overview { exhibitions: Option[]; arrangedByUs: { id: number; title: string }[]; passportEnding: string; claims: Claim[] }
 
 const TONE: Record<string, BadgeTone> = { pending: "warning", approved: "success", rejected: "danger" };
 
-// Train-ticket refund, step by step: pick the exhibition, add the station receipt (its QR code opens the 12306 page), get the
-// e-invoice from 12306 with the last 6 characters of the passport number, upload it and the amount, and send it to be approved.
+// Train-ticket refund: pick the exhibition and send the receipt from the station. Our team gets the e-invoice from 12306
+// (with the passport number on the buyer's profile), checks the amount and approves; the buyer can then download the e-invoice.
+// A buyer who already has the invoice can add it with its amount.
 export default function TicketRefundPage() {
   const t = useTranslations("buyerWallet");
   const tt = useTranslations("buyerWallet.ticket");
@@ -34,14 +35,13 @@ export default function TicketRefundPage() {
   const [data, setData] = useState<Overview | null>(null);
   const [exhibitionId, setExhibitionId] = useState("");
   const [receipt, setReceipt] = useState("");
-  const [qr, setQr] = useState<{ state: "idle" | "reading" | "found" | "failed"; text: string }>({ state: "idle", text: "" });
+  const [qrText, setQrText] = useState("");
   const [invoice, setInvoice] = useState("");
   const [amount, setAmount] = useState("");
   const [ticketNo, setTicketNo] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const isBuyer = user?.role === "buyer";
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,24 +61,19 @@ export default function TicketRefundPage() {
     if (isBuyer) reload();
   }, [isBuyer, reload]);
 
+  // The QR code on the receipt is read when the phone's browser can, and kept for our team; nothing depends on it.
   async function onReceipt(url: string) {
     setReceipt(url);
-    setCopied(false);
-    if (!url) {
-      setQr({ state: "idle", text: "" });
-      return;
-    }
-    setQr({ state: "reading", text: "" });
-    const text = await decodeQrFromDataUrl(url);
-    setQr(text ? { state: "found", text } : { state: "failed", text: "" });
+    setQrText(url ? ((await decodeQrFromDataUrl(url)) ?? "") : "");
   }
 
   const option = data?.exhibitions.find((x) => String(x.id) === exhibitionId);
   const amountCny = parseCny(amount);
+  const amountOk = invoice ? amountCny !== null : amount.trim() === "" || amountCny !== null;
   const ticketNoValid = parseTicketNo(ticketNo) !== null;
   const estimate = option && amountCny !== null ? refundPoints(amountCny, { mode: option.mode, percent: option.percent, maxPoints: option.maxPoints }, option.refundedPoints) : null;
-  const ready = !!option && !!receipt && !!invoice && amountCny !== null && ticketNoValid;
-  const link = qr.state === "found" ? qrLink(qr.text) : null;
+  // Our team needs the passport ending to get the e-invoice from 12306.
+  const ready = !!option && !!receipt && amountOk && ticketNoValid && !!data?.passportEnding;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -87,7 +82,7 @@ export default function TicketRefundPage() {
     setError("");
     const res = await walletApi("/api/wallet/ticket-refunds", {
       method: "POST",
-      body: { key: requestKey, exhibitionId: option.id, receipt, invoice, amount, ticketNo, qrText: qr.text },
+      body: { key: requestKey, exhibitionId: option.id, receipt, invoice, amount, ticketNo, qrText },
     });
     setBusy(false);
     if (!res.ok) {
@@ -99,18 +94,8 @@ export default function TicketRefundPage() {
     setInvoice("");
     setAmount("");
     setTicketNo("");
-    setQr({ state: "idle", text: "" });
+    setQrText("");
     reload();
-  }
-
-  async function copyQr() {
-    try {
-      await navigator.clipboard.writeText(qr.text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    } catch {
-      // the text is shown, so it can be copied by hand
-    }
   }
 
   return (
@@ -149,16 +134,6 @@ export default function TicketRefundPage() {
                 <h2 className="font-bold text-heading">{tt("step2")}</h2>
                 <p className="text-sm text-gray-800">{tt("step2Help")}</p>
                 <UploadField label={tt("receipt")} value={receipt} onChange={onReceipt} onError={setError} high invalidMessage={t("errors.invalid_input")} removeLabel={t("remove")} />
-                {qr.state === "found" && (
-                  <div className="space-y-2 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-950" data-testid="ticket-qr-found">
-                    <p className="font-semibold">{tt("qrFound")}</p>
-                    {link && <p><a href={link} target="_blank" rel="noopener noreferrer" className="inline-block py-1 font-semibold underline">{tt("qrOpen")}</a></p>}
-                    <p className="[overflow-wrap:anywhere]">{tt("qrText")} {qr.text}</p>
-                    <Button type="button" variant="secondaryOutline" size="xs" onClick={copyQr}>{tt("copy")}</Button>
-                    {copied && <span role="status" className="ml-2 text-green-800">{tt("copied")}</span>}
-                  </div>
-                )}
-                {qr.state === "failed" && <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-950" data-testid="ticket-qr-failed">{tt("qrFail")}</p>}
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-5 space-y-3">
@@ -171,19 +146,15 @@ export default function TicketRefundPage() {
                     {tt("passportMissing")} <Link href="/dashboard/buyer/profile" className="inline-block py-1 font-semibold text-emerald-800 underline">{tt("openProfile")}</Link>
                   </p>
                 )}
-                <p className="text-sm text-gray-800">{tt("step3Download")}</p>
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-5 space-y-3">
                 <h2 className="font-bold text-heading">{tt("step4")}</h2>
+                <p className="text-sm text-gray-800">{tt("step4Help")}</p>
                 <UploadField label={tt("invoice")} value={invoice} onChange={setInvoice} onError={setError} allowPdf invalidMessage={t("errors.invalid_input")} removeLabel={t("remove")} />
-              </Card>
-
-              <Card shadow="sm" bordered={false} className="p-5 space-y-3">
-                <h2 className="font-bold text-heading">{tt("step5")}</h2>
                 <div>
                   <label htmlFor={ids.amount} className="block text-sm font-medium text-gray-700 mb-1.5">{tt("amount")}</label>
-                  <input id={ids.amount} inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} className={fieldClasses(amount !== "" && amountCny === null)} placeholder="536.00" />
+                  <input id={ids.amount} inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} className={fieldClasses(!amountOk)} placeholder="536.00" />
                   <p className="mt-1 text-xs text-gray-700">{tt("amountHint")}</p>
                 </div>
                 <div>
@@ -211,12 +182,14 @@ export default function TicketRefundPage() {
                   <li key={c.id}>
                     <Card shadow="sm" bordered={false} className="p-4">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="font-semibold text-heading [overflow-wrap:anywhere]">{tt("historyRow", { expo: c.exhibitionTitle, amount: c.amountCny === null ? "" : c.amountCny.toFixed(2) })}</span>
+                        <span className="font-semibold text-heading [overflow-wrap:anywhere]">{c.amountCny === null ? c.exhibitionTitle : tt("historyRow", { expo: c.exhibitionTitle, amount: c.amountCny.toFixed(2) })}</span>
                         <span className="flex items-center gap-2">
                           {c.pointsAwarded !== null && <span className="text-sm font-bold text-green-800">{tt("points", { points: formatNumber(c.pointsAwarded) })}</span>}
                           <Badge tone={TONE[c.status] ?? "gray"}>{t(`status.${c.status}`)}</Badge>
                         </span>
                       </div>
+                      {c.status === "pending" && <p className="mt-1 text-sm text-gray-800" data-testid={`ticket-stage-${c.id}`}>{c.hasInvoice ? tt("stageWaiting") : tt("stageGetting")}</p>}
+                      {c.hasInvoice && <p className="mt-1"><a href={`/api/wallet/ticket-refunds/${c.id}/invoice`} download className="inline-block py-1 text-sm font-semibold text-emerald-800 underline" data-testid={`ticket-invoice-${c.id}`}>{tt("downloadInvoice")}</a></p>}
                       {c.adminNote && <p className="mt-1 text-sm text-gray-700 [overflow-wrap:anywhere]">{c.adminNote}</p>}
                       <p className="mt-1 text-xs text-gray-600">{formatInstantDateTime(c.createdAt, locale)}</p>
                     </Card>

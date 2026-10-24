@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { logAdminAction } from "@/lib/server/audit-log";
-import { parseReferralSettings } from "@/lib/referral";
-import { getReferralSettings, listReferrals, rejectReferral, saveReferralSettings, settlePending } from "@/lib/server/referrals";
+import { parseExhibitionReferralPoints, parseReferralSettings } from "@/lib/referral";
+import { getReferralSettings, listExhibitionRates, listReferrals, rejectReferral, saveReferralSettings, setExhibitionRates, settlePending } from "@/lib/server/referrals";
 import { readJson, requireWalletAdmin, text, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
 
 const STATUSES = ["pending", "rewarded", "rejected"] as const;
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
       },
       50
     );
-    return NextResponse.json({ settings: await getReferralSettings(), ...list }, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json({ settings: await getReferralSettings(), exhibitions: await listExhibitionRates(), ...list }, { headers: { "Cache-Control": "no-store" } });
   } catch (err) {
     return walletErrorResponse(err);
   }
@@ -46,7 +46,8 @@ export async function PUT(request: Request) {
 }
 
 // { action: "settle" }  pays every waiting referral that now qualifies;
-// { action: "reject", id, note }  turns one waiting referral down.
+// { action: "reject", id, note }  turns one waiting referral down;
+// { action: "exhibition", id, referrerPoints, referredPoints }  sets the points one exhibition pays (null = the default).
 export async function POST(request: Request) {
   const auth = await requireWalletAdmin(request);
   if (auth.response) return auth.response;
@@ -63,6 +64,19 @@ export async function POST(request: Request) {
       if (!Number.isSafeInteger(id) || id <= 0) return walletFail("invalid_input");
       if (!(await rejectReferral(id, text(body.note, 255)))) return walletFail("already_processed", 409);
       logAdminAction(request, auth.admin, "referral_rejected", { targetType: "referral", targetId: id });
+      return NextResponse.json({ success: true });
+    }
+    if (body.action === "exhibition") {
+      // The points one exhibition pays for a referral; null for a side means "use the default".
+      const id = Number(body.id);
+      const points = parseExhibitionReferralPoints(body);
+      if (!Number.isSafeInteger(id) || id <= 0 || !points) return walletFail("invalid_input");
+      if (!(await setExhibitionRates(id, points))) return walletFail("not_found");
+      logAdminAction(request, auth.admin, "referral_exhibition_points", {
+        targetType: "exhibition",
+        targetId: id,
+        details: `inviter ${points.referrerPoints ?? "default"}, new buyer ${points.referredPoints ?? "default"}`,
+      });
       return NextResponse.json({ success: true });
     }
     return walletFail("invalid_input");

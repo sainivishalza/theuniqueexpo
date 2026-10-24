@@ -419,7 +419,7 @@ export async function checkInOrOut(exhibitionId: number, userId: number, action:
     if (result.affectedRows > 0) {
       // Attending earns the exhibition's reward points (once per registration).
       await awardAttendanceQuietly(existing.id);
-      await settleReferralQuietly(userId, "attended");
+      await settleReferralQuietly(userId, "attended", exhibitionId);
       return "checked_in";
     }
     if (existing.status === "attended") return "already_done";
@@ -481,8 +481,8 @@ export async function setRegistrationStatus(id: number, status: RegistrationStat
   if (status === "attended") await awardAttendanceQuietly(id);
   // A referred buyer's first approved / attended registration can complete the referral that invited them.
   if (status === "approved" || status === "confirmed" || status === "attended") {
-    const [owner] = await pool.query<RowDataPacket[]>("SELECT user_id FROM expo_registrations WHERE id = ?", [id]);
-    if (owner[0]) await settleReferralQuietly(Number(owner[0].user_id), status === "attended" ? "attended" : "approved");
+    const [owner] = await pool.query<RowDataPacket[]>("SELECT user_id, exhibition_id FROM expo_registrations WHERE id = ?", [id]);
+    if (owner[0]) await settleReferralQuietly(Number(owner[0].user_id), status === "attended" ? "attended" : "approved", Number(owner[0].exhibition_id));
   }
   return true;
 }

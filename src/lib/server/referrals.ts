@@ -6,7 +6,9 @@ import {
   REFERRAL_CODE_ALPHABET,
   REFERRAL_CODE_LENGTH,
   isValidReferralCode,
+  referralRates,
   triggerRank,
+  type ExhibitionReferralPoints,
   type ReferralSettings,
   type ReferralStatus,
   type ReferralTrigger,
@@ -107,20 +109,22 @@ function tellBuyers(payout: ReferralPayout): void {
 
 // Something happened to a referred buyer (signed up, a registration was approved, they attended). If it reaches the
 // stage the programme pays at, the pending referral is paid. Returns the outcome, or null when nothing was due.
-export async function settleReferral(referredId: number, stage: ReferralTrigger): Promise<ReferralPayout | null> {
+export async function settleReferral(referredId: number, stage: ReferralTrigger, exhibitionId?: number | null): Promise<ReferralPayout | null> {
   const settings = await getReferralSettings();
   if (!settings.enabled || triggerRank(stage) < triggerRank(settings.trigger)) return null;
   const [rows] = await pool.query<RowDataPacket[]>("SELECT id FROM buyer_referrals WHERE referred_id = ? AND status = 'pending'", [referredId]);
   if (!rows[0]) return null;
-  const payout = await bookReferralReward(Number(rows[0].id), settings);
+  // The exhibition that made it payable may pay its own points; sign-up has no exhibition, so it pays the default.
+  const own = exhibitionId ? await getExhibitionRates(exhibitionId) : null;
+  const payout = await bookReferralReward(Number(rows[0].id), { ...referralRates(settings, own), maxPerReferrer: settings.maxPerReferrer, exhibitionId: exhibitionId ?? null });
   tellBuyers(payout);
   return payout;
 }
 
 // For the places that change a registration: a failure here is logged and never fails the registration step itself.
-export async function settleReferralQuietly(referredId: number, stage: ReferralTrigger): Promise<void> {
+export async function settleReferralQuietly(referredId: number, stage: ReferralTrigger, exhibitionId?: number | null): Promise<void> {
   try {
-    await settleReferral(referredId, stage);
+    await settleReferral(referredId, stage, exhibitionId);
   } catch (err) {
     // The tables do not exist until migration 088 has run.
     const code = (err as { code?: string }).code;
@@ -128,16 +132,14 @@ export async function settleReferralQuietly(referredId: number, stage: ReferralT
   }
 }
 
-// How far a buyer has got: attended an exhibition, had a registration approved, or only signed up.
-async function stageReached(userId: number): Promise<ReferralTrigger> {
+// How far a buyer has got -- attended an exhibition, had a registration approved, or only signed up -- and at which exhibition.
+async function stageReached(userId: number): Promise<{ stage: ReferralTrigger; exhibitionId: number | null }> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT MAX(status = 'attended') AS attended, MAX(status IN ('approved','confirmed','attended')) AS approved
-     FROM expo_registrations WHERE user_id = ?`,
+    "SELECT exhibition_id, status FROM expo_registrations WHERE user_id = ? AND status IN ('approved','confirmed','attended') ORDER BY (status = 'attended') DESC, id LIMIT 1",
     [userId]
   );
-  if (Number(rows[0]?.attended)) return "attended";
-  if (Number(rows[0]?.approved)) return "approved";
-  return "signup";
+  if (!rows[0]) return { stage: "signup", exhibitionId: null };
+  return { stage: rows[0].status === "attended" ? "attended" : "approved", exhibitionId: Number(rows[0].exhibition_id) };
 }
 
 // Pays every waiting referral whose buyer has already reached the stage the programme now pays at -- for after an admin
@@ -147,7 +149,8 @@ export async function settlePending(): Promise<{ paid: number; limited: number }
   let paid = 0;
   let limited = 0;
   for (const row of rows) {
-    const payout = await settleReferral(Number(row.referred_id), await stageReached(Number(row.referred_id)));
+    const reached = await stageReached(Number(row.referred_id));
+    const payout = await settleReferral(Number(row.referred_id), reached.stage, reached.exhibitionId);
     if (payout?.status === "paid") paid += 1;
     else if (payout?.status === "skipped" && payout.reason === "limit_reached") limited += 1;
   }
@@ -158,6 +161,44 @@ export async function settlePending(): Promise<{ paid: number; limited: number }
 export async function rejectReferral(id: number, note: string): Promise<boolean> {
   const [res] = await pool.query<ResultSetHeader>("UPDATE buyer_referrals SET status = 'rejected', note = ? WHERE id = ? AND status = 'pending'", [note.slice(0, 255), id]);
   return res.affectedRows === 1;
+}
+
+// ---------- points that differ by exhibition ----------
+
+async function getExhibitionRates(exhibitionId: number): Promise<ExhibitionReferralPoints | null> {
+  const [rows] = await pool.query<RowDataPacket[]>("SELECT referral_referrer_points, referral_referred_points FROM exhibitions WHERE id = ?", [exhibitionId]);
+  if (!rows[0]) return null;
+  const n = (v: unknown) => (v === null || v === undefined ? null : Number(v));
+  return { referrerPoints: n(rows[0].referral_referrer_points), referredPoints: n(rows[0].referral_referred_points) };
+}
+
+export interface ExhibitionReferralRow extends ExhibitionReferralPoints {
+  id: number;
+  title: string;
+  startDate: string;
+  endDate: string;
+}
+
+// Every exhibition with the points it pays for a referral of its own (null = the programme's default), upcoming first.
+export async function listExhibitionRates(): Promise<ExhibitionReferralRow[]> {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    `SELECT id, title, start_date, end_date, referral_referrer_points, referral_referred_points FROM exhibitions
+     ORDER BY end_date < UTC_DATE(), start_date, id LIMIT 500`
+  );
+  return rows.map((r) => ({
+    id: Number(r.id),
+    title: String(r.title),
+    startDate: String(r.start_date).slice(0, 10),
+    endDate: String(r.end_date).slice(0, 10),
+    referrerPoints: r.referral_referrer_points === null ? null : Number(r.referral_referrer_points),
+    referredPoints: r.referral_referred_points === null ? null : Number(r.referral_referred_points),
+  }));
+}
+
+// Returns false when there is no such exhibition. Changes apply to referrals paid from now on.
+export async function setExhibitionRates(exhibitionId: number, points: ExhibitionReferralPoints): Promise<boolean> {
+  const [res] = await pool.query<ResultSetHeader>("UPDATE exhibitions SET referral_referrer_points = ?, referral_referred_points = ? WHERE id = ?", [points.referrerPoints, points.referredPoints, exhibitionId]);
+  return res.affectedRows === 1 || (await getExhibitionRates(exhibitionId)) !== null;
 }
 
 // ---------- what a buyer sees ----------
@@ -178,6 +219,7 @@ export interface MyReferralSummary {
   rewarded: number;
   earned: number;
   limitReached: boolean;
+  byExhibition: { id: number; title: string; mine: number; theirs: number }[]; // upcoming exhibitions that pay their own points
   items: MyReferral[];
 }
 
@@ -202,6 +244,7 @@ export async function getMyReferrals(userId: number): Promise<MyReferralSummary>
     rewardedAt: iso(r.rewarded_at),
   }));
   const rewarded = items.filter((i) => i.status === "rewarded");
+  const own = (await listExhibitionRates()).filter((x) => x.endDate >= new Date().toISOString().slice(0, 10) && (x.referrerPoints !== null || x.referredPoints !== null));
   return {
     code,
     settings,
@@ -209,6 +252,10 @@ export async function getMyReferrals(userId: number): Promise<MyReferralSummary>
     rewarded: rewarded.length,
     earned: rewarded.reduce((sum, i) => sum + i.points, 0),
     limitReached: settings.maxPerReferrer > 0 && rewarded.length >= settings.maxPerReferrer,
+    byExhibition: own.slice(0, 50).map((x) => {
+      const rates = referralRates(settings, x);
+      return { id: x.id, title: x.title, mine: rates.referrerPoints, theirs: rates.referredPoints };
+    }),
     items,
   };
 }
@@ -226,6 +273,7 @@ export interface AdminReferral {
   referredNumber: string;
   referrerPoints: number;
   referredPoints: number;
+  exhibitionTitle: string; // the exhibition whose registration made it payable (empty when paid at sign-up or not yet paid)
   note: string;
   createdAt: string;
   rewardedAt: string | null;
@@ -257,8 +305,8 @@ export async function listReferrals(filter: { status?: ReferralStatus; q?: strin
   const take = Math.min(Math.max(limit, 1), 200);
   const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT r.id, r.status, r.referrer_id, r.referred_id, r.referrer_points, r.referred_points, r.note, r.created_at, r.rewarded_at,
-            a.name AS a_name, a.buyer_no AS a_no, b.name AS b_name, b.buyer_no AS b_no
-     FROM buyer_referrals r JOIN users a ON a.id = r.referrer_id JOIN users b ON b.id = r.referred_id
+            a.name AS a_name, a.buyer_no AS a_no, b.name AS b_name, b.buyer_no AS b_no, x.title AS expo_title
+     FROM buyer_referrals r JOIN users a ON a.id = r.referrer_id JOIN users b ON b.id = r.referred_id LEFT JOIN exhibitions x ON x.id = r.exhibition_id
      ${where.length ? `WHERE ${where.join(" AND ")}` : ""} ORDER BY r.id DESC LIMIT ?`,
     [...values, take + 1]
   );
@@ -279,6 +327,7 @@ export async function listReferrals(filter: { status?: ReferralStatus; q?: strin
       referredNumber: formatBuyerNumber(r.b_no),
       referrerPoints: Number(r.referrer_points),
       referredPoints: Number(r.referred_points),
+      exhibitionTitle: r.expo_title ? String(r.expo_title) : "",
       note: String(r.note ?? ""),
       createdAt: iso(r.created_at) as string,
       rewardedAt: iso(r.rewarded_at),

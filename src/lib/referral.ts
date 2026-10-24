@@ -60,3 +60,26 @@ export const REFERRAL_CODE_LENGTH = 10;
 export function isValidReferralCode(value: unknown): value is string {
   return typeof value === "string" && /^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{10}$/.test(value);
 }
+
+// Points one exhibition pays for a referral, in place of the programme's default (null = use the default, 0 = none).
+export interface ExhibitionReferralPoints {
+  referrerPoints: number | null;
+  referredPoints: number | null;
+}
+
+export function parseExhibitionReferralPoints(body: unknown): ExhibitionReferralPoints | null {
+  if (typeof body !== "object" || body === null) return null;
+  const b = body as Record<string, unknown>;
+  const one = (v: unknown): number | null | undefined => (v === null ? null : whole(v, 0, REFERRAL_POINTS_MAX) ?? undefined);
+  const referrerPoints = one(b.referrerPoints);
+  const referredPoints = one(b.referredPoints);
+  return referrerPoints === undefined || referredPoints === undefined ? null : { referrerPoints, referredPoints };
+}
+
+// What to pay for a referral completed at an exhibition: its own numbers where it has them, the default for the rest.
+export function referralRates(settings: ReferralSettings, own?: Partial<ExhibitionReferralPoints> | null): { referrerPoints: number; referredPoints: number } {
+  return {
+    referrerPoints: own?.referrerPoints ?? settings.referrerPoints,
+    referredPoints: own?.referredPoints ?? settings.referredPoints,
+  };
+}

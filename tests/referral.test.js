@@ -159,6 +159,68 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
   admin = await (await fetch(BASE + '/api/admin/wallet/referrals?status=rejected&q=' + encodeURIComponent(`${tag}-${seq}`), { headers: AH })).json();
   ok(admin.items.length >= 1 && admin.items.every((i) => i.status === 'rejected') && admin.totals.rejected >= 1, 'the admin list filters and searches', admin.items.length);
 
+  console.log('\n== each exhibition can pay its own points');
+  await putRules({ trigger: 'attended', referrerPoints: 40, referredPoints: 10, maxPerReferrer: 0 });
+  const mkExpo = (letter) => {
+    sql(`INSERT INTO exhibitions (slug,title,start_date,end_date,venue,city,country,industry,description,highlights,exhibitors,visitors,organizer,registration_enabled) VALUES ('${tag}-${letter}','Referral Expo ${letter}',${day(20)},${day(22)},'Hall','Zzrefcity','China','X','d','[]',1,'','O',1)`);
+    return Number(sql(`SELECT id FROM exhibitions WHERE slug='${tag}-${letter}'`));
+  };
+  const expoA = mkExpo('A'), expoB = mkExpo('B'), expoC = mkExpo('C');
+  const setExpo = (id, a, b, headers = AH) => fetch(BASE + '/api/admin/wallet/referrals', { method: 'POST', headers, body: J({ action: 'exhibition', id, referrerPoints: a, referredPoints: b }) });
+  ok((await setExpo(expoA, -1, 5)).status === 400, 'negative points for an exhibition are refused');
+  ok((await setExpo(expoA, 1.5, 5)).status === 400, 'part points are refused');
+  ok((await setExpo(expoA, 'x', 5)).status === 400, 'text is refused');
+  ok((await setExpo(expoA, 100001, 5)).status === 400, 'an absurd amount is refused');
+  ok((await setExpo(999999999, 5, 5)).status === 404, 'an unknown exhibition is not found');
+  ok((await setExpo(expoA, 5, 5, BH)).status === 401, 'a buyer cannot set them');
+  ok((await setExpo(expoA, 100, 25)).status === 200 && (await setExpo(expoB, 70, null)).status === 200 && (await setExpo(expoC, 0, 15)).status === 200, 'three exhibitions get their own points');
+  admin = await (await fetch(BASE + '/api/admin/wallet/referrals?status=none', { headers: AH })).json();
+  const rowOf = (id) => admin.exhibitions.find((x) => x.id === id);
+  ok(rowOf(expoA).referrerPoints === 100 && rowOf(expoA).referredPoints === 25 && rowOf(expoB).referrerPoints === 70 && rowOf(expoB).referredPoints === null && rowOf(expoC).referrerPoints === 0, 'the admin list returns them (empty = default)', [rowOf(expoA), rowOf(expoB), rowOf(expoC)]);
+  ok(rowOf(expoId).referrerPoints === null && rowOf(expoId).referredPoints === null, 'an exhibition nobody set up keeps the default');
+  const attend = async (expo) => {
+    const who = await signUp('buyer', mine.code);
+    sql(`INSERT INTO expo_registrations (exhibition_id,user_id,status) VALUES (${expo},${who.id},'pending')`);
+    const reg = Number(sql(`SELECT id FROM expo_registrations WHERE user_id=${who.id}`));
+    return { id: who.id, reg };
+  };
+  let before = balance(u.bId);
+  const fA = await attend(expoA);
+  await patch(fA.reg, 'attended');
+  ok(refRow(fA.id) === 'rewarded|100|25' && balance(u.bId) === before + 100 && balance(fA.id) === 25, 'attending exhibition A pays its 100 + 25', [refRow(fA.id), balance(u.bId) - before]);
+  ok(sql(`SELECT exhibition_id FROM buyer_referrals WHERE referred_id=${fA.id}`) === String(expoA), 'and records which exhibition it was for');
+  before = balance(u.bId);
+  const fB = await attend(expoB);
+  await patch(fB.reg, 'attended');
+  ok(refRow(fB.id) === 'rewarded|70|10' && balance(u.bId) === before + 70 && balance(fB.id) === 10, 'B sets only the inviter: the new buyer gets the default 10', [refRow(fB.id)]);
+  before = balance(u.bId);
+  const fC = await attend(expoC);
+  await patch(fC.reg, 'attended');
+  ok(refRow(fC.id) === 'rewarded|0|15' && balance(u.bId) === before && balance(fC.id) === 15 && ledger(fC.id) === '1', 'C pays the inviter nothing and the new buyer 15', [refRow(fC.id), balance(u.bId) - before]);
+  // approved stage uses the exhibition of the approved registration
+  await putRules({ trigger: 'approved', referrerPoints: 40, referredPoints: 10, maxPerReferrer: 0 });
+  before = balance(u.bId);
+  const fApp = await attend(expoA);
+  await patch(fApp.reg, 'approved');
+  ok(refRow(fApp.id) === 'rewarded|100|25' && balance(u.bId) === before + 100, 'approval at exhibition A pays A\'s points too', refRow(fApp.id));
+  // paying waiting ones later uses the exhibition the buyer reached the stage at
+  await putRules({ trigger: 'attended', referrerPoints: 40, referredPoints: 10, maxPerReferrer: 0 });
+  const fLate = await signUp('buyer', mine.code);
+  sql(`INSERT INTO expo_registrations (exhibition_id,user_id,status) VALUES (${expoB},${fLate.id},'attended')`);
+  ok(refRow(fLate.id) === 'pending|0|0', 'a buyer marked attended behind the scenes is still waiting');
+  await settle();
+  ok(refRow(fLate.id) === 'rewarded|70|10', '"Pay waiting referrals now" uses that exhibition\'s points', refRow(fLate.id));
+  // sign-up has no exhibition: the default applies, whatever the exhibitions say
+  await putRules({ trigger: 'signup', referrerPoints: 40, referredPoints: 10, maxPerReferrer: 0 });
+  const fSign = await signUp('buyer', mine.code);
+  ok(refRow(fSign.id) === 'rewarded|40|10', 'paid at sign-up, the default applies');
+  await putRules({ trigger: 'attended', referrerPoints: 40, referredPoints: 10, maxPerReferrer: 0 });
+  sum = await me();
+  const byExpo = Object.fromEntries(sum.byExhibition.map((x) => [x.title, x]));
+  ok(byExpo['Referral Expo A'].mine === 100 && byExpo['Referral Expo A'].theirs === 25 && byExpo['Referral Expo B'].mine === 70 && byExpo['Referral Expo B'].theirs === 10 && byExpo['Referral Expo C'].mine === 0 && byExpo['Referral Expo C'].theirs === 15, 'the inviter sees what each exhibition pays', sum.byExhibition);
+  admin = await (await fetch(BASE + '/api/admin/wallet/referrals?status=rewarded&q=' + encodeURIComponent(`${tag}-${seq}`), { headers: AH })).json();
+  ok(admin.items.some((i) => i.exhibitionTitle === 'Referral Expo B'), 'the admin list says which exhibition paid it');
+
   console.log('\n== accounts that cannot be paid');
   const t = mkBuyer('suspendme');
   const tTok = /token=([^;]+)/.exec((await fetch(BASE + '/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-forwarded-for': ipn() }, body: J({ email: `${tag}-suspendme@test.invalid`, password: 'pass1234' }) })).headers.getSetCookie().join(';'))[1];
@@ -218,6 +280,8 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
     if (locale === 'en') ok(/When|For each friend who attends an exhibition/.test(rule) && /Up to 3 rewarded friends/.test(rule), 'and the stage and the cap', rule);
     ok(await p.getByTestId('invite-limit').isVisible(), 'a buyer over the cap is told so');
     ok((await p.getByTestId('invite-code').innerText()).includes(code), 'the code is shown too');
+    const byExpoText = await p.getByTestId('invite-by-expo').innerText();
+    ok(byExpoText.includes('Referral Expo A') && /100/.test(byExpoText) && !/[{}]/.test(byExpoText), 'exhibitions with their own points are listed', byExpoText);
     const stats = (await p.getByTestId('invite-stats').innerText()).replace(/\s+/g, ' ');
     ok(/\d/.test(stats), 'the three counters are shown', stats);
     ok((await p.getByTestId('invite-list').locator('li').count()) >= 5, 'the people invited are listed');
@@ -299,6 +363,17 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
     await p.getByLabel('Points for the buyer who invites').fill('0');
     ok(await p.getByRole('button', { name: /^Save$/ }).isDisabled(), 'switched on with nothing to pay cannot be saved');
     await p.getByLabel('Points for the buyer who invites').fill('77');
+    await p.getByLabel('Find an exhibition').fill('Referral Expo B');
+    await sleep(300);
+    await p.getByLabel('Inviter points for Referral Expo B').fill('');
+    await p.getByLabel('New buyer points for Referral Expo B').fill('12');
+    await p.getByRole('button', { name: 'Save Referral Expo B' }).click();
+    await p.getByTestId(`referral-expo-${expoB}`).getByRole('status').waitFor();
+    const row = (await (await fetch(BASE + '/api/admin/wallet/referrals?status=none', { headers: AH })).json()).exhibitions.find((x) => x.id === expoB);
+    ok(row.referrerPoints === null && row.referredPoints === 12, 'an exhibition\'s points are edited on screen (empty = default)', row);
+    await p.getByLabel('New buyer points for Referral Expo B').fill('abc');
+    ok(await p.getByRole('button', { name: 'Save Referral Expo B' }).isDisabled(), 'text cannot be saved');
+    await p.getByLabel('Find an exhibition').fill('');
     p.on('dialog', (dlg) => dlg.accept());
     await p.getByLabel('Show').selectOption('pending');
     await sleep(800);

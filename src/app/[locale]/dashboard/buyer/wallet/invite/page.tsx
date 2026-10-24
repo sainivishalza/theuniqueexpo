@@ -18,6 +18,7 @@ interface Summary {
   rewarded: number;
   earned: number;
   limitReached: boolean;
+  byExhibition: { id: number; title: string; mine: number; theirs: number }[];
   items: { id: number; name: string; status: ReferralStatus; points: number; createdAt: string }[];
 }
 
@@ -97,6 +98,17 @@ export default function WalletInvitePage() {
                 {s.maxPerReferrer > 0 && <p className="text-sm text-gray-700">{ti("cap", { max: formatNumber(s.maxPerReferrer) })}</p>}
                 {summary.limitReached && <p role="status" className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900" data-testid="invite-limit">{ti("limitReached", { max: formatNumber(s.maxPerReferrer) })}</p>}
               </Card>
+
+              {summary.byExhibition.length > 0 && (
+                <Card shadow="sm" bordered={false} className="p-5 space-y-2" data-testid="invite-by-expo">
+                  <h2 className="font-semibold text-heading">{ti("byExpoTitle")}</h2>
+                  <ul className="space-y-1 text-sm text-gray-800">
+                    {summary.byExhibition.map((x) => (
+                      <li key={x.id}>{ti("byExpoRow", { title: x.title, mine: formatNumber(x.mine), theirs: formatNumber(x.theirs) })}</li>
+                    ))}
+                  </ul>
+                </Card>
+              )}
 
               <Card shadow="sm" bordered={false} className="p-5 space-y-3">
                 <label htmlFor="invite-link" className="block text-sm font-semibold text-gray-800">{ti("linkLabel")}</label>

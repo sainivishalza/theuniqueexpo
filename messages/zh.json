@@ -4614,7 +4614,9 @@
       "statusPending": "等待中",
       "statusRewarded": "已奖励",
       "statusRejected": "未计入",
-      "pointsEarned": "+{points} 积分"
+      "pointsEarned": "+{points} 积分",
+      "byExpoTitle": "积分不同的展会",
+      "byExpoRow": "{title}：您获得 {mine} 积分，好友获得 {theirs} 积分。"
     }
   },
   "adminWallet": {
@@ -4851,7 +4853,17 @@
       "statusRewarded": "已奖励",
       "statusRejected": "已拒绝",
       "filterLabel": "筛选",
-      "searchLabel": "按姓名或邮箱搜索"
+      "searchLabel": "按姓名或邮箱搜索",
+      "byExpoTitle": "各展会的积分",
+      "byExpoHint": "每个展会可以设置自己的积分。留空则使用上方的默认值；0 表示没有积分。当奖励因该展会的报名（获批或参加）而发放时使用。",
+      "byExpoSearch": "查找展会",
+      "rowInviter": "{title}：邀请人积分",
+      "rowNewBuyer": "{title}：新买家积分",
+      "rowSave": "保存 {title}",
+      "rowSaved": "已保存",
+      "useDefault": "默认 {points}",
+      "viaExpo": "发放依据：{title}",
+      "noExpos": "暂无展会。"
     }
   },
   "searchPage": {
@@ -5528,7 +5540,8 @@
       "documents_protect_finished": "完成加密已存储的证件",
       "referral_settings_saved": "保存了邀请奖励设置",
       "referrals_settled": "发放了待发的邀请奖励",
-      "referral_rejected": "拒绝了一条邀请记录"
+      "referral_rejected": "拒绝了一条邀请记录",
+      "referral_exhibition_points": "设置了展会的邀请奖励积分"
     }
   },
   "notificationsPage": {

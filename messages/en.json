@@ -4614,7 +4614,9 @@
       "statusPending": "Waiting",
       "statusRewarded": "Rewarded",
       "statusRejected": "Not counted",
-      "pointsEarned": "+{points} points"
+      "pointsEarned": "+{points} points",
+      "byExpoTitle": "Exhibitions that pay different points",
+      "byExpoRow": "{title}: you get {mine} points, your friend gets {theirs} points."
     }
   },
   "adminWallet": {
@@ -4851,7 +4853,17 @@
       "statusRewarded": "Rewarded",
       "statusRejected": "Rejected",
       "filterLabel": "Show",
-      "searchLabel": "Search by name or e-mail"
+      "searchLabel": "Search by name or e-mail",
+      "byExpoTitle": "Points for each exhibition",
+      "byExpoHint": "Every exhibition can pay its own points. Leave a box empty to use the default above; 0 means no points. They are used when the reward is paid because of a registration at that exhibition (approved or attended).",
+      "byExpoSearch": "Find an exhibition",
+      "rowInviter": "Inviter points for {title}",
+      "rowNewBuyer": "New buyer points for {title}",
+      "rowSave": "Save {title}",
+      "rowSaved": "Saved",
+      "useDefault": "default {points}",
+      "viaExpo": "Paid for: {title}",
+      "noExpos": "No exhibitions yet."
     }
   },
   "searchPage": {
@@ -5528,7 +5540,8 @@
       "documents_protect_finished": "Finished encrypting stored documents",
       "referral_settings_saved": "Saved referral programme settings",
       "referrals_settled": "Paid waiting referrals",
-      "referral_rejected": "Rejected a referral"
+      "referral_rejected": "Rejected a referral",
+      "referral_exhibition_points": "Set referral points of an exhibition"
     }
   },
   "notificationsPage": {

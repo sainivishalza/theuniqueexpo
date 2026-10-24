@@ -489,7 +489,7 @@ export type ReferralPayout =
 // two referrals of the same buyer paid at the same moment cannot both slip past it.
 export async function bookReferralReward(
   referralId: number,
-  rules: { referrerPoints: number; referredPoints: number; maxPerReferrer: number }
+  rules: { referrerPoints: number; referredPoints: number; maxPerReferrer: number; exhibitionId?: number | null }
 ): Promise<ReferralPayout> {
   const [pre] = await pool.query<RowDataPacket[]>("SELECT referrer_id, referred_id FROM buyer_referrals WHERE id = ?", [referralId]);
   if (!pre[0]) return { status: "skipped", reason: "not_pending" };
@@ -525,8 +525,8 @@ export async function bookReferralReward(
       }
     }
     await conn.query(
-      "UPDATE buyer_referrals SET status = 'rewarded', referrer_points = ?, referred_points = ?, rewarded_at = UTC_TIMESTAMP() WHERE id = ?",
-      [rules.referrerPoints, rules.referredPoints, referralId]
+      "UPDATE buyer_referrals SET status = 'rewarded', referrer_points = ?, referred_points = ?, exhibition_id = ?, rewarded_at = UTC_TIMESTAMP() WHERE id = ?",
+      [rules.referrerPoints, rules.referredPoints, rules.exhibitionId ?? null, referralId]
     );
     return { status: "paid", referrerId, referredId, referrerPoints: rules.referrerPoints, referredPoints: rules.referredPoints } as const;
   });

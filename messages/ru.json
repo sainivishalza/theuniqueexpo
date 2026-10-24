@@ -4614,7 +4614,9 @@
       "statusPending": "Ожидает",
       "statusRewarded": "Награда выплачена",
       "statusRejected": "Не засчитано",
-      "pointsEarned": "+{points} баллов"
+      "pointsEarned": "+{points} баллов",
+      "byExpoTitle": "Выставки с другими баллами",
+      "byExpoRow": "{title}: вы получаете {mine} баллов, друг — {theirs} баллов."
     }
   },
   "adminWallet": {
@@ -4851,7 +4853,17 @@
       "statusRewarded": "Награда выплачена",
       "statusRejected": "Отклонено",
       "filterLabel": "Показать",
-      "searchLabel": "Поиск по имени или e-mail"
+      "searchLabel": "Поиск по имени или e-mail",
+      "byExpoTitle": "Баллы для каждой выставки",
+      "byExpoHint": "Каждая выставка может платить свои баллы. Оставьте поле пустым, чтобы использовать значение выше; 0 — без баллов. Применяется, когда награда выплачивается из-за регистрации на этой выставке (одобрение или посещение).",
+      "byExpoSearch": "Найти выставку",
+      "rowInviter": "Баллы пригласившему — {title}",
+      "rowNewBuyer": "Баллы новому покупателю — {title}",
+      "rowSave": "Сохранить — {title}",
+      "rowSaved": "Сохранено",
+      "useDefault": "по умолчанию {points}",
+      "viaExpo": "Выплачено за: {title}",
+      "noExpos": "Выставок пока нет."
     }
   },
   "searchPage": {
@@ -5528,7 +5540,8 @@
       "documents_protect_finished": "Завершил(а) шифрование сохранённых документов",
       "referral_settings_saved": "Сохранил настройки реферальной программы",
       "referrals_settled": "Выплатил ожидающие реферальные бонусы",
-      "referral_rejected": "Отклонил реферал"
+      "referral_rejected": "Отклонил реферал",
+      "referral_exhibition_points": "Задал реферальные баллы выставки"
     }
   },
   "notificationsPage": {

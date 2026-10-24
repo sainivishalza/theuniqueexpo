@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useId, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatDateRange } from "@/lib/date-format";
 import { fieldClasses } from "@/components/ui/FormField";
 import { formatNumber } from "@/lib/format";
 import { errorKey, walletApi } from "@/lib/client/wallet-client";
@@ -20,11 +21,14 @@ interface Row {
   referredNumber: string;
   referrerPoints: number;
   referredPoints: number;
+  exhibitionTitle: string;
   note: string;
   createdAt: string;
 }
+interface ExpoRow { id: number; title: string; startDate: string; endDate: string; referrerPoints: number | null; referredPoints: number | null }
 interface Listing {
   settings: ReferralSettings;
+  exhibitions: ExpoRow[];
   items: Row[];
   hasMore: boolean;
   totals: { pending: number; rewarded: number; rejected: number; pointsPaid: number };
@@ -37,7 +41,8 @@ const STATUS_KEY = { pending: "statusPending", rewarded: "statusRewarded", rejec
 export default function ReferralsTab() {
   const t = useTranslations("adminWallet");
   const tr = useTranslations("adminWallet.referrals");
-  const ids = { enabled: useId(), trigger: useId(), mine: useId(), theirs: useId(), cap: useId(), filter: useId(), search: useId() };
+  const locale = useLocale();
+  const ids = { expoSearch: useId(), enabled: useId(), trigger: useId(), mine: useId(), theirs: useId(), cap: useId(), filter: useId(), search: useId() };
   const [form, setForm] = useState<ReferralSettings | null>(null);
   const [texts, setTexts] = useState({ referrerPoints: "", referredPoints: "", maxPerReferrer: "" });
   const [list, setList] = useState<Listing | null>(null);
@@ -48,6 +53,10 @@ export default function ReferralsTab() {
   const [message, setMessage] = useState("");
   const [saved, setSaved] = useState(false);
   const [settled, setSettled] = useState("");
+  const [expos, setExpos] = useState<ExpoRow[]>([]);
+  const [expoText, setExpoText] = useState<Record<number, { a: string; b: string }>>({});
+  const [expoSaved, setExpoSaved] = useState<number | null>(null);
+  const [expoFilter, setExpoFilter] = useState("");
 
   const load = useCallback(
     async (before?: number) => {
@@ -75,6 +84,8 @@ export default function ReferralsTab() {
       if (stale || !res.ok) return;
       setForm(res.data.settings);
       setTexts({ referrerPoints: String(res.data.settings.referrerPoints), referredPoints: String(res.data.settings.referredPoints), maxPerReferrer: String(res.data.settings.maxPerReferrer) });
+      setExpos(res.data.exhibitions);
+      setExpoText(Object.fromEntries(res.data.exhibitions.map((x) => [x.id, { a: x.referrerPoints === null ? "" : String(x.referrerPoints), b: x.referredPoints === null ? "" : String(x.referredPoints) }])));
     });
     return () => {
       stale = true;
@@ -136,6 +147,26 @@ export default function ReferralsTab() {
 
   const totals = list?.totals;
 
+  // "" = use the default; otherwise a whole number 0..100000.
+  const expoValue = (text: string): number | null | undefined => (text.trim() === "" ? null : /^\d{1,6}$/.test(text.trim()) && Number(text.trim()) <= 100_000 ? Number(text.trim()) : undefined);
+
+  async function saveExpo(id: number) {
+    const text = expoText[id];
+    const referrerPoints = expoValue(text.a);
+    const referredPoints = expoValue(text.b);
+    if (referrerPoints === undefined || referredPoints === undefined) return;
+    setExpoSaved(null);
+    const res = await walletApi("/api/admin/wallet/referrals", { method: "POST", body: { action: "exhibition", id, referrerPoints, referredPoints } });
+    if (!res.ok) {
+      setMessage(t(`errors.${errorKey(res.data.code)}`));
+      return;
+    }
+    setMessage("");
+    setExpoSaved(id);
+  }
+
+  const shownExpos = expos.filter((x) => x.title.toLowerCase().includes(expoFilter.trim().toLowerCase()));
+
   return (
     <div className="space-y-6">
       <form onSubmit={save} className="space-y-4" data-testid="referral-form">
@@ -180,6 +211,44 @@ export default function ReferralsTab() {
         {settled && <p role="status" className="text-green-800" data-testid="referral-settled">{settled}</p>}
       </form>
 
+      <Card shadow="sm" bordered={false} className="p-5 space-y-4" data-testid="referral-expos">
+        <h2 className="text-lg font-bold text-heading">{tr("byExpoTitle")}</h2>
+        <p className="text-sm text-gray-700">{tr("byExpoHint")}</p>
+        <div>
+          <label htmlFor={ids.expoSearch} className="block text-xs font-medium text-gray-700 mb-1">{tr("byExpoSearch")}</label>
+          <input id={ids.expoSearch} type="search" value={expoFilter} onChange={(e) => setExpoFilter(e.target.value)} className={fieldClasses()} />
+        </div>
+        {shownExpos.length === 0 ? (
+          <p className="text-gray-700">{tr("noExpos")}</p>
+        ) : (
+          <ul className="space-y-3">
+            {shownExpos.map((x) => {
+              const text = expoText[x.id] ?? { a: "", b: "" };
+              const badA = expoValue(text.a) === undefined;
+              const badB = expoValue(text.b) === undefined;
+              const setText = (patch: Partial<{ a: string; b: string }>) => {
+                setExpoSaved(null);
+                setExpoText((p) => ({ ...p, [x.id]: { ...text, ...patch } }));
+              };
+              return (
+                <li key={x.id} data-testid={`referral-expo-${x.id}`} className="rounded-lg border border-gray-200 bg-white p-3">
+                  <p className="font-bold text-heading [overflow-wrap:anywhere]">{x.title}</p>
+                  <p className="text-xs text-gray-700">{formatDateRange(x.startDate, x.endDate, locale)}</p>
+                  <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+                    <input aria-label={tr("rowInviter", { title: x.title })} inputMode="numeric" value={text.a} placeholder={tr("useDefault", { points: form.referrerPoints })} onChange={(e) => setText({ a: e.target.value })} className={fieldClasses(badA)} />
+                    <input aria-label={tr("rowNewBuyer", { title: x.title })} inputMode="numeric" value={text.b} placeholder={tr("useDefault", { points: form.referredPoints })} onChange={(e) => setText({ b: e.target.value })} className={fieldClasses(badB)} />
+                    <div className="col-span-2 flex items-center gap-3 sm:col-span-1">
+                      <Button type="button" variant="secondaryOutline" size="xs" disabled={badA || badB} onClick={() => saveExpo(x.id)} aria-label={tr("rowSave", { title: x.title })}>{t("save")}</Button>
+                      {expoSaved === x.id && <span role="status" className="text-sm text-green-800">{tr("rowSaved")}</span>}
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </Card>
+
       {totals && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4" data-testid="referral-totals">
           {([["waiting", totals.pending, "pending"], ["rewardedCount", totals.rewarded, "rewarded"], ["rejectedCount", totals.rejected, "rejected"], ["pointsPaid", totals.pointsPaid, "points"]] as const).map(([key, value, id]) => (
@@ -220,6 +289,7 @@ export default function ReferralsTab() {
                       <p><span className="text-gray-700">{tr("invitedBy")}: </span><span className="font-bold text-heading [overflow-wrap:anywhere]">{r.referrerName} {r.referrerNumber}</span></p>
                       <p><span className="text-gray-700">{tr("newBuyer")}: </span><span className="font-bold text-heading [overflow-wrap:anywhere]">{r.referredName} {r.referredNumber}</span></p>
                       {r.status === "rewarded" && <p className="text-green-800">{tr("paid", { mine: formatNumber(r.referrerPoints), theirs: formatNumber(r.referredPoints) })}</p>}
+                      {r.status === "rewarded" && r.exhibitionTitle && <p className="text-gray-700 [overflow-wrap:anywhere]">{tr("viaExpo", { title: r.exhibitionTitle })}</p>}
                       {r.note && <p className="text-gray-700 [overflow-wrap:anywhere]">{r.note}</p>}
                     </div>
                     <div className="flex shrink-0 items-center gap-2">

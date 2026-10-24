@@ -2,6 +2,11 @@
 -- The rules (on/off, when points are paid, how many points, the cap per referrer) live in wallet_settings
 -- and are edited by an admin, so nothing here needs a developer to change. Idempotent.
 
+-- Each exhibition can pay its own referral points. NULL = use the programme's default; 0 = no points for that side at this
+-- exhibition. They apply when the referral is paid because of a registration at that exhibition (approved / attended).
+ALTER TABLE exhibitions ADD COLUMN IF NOT EXISTS referral_referrer_points INT NULL;
+ALTER TABLE exhibitions ADD COLUMN IF NOT EXISTS referral_referred_points INT NULL;
+
 -- New kind of ledger row for the points a referral pays.
 ALTER TABLE wallet_transactions
   MODIFY COLUMN type ENUM('attendance','expense','topup','transfer_in','transfer_out','withdrawal_hold','withdrawal_refund','purchase','purchase_refund','adjustment','referral') NOT NULL;
@@ -24,6 +29,8 @@ CREATE TABLE IF NOT EXISTS buyer_referrals (
   status ENUM('pending','rewarded','rejected') NOT NULL DEFAULT 'pending',
   referrer_points INT NOT NULL DEFAULT 0,
   referred_points INT NOT NULL DEFAULT 0,
+  -- The exhibition whose registration made the referral payable (NULL when it was paid at sign-up).
+  exhibition_id INT NULL,
   note VARCHAR(255) NOT NULL DEFAULT '',
   created_at DATETIME NOT NULL,
   rewarded_at DATETIME NULL,

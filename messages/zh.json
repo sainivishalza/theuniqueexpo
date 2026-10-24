@@ -4675,7 +4675,8 @@
       "pointsSetup": "积分设置",
       "settings": "设置",
       "referrals": "邀请奖励",
-      "ticketRefunds": "车票报销"
+      "ticketRefunds": "车票报销",
+      "bulkTopup": "批量充值"
     },
     "export": {
       "withdrawals": "下载这些提现申请（Excel）",
@@ -4948,6 +4949,29 @@
       "rowMax": "{title}：最多积分",
       "rowSave": "保存 {title}",
       "saved": "已保存"
+    },
+    "bulkTopup": {
+      "title": "按护照号码为多位买家充值",
+      "intro": "粘贴护照号码（每行一个，或用逗号分隔），填写给所有人的同一金额和原因。先检查找到了谁，再一次性全部充值。找不到的号码会以提醒显示，找到的买家仍会收到积分。",
+      "passports": "护照号码",
+      "passportsHint": "最多 {max} 个。大小写、空格和连字符均不影响。",
+      "amount": "每位买家的积分",
+      "amountHint": "整数积分，最多 {max}。1 积分 = 1 元。",
+      "reason": "原因（显示在每位买家的钱包中）",
+      "check": "检查护照号码",
+      "checking": "检查中…",
+      "foundTitle": "已找到：{count} / {typed}",
+      "foundRow": "{name} {number} · {passport}",
+      "notFound": "未找到：{count} 个。这些买家不会收到积分：{list}",
+      "ambiguous": "这些号码对应多位买家：{count} 个。不会为它们发放积分：{list}",
+      "blocked": "这些号码属于已停用或已删除的账户：{count} 个。不会发放：{list}",
+      "summary": "向 {count} 位买家各发放 {amount} 积分：共 {total} 积分。",
+      "pay": "向 {count} 位买家发放",
+      "paying": "发放中…",
+      "recheck": "列表已更改：发放前请重新检查护照号码。",
+      "done": "完成：已向 {paid} 位买家各发放 {amount} 积分。",
+      "doneFailed": "有 {failed} 位买家未能发放。请在“钱包”页检查。",
+      "noneFound": "这些护照号码都不属于任何买家。"
     }
   },
   "searchPage": {
@@ -5627,7 +5651,8 @@
       "referral_rejected": "拒绝了一条邀请记录",
       "referral_exhibition_points": "设置了展会的邀请奖励积分",
       "ticket_refund_rules": "设置了展会的车票报销规则",
-      "ticket_invoice_attached": "为车票报销附上了电子发票"
+      "ticket_invoice_attached": "为车票报销附上了电子发票",
+      "points_bulk_topup": "按护照号码为多位买家充值"
     }
   },
   "notificationsPage": {

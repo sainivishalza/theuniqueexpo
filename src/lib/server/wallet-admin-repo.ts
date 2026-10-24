@@ -275,3 +275,49 @@ export async function setTourPoints(id: number, points: number): Promise<boolean
   const [res] = await pool.query<import("mysql2/promise").ResultSetHeader>("UPDATE tours SET price_points = ? WHERE id = ?", [points > 0 ? points : null, id]);
   return res.affectedRows > 0;
 }
+
+// ---------- paying several buyers found by passport number ----------
+
+export interface PassportMatch {
+  userId: number;
+  name: string;
+  buyerNumber: string;
+  passport: string; // as saved on the profile
+}
+
+export interface PassportResolution {
+  found: (PassportMatch & { typed: string })[]; // exactly one active buyer has this passport number
+  notFound: string[]; // typed, nobody has it (or it cannot be a passport number)
+  ambiguous: string[]; // more than one buyer has it: nobody is paid for these
+  blocked: string[]; // the only buyer with it is suspended or a deleted account
+}
+
+// Looks each pasted passport number up among the buyers' profiles (case, spaces, dashes and dots ignored).
+export async function resolvePassports(tokens: { raw: string; normalized: string }[]): Promise<PassportResolution> {
+  const out: PassportResolution = { found: [], notFound: [], ambiguous: [], blocked: [] };
+  const wanted = Array.from(new Set(tokens.map((t) => t.normalized).filter(Boolean)));
+  const byPassport = new Map<string, RowDataPacket[]>();
+  if (wanted.length > 0) {
+    const clean = "UPPER(REPLACE(REPLACE(REPLACE(TRIM(p.passport_number), ' ', ''), '-', ''), '.', ''))";
+    const [rows] = await pool.query<RowDataPacket[]>(
+      `SELECT u.id, u.name, u.buyer_no, u.status, u.deleted_at, p.passport_number, ${clean} AS clean
+       FROM buyer_profiles p JOIN users u ON u.id = p.user_id
+       WHERE u.role = 'buyer' AND ${clean} IN (?)`,
+      [wanted]
+    );
+    for (const r of rows) {
+      const list = byPassport.get(String(r.clean)) ?? [];
+      list.push(r);
+      byPassport.set(String(r.clean), list);
+    }
+  }
+  for (const token of tokens) {
+    const matches = token.normalized ? (byPassport.get(token.normalized) ?? []) : [];
+    if (matches.length === 0) out.notFound.push(token.raw);
+    else if (matches.length > 1) out.ambiguous.push(token.raw);
+    else if (matches[0].status === "suspended" || matches[0].deleted_at) out.blocked.push(token.raw);
+    else
+      out.found.push({ typed: token.raw, userId: Number(matches[0].id), name: String(matches[0].name), buyerNumber: formatBuyerNumber(matches[0].buyer_no), passport: String(matches[0].passport_number ?? "") });
+  }
+  return out;
+}

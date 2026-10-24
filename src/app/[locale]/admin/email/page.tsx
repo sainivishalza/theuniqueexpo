@@ -31,7 +31,7 @@ interface LogRow {
 }
 
 const KINDS = [
-  "passwordReset", "passwordChanged", "registrationReceived", "registrationWaitlisted", "waitlistPlaceOpened", "registrationApproved", "registrationRejected", "tourRegistrationApproved", "tourRegistrationRejected", "documentRejected", "pointsReceived",
+  "passwordReset", "passwordChanged", "registrationReceived", "registrationWaitlisted", "waitlistPlaceOpened", "registrationApproved", "registrationRejected", "tourRegistrationApproved", "tourRegistrationRejected", "documentRejected", "pointsReceived", "ticketInvoiceReady",
   "topupApproved", "topupRejected", "withdrawalPaid", "withdrawalRejected", "expenseApproved", "expenseRejected", "confirmEmail", "confirmEmailChange", "emailChanged", "registrationReminder", "registrationStartsSoon", "scheduledReport", "dailyHealth", "adminSignIn", "errorAlert", "savedRegistrationOpened", "savedRegistrationClosing", "passportExpiring", "visaExpiring", "groupInvite", "announcement", "test", "digest", "accountDeleted",
 ];
 

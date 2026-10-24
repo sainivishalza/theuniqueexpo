@@ -26,6 +26,7 @@ export type EmailKind =
   | "tourRegistrationRejected"
   | "documentRejected"
   | "pointsReceived"
+  | "ticketInvoiceReady"
   | "topupApproved"
   | "topupRejected"
   | "withdrawalPaid"
@@ -309,6 +310,11 @@ export function notifyTourRegistrationDecision(registrationId: number, approved:
 
 export function notifyPointsReceived(userId: number, points: number, reason: string, balance?: number): void {
   notifyUser(userId, "pointsReceived", { points: formatNumber(points), reason, ...(balance !== undefined ? { balance: formatNumber(balance) } : {}) }, { path: "/dashboard/buyer/wallet" });
+}
+
+// A train-ticket refund: our team got the e-invoice from 12306 and attached it, so the buyer can download it.
+export function notifyTicketInvoiceReady(userId: number, exhibition: string): void {
+  notifyUser(userId, "ticketInvoiceReady", { exhibition: exhibition.slice(0, 150) }, { path: "/dashboard/buyer/wallet/ticket" });
 }
 
 export function notifyWalletRequest(

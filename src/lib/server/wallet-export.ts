@@ -272,3 +272,102 @@ export async function buildMonthlyStatementExcel(month: string): Promise<{ buffe
   ["opening", "added", "taken", "closing"].forEach((k) => { detail.getColumn(k).numFmt = FMT; });
   return { buffer: toBuffer(await workbook.xlsx.writeBuffer()), truncated };
 }
+
+// Every referral: who invited whom, what each side was paid and for which exhibition.
+export async function buildReferralsExcel(): Promise<Buffer> {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    `SELECT r.id, r.status, r.referrer_points, r.referred_points, r.note, r.created_at, r.rewarded_at,
+            a.name AS a_name, a.buyer_no AS a_no, b.name AS b_name, b.buyer_no AS b_no, x.title AS expo_title
+     FROM buyer_referrals r JOIN users a ON a.id = r.referrer_id JOIN users b ON b.id = r.referred_id
+          LEFT JOIN exhibitions x ON x.id = r.exhibition_id
+     ORDER BY r.id ASC LIMIT ?`,
+    [MAX_MOVEMENT_ROWS]
+  );
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet("Referrals");
+  sheet.columns = [
+    { header: "Referral No.", key: "id", width: 13 },
+    { header: "Created (UTC)", key: "created", width: 20 },
+    { header: "Status", key: "status", width: 12 },
+    { header: "Inviter Registration No.", key: "aNo", width: 24 },
+    { header: "Inviter", key: "aName", width: 26 },
+    { header: "New buyer Registration No.", key: "bNo", width: 26 },
+    { header: "New buyer", key: "bName", width: 26 },
+    { header: "Points to inviter", key: "aPoints", width: 17 },
+    { header: "Points to new buyer", key: "bPoints", width: 19 },
+    { header: "Paid for exhibition", key: "expo", width: 34 },
+    { header: "Paid (UTC)", key: "paid", width: 20 },
+    { header: "Note", key: "note", width: 30 },
+  ];
+  sheet.getRow(1).font = { bold: true };
+  rows.forEach((r) =>
+    sheet.addRow({
+      id: Number(r.id),
+      created: when(r.created_at),
+      status: r.status,
+      aNo: formatBuyerNumber(r.a_no),
+      aName: r.a_name,
+      bNo: formatBuyerNumber(r.b_no),
+      bName: r.b_name,
+      aPoints: r.status === "rewarded" ? Number(r.referrer_points) : null,
+      bPoints: r.status === "rewarded" ? Number(r.referred_points) : null,
+      expo: r.expo_title ?? "",
+      paid: when(r.rewarded_at),
+      note: r.note,
+    })
+  );
+  return toBuffer(await workbook.xlsx.writeBuffer());
+}
+
+const TICKET_STATUSES = ["pending", "approved", "rejected"];
+
+// The train-ticket refund requests (one status, or all): the amount on the invoice, the points paid, and whether the
+// e-invoice is attached yet.
+export async function buildTicketRefundsExcel(status: string): Promise<Buffer> {
+  const where = TICKET_STATUSES.includes(status) ? "AND c.status = ?" : "";
+  const [rows] = await pool.query<RowDataPacket[]>(
+    `SELECT c.id, c.status, c.amount_cny, c.ticket_no, c.receipt_count, c.points_awarded, c.admin_note, c.created_at, c.reviewed_at,
+            e.title AS expo_title, u.name, u.email, u.buyer_no
+     FROM wallet_expense_claims c JOIN users u ON u.id = c.user_id LEFT JOIN exhibitions e ON e.id = c.exhibition_id
+     WHERE c.kind = 'train' ${where} ORDER BY c.id ASC LIMIT ?`,
+    [...(where ? [status] : []), MAX_MOVEMENT_ROWS]
+  );
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet("Ticket refunds");
+  sheet.columns = [
+    { header: "Request No.", key: "id", width: 12 },
+    { header: "Sent (UTC)", key: "created", width: 20 },
+    { header: "Buyer Registration No.", key: "buyerNo", width: 22 },
+    { header: "Name", key: "name", width: 26 },
+    { header: "Account Email", key: "email", width: 30 },
+    { header: "Exhibition", key: "expo", width: 34 },
+    { header: "Amount on e-invoice (RMB)", key: "amount", width: 26 },
+    { header: "E-ticket number", key: "ticketNo", width: 26 },
+    { header: "E-invoice attached", key: "invoice", width: 18 },
+    { header: "Status", key: "status", width: 12 },
+    { header: "Points paid", key: "points", width: 13 },
+    { header: "Admin note", key: "adminNote", width: 30 },
+    { header: "Handled (UTC)", key: "handled", width: 20 },
+  ];
+  sheet.getRow(1).font = { bold: true };
+  rows.forEach((r) => {
+    const row = sheet.addRow({
+      id: Number(r.id),
+      created: when(r.created_at),
+      buyerNo: formatBuyerNumber(r.buyer_no),
+      name: r.name,
+      email: r.email,
+      expo: r.expo_title ?? "",
+      amount: r.amount_cny === null ? null : Number(r.amount_cny),
+      ticketNo: r.ticket_no ? String(r.ticket_no) : "",
+      invoice: Number(r.receipt_count) >= 2 ? "Yes" : "No",
+      status: r.status,
+      points: r.points_awarded === null ? null : Number(r.points_awarded),
+      adminNote: r.admin_note,
+      handled: when(r.reviewed_at),
+    });
+    // Text, so a long ticket number is not turned into 1.2E+15.
+    row.getCell("ticketNo").numFmt = "@";
+  });
+  return toBuffer(await workbook.xlsx.writeBuffer());
+}

@@ -5,7 +5,7 @@ import { completeTrainClaim, reviewExpenseClaim } from "@/lib/server/wallet-repo
 import { isValidUploadedDocument } from "@/lib/server/validate-upload";
 import { parseCny, parseTicketNo } from "@/lib/ticket-refund";
 import { getExpenseReceipts } from "@/lib/server/wallet-admin-repo";
-import { notifyWalletRequest } from "@/lib/server/notifications";
+import { notifyTicketInvoiceReady, notifyWalletRequest } from "@/lib/server/notifications";
 import { MAX_WALLET_IMAGE_BYTES, positiveId, readJson, requireWalletAdmin, text, walletErrorResponse, walletFail } from "@/lib/server/wallet-api";
 
 // The receipts the buyer uploaded.
@@ -39,7 +39,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       if (ticketNo === null) return walletFail("invalid_input");
       const hasInvoice = body.invoice !== undefined && body.invoice !== null && body.invoice !== "";
       if (hasInvoice && !isValidUploadedDocument(body.invoice, MAX_WALLET_IMAGE_BYTES)) return walletFail("invalid_input");
-      await completeTrainClaim(id, { invoice: hasInvoice ? (body.invoice as string) : null, amountCny, ticketNo });
+      const attached = await completeTrainClaim(id, { invoice: hasInvoice ? (body.invoice as string) : null, amountCny, ticketNo });
+      if (attached.invoiceAttached) notifyTicketInvoiceReady(attached.userId, attached.exhibition);
       logAdminAction(request, auth.admin, "ticket_invoice_attached", { targetType: "expense", targetId: id, details: `¥${amountCny.toFixed(2)}` });
     } else if (body.action === "approve") {
       const points = parsePoints(body.points);

@@ -10,7 +10,7 @@ import { REFERRAL_TRIGGERS, type ReferralSettings, type ReferralStatus } from "@
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
-import { STATUS_TONE } from "./shared";
+import { DownloadExcel, STATUS_TONE } from "./shared";
 
 interface Row {
   id: number;
@@ -261,7 +261,10 @@ export default function ReferralsTab() {
       )}
 
       <div>
-        <h2 className="text-lg font-bold text-heading">{tr("listTitle")}</h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-lg font-bold text-heading">{tr("listTitle")}</h2>
+          <DownloadExcel path="/api/admin/wallet/export/referrals" fallbackName="referrals.xlsx" label={t("export.referrals")} />
+        </div>
         <div className="mt-3 flex flex-wrap gap-3">
           <div>
             <label htmlFor={ids.filter} className="block text-xs font-medium text-gray-700 mb-1">{tr("filterLabel")}</label>

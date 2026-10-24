@@ -41,6 +41,7 @@ export interface Overview {
   pendingWithdrawals: number;
   pendingWithdrawalPoints: number;
   pendingExpenses: number;
+  ticketsNeedInvoice: number; // train-ticket refunds still waiting for the e-invoice from 12306
   mismatches: Awaited<ReturnType<typeof findLedgerMismatches>>;
 }
 
@@ -49,6 +50,7 @@ export async function getOverview(): Promise<Overview> {
   const [[t]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS n FROM wallet_topups WHERE status = 'pending'");
   const [[d]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS n, COALESCE(SUM(points), 0) AS pts FROM wallet_withdrawals WHERE status = 'pending'");
   const [[x]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS n FROM wallet_expense_claims WHERE status = 'pending'");
+  const [[inv]] = await pool.query<RowDataPacket[]>("SELECT COUNT(*) AS n FROM wallet_expense_claims WHERE kind = 'train' AND status = 'pending' AND receipt_count < 2");
   return {
     wallets: Number(w.n),
     outstandingPoints: Number(w.total),
@@ -56,6 +58,7 @@ export async function getOverview(): Promise<Overview> {
     pendingWithdrawals: Number(d.n),
     pendingWithdrawalPoints: Number(d.pts),
     pendingExpenses: Number(x.n),
+    ticketsNeedInvoice: Number(inv.n),
     mismatches: await findLedgerMismatches(),
   };
 }

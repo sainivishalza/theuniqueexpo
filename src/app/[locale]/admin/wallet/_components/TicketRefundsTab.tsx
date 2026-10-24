@@ -8,6 +8,7 @@ import { errorKey, walletApi } from "@/lib/client/wallet-client";
 import type { RefundMode } from "@/lib/ticket-refund";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import { DownloadExcel } from "./shared";
 
 interface Row { id: number; title: string; startDate: string; endDate: string; mode: RefundMode; percent: number; maxPoints: number }
 interface Draft { mode: RefundMode; percent: string; max: string }
@@ -66,6 +67,7 @@ export default function TicketRefundsTab() {
         <h2 className="text-lg font-bold text-heading">{tr("title")}</h2>
         <p className="text-sm text-gray-700">{tr("intro")}</p>
         <p className="text-xs text-gray-600">{tr("hint")}</p>
+        <DownloadExcel path="/api/admin/wallet/export/ticket-refunds" fallbackName="ticket-refunds.xlsx" label={t("export.ticketRefunds")} />
         <div>
           <label htmlFor={searchId} className="block text-xs font-medium text-gray-700 mb-1">{tr("search")}</label>
           <input id={searchId} type="search" value={filter} onChange={(e) => setFilter(e.target.value)} className={fieldClasses()} />

@@ -4675,7 +4675,8 @@
       "pointsSetup": "Points setup",
       "settings": "Settings",
       "referrals": "Referrals",
-      "ticketRefunds": "Ticket refunds"
+      "ticketRefunds": "Ticket refunds",
+      "bulkTopup": "Top up many"
     },
     "export": {
       "withdrawals": "Download these withdrawals (Excel)",
@@ -4948,6 +4949,29 @@
       "rowMax": "Most points for {title}",
       "rowSave": "Save {title}",
       "saved": "Saved"
+    },
+    "bulkTopup": {
+      "title": "Top up several buyers by passport number",
+      "intro": "Paste the passport numbers (one per line, or separated by commas), type one amount for everyone and a reason. First check who is found; then pay all of them at once. A number nobody has is shown as an alert, and the buyers who were found are still paid.",
+      "passports": "Passport numbers",
+      "passportsHint": "Up to {max}. Capital letters, spaces and dashes do not matter.",
+      "amount": "Points for each buyer",
+      "amountHint": "Whole points, up to {max}. 1 point = 1 RMB.",
+      "reason": "Reason (shown in each buyer's wallet)",
+      "check": "Check passport numbers",
+      "checking": "Checking…",
+      "foundTitle": "Found: {count} of {typed}",
+      "foundRow": "{name} {number} · {passport}",
+      "notFound": "Not found: {count}. These buyers will NOT receive points: {list}",
+      "ambiguous": "More than one buyer has these numbers: {count}. Nobody is paid for them: {list}",
+      "blocked": "These belong to a suspended or deleted account: {count}. Not paid: {list}",
+      "summary": "Pay {amount} points to {count} buyers: {total} points in total.",
+      "pay": "Pay {count} buyers",
+      "paying": "Paying…",
+      "recheck": "The list changed: check the passport numbers again before paying.",
+      "done": "Done: {amount} points added to {paid} buyers.",
+      "doneFailed": "{failed} buyers could not be paid. Check them in the Wallets tab.",
+      "noneFound": "None of these passport numbers belongs to a buyer."
     }
   },
   "searchPage": {
@@ -5627,7 +5651,8 @@
       "referral_rejected": "Rejected a referral",
       "referral_exhibition_points": "Set referral points of an exhibition",
       "ticket_refund_rules": "Set the train-ticket refund rule of an exhibition",
-      "ticket_invoice_attached": "Attached the e-invoice to a ticket refund"
+      "ticket_invoice_attached": "Attached the e-invoice to a ticket refund",
+      "points_bulk_topup": "Topped up several buyers by passport number"
     }
   },
   "notificationsPage": {

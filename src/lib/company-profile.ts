@@ -7,6 +7,11 @@ export interface CompanyProfile {
   // Digits with optional leading + (e.g. +86 138 0000 0000); powers the
   // floating click-to-chat button. Empty hides the button.
   whatsapp: string;
+  // The WeChat ID shown under the QR code in the help box (optional).
+  wechatId: string;
+  // Set by the server when a WeChat QR code is uploaded (Admin -> Company profile), empty when there is none. The picture
+  // itself is served from /api/wechat-qr; this stamp only tells the help box to offer it and makes browsers fetch the new one.
+  wechatQrVersion: string;
   // GA4 measurement ID (G-XXXXXXXXXX). Empty disables analytics.
   googleAnalyticsId: string;
   // Google Search Console "HTML tag" verification token (the content="..." value).
@@ -33,6 +38,8 @@ export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
   contactEmail: "info@theuniqueexpo.com",
   phone: "",
   whatsapp: "",
+  wechatId: "",
+  wechatQrVersion: "",
   googleAnalyticsId: "",
   googleSiteVerification: "",
   addressLine: "",
@@ -75,6 +82,8 @@ export function normalizeCompanyProfile(input: unknown): CompanyProfile {
     contactEmail: str("contactEmail"),
     phone: str("phone"),
     whatsapp: str("whatsapp"),
+    wechatId: str("wechatId").trim().slice(0, 60),
+    wechatQrVersion: /^\d{1,15}$/.test(str("wechatQrVersion")) ? str("wechatQrVersion") : "",
     googleAnalyticsId: GA_MEASUREMENT_ID_RE.test(str("googleAnalyticsId").trim()) ? str("googleAnalyticsId").trim() : "",
     googleSiteVerification: SITE_VERIFICATION_RE.test(extractSiteVerification(str("googleSiteVerification"))) ? extractSiteVerification(str("googleSiteVerification")) : "",
     addressLine: str("addressLine"),

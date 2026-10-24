@@ -1,7 +1,8 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useEffect, useId, useMemo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { formatDateOnly } from "@/lib/client/registration-format";
 import { formatNumber } from "@/lib/format";
 import { fieldClasses } from "@/components/ui/FormField";
 import { errorKey, pointsFromText, walletApi } from "@/lib/client/wallet-client";
@@ -9,9 +10,11 @@ import { BULK_MAX_BUYERS, BULK_MAX_POINTS, newClientKey } from "@/lib/wallet";
 import { parsePassportList } from "@/lib/passport-list";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import ExpoSearchSelect, { type ExpoGroup } from "./ExpoSearchSelect";
 
 interface Found { userId: number; name: string; buyerNumber: string; passport: string; typed: string }
 interface Checked { found: Found[]; notFound: string[]; ambiguous: string[]; blocked: string[]; typed: number }
+interface ExpoOptions { website: { id: number; name: string; startDate: string }[]; other: { name: string }[] }
 interface Paid { amount: number; typed: number; paid: number; failed: number; notFound: string[]; ambiguous: string[]; blocked: string[] }
 
 // Top up many buyers at once: paste their passport numbers, one amount and a reason. The numbers are checked first (who is
@@ -19,14 +22,36 @@ interface Paid { amount: number; typed: number; paid: number; failed: number; no
 export default function BulkTopupTab() {
   const t = useTranslations("adminWallet");
   const tb = useTranslations("adminWallet.bulkTopup");
-  const ids = { list: useId(), amount: useId(), reason: useId() };
+  const locale = useLocale();
+  const ids = { list: useId(), amount: useId(), expo: useId(), reason: useId() };
   const [text, setText] = useState("");
   const [amountText, setAmountText] = useState("");
-  const [reason, setReason] = useState("");
+  const [expo, setExpo] = useState("");
+  const [note, setNote] = useState("");
+  const [expoOptions, setExpoOptions] = useState<ExpoOptions | null>(null);
   const [checked, setChecked] = useState<{ result: Checked; text: string } | null>(null);
   const [paid, setPaid] = useState<Paid | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+
+  // The expos to choose from. If the list cannot be loaded, a name can still be typed.
+  useEffect(() => {
+    let alive = true;
+    walletApi<ExpoOptions>("/api/admin/wallet/expo-options").then((res) => {
+      if (alive && res.ok) setExpoOptions(res.data);
+    });
+    return () => { alive = false; };
+  }, []);
+  const groups = useMemo<ExpoGroup[]>(() => {
+    if (!expoOptions) return [];
+    return [
+      { label: tb("expoWebsite"), items: expoOptions.website.map((w) => ({ name: w.name, hint: formatDateOnly(w.startDate, locale) })) },
+      { label: tb("expoOther"), items: expoOptions.other.map((o) => ({ name: o.name })) },
+    ].filter((g) => g.items.length > 0);
+  }, [expoOptions, locale, tb]);
+
+  // What each buyer sees in their wallet: the expo, then the note if there is one.
+  const reason = [expo.trim(), note.trim()].filter(Boolean).join(" — ").slice(0, 200);
 
   const tokens = useMemo(() => parsePassportList(text), [text]);
   const amount = pointsFromText(amountText);
@@ -36,7 +61,7 @@ export default function BulkTopupTab() {
   // One request key per distinct request, so a double click cannot pay anyone twice.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const key = useMemo(() => newClientKey(), [text, amountText, reason]);
-  const canPay = fresh && found > 0 && validAmount && reason.trim().length >= 3 && !busy && paid === null;
+  const canPay = fresh && found > 0 && validAmount && reason.length >= 3 && !busy && paid === null;
 
   async function check() {
     if (tokens.length === 0 || tokens.length > BULK_MAX_BUYERS) return;
@@ -56,7 +81,7 @@ export default function BulkTopupTab() {
     if (!canPay || amount === null) return;
     setBusy(true);
     setError("");
-    const res = await walletApi<Paid>("/api/admin/wallet/bulk-topup", { method: "POST", body: { action: "pay", passports: text, amount, note: reason.trim(), key } });
+    const res = await walletApi<Paid>("/api/admin/wallet/bulk-topup", { method: "POST", body: { action: "pay", passports: text, amount, note: reason, key } });
     setBusy(false);
     if (!res.ok) {
       setError(t(`errors.${errorKey(res.data.code)}`));
@@ -92,9 +117,24 @@ export default function BulkTopupTab() {
             <p className="mt-1 text-xs text-gray-600">{tb("amountHint", { max: formatNumber(BULK_MAX_POINTS) })}</p>
           </div>
           <div>
-            <label htmlFor={ids.reason} className="block text-sm font-medium text-gray-700 mb-1.5">{tb("reason")}</label>
-            <input id={ids.reason} value={reason} maxLength={200} onChange={(e) => setReason(e.target.value)} className={fieldClasses()} autoComplete="off" />
+            <label htmlFor={ids.expo} className="block text-sm font-medium text-gray-700 mb-1.5">{tb("expo")}</label>
+            <ExpoSearchSelect
+              id={ids.expo}
+              groups={groups}
+              value={expo}
+              onChange={setExpo}
+              placeholder={tb("expoPlaceholder")}
+              emptyText={tb("expoEmpty")}
+              useTyped={(name) => tb("expoUseTyped", { name })}
+              clearText={tb("expoClear")}
+            />
+            <p className="mt-1 text-xs text-gray-600">{tb("expoHint")}</p>
           </div>
+        </div>
+        <div>
+          <label htmlFor={ids.reason} className="block text-sm font-medium text-gray-700 mb-1.5">{tb("reason")}</label>
+          <input id={ids.reason} value={note} maxLength={100} onChange={(e) => setNote(e.target.value)} className={fieldClasses()} autoComplete="off" />
+          <p className="mt-1 text-xs text-gray-600">{tb("reasonHint")}</p>
         </div>
         <Button type="button" variant="secondaryOutline" size="compact" disabled={busy || tokens.length === 0 || tokens.length > BULK_MAX_BUYERS} onClick={check} data-testid="bulk-check">{busy && !paid ? tb("checking") : tb("check")}</Button>
       </Card>

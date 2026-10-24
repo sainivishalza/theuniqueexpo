@@ -79,6 +79,19 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
   const mism = await (await fetch(BASE + '/api/admin/wallet/overview', { headers: AH })).json();
   ok(!mism.mismatches || mism.mismatches.length === 0, 'every balance still equals its statement');
 
+  console.log('\n== the expo list');
+  const xtag = `Zzexpo${Date.now()}`;
+  const webTitle = `Zz Web Expo ${xtag}`, otherName = `Zz Other Expo ${xtag}`;
+  sql(`INSERT INTO exhibitions (slug,title,start_date,end_date,venue,city,country,industry,description,highlights,exhibitors,visitors,organizer,registration_enabled) VALUES ('${xtag.toLowerCase()}','${webTitle}',DATE_ADD(UTC_DATE(),INTERVAL 20 DAY),DATE_ADD(UTC_DATE(),INTERVAL 22 DAY),'Hall','Zzcity','China','X','d','[]',1,'','O',1)`);
+  sql(`INSERT IGNORE INTO buyer_expos (name) VALUES ('${webTitle.toLowerCase()}'),('${otherName}')`);
+  const listUrl = BASE + '/api/admin/wallet/expo-options';
+  ok((await fetch(listUrl)).status === 401, 'the expo list: nobody signed in cannot');
+  ok((await fetch(listUrl, { headers: BH })).status === 401, 'a buyer cannot');
+  const expoList = await (await fetch(listUrl, { headers: AH })).json();
+  ok(expoList.website.some((w) => w.name === webTitle && /^\d{4}-\d\d-\d\d$/.test(w.startDate)), 'the exhibitions on the website are listed with their start day', expoList.website.length);
+  ok(expoList.other.some((o) => o.name === otherName), 'an expo that is only in the Buyer Expos list is listed too');
+  ok(!expoList.other.some((o) => o.name.toLowerCase() === webTitle.toLowerCase()), 'one that is also on the website is not listed twice (capitals do not matter)');
+
   console.log('\n== screens');
   const br = await launch();
   const open = async (token, path, width = 375) => {
@@ -99,7 +112,17 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
     ok(await page.getByTestId('bulk-check').isDisabled(), 'checking needs numbers');
     await page.locator('textarea').fill(screenList);
     await page.locator('input[inputmode="numeric"]').fill('40');
-    await page.locator('input[maxlength="200"]').fill('Test top-up');
+    // the expo is chosen from a dropdown that can be searched; the note is extra
+    const combo = page.getByRole('combobox');
+    await combo.click();
+    await page.getByTestId('expo-list').waitFor();
+    ok((await page.getByRole('option').count()) >= 2, 'the dropdown lists the expos');
+    await combo.fill(xtag.toLowerCase());
+    ok((await page.getByRole('option').count()) === 3, 'typing searches it: the website expo, the other expo and "use what I typed"', await page.getByRole('option').allInnerTexts());
+    ok(await page.getByTestId('expo-use-typed').isVisible(), 'a name that is not in the list can be used as typed');
+    await page.getByRole('option', { name: webTitle }).first().click();
+    ok((await combo.inputValue()) === webTitle, 'choosing an expo fills the field');
+    await page.getByLabel(/^(Note|Примечание|备注)/).fill('Test top-up');
     await page.getByTestId('bulk-check').click();
     await page.getByTestId('bulk-found').waitFor();
     ok((await page.getByTestId('bulk-found').locator('li').count()) === 3, 'the three buyers found are listed');
@@ -118,6 +141,16 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
     const vio = await axeViolations(page);
     ok(vio.length === 0, 'accessible (axe)', vio);
     ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), 'fits a 375 px phone');
+    if (locale === 'ru') {
+      await combo.click();
+      await combo.fill('Выставка не с сайта');
+      await page.getByTestId('expo-use-typed').click();
+      ok((await combo.inputValue()) === 'Выставка не с сайта', 'ru: an expo that is not in the list can be named');
+      await page.getByRole('button', { name: /Убрать выставку/ }).click();
+      ok((await combo.inputValue()) === '', 'ru: the expo can be cleared');
+      await combo.click(); await combo.fill(xtag.toLowerCase());
+      await page.getByRole('option', { name: webTitle }).first().click();
+    }
     if (locale === 'en') {
       await page.getByTestId('bulk-check').click();
       // the earlier result is still on screen while the new check runs: wait until paying is possible again
@@ -127,6 +160,7 @@ const balance = (id) => num(`SELECT COALESCE((SELECT balance FROM wallets WHERE 
       await page.getByTestId('bulk-done').waitFor();
       ok(/40 points added to 3 buyers/.test(await page.getByTestId('bulk-done').innerText()), 'the done message says 3 buyers got 40 points');
       ok(fresh.every((id) => balance(id) === 40), 'all three received the points');
+      ok(num(`SELECT COUNT(*) FROM wallet_transactions WHERE user_id IN (${fresh.join(',')}) AND note='${webTitle} — Test top-up'`) === 3, 'each statement says the expo, then the note');
       ok((await page.getByTestId('bulk-notFound').innerText()).includes('NOSUCH12345'), 'the not-found alert stays after paying');
       ok((await page.getByTestId('bulk-pay').count()) === 0, 'the same list cannot be paid again from the screen');
     }

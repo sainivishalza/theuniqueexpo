@@ -46,6 +46,7 @@ const TX_ICONS: Record<WalletTxType, string> = {
   purchase: "🧳",
   purchase_refund: "↩️",
   adjustment: "⚙️",
+  referral: "🤝",
 };
 
 export default function BuyerWalletPage() {

@@ -27,7 +27,8 @@ export type WalletTxType =
   | "withdrawal_refund"
   | "purchase"
   | "purchase_refund"
-  | "adjustment";
+  | "adjustment"
+  | "referral";
 
 export type WithdrawalMethod = "alipay" | "wechat" | "bank";
 export const WITHDRAWAL_METHODS: WithdrawalMethod[] = ["alipay", "wechat", "bank"];

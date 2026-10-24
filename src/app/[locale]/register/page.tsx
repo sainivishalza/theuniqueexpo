@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -8,7 +8,8 @@ import { friendlyCount, showable } from "@/lib/site-stats-format";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { useAuth, type UserRole } from "@/lib/auth-context";
-import { errorMessage } from "@/lib/format";
+import { errorMessage, formatNumber } from "@/lib/format";
+import { isValidReferralCode, type ReferralTrigger } from "@/lib/referral";
 import Logo from "@/components/Logo";
 import Button from "@/components/ui/Button";
 import FormField, { fieldClasses } from "@/components/ui/FormField";
@@ -33,6 +34,23 @@ export default function RegisterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const ref = searchParams.get("ref") || undefined;
+  // A buyer's invitation link carries their code; the sign-up page tells the newcomer what the invitation is worth.
+  const inviteParam = searchParams.get("invite") || "";
+  const invite = isValidReferralCode(inviteParam) ? inviteParam : undefined;
+  const [offer, setOffer] = useState<{ enabled: boolean; referredPoints: number; trigger: ReferralTrigger } | null>(null);
+  useEffect(() => {
+    if (!invite) return;
+    let stale = false;
+    fetch("/api/referrals/offer")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!stale) setOffer(data);
+      })
+      .catch(() => {});
+    return () => {
+      stale = true;
+    };
+  }, [invite]);
   const [form, setForm] = useState({ name: "", email: "", password: "", role: "buyer" as UserRole, country: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -42,7 +60,7 @@ export default function RegisterPage() {
     setError("");
     setLoading(true);
     try {
-      await register(form.name, form.email, form.password, form.role, form.country, ref);
+      await register(form.name, form.email, form.password, form.role, form.country, ref, form.role === "buyer" ? invite : undefined);
       router.push("/dashboard/" + form.role);
     } catch (err) {
       setError(errorMessage(err, t("registrationFailed")));
@@ -83,6 +101,11 @@ export default function RegisterPage() {
           <h2 className="text-3xl font-extrabold text-heading mb-2">{t("createAccount")}</h2>
           <p className="text-gray-500 mb-8">{t("createAccountSubtitle")}</p>
 
+          {invite && offer?.enabled && form.role === "buyer" && (
+            <p role="status" data-testid="register-invited" className="mb-4 rounded-[var(--radius-button)] border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900">
+              {offer.referredPoints > 0 ? t("invitedBonus", { points: formatNumber(offer.referredPoints), trigger: offer.trigger }) : t("invited")}
+            </p>
+          )}
           {error && <div className="mb-4 p-3 rounded-[var(--radius-button)] bg-red-50 border border-red-200 text-sm text-red-700">{error}</div>}
 
           <form onSubmit={handleSubmit} className="space-y-5">

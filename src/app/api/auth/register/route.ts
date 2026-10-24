@@ -5,6 +5,7 @@ import { createUserAccount, setSessionCookie } from "@/lib/auth-server";
 import { rateLimitOrNull } from "@/lib/server/rate-limit";
 import { detectLocale, rememberLocale } from "@/lib/server/notifications";
 import { isValidPartnerId, createReferral } from "@/lib/server/partner-referrals-repo";
+import { recordReferral } from "@/lib/server/referrals";
 
 // "admin" is deliberately excluded -- it's a UserRole (for session/UI typing)
 // but not something the public sign-up endpoint may hand out.
@@ -18,7 +19,7 @@ export async function POST(request: Request) {
   if (limited) return limited;
 
   try {
-    const { name, email, password, role, country, ref } = await request.json();
+    const { name, email, password, role, country, ref, invite } = await request.json();
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: "Name, email, and password are required" }, { status: 400 });
@@ -51,6 +52,15 @@ export async function POST(request: Request) {
         }
       } catch (err) {
         console.error("Referral tracking error (registration still succeeded):", err);
+      }
+    }
+
+    // A buyer invited by another buyer (the "invite" code of their link): same rule, never a condition for signing up.
+    if (invite && user.role === "buyer") {
+      try {
+        await recordReferral(user.id, invite);
+      } catch (err) {
+        console.error("Buyer referral error (registration still succeeded):", err);
       }
     }
 

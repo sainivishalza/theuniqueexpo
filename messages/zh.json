@@ -297,7 +297,9 @@
     "createAccountButton": "创建账户",
     "alreadyHaveAccount": "已有账户?",
     "signIn": "登录 →",
-    "registrationFailed": "注册失败"
+    "registrationFailed": "注册失败",
+    "invitedBonus": "您是受买家邀请而来。{trigger, select, signup {注册后} approved {首次报名获批后} other {首次参加展会后}}您将获得 {points} 积分。",
+    "invited": "您是受买家邀请而来。"
   },
   "common": {
     "redirecting": "正在跳转…",
@@ -4344,7 +4346,8 @@
       "withdraw": "提现",
       "expenses": "差旅费用",
       "shop": "积分支付",
-      "use": "能做什么"
+      "use": "能做什么",
+      "invite": "邀请好友"
     },
     "balance": "您的余额",
     "pointsUnit": "积分",
@@ -4369,7 +4372,8 @@
       "withdrawal_refund": "提现退回",
       "purchase": "支付套餐",
       "purchase_refund": "套餐退款",
-      "adjustment": "平台调整"
+      "adjustment": "平台调整",
+      "referral": "邀请好友奖励"
     },
     "status": {
       "pending": "待处理",
@@ -4586,6 +4590,33 @@
         "open": "充值"
       },
       "topupStatus": "管理员核对您的付款凭证后，积分才会到账。"
+    },
+    "invite": {
+      "title": "邀请好友",
+      "subtitle": "把您的专属链接发给还没有加入本站的同行。",
+      "off": "邀请奖励活动暂未开启。",
+      "ruleBoth": "每位好友{trigger, select, signup {注册后} approved {报名获批后} other {参加展会后}}：您获得 {mine} 积分，好友获得 {theirs} 积分。",
+      "ruleMine": "每位好友{trigger, select, signup {注册后} approved {报名获批后} other {参加展会后}}，您获得 {mine} 积分。",
+      "ruleTheirs": "好友{trigger, select, signup {注册后} approved {报名获批后} other {参加展会后}}将获得 {theirs} 积分。",
+      "cap": "每位买家最多可获得 {max} 位好友的奖励。",
+      "limitReached": "您已达到 {max} 位获奖好友的上限，新的邀请将不再为您带来积分。",
+      "linkLabel": "您的邀请链接",
+      "codeLabel": "您的邀请码：{code}",
+      "copy": "复制链接",
+      "copied": "链接已复制。",
+      "share": "分享",
+      "shareText": "加入 The Unique Expo，和我一起参观中国的展会。",
+      "invited": "已邀请",
+      "rewarded": "已获奖励",
+      "earned": "已获积分",
+      "listTitle": "您邀请的人",
+      "empty": "还没有人。分享您的链接即可开始。",
+      "statusPending": "等待中",
+      "statusRewarded": "已奖励",
+      "statusRejected": "未计入",
+      "pointsEarned": "+{points} 积分",
+      "byExpoTitle": "积分不同的展会",
+      "byExpoRow": "{title}：您获得 {mine} 积分，好友获得 {theirs} 积分。"
     }
   },
   "adminWallet": {
@@ -4600,7 +4631,8 @@
       "wallets": "钱包",
       "purchases": "套餐购买",
       "pointsSetup": "积分设置",
-      "settings": "设置"
+      "settings": "设置",
+      "referrals": "邀请奖励"
     },
     "export": {
       "withdrawals": "下载这些提现申请（Excel）",
@@ -4652,7 +4684,8 @@
       "withdrawal_refund": "提现退回",
       "purchase": "支付套餐",
       "purchase_refund": "套餐退款",
-      "adjustment": "调整"
+      "adjustment": "调整",
+      "referral": "邀请奖励"
     },
     "errors": {
       "generic": "出了点问题，请重试。",
@@ -4789,6 +4822,48 @@
       "help": "奖励钱包一个月的 Excel 报表：期初余额、按类型的增减、期末余额、买家余额与账本是否一致的核对，以及每位买家的明细。1 积分 = 1 元；月份按 UTC 计算。",
       "month": "月份",
       "download": "下载对账单"
+    },
+    "referrals": {
+      "title": "邀请奖励活动",
+      "intro": "买家分享专属链接。通过该链接加入的人达到您选择的阶段后，邀请人和新买家都可获得积分。修改将用于之后的发放。",
+      "enabled": "开启邀请奖励活动",
+      "trigger": "在新买家出现以下情况时发放积分",
+      "triggerSignup": "注册",
+      "triggerApproved": "报名获批",
+      "triggerAttended": "参加展会（最稳妥）",
+      "referrerPoints": "邀请人获得的积分",
+      "referredPoints": "新买家获得的积分",
+      "maxPerReferrer": "每位买家最多可获奖励的邀请数（0 = 不限）",
+      "hint": "整数积分；0 表示该方没有奖励。1 积分 = 1 元。",
+      "saved": "已保存。",
+      "settle": "立即发放待发奖励",
+      "settleHint": "更改阶段后使用：为已达到该阶段的待发邀请发放奖励。",
+      "settled": "已发放 {paid} 条，因上限暂缓 {limited} 条。",
+      "waiting": "等待中",
+      "rewardedCount": "已奖励",
+      "rejectedCount": "未计入",
+      "pointsPaid": "已发放积分",
+      "listTitle": "全部邀请记录",
+      "empty": "暂无邀请记录。",
+      "invitedBy": "邀请人",
+      "newBuyer": "新买家",
+      "paid": "邀请人 +{mine}，新买家 +{theirs}",
+      "rejectConfirm": "拒绝这条邀请？将不会为它发放积分。",
+      "statusPending": "等待中",
+      "statusRewarded": "已奖励",
+      "statusRejected": "已拒绝",
+      "filterLabel": "筛选",
+      "searchLabel": "按姓名或邮箱搜索",
+      "byExpoTitle": "各展会的积分",
+      "byExpoHint": "每个展会可以设置自己的积分。留空则使用上方的默认值；0 表示没有积分。当奖励因该展会的报名（获批或参加）而发放时使用。",
+      "byExpoSearch": "查找展会",
+      "rowInviter": "{title}：邀请人积分",
+      "rowNewBuyer": "{title}：新买家积分",
+      "rowSave": "保存 {title}",
+      "rowSaved": "已保存",
+      "useDefault": "默认 {points}",
+      "viaExpo": "发放依据：{title}",
+      "noExpos": "暂无展会。"
     }
   },
   "searchPage": {
@@ -5462,7 +5537,11 @@
       "images_optimize_started": "开始压缩已存储的图片",
       "images_optimize_finished": "完成压缩已存储的图片",
       "documents_protect_started": "开始加密已存储的证件",
-      "documents_protect_finished": "完成加密已存储的证件"
+      "documents_protect_finished": "完成加密已存储的证件",
+      "referral_settings_saved": "保存了邀请奖励设置",
+      "referrals_settled": "发放了待发的邀请奖励",
+      "referral_rejected": "拒绝了一条邀请记录",
+      "referral_exhibition_points": "设置了展会的邀请奖励积分"
     }
   },
   "notificationsPage": {

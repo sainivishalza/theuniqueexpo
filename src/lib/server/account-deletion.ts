@@ -67,6 +67,7 @@ const DELETE_BY_USER: [table: string, column: string][] = [
   ["document_alerts_sent", "user_id"],
   ["buyer_profiles", "user_id"],
   ["email_changes", "user_id"],
+  ["referral_codes", "user_id"],
   ["password_resets", "user_id"],
   ["saved_exhibition_alerts", "user_id"],
   ["exhibition_favorites", "user_id"],

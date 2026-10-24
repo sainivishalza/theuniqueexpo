@@ -19,6 +19,7 @@ const TYPE_LABELS: Record<string, string> = {
   purchase: "Package purchase",
   purchase_refund: "Purchase refund",
   adjustment: "Manual adjustment",
+  referral: "Referral reward",
 };
 
 export const MAX_WITHDRAWAL_ROWS = 2000;

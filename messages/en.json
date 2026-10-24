@@ -4325,7 +4325,8 @@
       "topup": "Top up",
       "withdraw": "Withdraw",
       "expenses": "Travel expenses",
-      "shop": "Pay with points"
+      "shop": "Pay with points",
+      "use": "What can I do?"
     },
     "balance": "Your balance",
     "pointsUnit": "points",
@@ -4520,6 +4521,53 @@
       "noCity": "Add your departure city to your profile so we use the right rate for your region.",
       "editProfile": "Edit profile",
       "howEarned": "Points are added to your wallet when you check in at the exhibition."
+    },
+    "use": {
+      "title": "What can I do with my points?",
+      "subtitle": "Every way to use and to get points, and what is possible for you right now.",
+      "rate": "1 point = 1 RMB.",
+      "spendTitle": "Use your points",
+      "earnTitle": "Get points",
+      "help": "Your balance and every movement are on the Wallet tab.",
+      "switchedOff": "Switched off for now.",
+      "tours": {
+        "title": "Pay for a travel package",
+        "text": "Book business or city tours with points instead of money.",
+        "open": "See the packages"
+      },
+      "toursStatus": "{count, plural, one {# package can be paid with points} other {# packages can be paid with points}}, from {cheapest} points. Your balance covers {affordable}.",
+      "toursNone": "No package can be paid with points yet.",
+      "send": {
+        "title": "Send points to another buyer",
+        "text": "Pay a colleague by scanning their QR code or typing their buyer number.",
+        "open": "Send points"
+      },
+      "sendStatus": "Up to {max} points at a time and {daily} points a day.",
+      "withdraw": {
+        "title": "Turn points into money",
+        "text": "We pay you by hand to your Alipay, WeChat or Chinese bank account.",
+        "open": "Withdraw"
+      },
+      "withdrawStatus": "From {min} points. You have {balance} points.",
+      "attend": {
+        "title": "Attend an exhibition",
+        "text": "Points are added to your wallet when you check in at an exhibition. The amount depends on your region.",
+        "open": "See what you can earn"
+      },
+      "attendStatus": "{count, plural, one {# exhibition gives} other {# exhibitions give}} points, up to {points}.",
+      "attendNone": "No upcoming exhibition gives points right now.",
+      "expenses": {
+        "title": "Claim your travel costs",
+        "text": "Upload your travel receipts. We check them and add reward points.",
+        "open": "Upload receipts"
+      },
+      "expensesStatus": "Checked by our team, then added to your wallet.",
+      "topup": {
+        "title": "Buy points",
+        "text": "Pay us, tell us what you paid, and the points are added once we confirm it.",
+        "open": "Top up"
+      },
+      "topupStatus": "Points are added after an admin checks your payment proof."
     }
   },
   "adminWallet": {

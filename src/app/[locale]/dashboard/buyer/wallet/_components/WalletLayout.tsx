@@ -13,9 +13,10 @@ const TABS = [
   { key: "withdraw", href: "/dashboard/buyer/wallet/withdraw" },
   { key: "expenses", href: "/dashboard/buyer/wallet/expenses" },
   { key: "shop", href: "/dashboard/buyer/wallet/shop" },
+  { key: "use", href: "/dashboard/buyer/wallet/use" },
 ] as const;
 
-// The frame every rewards-wallet page shares: a header, the six sections as tabs, and
+// The frame every rewards-wallet page shares: a header, the sections as tabs, and
 // a sign-in prompt for anyone who is not signed in as a buyer.
 export default function WalletLayout({ title, subtitle, signInNext, children }: { title: string; subtitle?: string; signInNext?: string; children: React.ReactNode }) {
   const t = useTranslations("buyerWallet");

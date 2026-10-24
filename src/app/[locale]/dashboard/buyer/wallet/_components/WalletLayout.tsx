@@ -12,6 +12,7 @@ const TABS = [
   { key: "topup", href: "/dashboard/buyer/wallet/topup" },
   { key: "withdraw", href: "/dashboard/buyer/wallet/withdraw" },
   { key: "expenses", href: "/dashboard/buyer/wallet/expenses" },
+  { key: "ticket", href: "/dashboard/buyer/wallet/ticket" },
   { key: "shop", href: "/dashboard/buyer/wallet/shop" },
   { key: "use", href: "/dashboard/buyer/wallet/use" },
   { key: "invite", href: "/dashboard/buyer/wallet/invite" },

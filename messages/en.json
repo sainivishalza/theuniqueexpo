@@ -4347,7 +4347,8 @@
       "expenses": "Travel expenses",
       "shop": "Pay with points",
       "use": "What can I do?",
-      "invite": "Invite friends"
+      "invite": "Invite friends",
+      "ticket": "Ticket refund"
     },
     "balance": "Your balance",
     "pointsUnit": "points",
@@ -4411,7 +4412,10 @@
       "already_purchased": "You have already bought this package.",
       "wrong_password": "That password is not correct.",
       "rate_limited": "Too many attempts. Please wait a little and try again.",
-      "unauthorized": "Please sign in again."
+      "unauthorized": "Please sign in again.",
+      "duplicate_ticket": "This ticket was already sent for a refund.",
+      "refund_not_available": "Tickets for this exhibition are not refunded in points, or you are not registered for it.",
+      "invoice_missing": "Our team still has to attach the e-invoice and its amount."
     },
     "send": {
       "title": "Send points",
@@ -4617,6 +4621,44 @@
       "pointsEarned": "+{points} points",
       "byExpoTitle": "Exhibitions that pay different points",
       "byExpoRow": "{title}: you get {mine} points, your friend gets {theirs} points."
+    },
+    "ticket": {
+      "title": "Train ticket refund",
+      "subtitle": "Bought your own train ticket? Send us the receipt from the station. We get your e-invoice from 12306, check the amount and refund it as points.",
+      "noneTitle": "Nothing to claim",
+      "noneText": "None of the exhibitions you are registered for refunds train tickets. Where we arrange the transport, there is nothing to claim.",
+      "arranged": "We arrange the transport for: {names}.",
+      "step1": "1. Choose the exhibition",
+      "expo": "Exhibition",
+      "rule": "We refund {percent}% of the ticket price as points (1 point = 1 RMB).",
+      "ruleMax": "Most you can get back for this exhibition: {max} points; already refunded: {done}.",
+      "step2": "2. Add the receipt from the station",
+      "step2Help": "Take a clear photo of the paper receipt “Receipt of E-invoice generation QR code” (扫码开票单).",
+      "receipt": "Photo of the station receipt",
+      "step3": "3. Your passport number",
+      "step3Help": "We use the passport number on your profile to download your e-invoice from 12306. Make sure it is correct.",
+      "passportEnding": "Last 6 characters of your passport number: {ending}",
+      "passportMissing": "Add your passport number to your profile first: we need it to get your e-invoice.",
+      "openProfile": "Open my profile",
+      "step4": "4. Already have the e-invoice? (optional)",
+      "invoice": "E-invoice (PDF or picture)",
+      "amount": "Amount on the e-invoice (RMB)",
+      "amountHint": "Type the price printed on the invoice, for example 536.00.",
+      "ticketNo": "E-ticket number (optional)",
+      "ticketNoHint": "It helps us notice a ticket that was sent twice.",
+      "estimate": "If approved you get about {points} points.",
+      "estimateNone": "This exhibition has reached its refund limit for you.",
+      "submit": "Send for review",
+      "sending": "Sending…",
+      "sent": "Sent. We will get your e-invoice from 12306, check the amount and approve or reject the request.",
+      "historyTitle": "Your requests",
+      "historyEmpty": "No requests yet.",
+      "historyRow": "{expo} · ¥{amount}",
+      "points": "+{points} points",
+      "step4Help": "Skip this if you do not: we get it for you. If you add it, type the amount printed on it.",
+      "stageGetting": "We are getting your e-invoice from 12306.",
+      "stageWaiting": "Your e-invoice is attached. Waiting for approval.",
+      "downloadInvoice": "Download e-invoice"
     }
   },
   "adminWallet": {
@@ -4632,7 +4674,8 @@
       "purchases": "Package purchases",
       "pointsSetup": "Points setup",
       "settings": "Settings",
-      "referrals": "Referrals"
+      "referrals": "Referrals",
+      "ticketRefunds": "Ticket refunds"
     },
     "export": {
       "withdrawals": "Download these withdrawals (Excel)",
@@ -4709,7 +4752,10 @@
       "already_purchased": "Already bought.",
       "wrong_password": "Wrong password.",
       "rate_limited": "Too many attempts. Please wait.",
-      "unauthorized": "Admin access required."
+      "unauthorized": "Admin access required.",
+      "duplicate_ticket": "This ticket was already sent for a refund.",
+      "refund_not_available": "Tickets for this exhibition are not refunded in points.",
+      "invoice_missing": "Attach the e-invoice and enter its amount first."
     },
     "overview": {
       "pendingTopups": "Top-ups waiting for you",
@@ -4761,7 +4807,29 @@
       "receiptAlt": "Receipt {n}",
       "awardPoints": "Points to award",
       "awardHint": "You decide the value. The points are added to the buyer's wallet at once.",
-      "approve": "Approve and add points"
+      "approve": "Approve and add points",
+      "trainTag": "Train ticket",
+      "invoiceAmount": "Amount on the invoice: ¥{amount}",
+      "ticketNo": "E-ticket number: {no}",
+      "suggested": "The exhibition's rule suggests {points} points ({percent}% of the invoice, limit {max}; already refunded {done}).",
+      "noLimit": "none",
+      "notRefunded": "This exhibition does not refund tickets (we arrange the transport).",
+      "sameTicket": "The same ticket appears in another request.",
+      "receiptLabel": "Station receipt",
+      "invoiceLabel": "E-invoice",
+      "qrLink": "Open the QR link",
+      "needsInvoiceBadge": "Needs e-invoice",
+      "getInvoiceTitle": "Get the e-invoice from 12306",
+      "getInvoiceSteps": "1. Scan the QR code on the receipt below with your phone (or open the link). 2. When 12306 asks for the ID number, enter the passport ending shown here. 3. Download the e-invoice, attach it here and type the amount printed on it.",
+      "passportEnding": "Passport ending to enter: {ending}",
+      "passportMissing": "The buyer has no passport number on file: ask them to add it to their profile.",
+      "invoiceFile": "E-invoice (PDF or picture)",
+      "amountField": "Amount on the e-invoice (RMB)",
+      "ticketNoField": "E-ticket number (optional)",
+      "attach": "Save e-invoice and amount",
+      "attached": "Saved. You can approve now.",
+      "approveBlocked": "Attach the e-invoice and enter its amount before approving.",
+      "readQr": "QR code on the receipt: {text}"
     },
     "wallets": {
       "empty": "No wallets yet. A buyer's wallet is created the first time they open it.",
@@ -4864,6 +4932,22 @@
       "useDefault": "default {points}",
       "viaExpo": "Paid for: {title}",
       "noExpos": "No exhibitions yet."
+    },
+    "ticketRefunds": {
+      "title": "Train-ticket refunds",
+      "intro": "Decide for each exhibition whether buyers who buy their own train tickets are refunded in points. Where we arrange the transport, keep “We arrange transport”: nobody can claim there. Claims arrive in the Expense claims tab, with both pictures and the suggested points.",
+      "modeNone": "We arrange transport (no refund)",
+      "modeRefund": "Refund self-bought tickets",
+      "percent": "Share of the ticket price refunded (%)",
+      "max": "Most points per buyer (0 = no limit)",
+      "hint": "1 point = 1 RMB. Changes apply to requests you review from now on.",
+      "search": "Find an exhibition",
+      "empty": "No exhibitions yet.",
+      "rowMode": "Refund rule for {title}",
+      "rowPercent": "Refund share (%) for {title}",
+      "rowMax": "Most points for {title}",
+      "rowSave": "Save {title}",
+      "saved": "Saved"
     }
   },
   "searchPage": {
@@ -5541,7 +5625,9 @@
       "referral_settings_saved": "Saved referral programme settings",
       "referrals_settled": "Paid waiting referrals",
       "referral_rejected": "Rejected a referral",
-      "referral_exhibition_points": "Set referral points of an exhibition"
+      "referral_exhibition_points": "Set referral points of an exhibition",
+      "ticket_refund_rules": "Set the train-ticket refund rule of an exhibition",
+      "ticket_invoice_attached": "Attached the e-invoice to a ticket refund"
     }
   },
   "notificationsPage": {

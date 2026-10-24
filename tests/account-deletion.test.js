@@ -90,7 +90,7 @@ const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJA
   ok(!(await bcrypt.compare('pass1234', u.password_hash)), 'the password is gone');
   const attempt = await fetch(BASE + '/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-forwarded-for': ipn() }, body: JSON.stringify({ email, password: 'pass1234' }) });
   ok(attempt.status >= 400, 'signing in with the old details no longer works');
-  ok((await call('GET', '/api/auth/me', null, rich.token)).status === 401 || !(await call('GET', '/api/auth/me', null, rich.token)).user, 'the old session is ended');
+  ok(!(await call('GET', '/api/auth/me', null, rich.token)).user, 'the old session is ended (at once, not only a second later)');
   ok(num(`SELECT COUNT(*) FROM buyer_profiles WHERE user_id=${rich.id}`) === 0, 'the profile and its documents are gone');
   ok(num(`SELECT COUNT(*) FROM exhibition_favorites WHERE user_id=${rich.id}`) === 0 && num(`SELECT COUNT(*) FROM user_notifications WHERE user_id=${rich.id}`) === 0 && num(`SELECT COUNT(*) FROM exhibitor_reviews WHERE user_id=${rich.id}`) === 0, 'favourites, notifications and reviews are gone');
   ok(num(`SELECT COUNT(*) FROM business_trip_inquiries WHERE user_id=${rich.id} OR LOWER(email)=LOWER('${email}')`) === 0, 'inquiries are gone, including one sent without signing in from the same address');

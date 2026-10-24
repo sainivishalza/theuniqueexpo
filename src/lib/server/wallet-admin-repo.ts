@@ -1,5 +1,7 @@
 import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
+import { suggestedPoints } from "@/lib/server/ticket-refunds";
+import { passportLast6, type RefundMode } from "@/lib/ticket-refund";
 import { formatBuyerNumber, parseBuyerNumber } from "@/lib/buyer-number";
 import { findLedgerMismatches } from "@/lib/server/wallet-repo";
 
@@ -133,8 +135,16 @@ export async function listExpenseClaims(status: string, q: string, page: number)
   const params: unknown[] = [...(where ? [status] : []), ...filter.params];
   const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT c.id, c.user_id, c.category, c.title, c.expense_date, c.amount_text, c.note, c.receipt_count, c.status, c.points_awarded,
-            c.admin_note, c.created_at, c.reviewed_at, e.title AS exhibition_title, u.name, u.email, u.buyer_no
+            c.admin_note, c.created_at, c.reviewed_at, e.title AS exhibition_title, u.name, u.email, u.buyer_no,
+            c.kind, c.amount_cny, c.ticket_no, c.qr_text, bp.passport_number,
+            e.ticket_refund_mode, e.ticket_refund_percent, e.ticket_refund_max_points,
+            (SELECT COALESCE(SUM(a.points_awarded), 0) FROM wallet_expense_claims a
+               WHERE a.user_id = c.user_id AND a.exhibition_id = c.exhibition_id AND a.kind = 'train' AND a.status = 'approved' AND a.id <> c.id) AS refunded_before,
+            (SELECT COUNT(*) FROM wallet_expense_claims d
+               WHERE d.id <> c.id AND d.kind = 'train' AND c.kind = 'train' AND d.status <> 'rejected'
+                 AND ((c.invoice_hash IS NOT NULL AND d.invoice_hash = c.invoice_hash) OR (c.ticket_no <> '' AND d.ticket_no = c.ticket_no))) AS same_ticket
      FROM wallet_expense_claims c JOIN users u ON u.id = c.user_id LEFT JOIN exhibitions e ON e.id = c.exhibition_id
+          LEFT JOIN buyer_profiles bp ON bp.user_id = c.user_id
      WHERE 1 = 1${where}${filter.sql} ORDER BY c.id DESC LIMIT ? OFFSET ?`,
     [...params, ADMIN_PAGE_SIZE + 1, pageOffset(page)]
   );
@@ -145,6 +155,23 @@ export async function listExpenseClaims(status: string, q: string, page: number)
       amountText: r.amount_text as string, note: r.note as string, receiptCount: Number(r.receipt_count), status: r.status as string,
       pointsAwarded: r.points_awarded === null ? null : Number(r.points_awarded), adminNote: r.admin_note as string,
       exhibitionTitle: (r.exhibition_title as string | null) ?? "", createdAt: iso(r.created_at), reviewedAt: iso(r.reviewed_at),
+      // Train-ticket refunds: the amount on the invoice, the exhibition's rule and what approving would pay under it.
+      kind: r.kind as string,
+      amountCny: r.amount_cny === null ? null : Number(r.amount_cny),
+      ticketNo: r.ticket_no as string,
+      qrText: r.qr_text as string,
+      // What staff need to get the e-invoice from 12306: the e-invoice is not attached yet, and the buyer's passport ending.
+      needsInvoice: r.kind === "train" && Number(r.receipt_count) < 2,
+      passportEnding: r.kind === "train" ? passportLast6(r.passport_number as string | null) : "",
+      refundMode: (r.ticket_refund_mode as string | null) ?? "none",
+      refundPercent: r.ticket_refund_percent === null ? 100 : Number(r.ticket_refund_percent),
+      refundMax: r.ticket_refund_max_points === null ? 0 : Number(r.ticket_refund_max_points),
+      refundedBefore: Number(r.refunded_before),
+      sameTicket: Number(r.same_ticket),
+      suggestedPoints:
+        r.kind === "train"
+          ? suggestedPoints(r.amount_cny === null ? null : Number(r.amount_cny), { mode: (r.ticket_refund_mode as RefundMode | null) ?? "none", percent: Number(r.ticket_refund_percent ?? 100), maxPoints: Number(r.ticket_refund_max_points ?? 0) }, Number(r.refunded_before))
+          : 0,
     })),
   };
 }

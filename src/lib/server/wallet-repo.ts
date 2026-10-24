@@ -1,4 +1,4 @@
-import { randomBytes } from "crypto";
+import { createHash, randomBytes } from "crypto";
 import type { PoolConnection, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import {
@@ -726,6 +726,106 @@ export async function createExpenseClaim(userId: number, input: ExpenseInput): P
   });
 }
 
+export interface TrainClaimInput {
+  exhibitionId: number;
+  receipt: string; // the scan receipt from the station (with the QR code)
+  invoice: string | null; // the e-invoice, when the buyer already has it; otherwise our team gets it from 12306
+  amountCny: number | null; // the amount printed on the invoice, when known
+  ticketNo: string; // "" when not given
+  qrText: string; // what the QR code on the receipt says ("" when it could not be read)
+  key: string;
+}
+
+const sha256 = (value: string) => createHash("sha256").update(value).digest("hex");
+
+// Another request that already uses this receipt photo, this invoice file or this e-ticket number (rejected ones do not count).
+async function findSameTicket(
+  conn: PoolConnection,
+  keys: { receiptHash: string; invoiceHash: string | null; ticketNo: string; qrText: string },
+  exceptId: number | null
+): Promise<boolean> {
+  const [rows] = await conn.query<RowDataPacket[]>(
+    `SELECT id FROM wallet_expense_claims
+     WHERE kind = 'train' AND status <> 'rejected' AND id <> ?
+       AND (receipt_hash = ? OR (? IS NOT NULL AND invoice_hash = ?) OR (? <> '' AND ticket_no = ?) OR (? <> '' AND qr_text = ?)) LIMIT 1`,
+    [exceptId ?? 0, keys.receiptHash, keys.invoiceHash, keys.invoiceHash, keys.ticketNo, keys.ticketNo, keys.qrText, keys.qrText]
+  );
+  return !!rows[0];
+}
+
+// A train-ticket refund request for an exhibition that refunds tickets. The buyer must be registered for it (approved,
+// confirmed or attended). The buyer sends the station receipt; our team gets the e-invoice from 12306 and attaches it
+// (completeTrainClaim). A buyer who already has the invoice can send it too. One ticket can be claimed once: the same
+// receipt photo, invoice file, e-ticket number or QR code in another request is refused unless that request was rejected.
+// Nothing is paid until an admin approves.
+export async function createTrainClaim(userId: number, input: TrainClaimInput): Promise<{ id: number; replayed: boolean }> {
+  await ensureWallet(userId);
+  const receiptHash = sha256(input.receipt);
+  const invoiceHash = input.invoice ? sha256(input.invoice) : null;
+  return withTx(async (conn) => {
+    await assertActiveBuyers(conn, [userId]);
+    await lockWallets(conn, [userId]);
+    const [dupe] = await conn.query<RowDataPacket[]>("SELECT id FROM wallet_expense_claims WHERE user_id = ? AND client_key = ?", [userId, input.key]);
+    if (dupe[0]) return { id: dupe[0].id, replayed: true };
+    const [expos] = await conn.query<RowDataPacket[]>("SELECT title, ticket_refund_mode FROM exhibitions WHERE id = ?", [input.exhibitionId]);
+    if (!expos[0]) throw new WalletError("not_found", 404);
+    if (expos[0].ticket_refund_mode !== "refund") throw new WalletError("refund_not_available", 403);
+    const [registered] = await conn.query<RowDataPacket[]>(
+      "SELECT 1 AS ok FROM expo_registrations WHERE user_id = ? AND exhibition_id = ? AND status IN ('approved','confirmed','attended') LIMIT 1",
+      [userId, input.exhibitionId]
+    );
+    if (!registered[0]) throw new WalletError("refund_not_available", 403);
+    if (await findSameTicket(conn, { receiptHash, invoiceHash, ticketNo: input.ticketNo, qrText: input.qrText }, null)) throw new WalletError("duplicate_ticket", 409);
+    const files = input.invoice ? [input.receipt, input.invoice] : [input.receipt];
+    const [ins] = await conn.query<ResultSetHeader>(
+      `INSERT INTO wallet_expense_claims
+         (user_id, client_key, exhibition_id, kind, category, title, amount_text, amount_cny, ticket_no, receipt_hash, invoice_hash, qr_text, receipts, receipt_count, status, created_at)
+       VALUES (?, ?, ?, 'train', 'train', ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', UTC_TIMESTAMP())`,
+      [
+        userId, input.key, input.exhibitionId, String(expos[0].title).slice(0, 150), input.amountCny === null ? "" : `¥${input.amountCny.toFixed(2)}`, input.amountCny,
+        input.ticketNo, receiptHash, invoiceHash, input.qrText.slice(0, 500), JSON.stringify(files), files.length,
+      ]
+    );
+    return { id: ins.insertId, replayed: false };
+  });
+}
+
+// Admin: the e-invoice downloaded from 12306 (when the buyer did not send it) and the amount printed on it. Only while the
+// request is waiting. Returns the buyer's id so they can be told.
+export async function completeTrainClaim(id: number, input: { invoice: string | null; amountCny: number; ticketNo: string }): Promise<void> {
+  await withTx(async (conn) => {
+    const [rows] = await conn.query<RowDataPacket[]>(
+      "SELECT status, kind, receipts, receipt_hash, invoice_hash, ticket_no, qr_text FROM wallet_expense_claims WHERE id = ? FOR UPDATE",
+      [id]
+    );
+    const claim = rows[0];
+    if (!claim) throw new WalletError("not_found", 404);
+    if (claim.status !== "pending") throw new WalletError("already_processed", 409);
+    if (claim.kind !== "train") throw new WalletError("invalid_input");
+    let files: string[] = [];
+    try {
+      const parsed = JSON.parse(String(claim.receipts));
+      files = Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
+    } catch {
+      files = [];
+    }
+    if (files.length === 0) throw new WalletError("invalid_input");
+    if (input.invoice) {
+      if (input.invoice === files[0]) throw new WalletError("invalid_input");
+      files = [files[0], input.invoice];
+    } else if (files.length < 2) {
+      throw new WalletError("invoice_missing");
+    }
+    const invoiceHash = input.invoice ? sha256(input.invoice) : (claim.invoice_hash as string | null);
+    const ticketNo = input.ticketNo || String(claim.ticket_no ?? "");
+    if (await findSameTicket(conn, { receiptHash: String(claim.receipt_hash ?? ""), invoiceHash, ticketNo, qrText: "" }, id)) throw new WalletError("duplicate_ticket", 409);
+    await conn.query(
+      "UPDATE wallet_expense_claims SET receipts = ?, receipt_count = ?, amount_cny = ?, amount_text = ?, ticket_no = ?, invoice_hash = ? WHERE id = ?",
+      [JSON.stringify(files), files.length, input.amountCny, `¥${input.amountCny.toFixed(2)}`, ticketNo, invoiceHash, id]
+    );
+  });
+}
+
 // Admin: approve with the number of points the claim is worth, or reject.
 export async function reviewExpenseClaim(adminId: number, id: number, decision: { approve: true; points: number; adminNote: string } | { approve: false; adminNote: string }): Promise<void> {
   const points = decision.approve ? parsePoints(decision.points) : null;
@@ -733,8 +833,10 @@ export async function reviewExpenseClaim(adminId: number, id: number, decision: 
   const userId = await ownerOf("wallet_expense_claims", id);
   await withTx(async (conn) => {
     await lockWallets(conn, [userId]);
-    const [rows] = await conn.query<RowDataPacket[]>("SELECT status, title FROM wallet_expense_claims WHERE id = ? FOR UPDATE", [id]);
+    const [rows] = await conn.query<RowDataPacket[]>("SELECT status, title, kind, receipt_count, amount_cny FROM wallet_expense_claims WHERE id = ? FOR UPDATE", [id]);
     if (rows[0]?.status !== "pending") throw new WalletError("already_processed", 409);
+    // A train-ticket refund is approved against the invoice: it must be attached and its amount entered first.
+    if (points !== null && rows[0].kind === "train" && (Number(rows[0].receipt_count) < 2 || rows[0].amount_cny === null)) throw new WalletError("invoice_missing", 409);
     if (points !== null) {
       await postEntry(conn, {
         userId, amount: points, type: "expense", idemKey: `expense:${id}`, refType: "expense", refId: id, createdBy: adminId,

@@ -19,7 +19,8 @@ export async function GET(request: Request) {
 
     const decoded = jwt.verify(tokenMatch[1], JWT_SECRET) as DecodedToken;
     const row = await loadSessionRow(decoded.id);
-    if (!row || signedBeforePasswordChange(decoded.iat, row.password_changed_at)) {
+    // A suspended (or deleted) account is signed out at once, as it is for every other request.
+    if (!row || row.status === "suspended" || signedBeforePasswordChange(decoded.iat, row.password_changed_at)) {
       return NextResponse.json({ user: null });
     }
 

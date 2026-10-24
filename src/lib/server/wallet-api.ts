@@ -31,11 +31,14 @@ const MESSAGES: Record<WalletErrorCode, string> = {
   already_purchased: "You have already bought this package.",
   wrong_password: "The password is not correct.",
   rate_limited: "Too many attempts. Please wait a little and try again.",
+  duplicate_ticket: "This ticket has already been sent for a refund.",
+  invoice_missing: "Attach the e-invoice and enter its amount first.",
+  refund_not_available: "Tickets for this exhibition are not refunded in points.",
   unauthorized: "Please sign in.",
 };
 
 export function walletFail(code: WalletErrorCode, status?: number, headers?: Record<string, string>): NextResponse {
-  const defaults: Partial<Record<WalletErrorCode, number>> = { unauthorized: 401, not_buyer: 403, rate_limited: 429, wrong_password: 403, not_found: 404, recipient_not_found: 404 };
+  const defaults: Partial<Record<WalletErrorCode, number>> = { unauthorized: 401, not_buyer: 403, rate_limited: 429, duplicate_ticket: 409, invoice_missing: 409, refund_not_available: 403, wrong_password: 403, not_found: 404, recipient_not_found: 404 };
   return NextResponse.json({ error: MESSAGES[code], code }, { status: status ?? defaults[code] ?? 400, headers });
 }
 

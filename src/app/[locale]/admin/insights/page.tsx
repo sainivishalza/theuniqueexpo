@@ -117,7 +117,7 @@ export default function AdminInsightsPage() {
                     </div>
                     <p className="mt-2 text-xs text-gray-600">{t("busiest", { count: n(max), label: buckets.find((b) => b.count === max)?.label ?? "" })}</p>
                     <details className="mt-3">
-                      <summary className="cursor-pointer text-sm font-semibold text-emerald-800">{t("showNumbers")}</summary>
+                      <summary className="py-1 cursor-pointer text-sm font-semibold text-emerald-800">{t("showNumbers")}</summary>
                       <div className="mt-2 max-h-64 overflow-auto">
                         <table className="w-full text-sm">
                           <caption className="sr-only">{data.days <= 90 ? t("perDay") : t("perWeek")}</caption>
@@ -171,7 +171,7 @@ export default function AdminInsightsPage() {
                     <ul className="mt-3 space-y-3">
                       {data.byExhibition.map((e) => (
                         <li key={e.id}>
-                          <div className="flex justify-between gap-2 text-sm"><Link href={`/admin/exhibitions/${e.slug}/registrations`} className="font-semibold text-emerald-800 underline [overflow-wrap:anywhere]">{e.title}</Link><span className="font-semibold">{n(e.registrations)}</span></div>
+                          <div className="flex justify-between gap-2 text-sm"><Link href={`/admin/exhibitions/${e.slug}/registrations`} className="py-1 font-semibold text-emerald-800 underline [overflow-wrap:anywhere]">{e.title}</Link><span className="font-semibold">{n(e.registrations)}</span></div>
                           <div className="mt-1 h-2 rounded bg-gray-100" aria-hidden="true"><div className="h-2 rounded bg-emerald-600" style={{ width: `${Math.max(2, Math.round((e.registrations / expoMax) * 100))}%` }} /></div>
                           <p className="mt-0.5 text-xs text-gray-600">{t("approvedAttended", { approved: n(e.approved), attended: n(e.attended) })}</p>
                         </li>

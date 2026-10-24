@@ -48,8 +48,8 @@ const SMALL_TARGETS = () => {
   const tour = sql("SELECT slug FROM tours ORDER BY start_date DESC LIMIT 1");
   const blog = sql("SELECT slug FROM blog_posts WHERE published=1 ORDER BY id DESC LIMIT 1");
   const pub = ['', '/exhibitions', slug && `/exhibitions/${slug}`, slug && slug2 && `/exhibitions/compare?slugs=${slug},${slug2}`, '/tours', tour && `/tours/${tour}`, '/blog', blog && `/blog/${blog}`, '/about', '/contact', '/help', '/login', '/register', '/privacy', '/terms', '/china-travel', '/marketplace', '/search'].filter((x) => x !== null && x !== undefined && x !== false);
-  const buyerPages = ['/dashboard/buyer', '/dashboard/buyer/wallet', '/dashboard/buyer/wallet/use', '/dashboard/buyer/wallet/invite', '/dashboard/buyer/profile', '/dashboard/buyer/registrations', '/dashboard/account', '/messages'];
-  const adminPages = ['/admin', '/admin/registrations', '/admin/buyer-profiles', '/admin/exhibitions', '/admin/wallet', '/admin/wallet?tab=referrals', '/admin/insights', '/admin/email', '/admin/guide'];
+  const buyerPages = ['/dashboard/buyer', '/dashboard/buyer/wallet', '/dashboard/buyer/wallet/use', '/dashboard/buyer/wallet/invite', '/dashboard/buyer/wallet/ticket', '/dashboard/buyer/profile', '/dashboard/buyer/registrations', '/dashboard/account', '/messages'];
+  const adminPages = ['/admin', '/admin/registrations', '/admin/buyer-profiles', '/admin/exhibitions', '/admin/wallet', '/admin/wallet?tab=referrals', '/admin/wallet?tab=ticketRefunds', '/admin/insights', '/admin/email', '/admin/guide'];
 
   const br = await launch();
   const problems = [];

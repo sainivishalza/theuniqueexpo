@@ -26,7 +26,7 @@ export async function walletApi<T = Record<string, unknown>>(path: string, init?
 const KNOWN_CODES = new Set([
   "invalid_amount", "invalid_input", "insufficient_funds", "frozen", "not_buyer", "not_found", "recipient_not_found", "self_transfer",
   "over_limit", "over_daily_limit", "below_minimum", "transfers_disabled", "withdrawals_disabled", "already_processed", "key_conflict",
-  "tour_not_for_points", "already_purchased", "wrong_password", "rate_limited", "unauthorized", "network",
+  "tour_not_for_points", "already_purchased", "wrong_password", "rate_limited", "unauthorized", "duplicate_ticket", "refund_not_available", "network",
 ]);
 
 // The translation key (under `errors.`) for a failed call.

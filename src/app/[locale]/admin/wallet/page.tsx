@@ -12,9 +12,10 @@ import WalletsTab from "./_components/WalletsTab";
 import PurchasesTab from "./_components/PurchasesTab";
 import PointsSetupTab from "./_components/PointsSetupTab";
 import ReferralsTab from "./_components/ReferralsTab";
+import TicketRefundsTab from "./_components/TicketRefundsTab";
 import SettingsTab from "./_components/SettingsTab";
 
-const TABS = ["overview", "topups", "withdrawals", "expenses", "wallets", "purchases", "pointsSetup", "referrals", "settings"] as const;
+const TABS = ["overview", "topups", "withdrawals", "expenses", "wallets", "purchases", "pointsSetup", "ticketRefunds", "referrals", "settings"] as const;
 type Tab = (typeof TABS)[number];
 
 // The back-office for the buyers' rewards wallets: what is waiting for a decision,
@@ -77,6 +78,7 @@ export default function AdminWalletPage() {
           {tab === "wallets" && <WalletsTab />}
           {tab === "purchases" && <PurchasesTab />}
           {tab === "pointsSetup" && <PointsSetupTab />}
+          {tab === "ticketRefunds" && <TicketRefundsTab />}
           {tab === "referrals" && <ReferralsTab />}
           {tab === "settings" && <SettingsTab />}
         </div>

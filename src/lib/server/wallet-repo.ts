@@ -1,4 +1,4 @@
-import { randomBytes } from "crypto";
+import { createHash, randomBytes } from "crypto";
 import type { PoolConnection, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import {
@@ -721,6 +721,53 @@ export async function createExpenseClaim(userId: number, input: ExpenseInput): P
          (user_id, client_key, exhibition_id, category, title, expense_date, amount_text, note, receipts, receipt_count, status, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', UTC_TIMESTAMP())`,
       [userId, input.key, input.exhibitionId, input.category, input.title, input.expenseDate, input.amountText, input.note, JSON.stringify(input.receipts), input.receipts.length]
+    );
+    return { id: ins.insertId, replayed: false };
+  });
+}
+
+export interface TrainClaimInput {
+  exhibitionId: number;
+  receipt: string; // the scan receipt from the station (with the QR code)
+  invoice: string; // the e-invoice downloaded from 12306
+  amountCny: number; // the amount printed on the invoice
+  ticketNo: string; // "" when the buyer did not type it
+  qrText: string; // what the QR code on the receipt says ("" when it could not be read)
+  key: string;
+}
+
+// A train-ticket refund request for an exhibition that refunds tickets. The buyer must be registered for it (approved,
+// confirmed or attended), and one invoice can be claimed once: a picture identical to one already sent, or the same
+// e-ticket number, is refused unless the earlier request was rejected. Nothing is paid until an admin approves.
+export async function createTrainClaim(userId: number, input: TrainClaimInput): Promise<{ id: number; replayed: boolean }> {
+  await ensureWallet(userId);
+  const invoiceHash = createHash("sha256").update(input.invoice).digest("hex");
+  return withTx(async (conn) => {
+    await assertActiveBuyers(conn, [userId]);
+    await lockWallets(conn, [userId]);
+    const [dupe] = await conn.query<RowDataPacket[]>("SELECT id FROM wallet_expense_claims WHERE user_id = ? AND client_key = ?", [userId, input.key]);
+    if (dupe[0]) return { id: dupe[0].id, replayed: true };
+    const [expos] = await conn.query<RowDataPacket[]>("SELECT title, ticket_refund_mode FROM exhibitions WHERE id = ?", [input.exhibitionId]);
+    if (!expos[0]) throw new WalletError("not_found", 404);
+    if (expos[0].ticket_refund_mode !== "refund") throw new WalletError("refund_not_available", 403);
+    const [registered] = await conn.query<RowDataPacket[]>(
+      "SELECT 1 AS ok FROM expo_registrations WHERE user_id = ? AND exhibition_id = ? AND status IN ('approved','confirmed','attended') LIMIT 1",
+      [userId, input.exhibitionId]
+    );
+    if (!registered[0]) throw new WalletError("refund_not_available", 403);
+    const [same] = await conn.query<RowDataPacket[]>(
+      `SELECT id FROM wallet_expense_claims WHERE kind = 'train' AND status <> 'rejected' AND (invoice_hash = ? OR (? <> '' AND ticket_no = ?)) LIMIT 1`,
+      [invoiceHash, input.ticketNo, input.ticketNo]
+    );
+    if (same[0]) throw new WalletError("duplicate_ticket", 409);
+    const [ins] = await conn.query<ResultSetHeader>(
+      `INSERT INTO wallet_expense_claims
+         (user_id, client_key, exhibition_id, kind, category, title, amount_text, amount_cny, ticket_no, invoice_hash, qr_text, receipts, receipt_count, status, created_at)
+       VALUES (?, ?, ?, 'train', 'train', ?, ?, ?, ?, ?, ?, ?, 2, 'pending', UTC_TIMESTAMP())`,
+      [
+        userId, input.key, input.exhibitionId, String(expos[0].title).slice(0, 150), `¥${input.amountCny.toFixed(2)}`, input.amountCny,
+        input.ticketNo, invoiceHash, input.qrText.slice(0, 500), JSON.stringify([input.receipt, input.invoice]),
+      ]
     );
     return { id: ins.insertId, replayed: false };
   });

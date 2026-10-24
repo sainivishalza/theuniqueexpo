@@ -4347,7 +4347,8 @@
       "expenses": "差旅费用",
       "shop": "积分支付",
       "use": "能做什么",
-      "invite": "邀请好友"
+      "invite": "邀请好友",
+      "ticket": "车票报销"
     },
     "balance": "您的余额",
     "pointsUnit": "积分",
@@ -4411,7 +4412,9 @@
       "already_purchased": "您已购买过该套餐。",
       "wrong_password": "密码不正确。",
       "rate_limited": "尝试次数过多，请稍后再试。",
-      "unauthorized": "请重新登录。"
+      "unauthorized": "请重新登录。",
+      "duplicate_ticket": "这张车票已提交过报销。",
+      "refund_not_available": "该展会不按积分报销车票，或您尚未报名该展会。"
     },
     "send": {
       "title": "转账积分",
@@ -4617,6 +4620,48 @@
       "pointsEarned": "+{points} 积分",
       "byExpoTitle": "积分不同的展会",
       "byExpoRow": "{title}：您获得 {mine} 积分，好友获得 {theirs} 积分。"
+    },
+    "ticket": {
+      "title": "火车票报销",
+      "subtitle": "自己购买了火车票？提交扫码开票单和电子发票，我们将以积分报销。",
+      "noneTitle": "暂无可报销的展会",
+      "noneText": "您已报名的展会都不报销火车票。由我们安排交通的展会无需报销。",
+      "arranged": "由我们安排交通：{names}。",
+      "step1": "1. 选择展会",
+      "expo": "展会",
+      "rule": "按票价的 {percent}% 以积分报销（1 积分 = 1 元）。",
+      "ruleMax": "该展会最多可报销 {max} 积分；已报销 {done} 积分。",
+      "step2": "2. 上传车站的扫码开票单",
+      "step2Help": "请清晰拍摄纸质的“扫码开票单（Receipt of E-invoice generation QR code）”。",
+      "receipt": "车站扫码开票单照片",
+      "qrFound": "已读取您开票单上的二维码。",
+      "qrOpen": "打开 12306 页面",
+      "qrText": "二维码内容：",
+      "qrFail": "无法从这张照片读取二维码。请用手机相机或 12306 应用扫描纸质开票单，或上传更清晰的照片。",
+      "step3": "3. 在 12306 获取电子发票",
+      "step3Help": "打开 12306 页面（或扫描纸质开票单上的二维码）。系统要求输入证件号码时，请输入护照号码的后 6 位：",
+      "passportEnding": "护照号码后 6 位：{ending}",
+      "passportMissing": "请在个人资料中填写护照号码，此处将会显示后 6 位。",
+      "openProfile": "打开我的资料",
+      "step3Download": "然后下载电子发票（PDF），用于下一步。",
+      "step4": "4. 上传电子发票",
+      "invoice": "电子发票（PDF 或图片）",
+      "step5": "5. 确认金额",
+      "amount": "电子发票金额（元）",
+      "amountHint": "请填写发票上的票价，例如 536.00。",
+      "ticketNo": "电子客票号（选填）",
+      "ticketNoHint": "有助于我们发现重复提交的车票。",
+      "estimate": "审核通过后您将获得约 {points} 积分。",
+      "estimateNone": "该展会的报销额度您已用完。",
+      "submit": "提交审核",
+      "sending": "提交中…",
+      "sent": "已提交。我们会核对金额并通过或拒绝申请。",
+      "historyTitle": "您的申请",
+      "historyEmpty": "暂无申请。",
+      "historyRow": "{expo} · ¥{amount}",
+      "points": "+{points} 积分",
+      "copy": "复制",
+      "copied": "已复制。"
     }
   },
   "adminWallet": {
@@ -4632,7 +4677,8 @@
       "purchases": "套餐购买",
       "pointsSetup": "积分设置",
       "settings": "设置",
-      "referrals": "邀请奖励"
+      "referrals": "邀请奖励",
+      "ticketRefunds": "车票报销"
     },
     "export": {
       "withdrawals": "下载这些提现申请（Excel）",
@@ -4709,7 +4755,9 @@
       "already_purchased": "已购买。",
       "wrong_password": "密码错误。",
       "rate_limited": "尝试次数过多，请稍候。",
-      "unauthorized": "需要管理员权限。"
+      "unauthorized": "需要管理员权限。",
+      "duplicate_ticket": "这张车票已提交过报销。",
+      "refund_not_available": "该展会不按积分报销车票。"
     },
     "overview": {
       "pendingTopups": "待处理的充值",
@@ -4761,7 +4809,17 @@
       "receiptAlt": "票据 {n}",
       "awardPoints": "奖励积分数",
       "awardHint": "积分价值由您决定，批准后立即进入买家钱包。",
-      "approve": "批准并添加积分"
+      "approve": "批准并添加积分",
+      "trainTag": "火车票",
+      "invoiceAmount": "发票金额：¥{amount}",
+      "ticketNo": "电子客票号：{no}",
+      "suggested": "按展会规则建议 {points} 积分（发票的 {percent}%，上限 {max}；已报销 {done}）。",
+      "noLimit": "不限",
+      "notRefunded": "该展会不报销车票（由我们安排交通）。",
+      "sameTicket": "同一张车票出现在其他申请中。",
+      "receiptLabel": "车站开票单",
+      "invoiceLabel": "电子发票",
+      "qrLink": "打开二维码链接"
     },
     "wallets": {
       "empty": "暂无钱包。买家第一次打开钱包时会自动创建。",
@@ -4864,6 +4922,22 @@
       "useDefault": "默认 {points}",
       "viaExpo": "发放依据：{title}",
       "noExpos": "暂无展会。"
+    },
+    "ticketRefunds": {
+      "title": "火车票报销",
+      "intro": "为每个展会设置：自己购买火车票的买家是否以积分报销。由我们安排交通的展会请保持“我们安排交通”，买家无法申请。申请会出现在“报销申请”页，附两张图片和建议积分。",
+      "modeNone": "我们安排交通（不报销）",
+      "modeRefund": "报销自购车票",
+      "percent": "报销票价比例（%）",
+      "max": "每位买家最多积分（0 = 不限）",
+      "hint": "1 积分 = 1 元。修改将用于之后审核的申请。",
+      "search": "查找展会",
+      "empty": "暂无展会。",
+      "rowMode": "{title}：报销规则",
+      "rowPercent": "{title}：报销比例（%）",
+      "rowMax": "{title}：最多积分",
+      "rowSave": "保存 {title}",
+      "saved": "已保存"
     }
   },
   "searchPage": {
@@ -5541,7 +5615,8 @@
       "referral_settings_saved": "保存了邀请奖励设置",
       "referrals_settled": "发放了待发的邀请奖励",
       "referral_rejected": "拒绝了一条邀请记录",
-      "referral_exhibition_points": "设置了展会的邀请奖励积分"
+      "referral_exhibition_points": "设置了展会的邀请奖励积分",
+      "ticket_refund_rules": "设置了展会的车票报销规则"
     }
   },
   "notificationsPage": {

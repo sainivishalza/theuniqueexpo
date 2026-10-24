@@ -183,7 +183,7 @@ export async function deleteAccount(userId: number): Promise<{ ok: true; cancell
     // Money records keep their amounts; the files and payout details they carry are wiped (nothing is pending, so none is needed).
     await blankColumnsTolerant(conn, "wallet_withdrawals", ["qr_image", "account_name", "bank_name", "bank_branch", "bank_account", "note"], "user_id = ?", [userId]);
     await blankColumnsTolerant(conn, "wallet_topups", ["proof", "note"], "user_id = ?", [userId]);
-    await blankColumnsTolerant(conn, "wallet_expense_claims", ["receipts", "note"], "user_id = ?", [userId]);
+    await blankColumnsTolerant(conn, "wallet_expense_claims", ["receipts", "note", "qr_text"], "user_id = ?", [userId]);
     await tolerant(() => conn.query("UPDATE wallet_expense_claims SET receipt_count = 0, receipts = '[]' WHERE user_id = ?", [userId]));
 
     // The mail log keeps its counts, not the address.

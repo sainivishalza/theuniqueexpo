@@ -57,6 +57,8 @@ export type WalletErrorCode =
   | "already_purchased"
   | "wrong_password"
   | "rate_limited"
+  | "duplicate_ticket"
+  | "refund_not_available"
   | "unauthorized";
 
 // A whole number of points, 1..MAX_POINTS. Anything else -- text, fractions, zero,

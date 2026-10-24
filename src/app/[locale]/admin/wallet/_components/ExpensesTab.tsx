@@ -8,11 +8,15 @@ import { fieldClasses } from "@/components/ui/FormField";
 import { errorKey, pointsFromText, walletApi } from "@/lib/client/wallet-client";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import { qrLink } from "@/lib/ticket-refund";
+import Badge from "@/components/ui/Badge";
 import { ImageViewer, ListFilters, PersonLine, ShowMore, StatusBadge, useAdminList, useDebounced, type Person } from "./shared";
 
 interface Claim extends Person {
   id: number; category: string; title: string; expenseDate: string | null; amountText: string; note: string; receiptCount: number; status: string;
   pointsAwarded: number | null; adminNote: string; exhibitionTitle: string; createdAt: string;
+  kind: string; amountCny: number | null; ticketNo: string; qrText: string;
+  refundMode: string; refundPercent: number; refundMax: number; refundedBefore: number; sameTicket: number; suggestedPoints: number;
 }
 
 export default function ExpensesTab() {
@@ -33,7 +37,8 @@ export default function ExpensesTab() {
   async function open(row: Claim) {
     setMessage("");
     setOpenId(row.id);
-    setPointsText("");
+    // A train-ticket refund starts from what the exhibition's rule says; the admin can change it.
+    setPointsText(row.kind === "train" && row.suggestedPoints > 0 ? String(row.suggestedPoints) : "");
     setNote("");
     if (!receipts[row.id]) {
       const res = await walletApi<{ receipts: string[] }>(`/api/admin/wallet/expenses/${row.id}`);
@@ -77,13 +82,26 @@ export default function ExpensesTab() {
                   <StatusBadge status={row.status} label={t(`status.${row.status}`)} />
                 </div>
               </div>
-              <p className="mt-2 font-semibold text-heading [overflow-wrap:anywhere]">{row.title}</p>
+              <p className="mt-2 font-semibold text-heading [overflow-wrap:anywhere]">{row.kind === "train" && <Badge tone="emerald" size="status">{t("expenses.trainTag")}</Badge>} {row.title}</p>
               <p className="text-sm text-gray-700 [overflow-wrap:anywhere]">
                 {t(`expenses.categories.${row.category}`)}
                 {row.amountText ? ` · ${row.amountText}` : ""}
                 {row.expenseDate ? ` · ${localizeDay(row.expenseDate, locale)}` : ""}
                 {row.exhibitionTitle ? ` · ${row.exhibitionTitle}` : ""}
               </p>
+              {row.kind === "train" && (
+                <div className="mt-1 space-y-1 text-sm" data-testid={`expense-train-${row.id}`}>
+                  {row.amountCny !== null && <p className="font-bold text-heading">{t("expenses.invoiceAmount", { amount: row.amountCny.toFixed(2) })}</p>}
+                  {row.ticketNo && <p className="text-gray-700 [overflow-wrap:anywhere]">{t("expenses.ticketNo", { no: row.ticketNo })}</p>}
+                  {row.refundMode === "refund" ? (
+                    <p className="text-gray-700">{t("expenses.suggested", { points: formatNumber(row.suggestedPoints), percent: row.refundPercent, max: row.refundMax > 0 ? formatNumber(row.refundMax) : t("expenses.noLimit"), done: formatNumber(row.refundedBefore) })}</p>
+                  ) : (
+                    <p role="alert" className="font-semibold text-red-700">{t("expenses.notRefunded")}</p>
+                  )}
+                  {row.sameTicket > 0 && <p role="alert" className="font-semibold text-red-700">{t("expenses.sameTicket")}</p>}
+                  {qrLink(row.qrText) && <p><a href={qrLink(row.qrText) ?? undefined} target="_blank" rel="noopener noreferrer" className="inline-block py-1 font-semibold text-emerald-800 underline">{t("expenses.qrLink")}</a></p>}
+                </div>
+              )}
               {row.note && <p className="text-sm text-gray-700 [overflow-wrap:anywhere]">{row.note}</p>}
               {row.adminNote && <p className="text-sm text-gray-600 [overflow-wrap:anywhere]">{t("adminNote")}: {row.adminNote}</p>}
               <p className="text-xs text-gray-600">{t("expenses.receiptCount", { count: row.receiptCount })} · {formatInstantDateTime(row.createdAt, locale)}</p>
@@ -92,7 +110,12 @@ export default function ExpensesTab() {
                   <div className="space-y-3 rounded-xl border border-gray-200 bg-cream-50 p-4">
                     {receipts[row.id] ? (
                       <div className="flex flex-wrap gap-3">
-                        {receipts[row.id].map((src, i) => <ImageViewer key={i} src={src} alt={t("expenses.receiptAlt", { n: i + 1 })} />)}
+                        {receipts[row.id].map((src, i) => (
+                          <figure key={i} className="space-y-1">
+                            {row.kind === "train" && <figcaption className="text-xs font-semibold text-gray-700">{i === 0 ? t("expenses.receiptLabel") : t("expenses.invoiceLabel")}</figcaption>}
+                            <ImageViewer src={src} alt={row.kind === "train" ? (i === 0 ? t("expenses.receiptLabel") : t("expenses.invoiceLabel")) : t("expenses.receiptAlt", { n: i + 1 })} />
+                          </figure>
+                        ))}
                       </div>
                     ) : (
                       <p className="text-gray-600">{t("loading")}</p>

@@ -5,6 +5,7 @@ import { isDuplicateEntryError } from "@/lib/db";
 import { updateExhibition, deleteExhibition } from "@/lib/server/exhibitions-repo";
 import { readSnapshot, recordChange } from "@/lib/server/exhibition-history";
 import { slugify } from "@/lib/slugify";
+import { optimizeImageFields } from "@/lib/server/site-image";
 import { isValidImageField, isValidImageFieldArray } from "@/lib/server/validate-upload";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -20,6 +21,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   if (!body.slug) {
     return NextResponse.json({ error: "Slug must contain at least one letter or number" }, { status: 400 });
   }
+  await optimizeImageFields(body, ["image"], ["galleryImages"]);
   if (!isValidImageField(body.image) || !isValidImageFieldArray(body.galleryImages)) {
     return NextResponse.json({ error: "Image must be a valid image file or URL" }, { status: 400 });
   }

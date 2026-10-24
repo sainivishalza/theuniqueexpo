@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getCityPartnershipsContent, updateCityPartnershipsContent } from "@/lib/server/city-partnerships-content-repo";
 import { normalizeCityPartnershipsContent } from "@/lib/city-partnerships-content";
+import { optimizeImageFields } from "@/lib/server/site-image";
 import { isValidImageField } from "@/lib/server/validate-upload";
 
 export async function GET(request: Request) {
@@ -20,6 +21,7 @@ export async function PUT(request: Request) {
   if (!body.title || !body.subtitle) {
     return NextResponse.json({ error: "Title and subtitle are required" }, { status: 400 });
   }
+  await optimizeImageFields(body, ["heroImage"]);
   if (!isValidImageField(body.heroImage)) {
     return NextResponse.json({ error: "Hero image must be a valid image file or URL" }, { status: 400 });
   }

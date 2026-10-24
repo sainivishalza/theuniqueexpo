@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { getAboutContentForAdmin, updateAboutContent } from "@/lib/server/about-content-repo";
 import { normalizeAboutContent } from "@/lib/about-content";
+import { optimizeImageFields } from "@/lib/server/site-image";
 import { isValidImageField } from "@/lib/server/validate-upload";
 
 export async function GET(request: Request) {
@@ -20,6 +21,7 @@ export async function PUT(request: Request) {
   if (!body.heading || !body.tagline) {
     return NextResponse.json({ error: "Heading and tagline are required" }, { status: 400 });
   }
+  await optimizeImageFields(body, ["heroImage"]);
   if (!isValidImageField(body.heroImage)) {
     return NextResponse.json({ error: "Hero image must be a valid image file or URL" }, { status: 400 });
   }

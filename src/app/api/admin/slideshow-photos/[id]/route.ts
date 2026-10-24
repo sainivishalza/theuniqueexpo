@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth-server";
 import { updateSlideshowPhoto, deleteSlideshowPhoto } from "@/lib/server/homepage-slideshow-repo";
+import { optimizeImageFields } from "@/lib/server/site-image";
 import { isValidImageField } from "@/lib/server/validate-upload";
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -9,6 +10,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
   const { id } = await params;
   const body = await request.json();
+  await optimizeImageFields(body, ["image"]);
   if (!isValidImageField(body.image)) {
     return NextResponse.json({ error: "Photo must be a valid image file or URL" }, { status: 400 });
   }

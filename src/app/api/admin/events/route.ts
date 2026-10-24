@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth-server";
 import { isDuplicateEntryError } from "@/lib/db";
 import { listEvents, createEvent } from "@/lib/server/events-repo";
 import { slugify } from "@/lib/slugify";
+import { optimizeImageFields } from "@/lib/server/site-image";
 import { isValidImageField } from "@/lib/server/validate-upload";
 
 export async function GET(request: Request) {
@@ -26,6 +27,7 @@ export async function POST(request: Request) {
   if (!body.slug) {
     return NextResponse.json({ error: "Slug must contain at least one letter or number" }, { status: 400 });
   }
+  await optimizeImageFields(body, ["image"]);
   if (!isValidImageField(body.image)) {
     return NextResponse.json({ error: "Image must be a valid image file or URL" }, { status: 400 });
   }

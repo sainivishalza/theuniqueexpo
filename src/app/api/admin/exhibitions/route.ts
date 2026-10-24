@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth-server";
 import { isDuplicateEntryError } from "@/lib/db";
 import { listExhibitions, createExhibition } from "@/lib/server/exhibitions-repo";
 import { slugify } from "@/lib/slugify";
+import { optimizeImageFields } from "@/lib/server/site-image";
 import { isValidImageField, isValidImageFieldArray } from "@/lib/server/validate-upload";
 
 export async function GET(request: Request) {
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
   // browser and don't apply to a direct API call -- re-validate here so a
   // non-image (or oversized) payload can never reach the DB, and so the
   // public image-serving route never has to trust an unvalidated MIME type.
+  await optimizeImageFields(body, ["image"], ["galleryImages"]);
   if (!isValidImageField(body.image) || !isValidImageFieldArray(body.galleryImages)) {
     return NextResponse.json({ error: "Image must be a valid image file or URL" }, { status: 400 });
   }

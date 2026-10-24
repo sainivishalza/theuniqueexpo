@@ -803,6 +803,10 @@
       "guide": {
         "title": "Staff guide",
         "description": "Step-by-step guides for the daily tasks of your role."
+      },
+      "pictures": {
+        "title": "Pictures",
+        "description": "Make the stored website pictures smaller so pages load faster."
       }
     },
     "attention": {
@@ -5442,7 +5446,9 @@
       "error_resolved": "Marked a website error resolved",
       "error_reopened": "Opened a website error again",
       "weekly_digest_setting_changed": "Changed the weekly new-exhibitions e-mail setting",
-      "weekly_digest_preview_sent": "Sent the weekly e-mail preview to themselves"
+      "weekly_digest_preview_sent": "Sent the weekly e-mail preview to themselves",
+      "images_optimize_started": "Started making stored pictures smaller",
+      "images_optimize_finished": "Finished making stored pictures smaller"
     }
   },
   "notificationsPage": {
@@ -6541,5 +6547,32 @@
         "open": "Open Reports"
       }
     }
+  },
+  "adminPictures": {
+    "title": "Pictures",
+    "subtitle": "Keep the website's pictures small.",
+    "back": "← Back to Admin",
+    "how": "New pictures are resized to at most 1800 px and compressed when you save them. This screen does the same for the pictures already stored (posters, galleries, covers, team photos). A picture is only replaced when the new copy is clearly smaller; transparent pictures stay transparent.",
+    "storedTitle": "Stored now",
+    "mb": "{n} MB",
+    "count": "{count, plural, one {# picture} other {# pictures}}",
+    "source": {
+      "exhibitions": "Exhibition posters and galleries",
+      "tours": "Tour pictures and galleries",
+      "events": "Event pictures",
+      "blog_posts": "Blog covers",
+      "team_members": "Team photos",
+      "homepage_slideshow_photos": "Home page slideshow",
+      "magazine_issues": "Magazine covers"
+    },
+    "check": "Check how much can be saved",
+    "apply": "Make the stored pictures smaller",
+    "working": "Working… keep this page open",
+    "checkResult": "Check (nothing was changed)",
+    "applyResult": "Pictures made smaller",
+    "resultLine": "Looked at {scanned} large pictures; {changed} can be or were made smaller: {before} MB → {after} MB.",
+    "checkDone": "Done. Making them smaller would save about {saved} MB.",
+    "applyDone": "Done. About {saved} MB saved.",
+    "failed": "That did not work. Please try again."
   }
 }

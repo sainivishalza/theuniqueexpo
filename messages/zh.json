@@ -807,6 +807,10 @@
       "pictures": {
         "title": "图片",
         "description": "压缩网站已存储的图片，让页面加载更快。"
+      },
+      "documentProtection": {
+        "title": "证件保护",
+        "description": "将护照照片等证件加密存放在数据库中。"
       }
     },
     "attention": {
@@ -5456,7 +5460,9 @@
       "weekly_digest_setting_changed": "更改了每周新展会邮件设置",
       "weekly_digest_preview_sent": "给自己发送了每周邮件预览",
       "images_optimize_started": "开始压缩已存储的图片",
-      "images_optimize_finished": "完成压缩已存储的图片"
+      "images_optimize_finished": "完成压缩已存储的图片",
+      "documents_protect_started": "开始加密已存储的证件",
+      "documents_protect_finished": "完成加密已存储的证件"
     }
   },
   "notificationsPage": {
@@ -6603,5 +6609,58 @@
     "failed": "操作失败，未删除任何内容。请重试。",
     "done": "您的账户已删除。再见。",
     "openWallet": "打开钱包"
+  },
+  "adminDocProtection": {
+    "title": "证件保护",
+    "subtitle": "护照页、签证、营业执照、电子票、收据和收款码，在存储处加密。",
+    "back": "← 返回管理后台",
+    "how": "设置密钥后，新证件将加密存储（AES-256），数据库副本或备份文件不会泄露它们。网站在需要时自动解密，因此外观没有任何变化。设置密钥之前保存的证件保持原样，直到您点击下方按钮。",
+    "keyOn": "加密已开启",
+    "keyOff": "加密未开启：尚未设置密钥",
+    "keyId": "当前密钥：{id}。请确认与您保存的密钥一致。",
+    "keyHowTo": "要开启，请在服务器（Hostinger）上将环境变量 DOCUMENT_ENCRYPTION_KEY 设置为一个足够长的随机密钥，例如命令 openssl rand -hex 32 的输出，然后重启网站。请把密钥副本保存在安全的地方。",
+    "keyWarning": "如果密钥丢失，已加密的证件将无法恢复。更换密钥时，请把旧密钥保留在 DOCUMENT_ENCRYPTION_OLD_KEYS 中，以便仍能打开旧证件。",
+    "storedTitle": "当前存储",
+    "totals": "已加密 {protected} 个，尚未加密 {unprotected} 个。",
+    "counts": "已加密 {protected} · 未加密 {unprotected}",
+    "protect": "加密已存储的证件",
+    "working": "处理中…请保持本页打开",
+    "allProtected": "所有已存储的证件均已加密。",
+    "progress": "已加密 {done} 个证件；{failed} 个无法安全加密，保持原样。",
+    "finished": "完成。",
+    "finishedWithFailures": "完成，但有 {failed} 个保持原样。",
+    "failed": "操作失败，请重试。",
+    "source": {
+      "profile": {
+        "doc_passport_front": "护照页（资料）",
+        "doc_visa_page": "签证页（资料）",
+        "doc_business_license": "营业执照（资料）",
+        "doc_business_card": "名片（资料）",
+        "doc_buyer_photo": "买家照片（资料）",
+        "doc_canton_fair_card": "广交会证件（资料）",
+        "doc_invoice_order_list": "发票和订单清单（资料）",
+        "doc_latest_entry_stamp": "最近入境章（资料）"
+      },
+      "custom": {
+        "data": "买家表单设置中添加的证件"
+      },
+      "registration": {
+        "doc_passport_front": "护照页（报名）",
+        "doc_business_card": "名片（报名）",
+        "doc_visa_page": "签证页（报名）",
+        "doc_business_license": "营业执照（报名）",
+        "doc_order_list": "订单清单（报名）",
+        "doc_ticket": "电子票（报名）",
+        "custom_answers": "报名答案中的文件"
+      },
+      "tour": {
+        "custom_answers": "行程报名答案中的文件"
+      },
+      "wallet": {
+        "topup_proof": "充值付款凭证",
+        "expense_receipts": "费用收据",
+        "payout_qr": "收款二维码"
+      }
+    }
   }
 }

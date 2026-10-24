@@ -151,7 +151,7 @@ const key = (p, k) => p.questions.find((q) => q.key === k);
   ok(regB.company_scale === '21-50' && regB.info_source === 'Other' && regB.info_source_other === 'A friend' && regB.doc_passport_front, 'the second standard-form registration has the newer answers and the saved documents');
   const [[regC]] = await db.query('SELECT * FROM expo_registrations WHERE user_id=? AND exhibition_id=?', [bId, C.id]);
   const aC = J(regC.custom_answers);
-  ok(aC.f_name === 'Profile Co' && aC.f_staff === '12' && aC.f_visa === 'Yes' && aC.f_int.join() === 'Textile' && aC.f_note === 'See you there' && String(aC.f_card).startsWith('data:'), 'the organiser\'s form: its own field ids, the profile\'s company name, the answers', Object.keys(aC));
+  ok(aC.f_name === 'Profile Co' && aC.f_staff === '12' && aC.f_visa === 'Yes' && aC.f_int.join() === 'Textile' && aC.f_note === 'See you there' && /^(data:|enc:v1:)/.test(String(aC.f_card)), 'the organiser\'s form: its own field ids, the profile\'s company name, the answers', Object.keys(aC));
   ok(J(regC.form_schema_snapshot).length === 6 && regC.status === 'pending', 'with the form as it was at the time');
   const [[regF]] = await db.query('SELECT * FROM expo_registrations WHERE user_id=? AND exhibition_id=?', [bId, F.id]);
   const aF = J(regF.custom_answers);

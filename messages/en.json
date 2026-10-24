@@ -297,7 +297,9 @@
     "createAccountButton": "Create Account",
     "alreadyHaveAccount": "Already have an account?",
     "signIn": "Sign in →",
-    "registrationFailed": "Registration failed"
+    "registrationFailed": "Registration failed",
+    "invitedBonus": "You were invited by a buyer. You get {points} points {trigger, select, signup {when you sign up} approved {when your first registration is approved} other {after you attend your first exhibition}}.",
+    "invited": "You were invited by a buyer."
   },
   "common": {
     "redirecting": "Redirecting…",
@@ -4344,7 +4346,8 @@
       "withdraw": "Withdraw",
       "expenses": "Travel expenses",
       "shop": "Pay with points",
-      "use": "What can I do?"
+      "use": "What can I do?",
+      "invite": "Invite friends"
     },
     "balance": "Your balance",
     "pointsUnit": "points",
@@ -4369,7 +4372,8 @@
       "withdrawal_refund": "Withdrawal returned",
       "purchase": "Paid for a package",
       "purchase_refund": "Package refunded",
-      "adjustment": "Adjustment by us"
+      "adjustment": "Adjustment by us",
+      "referral": "Friend invited"
     },
     "status": {
       "pending": "Waiting",
@@ -4586,6 +4590,31 @@
         "open": "Top up"
       },
       "topupStatus": "Points are added after an admin checks your payment proof."
+    },
+    "invite": {
+      "title": "Invite a friend",
+      "subtitle": "Share your personal link with a colleague who is not on the site yet.",
+      "off": "The invitation programme is switched off for now.",
+      "ruleBoth": "For each friend who {trigger, select, signup {signs up} approved {has a registration approved} other {attends an exhibition}}: you get {mine} points and your friend gets {theirs} points.",
+      "ruleMine": "For each friend who {trigger, select, signup {signs up} approved {has a registration approved} other {attends an exhibition}}, you get {mine} points.",
+      "ruleTheirs": "Your friend gets {theirs} points once they {trigger, select, signup {sign up} approved {have a registration approved} other {attend an exhibition}}.",
+      "cap": "Up to {max} rewarded friends per buyer.",
+      "limitReached": "You have reached the limit of {max} rewarded friends. New invitations no longer earn points for you.",
+      "linkLabel": "Your invitation link",
+      "codeLabel": "Your code: {code}",
+      "copy": "Copy link",
+      "copied": "Link copied.",
+      "share": "Share",
+      "shareText": "Join me on The Unique Expo and visit exhibitions in China.",
+      "invited": "Invited",
+      "rewarded": "Rewarded",
+      "earned": "Points earned",
+      "listTitle": "People you invited",
+      "empty": "No one yet. Share your link to start.",
+      "statusPending": "Waiting",
+      "statusRewarded": "Rewarded",
+      "statusRejected": "Not counted",
+      "pointsEarned": "+{points} points"
     }
   },
   "adminWallet": {
@@ -4600,7 +4629,8 @@
       "wallets": "Wallets",
       "purchases": "Package purchases",
       "pointsSetup": "Points setup",
-      "settings": "Settings"
+      "settings": "Settings",
+      "referrals": "Referrals"
     },
     "export": {
       "withdrawals": "Download these withdrawals (Excel)",
@@ -4652,7 +4682,8 @@
       "withdrawal_refund": "Withdrawal returned",
       "purchase": "Paid for a package",
       "purchase_refund": "Package refunded",
-      "adjustment": "Adjustment"
+      "adjustment": "Adjustment",
+      "referral": "Referral"
     },
     "errors": {
       "generic": "Something went wrong. Please try again.",
@@ -4789,6 +4820,38 @@
       "help": "One month of the rewards wallet in Excel: the balance at the start, what was added and taken away by kind, the balance at the end, a check that the buyers' balances agree with the ledger, and the same per buyer. 1 point = 1 RMB; months are in UTC.",
       "month": "Month",
       "download": "Download the statement"
+    },
+    "referrals": {
+      "title": "Referral programme",
+      "intro": "A buyer shares a personal link. When the person who joins through it reaches the stage you choose, the buyer who invited them and the new buyer can each receive points. Changes apply to the next payment.",
+      "enabled": "Referral programme is on",
+      "trigger": "Pay the points when the new buyer",
+      "triggerSignup": "signs up",
+      "triggerApproved": "gets a registration approved",
+      "triggerAttended": "attends an exhibition (safest)",
+      "referrerPoints": "Points for the buyer who invites",
+      "referredPoints": "Points for the new buyer",
+      "maxPerReferrer": "Most rewarded referrals per buyer (0 = no limit)",
+      "hint": "Whole points; 0 means none for that side. 1 point = 1 RMB.",
+      "saved": "Saved.",
+      "settle": "Pay waiting referrals now",
+      "settleHint": "Use this after changing the stage: it pays every waiting referral whose buyer has already reached it.",
+      "settled": "{paid} paid, {limited} held back by the limit.",
+      "waiting": "Waiting",
+      "rewardedCount": "Rewarded",
+      "rejectedCount": "Not counted",
+      "pointsPaid": "Points paid",
+      "listTitle": "All referrals",
+      "empty": "No referrals yet.",
+      "invitedBy": "Invited by",
+      "newBuyer": "New buyer",
+      "paid": "Inviter +{mine}, new buyer +{theirs}",
+      "rejectConfirm": "Turn this referral down? No points will be paid for it.",
+      "statusPending": "Waiting",
+      "statusRewarded": "Rewarded",
+      "statusRejected": "Rejected",
+      "filterLabel": "Show",
+      "searchLabel": "Search by name or e-mail"
     }
   },
   "searchPage": {
@@ -5462,7 +5525,10 @@
       "images_optimize_started": "Started making stored pictures smaller",
       "images_optimize_finished": "Finished making stored pictures smaller",
       "documents_protect_started": "Started encrypting stored documents",
-      "documents_protect_finished": "Finished encrypting stored documents"
+      "documents_protect_finished": "Finished encrypting stored documents",
+      "referral_settings_saved": "Saved referral programme settings",
+      "referrals_settled": "Paid waiting referrals",
+      "referral_rejected": "Rejected a referral"
     }
   },
   "notificationsPage": {

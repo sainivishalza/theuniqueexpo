@@ -30,7 +30,7 @@ interface AuthContextValue {
   /** Signs in. For an admin with two-step sign-in on, resolves with the pass to give to `loginWithCode`. */
   login: (email: string, password: string) => Promise<{ challenge: string } | null>;
   loginWithCode: (challenge: string, code: string) => Promise<{ usedRecoveryCode: boolean }>;
-  register: (name: string, email: string, password: string, role: UserRole, country: string, ref?: string) => Promise<void>;
+  register: (name: string, email: string, password: string, role: UserRole, country: string, ref?: string, invite?: string) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: MockUser | null) => void;
 }
@@ -77,11 +77,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { usedRecoveryCode: !!data.usedRecoveryCode };
   }, []);
 
-  const register = useCallback(async (name: string, email: string, password: string, role: UserRole, country: string, ref?: string) => {
+  const register = useCallback(async (name: string, email: string, password: string, role: UserRole, country: string, ref?: string, invite?: string) => {
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password, role, country, ref }),
+      body: JSON.stringify({ name, email, password, role, country, ref, invite }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Registration failed");

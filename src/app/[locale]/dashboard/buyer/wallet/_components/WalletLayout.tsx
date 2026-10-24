@@ -14,6 +14,7 @@ const TABS = [
   { key: "expenses", href: "/dashboard/buyer/wallet/expenses" },
   { key: "shop", href: "/dashboard/buyer/wallet/shop" },
   { key: "use", href: "/dashboard/buyer/wallet/use" },
+  { key: "invite", href: "/dashboard/buyer/wallet/invite" },
 ] as const;
 
 // The frame every rewards-wallet page shares: a header, the sections as tabs, and

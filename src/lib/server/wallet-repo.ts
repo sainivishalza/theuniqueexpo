@@ -477,6 +477,61 @@ export async function awardAttendanceQuietly(registrationId: number): Promise<vo
   }
 }
 
+// ---------- points paid for a referral ----------
+
+export type ReferralPayout =
+  | { status: "paid"; referrerId: number; referredId: number; referrerPoints: number; referredPoints: number }
+  | { status: "skipped"; reason: "not_pending" | "limit_reached" | "not_eligible" };
+
+// Pays one pending referral: points to the buyer who invited and/or to the new buyer, at the rates given. Safe to call any
+// number of times and from several requests at once: the referral row is locked first, so only one of them finds it
+// pending, and each ledger row carries its own idempotency key. The cap is counted after the inviter's wallet is locked, so
+// two referrals of the same buyer paid at the same moment cannot both slip past it.
+export async function bookReferralReward(
+  referralId: number,
+  rules: { referrerPoints: number; referredPoints: number; maxPerReferrer: number }
+): Promise<ReferralPayout> {
+  const [pre] = await pool.query<RowDataPacket[]>("SELECT referrer_id, referred_id FROM buyer_referrals WHERE id = ?", [referralId]);
+  if (!pre[0]) return { status: "skipped", reason: "not_pending" };
+  await ensureWallet(pre[0].referrer_id);
+  await ensureWallet(pre[0].referred_id);
+  return withTx(async (conn) => {
+    const [rows] = await conn.query<RowDataPacket[]>("SELECT referrer_id, referred_id, status FROM buyer_referrals WHERE id = ? FOR UPDATE", [referralId]);
+    const ref = rows[0];
+    if (!ref || ref.status !== "pending") return { status: "skipped", reason: "not_pending" } as const;
+    const referrerId = Number(ref.referrer_id);
+    const referredId = Number(ref.referred_id);
+    // Both must still be active buyers (not suspended, not a deleted account).
+    const [users] = await conn.query<RowDataPacket[]>(
+      "SELECT id FROM users WHERE id IN (?, ?) AND role = 'buyer' AND status <> 'suspended' AND deleted_at IS NULL ORDER BY id LOCK IN SHARE MODE",
+      [referrerId, referredId]
+    );
+    if (users.length !== 2) return { status: "skipped", reason: "not_eligible" } as const;
+    await lockWallets(conn, [referrerId, referredId]);
+    if (rules.maxPerReferrer > 0) {
+      const [[{ n }]] = await conn.query<RowDataPacket[]>("SELECT COUNT(*) AS n FROM buyer_referrals WHERE referrer_id = ? AND status = 'rewarded'", [referrerId]);
+      if (Number(n) >= rules.maxPerReferrer) return { status: "skipped", reason: "limit_reached" } as const;
+    }
+    if (rules.referrerPoints > 0) {
+      const key = `refer:${referralId}:referrer`;
+      if (!(await findEntry(conn, referrerId, key))) {
+        await postEntry(conn, { userId: referrerId, amount: rules.referrerPoints, type: "referral", idemKey: key, refType: "referral", refId: referralId, counterparty: referredId });
+      }
+    }
+    if (rules.referredPoints > 0) {
+      const key = `refer:${referralId}:referred`;
+      if (!(await findEntry(conn, referredId, key))) {
+        await postEntry(conn, { userId: referredId, amount: rules.referredPoints, type: "referral", idemKey: key, refType: "referral", refId: referralId, counterparty: referrerId });
+      }
+    }
+    await conn.query(
+      "UPDATE buyer_referrals SET status = 'rewarded', referrer_points = ?, referred_points = ?, rewarded_at = UTC_TIMESTAMP() WHERE id = ?",
+      [rules.referrerPoints, rules.referredPoints, referralId]
+    );
+    return { status: "paid", referrerId, referredId, referrerPoints: rules.referrerPoints, referredPoints: rules.referredPoints } as const;
+  });
+}
+
 // ---------- top-ups ----------
 
 export interface TopupInput {

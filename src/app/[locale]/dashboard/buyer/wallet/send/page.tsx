@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/lib/auth-context";
 import { formatNumber } from "@/lib/format";
@@ -9,16 +9,11 @@ import { errorKey, pointsFromText, walletApi, walletCodeFromText } from "@/lib/c
 import { newClientKey } from "@/lib/wallet";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import QrCameraScanner, { cameraAvailable } from "@/components/QrCameraScanner";
 import WalletLayout from "../_components/WalletLayout";
 
 type Target = { code: string } | { number: string };
 interface Recipient { name: string; buyerNumber: string }
-
-// Minimal typing for the browser's built-in QR reader (not in TypeScript's lib yet).
-interface BarcodeReader { detect(source: HTMLVideoElement): Promise<{ rawValue: string }[]> }
-declare global {
-  interface Window { BarcodeDetector?: new (options: { formats: string[] }) => BarcodeReader }
-}
 
 export default function SendPointsPage() {
   const t = useTranslations("buyerWallet");
@@ -73,56 +68,12 @@ export default function SendPointsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBuyer]);
 
-  // ----- scanning with the camera (where the browser can read QR codes) -----
-  const videoRef = useRef<HTMLVideoElement>(null);
+  // ----- scanning with the camera -----
   // Known only in the browser (null until then, so server and browser render the same).
   const [canScan, setCanScan] = useState<boolean | null>(null);
   useEffect(() => {
-    setCanScan(!!window.BarcodeDetector && !!navigator.mediaDevices?.getUserMedia);
+    setCanScan(cameraAvailable());
   }, []);
-  useEffect(() => {
-    if (!scanning) return;
-    let stream: MediaStream | null = null;
-    let stopped = false;
-    (async () => {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        if (stopped) {
-          stream.getTracks().forEach((track) => track.stop());
-          return;
-        }
-        const video = videoRef.current;
-        if (!video) return;
-        video.srcObject = stream;
-        await video.play();
-        const reader = new window.BarcodeDetector!({ formats: ["qr_code"] });
-        const tick = async () => {
-          if (stopped) return;
-          try {
-            const found = await reader.detect(video);
-            const code = found[0] ? walletCodeFromText(found[0].rawValue) : null;
-            if (code) {
-              setScanning(false);
-              lookup({ code });
-              return;
-            }
-          } catch {
-            // keep trying
-          }
-          setTimeout(tick, 300);
-        };
-        tick();
-      } catch {
-        setScanning(false);
-        setError(t("scanFailed"));
-      }
-    })();
-    return () => {
-      stopped = true;
-      stream?.getTracks().forEach((track) => track.stop());
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scanning]);
 
   async function send() {
     if (!target || amount === null || busy) return;
@@ -178,7 +129,16 @@ export default function SendPointsPage() {
                 <div>
                   {scanning ? (
                     <div>
-                      <video ref={videoRef} playsInline muted className="w-full max-w-sm rounded-lg bg-black" aria-label={t("send.cameraLabel")} />
+                      <QrCameraScanner
+                        label={t("send.cameraLabel")}
+                        accept={(text) => walletCodeFromText(text) !== null}
+                        onScan={(text) => {
+                          setScanning(false);
+                          const code = walletCodeFromText(text);
+                          if (code) lookup({ code });
+                        }}
+                        onError={() => { setScanning(false); setError(t("scanFailed")); }}
+                      />
                       <Button type="button" variant="ghost" size="compact" className="mt-2" onClick={() => setScanning(false)}>{t("send.stopScan")}</Button>
                     </div>
                   ) : (

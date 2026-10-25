@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { formatDateOnly, formatDateTime } from "@/lib/client/registration-format";
 import QrCameraScanner, { cameraAvailable } from "@/components/QrCameraScanner";
 import { ticketCodeFromScan } from "@/lib/ticket-scan";
+import { readQrFromFile } from "@/lib/client/qr-frame";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { fieldClasses } from "@/components/ui/FormField";
@@ -41,7 +42,7 @@ function TicketCheck() {
   // The camera: known only in the browser (null until then, so the server and the browser render the same)
   const [canScan, setCanScan] = useState<boolean | null>(null);
   const [scanning, setScanning] = useState(false);
-  const [scanProblem, setScanProblem] = useState<"denied" | "failed" | null>(null);
+  const [scanProblem, setScanProblem] = useState<"denied" | "failed" | "photo" | null>(null);
   useEffect(() => setCanScan(cameraAvailable()), []);
 
   const look = useCallback(async (value: string) => {
@@ -66,6 +67,18 @@ function TicketCheck() {
   useEffect(() => {
     if (user?.role === "admin" && fromLink) look(fromLink);
   }, [user, fromLink, look]);
+
+  // A photo of the QR code (the phone's own camera app takes it, sharp and in focus): read it the same way.
+  async function fromPhoto(file: File | undefined) {
+    if (!file) return;
+    setScanProblem(null);
+    setScanning(false);
+    setBusy(true);
+    const text = await readQrFromFile(file);
+    setBusy(false);
+    if (text && ticketCodeFromScan(text)) scanned(text);
+    else setScanProblem("photo");
+  }
 
   function scanned(text: string) {
     setScanning(false);
@@ -110,7 +123,7 @@ function TicketCheck() {
             <div>
               {scanning ? (
                 <div>
-                  <QrCameraScanner onScan={scanned} accept={(text) => ticketCodeFromScan(text) !== ""} onError={(reason) => { setScanning(false); setScanProblem(reason); }} label={t("cameraLabel")} className="w-full rounded-lg bg-black" />
+                  <QrCameraScanner onScan={scanned} accept={(text) => ticketCodeFromScan(text) !== ""} slowHint={t("slowHint")} onError={(reason) => { setScanning(false); setScanProblem(reason); }} label={t("cameraLabel")} className="w-full rounded-lg bg-black" />
                   <p className="mt-2 text-sm text-gray-700">{t("scanning")}</p>
                   <Button type="button" variant="secondaryOutline" size="compact" className="mt-2" onClick={() => setScanning(false)}>{t("stopScan")}</Button>
                 </div>
@@ -119,6 +132,13 @@ function TicketCheck() {
               )}
             </div>
           )}
+          <div>
+            <label htmlFor="ticket-photo" className="inline-flex min-h-[2.75rem] cursor-pointer items-center rounded-[var(--radius-button)] border border-emerald-900 bg-white px-4 py-2 text-sm font-semibold text-emerald-900 hover:bg-emerald-50 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-emerald-900">
+              {t("photo")}
+              <input id="ticket-photo" type="file" accept="image/*" capture="environment" className="sr-only" onChange={(e) => { fromPhoto(e.target.files?.[0]); e.target.value = ""; }} data-testid="ticket-photo" />
+            </label>
+            <p className="mt-1 text-xs text-gray-600">{t("photoHint")}</p>
+          </div>
           {scanProblem && <p role="alert" className="rounded-[var(--radius-button)] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700" data-testid="scan-problem">{t(`scanProblems.${scanProblem}`)}</p>}
           {canScan === false && <p className="rounded-[var(--radius-button)] bg-white px-3 py-2 text-sm text-gray-700">{t("scanUnsupported")}</p>}
           <form onSubmit={(e) => { e.preventDefault(); look(code); }} className="flex flex-col gap-3 sm:flex-row sm:items-end">

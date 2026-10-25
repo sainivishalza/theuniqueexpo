@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { loadJsQr, readQr } from "@/lib/client/qr-frame";
 
 interface NativeReader {
   detect(source: HTMLVideoElement): Promise<{ rawValue: string }[]>;
 }
 type NativeReaderConstructor = new (options: { formats: string[] }) => NativeReader;
 
-const MAX_WIDTH = 800;
 const INTERVAL_MS = 150;
+/** After this long without a code, the screen is asked to show a hint. */
+const SLOW_AFTER_MS = 7000;
 
 /** True when the browser can open a camera at all (it needs a secure page; the site is always served over https). */
 export function cameraAvailable(): boolean {
@@ -23,6 +25,7 @@ export default function QrCameraScanner({
   onError,
   label,
   accept,
+  slowHint,
   className = "w-full max-w-sm rounded-lg bg-black",
 }: {
   onScan: (text: string) => void;
@@ -31,9 +34,12 @@ export default function QrCameraScanner({
   /** "denied" = no permission, "failed" = no camera or it would not start */
   onError: (reason: "denied" | "failed") => void;
   label: string;
+  /** Shown under the picture when nothing has been read for a few seconds (how to hold the phone). */
+  slowHint?: string;
   className?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [slow, setSlow] = useState(false);
   // The latest callbacks, so a parent that re-renders does not restart the camera.
   const handlers = useRef({ onScan, onError, accept });
   handlers.current = { onScan, onError, accept };
@@ -45,7 +51,9 @@ export default function QrCameraScanner({
 
     (async () => {
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false });
+        // A phone gives a small picture (640 x 480) unless it is asked for more, and a QR code on a screen or on paper is
+        // read far less often from a small one.
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
         if (stopped) {
           stream.getTracks().forEach((track) => track.stop());
           return;
@@ -57,9 +65,8 @@ export default function QrCameraScanner({
 
         const Native = (window as unknown as { BarcodeDetector?: NativeReaderConstructor }).BarcodeDetector;
         const native = Native ? new Native({ formats: ["qr_code"] }) : null;
-        const jsQR = native ? null : (await import("jsqr")).default;
+        const jsQR = native ? null : await loadJsQr();
         const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
         const tick = async () => {
           if (stopped) return;
@@ -67,13 +74,8 @@ export default function QrCameraScanner({
             let text: string | null = null;
             if (native) {
               text = (await native.detect(video))[0]?.rawValue || null;
-            } else if (jsQR && ctx && video.videoWidth > 0) {
-              const scale = Math.min(1, MAX_WIDTH / video.videoWidth);
-              canvas.width = Math.round(video.videoWidth * scale);
-              canvas.height = Math.round(video.videoHeight * scale);
-              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-              const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
-              text = jsQR(frame.data, frame.width, frame.height, { inversionAttempts: "dontInvert" })?.data || null;
+            } else if (jsQR) {
+              text = readQr(jsQR, video, canvas, video.videoWidth, video.videoHeight);
             }
             if (text && !stopped && (handlers.current.accept?.(text) ?? true)) {
               stopped = true;
@@ -93,12 +95,20 @@ export default function QrCameraScanner({
       }
     })();
 
+    const slowTimer = setTimeout(() => setSlow(true), SLOW_AFTER_MS);
+
     return () => {
       stopped = true;
+      clearTimeout(slowTimer);
       if (timer) clearTimeout(timer);
       stream?.getTracks().forEach((track) => track.stop());
     };
   }, []);
 
-  return <video ref={videoRef} playsInline muted aria-label={label} className={className} data-testid="qr-camera" />;
+  return (
+    <>
+      <video ref={videoRef} playsInline muted aria-label={label} className={className} data-testid="qr-camera" />
+      {slow && slowHint && <p role="status" className="mt-2 text-sm font-semibold text-amber-900" data-testid="qr-slow-hint">{slowHint}</p>}
+    </>
+  );
 }

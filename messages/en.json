@@ -6069,7 +6069,17 @@
       "checked_in": "Checked in. Welcome!",
       "already_checked_in": "This ticket was already used.",
       "not_confirmed": "This registration has not confirmed attendance."
-    }
+    },
+    "scan": "Scan a ticket with the camera",
+    "scanNext": "Scan the next ticket",
+    "stopScan": "Close the camera",
+    "scanning": "Hold the phone so the QR code on the e-ticket is inside the picture.",
+    "cameraLabel": "Camera: point it at the QR code on the e-ticket",
+    "scanProblems": {
+      "denied": "The camera is blocked. Allow the camera for this site in the browser settings, then try again. You can also type the ticket code below.",
+      "failed": "The camera could not be opened on this device. Type the ticket code below, or scan the QR code with the phone's own camera app."
+    },
+    "scanUnsupported": "This browser cannot open the camera here. Type the ticket code below, or scan the QR code with the phone's own camera app."
   },
   "adminInsights": {
     "title": "Reports",

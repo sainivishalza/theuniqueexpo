@@ -23,7 +23,7 @@ const GUIDE: { role: Role; tasks: Task[] }[] = [
   ] },
   { role: "finance", tasks: [
     { key: "topups", href: "/admin/wallet" }, { key: "withdrawals", href: "/admin/wallet" }, { key: "expenses", href: "/admin/wallet" },
-    { key: "ticketInvoice", href: "/admin/wallet" }, { key: "statement", href: "/admin/wallet" }, { key: "scheduled", href: "/admin/scheduled-exports" },
+    { key: "topupMany", href: "/admin/wallet" }, { key: "ticketInvoice", href: "/admin/wallet" }, { key: "statement", href: "/admin/wallet" }, { key: "scheduled", href: "/admin/scheduled-exports" },
   ] },
   { role: "viewer", tasks: [{ key: "look", href: "/admin/registrations" }, { key: "numbers", href: "/admin/insights" }] },
 ];

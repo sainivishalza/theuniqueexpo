@@ -100,6 +100,19 @@ async function signIn(context, email, password) {
   ok(wallet.status === 401, 'wallet balance refuses signed-out requests', wallet.status);
   const admin = await get('/api/admin/attention');
   ok(admin.status === 401, 'admin API refuses signed-out requests', admin.status);
+  // The newer features: each answers "sign in first" when signed out, so a missing route or a broken build shows up here.
+  for (const path of ['/api/support/threads', '/api/admin/support', '/api/admin/support/waiting', '/api/admin/wallet/expo-options', '/api/admin/wallet/bulk-topup', '/api/wallet/ticket-refunds', '/api/admin/wallet/ticket-refunds', '/api/referrals/me']) {
+    const r = await get(path);
+    ok(r.status === 401 || r.status === 405, `${path} refuses signed-out requests`, r.status || r.error);
+  }
+  const offer = await get('/api/referrals/offer');
+  ok(offer.status === 200 && /\{/.test(offer.text), 'the invite-a-friend offer answers', offer.status);
+  const qr = await get('/api/wechat-qr');
+  ok(qr.status === 200 || qr.status === 404, 'the WeChat QR code route answers (picture or "none yet")', qr.status || qr.error);
+  for (const path of ['/en/admin/ticket-check', '/en/admin/support', '/en/dashboard/buyer/support', '/en/dashboard/buyer/wallet/ticket']) {
+    const r = await get(path);
+    ok(r.status === 200, `${path} loads (200)`, r.status || r.error);
+  }
   const home = await get('/en');
   ok(!!home.headers.get('content-security-policy') && home.headers.get('x-content-type-options') === 'nosniff', 'security headers are present');
   ok(/<title>[^<]{5,}<\/title>/.test(home.text), 'the home page has a title');

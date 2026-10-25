@@ -6771,7 +6771,7 @@
       },
       "doorCheck": {
         "title": "Check tickets at the door",
-        "steps": "Open Check tickets on a phone.\nScan the QR code on the buyer's e-ticket with the camera, or type the ticket code.\nIf the buyer has confirmed attendance, press Let them in (mark attended). If not, the screen says why they cannot be checked in.",
+        "steps": "Open Check tickets on a phone.\nPress Scan a ticket with the camera and allow the camera the first time. Hold the phone 15–25 cm from the QR code on the buyer's e-ticket: the ticket appears by itself.\nIf the camera does not read it, press Take a photo of the QR code, or type the ticket code.\nIf the buyer has confirmed attendance, press Let them in (mark attended). If not, the screen says why they cannot be checked in.\nPress Scan the next ticket for the next person.",
         "open": "Open Check tickets"
       },
       "exportList": {
@@ -6843,6 +6843,11 @@
         "title": "Answer buyers' messages",
         "steps": "Open Messages from buyers: the number on the menu entry is how many are waiting for an answer.\nOpen a message, read the conversation and the buyer's details above it.\nWrite your answer and press Send answer: the buyer is told on the website and by e-mail.\nPress Close the conversation when it is settled. If the buyer writes again, it opens by itself.",
         "open": "Open Messages from buyers"
+      },
+      "topupMany": {
+        "title": "Give points to many buyers at once",
+        "steps": "Open Rewards Wallet and the Top up many section.\nPaste the passport numbers, one per line, and type the points each buyer gets.\nChoose the expo from the list (type to search; if it is not there, type its name and choose Use …). Add a short note if you like.\nPress Check passport numbers: it shows who was found and which numbers were not (those buyers get nothing).\nPress Pay N buyers: everyone found receives the points, and each buyer's wallet shows the expo name.",
+        "open": "Open Rewards Wallet"
       }
     }
   },

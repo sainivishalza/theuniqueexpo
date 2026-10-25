@@ -36,7 +36,7 @@ const num = (q) => Number(sql(q));
   const expected = {
     reviewer: { has: ['approve', 'documents', 'announce', 'doorCheck', 'exportList'], not: ['addExhibition', 'topups', 'look'], links: ['/admin/registrations', '/admin/buyer-profiles', '/admin/ticket-check'] },
     content: { has: ['addExhibition', 'editPages', 'helpAnswers', 'blog'], not: ['approve', 'topups', 'look'], links: ['/admin/exhibitions', '/admin/pages', '/admin/blog'] },
-    finance: { has: ['topups', 'withdrawals', 'expenses', 'ticketInvoice', 'statement', 'scheduled'], not: ['approve', 'addExhibition'], links: ['/admin/wallet', '/admin/scheduled-exports'] },
+    finance: { has: ['topups', 'withdrawals', 'expenses', 'topupMany', 'ticketInvoice', 'statement', 'scheduled'], not: ['approve', 'addExhibition'], links: ['/admin/wallet', '/admin/scheduled-exports'] },
     viewer: { has: ['look', 'numbers'], not: ['approve', 'topups', 'addExhibition'], links: ['/admin/registrations', '/admin/insights'] },
   };
   for (const [role, e] of Object.entries(expected)) {

@@ -6077,9 +6077,13 @@
     "cameraLabel": "Camera: point it at the QR code on the e-ticket",
     "scanProblems": {
       "denied": "The camera is blocked. Allow the camera for this site in the browser settings, then try again. You can also type the ticket code below.",
-      "failed": "The camera could not be opened on this device. Type the ticket code below, or scan the QR code with the phone's own camera app."
+      "failed": "The camera could not be opened on this device. Type the ticket code below, or scan the QR code with the phone's own camera app.",
+      "photo": "No ticket QR code could be read in that photo. Take it again closer and in good light, with the whole QR code in the picture, or type the ticket code below."
     },
-    "scanUnsupported": "This browser cannot open the camera here. Type the ticket code below, or scan the QR code with the phone's own camera app."
+    "scanUnsupported": "This browser cannot open the camera here. Type the ticket code below, or scan the QR code with the phone's own camera app.",
+    "slowHint": "Nothing read yet. Hold the phone 15–25 cm from the QR code so it fills about half of the picture, keep it steady and avoid glare. Or use “Take a photo of the QR code” below.",
+    "photo": "Take a photo of the QR code",
+    "photoHint": "If the live camera does not read it, a photo taken with the phone's camera usually does."
   },
   "adminInsights": {
     "title": "Reports",

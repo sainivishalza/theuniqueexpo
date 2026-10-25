@@ -100,10 +100,19 @@ const launchWith = (video) => chromium.launch({
     const c = await mkContext(br, u.aT);
     const p = await c.newPage();
     await p.goto(`${BASE}/en/admin/ticket-check`, { waitUntil: 'networkidle' });
+    await p.addInitScript(() => {
+      const original = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+      navigator.mediaDevices.getUserMedia = (c) => { window.__constraints = JSON.stringify(c); return original(c); };
+    });
+    await p.reload({ waitUntil: 'networkidle' });
     await p.getByTestId('scan-ticket').click();
     await p.getByTestId('qr-camera').waitFor();
     await sleep(3500);
     ok((await p.getByTestId('ticket-card').count()) === 0 && (await p.getByTestId('qr-camera').count()) === 1, 'a QR code that is not a ticket changes nothing and the camera stays open');
+    ok(/1920/.test(await p.evaluate(() => window.__constraints)) && /environment/.test(await p.evaluate(() => window.__constraints)), 'the back camera is asked for a big picture (a phone gives only 640 x 480 otherwise)');
+    ok((await p.getByTestId('qr-slow-hint').count()) === 0, 'no hint in the first seconds');
+    await p.getByTestId('qr-slow-hint').waitFor({ timeout: 8000 });
+    ok(/Hold the phone/.test(await p.getByTestId('qr-slow-hint').innerText()), 'after a while without a code it explains how to hold the phone');
     await p.getByRole('button', { name: 'Close the camera' }).click();
     ok((await p.getByTestId('qr-camera').count()) === 0, 'Close the camera closes it');
     await c.close();
@@ -135,6 +144,39 @@ const launchWith = (video) => chromium.launch({
     await c2.close();
   }
   await br.close();
+
+  console.log('\n== a photo of the QR code');
+  {
+    // a rough "photo": the code a little tilted, soft, uneven light, grey background
+    const qr = await QRCode.toBuffer(link, { width: 420, margin: 1, errorCorrectionLevel: 'M' });
+    const tilted = await sharp(qr).rotate(8, { background: '#dddddd' }).toBuffer();
+    const photo = await sharp({ create: { width: 1600, height: 1200, channels: 3, background: '#777777' } }).composite([{ input: tilted, gravity: 'centre' }]).blur(1.2).jpeg({ quality: 80 }).toBuffer();
+    const blank = await sharp({ create: { width: 800, height: 600, channels: 3, background: '#aaaaaa' } }).jpeg().toBuffer();
+    br = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
+    for (const locale of ['en', 'ru', 'zh']) {
+      const c = await mkContext(br, u.aT, locale, 375, []);
+      const p = await c.newPage();
+      await p.goto(`${BASE}/${locale}/admin/ticket-check`, { waitUntil: 'networkidle' });
+      ok((await p.getByTestId('ticket-photo').count()) === 1, `${locale}: there is a take-a-photo button`);
+      if (locale === 'en') {
+        await p.setInputFiles('#ticket-photo', { name: 'blank.jpg', mimeType: 'image/jpeg', buffer: blank });
+        await p.getByTestId('scan-problem').waitFor();
+        ok(/No ticket QR code could be read/.test(await p.getByTestId('scan-problem').innerText()), 'en: a photo with no QR code says so');
+      }
+      await p.setInputFiles('#ticket-photo', { name: 'ticket.jpg', mimeType: 'image/jpeg', buffer: photo });
+      await p.getByTestId('ticket-card').waitFor({ timeout: 20000 });
+      ok((await p.getByTestId('ticket-card').innerText()).includes('SCAN VISITOR'), `${locale}: a photo of the ticket QR code shows the ticket`);
+      ok((await p.locator('#ticket-code').inputValue()) === ticketCode(rid), `${locale}: with the code in the box`);
+      ok((await p.getByTestId('scan-problem').count()) === 0, `${locale}: and no leftover error`);
+      await p.mouse.move(0, 0);
+      await sleep(900);
+      const vio = await axeViolations(p);
+      ok(vio.length === 0, `${locale}: axe 0 with the photo button`, vio);
+      ok(await p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `${locale}: nothing sticks out at 375 px`);
+      await c.close();
+    }
+    await br.close();
+  }
 
   console.log('\n== sending points: the buyer scans a wallet QR code');
   {

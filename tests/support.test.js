@@ -184,6 +184,14 @@ const num = (q) => Number(sql(q) || 0);
     await ctx.close();
   }
 
+  sql(`INSERT INTO exhibitions (slug,title,start_date,end_date,venue,city,country,industry,description,highlights,exhibitors,visitors,organizer,registration_enabled) VALUES ('snap-${Date.now()}','Scan Snapshot Expo','${new Date(Date.now() + 9 * 86400000).toISOString().slice(0, 10)}','${new Date(Date.now() + 11 * 86400000).toISOString().slice(0, 10)}','Hall','Zzsnapcity','China','X','d','[]',1,'','O',1)`);
+  sql(`INSERT INTO expo_registrations (exhibition_id,user_id,status) VALUES ((SELECT id FROM exhibitions WHERE title='Scan Snapshot Expo' ORDER BY id DESC LIMIT 1),${ui.id},'confirmed')`);
+  { const th = Number(sql(`SELECT id FROM support_threads WHERE user_id=${ui.id} ORDER BY id LIMIT 1`));
+    const r = await fetch(BASE + '/api/admin/support/' + th, { headers: { cookie: 'token=' + u.aT } });
+    const j = await r.json();
+    ok(r.status === 200 && j.snapshot && j.snapshot.balance === 0 && j.snapshot.registrations.length === 1 && j.snapshot.registrations[0].status === 'confirmed' && j.snapshot.claimsWaiting === 0, 'the admin API gives the snapshot of the buyer', j.snapshot);
+    ok((await fetch(BASE + '/api/admin/support/' + th, { headers: { cookie: 'token=' + ui.token } })).status === 401, 'and a buyer cannot read it'); }
+
   console.log('\n== admin answers on screen, the buyer sees it');
   { const [ctx, page] = await open(u.aT, '/en/admin/support');
     await page.getByRole('searchbox').fill(ui.email);
@@ -200,6 +208,9 @@ const num = (q) => Number(sql(q) || 0);
     await page.getByTestId('admin-msg-staff').waitFor();
     ok((await page.getByTestId('admin-msg-staff').innerText()).includes('we will look at it today'), 'the answer appears in the conversation');
     ok((await page.getByTestId('admin-support-detail').innerText()).includes(ui.email), 'the buyer\'s details are above the conversation');
+    const snap = await page.getByTestId('admin-support-snapshot').innerText();
+    ok(snap.includes('About this buyer') && /Points: 0/.test(snap) && snap.includes('Scan Snapshot Expo') && /Confirmed/i.test(snap), 'the buyer\'s points and registrations are shown beside the conversation', snap);
+    ok((await page.getByTestId('admin-support-snapshot').locator('a[href*="buyer-profiles?q="]').count()) === 1, 'with a link to the buyer\'s profile');
     await page.getByTestId('admin-support-close').click();
     await page.getByTestId('admin-support-reopen').waitFor();
     ok(true, 'closing switches the button to "Open again"');

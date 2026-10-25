@@ -131,6 +131,45 @@ export interface AdminThreadSummary extends SupportThreadSummary {
   messageCount: number;
 }
 
+// What the team wants to know about a buyer while answering: points, where they are registered, and what of theirs is waiting.
+export interface BuyerSnapshot {
+  balance: number;
+  registrations: { id: number; title: string; status: string; startDate: string }[];
+  claimsWaiting: number;
+  withdrawalsWaiting: number;
+}
+
+// Each part tolerates a table that is not there yet (before its migration) by showing nothing for it.
+async function safeRows(sql: string, params: unknown[]): Promise<RowDataPacket[]> {
+  try {
+    const [rows] = await pool.query<RowDataPacket[]>(sql, params);
+    return rows;
+  } catch (err) {
+    const code = (err as { code?: string }).code;
+    if (code === "ER_NO_SUCH_TABLE" || code === "ER_BAD_FIELD_ERROR") return [];
+    throw err;
+  }
+}
+
+export async function getBuyerSnapshot(userId: number): Promise<BuyerSnapshot> {
+  const [wallet, regs, claims, withdrawals] = await Promise.all([
+    safeRows("SELECT balance FROM wallets WHERE user_id = ?", [userId]),
+    safeRows(
+      `SELECT r.id, r.status, e.title, e.start_date FROM expo_registrations r JOIN exhibitions e ON e.id = r.exhibition_id
+       WHERE r.user_id = ? ORDER BY e.start_date DESC, r.id DESC LIMIT 6`,
+      [userId]
+    ),
+    safeRows("SELECT COUNT(*) AS n FROM wallet_expense_claims WHERE user_id = ? AND status = 'pending'", [userId]),
+    safeRows("SELECT COUNT(*) AS n FROM wallet_withdrawals WHERE user_id = ? AND status = 'pending'", [userId]),
+  ]);
+  return {
+    balance: Number(wallet[0]?.balance ?? 0),
+    registrations: regs.map((r) => ({ id: Number(r.id), title: String(r.title), status: String(r.status), startDate: String(r.start_date).slice(0, 10) })),
+    claimsWaiting: Number(claims[0]?.n ?? 0),
+    withdrawalsWaiting: Number(withdrawals[0]?.n ?? 0),
+  };
+}
+
 export type AdminThreadFilter = "waiting" | "answered" | "closed" | "all";
 
 export const ADMIN_SUPPORT_PAGE = 30;
@@ -170,7 +209,7 @@ export async function countWaitingForStaff(): Promise<number> {
   return Number(row.n);
 }
 
-export async function getAdminThread(id: number): Promise<{ thread: AdminThreadSummary; messages: SupportMessage[] } | null> {
+export async function getAdminThread(id: number): Promise<{ thread: AdminThreadSummary; messages: SupportMessage[]; snapshot: BuyerSnapshot } | null> {
   const [rows] = await pool.query<RowDataPacket[]>(
     `SELECT t.id, t.user_id, t.topic, t.subject, t.status, t.waiting_on, t.last_message_at, u.name, u.email, u.buyer_no
      FROM support_threads t JOIN users u ON u.id = t.user_id WHERE t.id = ?`,
@@ -178,13 +217,14 @@ export async function getAdminThread(id: number): Promise<{ thread: AdminThreadS
   );
   const r = rows[0];
   if (!r) return null;
-  const messages = await readMessages(id);
+  const [messages, snapshot] = await Promise.all([readMessages(id), getBuyerSnapshot(Number(r.user_id))]);
   return {
     thread: {
       id: Number(r.id), topic: r.topic, subject: String(r.subject), status: r.status, waitingOn: r.waiting_on, lastMessageAt: iso(r.last_message_at), unread: false,
       userId: Number(r.user_id), buyerName: String(r.name), buyerNumber: formatBuyerNumber(r.buyer_no), buyerEmail: String(r.email), messageCount: messages.length,
     },
     messages,
+    snapshot,
   };
 }
 

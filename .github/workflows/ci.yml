@@ -22,9 +22,15 @@ jobs:
       - run: npm run typecheck
       - run: npm run check:messages
 
-  e2e:
+  # The end-to-end tests are split into four parts that run side by side, each on its own machine with its own database
+  # (one after another they take about 25 minutes, side by side about 8). The "e2e" job below is the one result to look at.
+  e2e-shard:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
     services:
       mariadb:
         image: mariadb:10.11
@@ -86,8 +92,8 @@ jobs:
       - name: Install the browser the tests drive
         run: npx playwright install --with-deps chromium
 
-      - name: End-to-end tests
-        run: npm run test:e2e
+      - name: End-to-end tests (part ${{ matrix.shard }} of 4)
+        run: node tests/run.js --shard ${{ matrix.shard }}/4
 
       - name: Backup and restore check (the data the tests just made is dumped, restored into a scratch database and compared)
         run: bash scripts/restore-check.sh
@@ -96,8 +102,17 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: e2e-artifacts
+          name: e2e-artifacts-${{ matrix.shard }}
           path: |
             tests/artifacts
             site.log
           if-no-files-found: ignore
+
+  # One result for the four parts: green only when every part is green.
+  e2e:
+    needs: e2e-shard
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every part of the end-to-end tests passed
+        run: test "${{ needs.e2e-shard.result }}" = "success"

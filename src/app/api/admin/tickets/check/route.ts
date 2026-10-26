@@ -12,7 +12,7 @@ import { registrationIdFromTicketCode } from "@/lib/server/ticket-code";
 
 async function describe(registrationId: number) {
   const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT r.id, r.user_id, r.status, r.checked_in_at, r.confirm_by, e.title, e.slug, e.start_date, e.end_date, u.name,
+    `SELECT r.id, r.exhibition_id, r.user_id, r.status, r.checked_in_at, r.confirm_by, e.title, e.slug, e.start_date, e.end_date, u.name,
             p.passport_name, p.company_name, p.nationality,
             CASE WHEN r.status = 'approved' AND r.confirm_by IS NOT NULL AND r.confirm_by < UTC_DATE() THEN 'expired' ELSE r.status END AS effective_status
      FROM expo_registrations r
@@ -24,6 +24,11 @@ async function describe(registrationId: number) {
   );
   const r = rows[0];
   if (!r) return null;
+  // How many of the confirmed buyers of this exhibition are already in (the count at the door).
+  const [counts] = await pool.query<RowDataPacket[]>(
+    "SELECT COALESCE(SUM(status = 'attended'), 0) AS attended, COUNT(*) AS expected FROM expo_registrations WHERE exhibition_id = ? AND status IN ('confirmed', 'attended')",
+    [Number(r.exhibition_id)]
+  );
   const day = (v: unknown) => (v instanceof Date ? v.toISOString().slice(0, 10) : String(v ?? "").slice(0, 10));
   return {
     id: Number(r.id),
@@ -39,6 +44,8 @@ async function describe(registrationId: number) {
     checkedInAt: r.checked_in_at ? new Date(r.checked_in_at).toISOString() : null,
     // Confirmed registrations are let in. Approved ones have not confirmed yet; staff decide.
     canCheckIn: r.effective_status === "confirmed",
+    doorAttended: Number(counts[0]?.attended ?? 0),
+    doorExpected: Number(counts[0]?.expected ?? 0),
   };
 }
 

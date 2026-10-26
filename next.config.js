@@ -146,6 +146,15 @@ const nextConfig = {
       },
       ...publicPageCacheRules(),
       {
+        // The QR reader's WebAssembly file (public/vendor): browsers start it fastest when it is labelled as WebAssembly, and it
+        // only changes with the package version (see scripts/check-zxing-wasm.mjs), so it may be kept for a day.
+        source: "/vendor/:file*.wasm",
+        headers: [
+          { key: "Content-Type", value: "application/wasm" },
+          { key: "Cache-Control", value: "public, max-age=86400" },
+        ],
+      },
+      {
         // Admin pages are auth-gated, client-rendered dashboards -- they must
         // never be served from a long-lived edge/CDN cache, or a redeploy's
         // changes (styling, features) can appear "stuck" on stale content.

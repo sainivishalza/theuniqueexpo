@@ -107,6 +107,8 @@ async function signIn(context, email, password) {
   }
   const offer = await get('/api/referrals/offer');
   ok(offer.status === 200 && /\{/.test(offer.text), 'the invite-a-friend offer answers', offer.status);
+  const wasm = await get('/api/zxing-wasm');
+  ok(wasm.status === 200 && /application\/wasm/.test(wasm.headers.get('content-type') || ''), 'the QR reader file is served as WebAssembly', [wasm.status, wasm.headers.get('content-type')]);
   const qr = await get('/api/wechat-qr');
   ok(qr.status === 200 || qr.status === 404, 'the WeChat QR code route answers (picture or "none yet")', qr.status || qr.error);
   for (const path of ['/en/admin/ticket-check', '/en/admin/support', '/en/dashboard/buyer/support', '/en/dashboard/buyer/wallet/ticket']) {

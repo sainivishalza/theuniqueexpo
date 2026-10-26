@@ -54,6 +54,11 @@ const launchWith = (video) => chromium.launch({
     return c;
   });
 
+  console.log('\n== the QR reader\'s WebAssembly file');
+  { const w = await fetch(BASE + '/api/zxing-wasm');
+    const bytes = Buffer.from(await w.arrayBuffer());
+    ok(w.status === 200 && w.headers.get('content-type') === 'application/wasm' && bytes.length > 900000 && bytes.subarray(0, 4).equals(Buffer.from([0, 0x61, 0x73, 0x6d])), 'it is served as WebAssembly', [w.status, w.headers.get('content-type'), bytes.length]); }
+
   console.log('\n== the e-ticket QR code is read by the camera');
   let br = await launchWith(await cameraFile(link, 'ticket'));
   for (const locale of ['en', 'ru', 'zh']) {

@@ -21,6 +21,7 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run check:messages
+      - run: npm run check:wasm
 
   # The end-to-end tests are split into four parts that run side by side, each on its own machine with its own database
   # (one after another they take about 25 minutes, side by side about 8). The "e2e" job below is the one result to look at.

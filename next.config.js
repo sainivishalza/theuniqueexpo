@@ -125,7 +125,8 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+              // 'wasm-unsafe-eval' lets the QR reader (ZXing, WebAssembly, served from this site) start; it allows WebAssembly only, not eval().
+              "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' https: data:",
               "font-src 'self' data:",

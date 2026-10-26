@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { loadJsQr, readQr } from "@/lib/client/qr-frame";
+import { createQrReader } from "@/lib/client/qr-reader";
 
 interface NativeReader {
   detect(source: HTMLVideoElement): Promise<{ rawValue: string }[]>;
@@ -25,6 +25,7 @@ export default function QrCameraScanner({
   onError,
   label,
   accept,
+  onRejected,
   slowHint,
   className = "w-full max-w-sm rounded-lg bg-black",
 }: {
@@ -34,6 +35,8 @@ export default function QrCameraScanner({
   /** "denied" = no permission, "failed" = no camera or it would not start */
   onError: (reason: "denied" | "failed") => void;
   label: string;
+  /** Called when a QR code is read but is not wanted (it was ignored), so the screen can say what that code was. */
+  onRejected?: (text: string) => void;
   /** Shown under the picture when nothing has been read for a few seconds (how to hold the phone). */
   slowHint?: string;
   className?: string;
@@ -41,8 +44,8 @@ export default function QrCameraScanner({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [slow, setSlow] = useState(false);
   // The latest callbacks, so a parent that re-renders does not restart the camera.
-  const handlers = useRef({ onScan, onError, accept });
-  handlers.current = { onScan, onError, accept };
+  const handlers = useRef({ onScan, onError, accept, onRejected });
+  handlers.current = { onScan, onError, accept, onRejected };
 
   useEffect(() => {
     let stopped = false;
@@ -65,8 +68,7 @@ export default function QrCameraScanner({
 
         const Native = (window as unknown as { BarcodeDetector?: NativeReaderConstructor }).BarcodeDetector;
         const native = Native ? new Native({ formats: ["qr_code"] }) : null;
-        const jsQR = native ? null : await loadJsQr();
-        const canvas = document.createElement("canvas");
+        const reader = native ? null : await createQrReader("camera");
 
         const tick = async () => {
           if (stopped) return;
@@ -74,13 +76,16 @@ export default function QrCameraScanner({
             let text: string | null = null;
             if (native) {
               text = (await native.detect(video))[0]?.rawValue || null;
-            } else if (jsQR) {
-              text = readQr(jsQR, video, canvas, video.videoWidth, video.videoHeight);
+            } else if (reader) {
+              text = await reader(video, video.videoWidth, video.videoHeight);
             }
-            if (text && !stopped && (handlers.current.accept?.(text) ?? true)) {
-              stopped = true;
-              handlers.current.onScan(text);
-              return;
+            if (text && !stopped) {
+              if (handlers.current.accept?.(text) ?? true) {
+                stopped = true;
+                handlers.current.onScan(text);
+                return;
+              }
+              handlers.current.onRejected?.(text);
             }
           } catch {
             // a frame that cannot be read: try the next one

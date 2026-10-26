@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { formatDateOnly, formatDateTime } from "@/lib/client/registration-format";
 import QrCameraScanner, { cameraAvailable } from "@/components/QrCameraScanner";
 import { ticketCodeFromScan } from "@/lib/ticket-scan";
-import { readQrFromFile } from "@/lib/client/qr-frame";
+import { readQrFromFile } from "@/lib/client/qr-reader";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { fieldClasses } from "@/components/ui/FormField";
@@ -44,7 +44,7 @@ function TicketCheck() {
   // The camera: known only in the browser (null until then, so the server and the browser render the same)
   const [canScan, setCanScan] = useState<boolean | null>(null);
   const [scanning, setScanning] = useState(false);
-  const [scanProblem, setScanProblem] = useState<"denied" | "failed" | "photo" | null>(null);
+  const [scanProblem, setScanProblem] = useState<"denied" | "failed" | "photo" | "foreign" | null>(null);
   useEffect(() => setCanScan(cameraAvailable()), []);
 
   const look = useCallback(async (value: string) => {
@@ -79,7 +79,7 @@ function TicketCheck() {
     const text = await readQrFromFile(file);
     setBusy(false);
     if (text && ticketCodeFromScan(text)) scanned(text);
-    else setScanProblem("photo");
+    else setScanProblem(text ? "foreign" : "photo");
   }
 
   function scanned(text: string) {
@@ -125,7 +125,7 @@ function TicketCheck() {
             <div>
               {scanning ? (
                 <div>
-                  <QrCameraScanner onScan={scanned} accept={(text) => ticketCodeFromScan(text) !== ""} slowHint={t("slowHint")} onError={(reason) => { setScanning(false); setScanProblem(reason); }} label={t("cameraLabel")} className="w-full rounded-lg bg-black" />
+                  <QrCameraScanner onScan={scanned} accept={(text) => ticketCodeFromScan(text) !== ""} slowHint={t("slowHint")} onRejected={() => setScanProblem("foreign")} onError={(reason) => { setScanning(false); setScanProblem(reason); }} label={t("cameraLabel")} className="w-full rounded-lg bg-black" />
                   <p className="mt-2 text-sm text-gray-700">{t("scanning")}</p>
                   <Button type="button" variant="secondaryOutline" size="compact" className="mt-2" onClick={() => setScanning(false)}>{t("stopScan")}</Button>
                 </div>

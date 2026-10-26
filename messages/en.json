@@ -4689,7 +4689,12 @@
       "step4Help": "Skip this if you do not: we get it for you. If you add it, type the amount printed on it.",
       "stageGetting": "We are getting your e-invoice from 12306.",
       "stageWaiting": "Your e-invoice is attached. Waiting for approval.",
-      "downloadInvoice": "Download e-invoice"
+      "downloadInvoice": "Download e-invoice",
+      "qr": {
+        "reading": "Looking for the QR code on your receipt…",
+        "found": "✓ The QR code on your receipt was found.",
+        "notFound": "We could not read the QR code in this photo. You can still send it: our team will read the receipt. For a better photo, show the whole QR code, in good light, without glare."
+      }
     }
   },
   "adminWallet": {
@@ -6083,7 +6088,8 @@
     "scanProblems": {
       "denied": "The camera is blocked. Allow the camera for this site in the browser settings, then try again. You can also type the ticket code below.",
       "failed": "The camera could not be opened on this device. Type the ticket code below, or scan the QR code with the phone's own camera app.",
-      "photo": "No ticket QR code could be read in that photo. Take it again closer and in good light, with the whole QR code in the picture, or type the ticket code below."
+      "photo": "No ticket QR code could be read in that photo. Take it again closer and in good light, with the whole QR code in the picture, or type the ticket code below.",
+      "foreign": "A QR code was found, but it is not an e-ticket of this site (it may be a train receipt or another kind of code). Scan the QR code on the buyer's e-ticket."
     },
     "scanUnsupported": "This browser cannot open the camera here. Type the ticket code below, or scan the QR code with the phone's own camera app.",
     "slowHint": "Nothing read yet. Hold the phone 15–25 cm from the QR code so it fills about half of the picture, keep it steady and avoid glare. Or use “Take a photo of the QR code” below.",

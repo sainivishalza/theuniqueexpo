@@ -36,6 +36,8 @@ export default function TicketRefundPage() {
   const [exhibitionId, setExhibitionId] = useState("");
   const [receipt, setReceipt] = useState("");
   const [qrText, setQrText] = useState("");
+  // Whether the QR code on the receipt photo could be read: shown under the picture so the buyer knows it was found
+  const [qrState, setQrState] = useState<"none" | "reading" | "found" | "notFound">("none");
   const [invoice, setInvoice] = useState("");
   const [amount, setAmount] = useState("");
   const [ticketNo, setTicketNo] = useState("");
@@ -64,7 +66,15 @@ export default function TicketRefundPage() {
   // The QR code on the receipt is read when the phone's browser can, and kept for our team; nothing depends on it.
   async function onReceipt(url: string) {
     setReceipt(url);
-    setQrText(url ? ((await decodeQrFromDataUrl(url)) ?? "") : "");
+    setQrText("");
+    if (!url) {
+      setQrState("none");
+      return;
+    }
+    setQrState("reading");
+    const text = (await decodeQrFromDataUrl(url)) ?? "";
+    setQrText(text);
+    setQrState(text ? "found" : "notFound");
   }
 
   const option = data?.exhibitions.find((x) => String(x.id) === exhibitionId);
@@ -134,6 +144,7 @@ export default function TicketRefundPage() {
                 <h2 className="font-bold text-heading">{tt("step2")}</h2>
                 <p className="text-sm text-gray-800">{tt("step2Help")}</p>
                 <UploadField label={tt("receipt")} value={receipt} onChange={onReceipt} onError={setError} high invalidMessage={t("errors.invalid_input")} removeLabel={t("remove")} />
+                {qrState !== "none" && <p role="status" className={`text-sm font-semibold ${qrState === "found" ? "text-emerald-800" : qrState === "notFound" ? "text-amber-900" : "text-gray-700"}`} data-testid="receipt-qr-status">{tt(`qr.${qrState}`)}</p>}
               </Card>
 
               <Card shadow="sm" bordered={false} className="p-5 space-y-3">

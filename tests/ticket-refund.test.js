@@ -262,7 +262,16 @@ const pngUrl = () => 'data:image/png;base64,' + makePng().toString('base64');
     ok((await p.locator('nav a[aria-current="page"]').count()) >= 1, 'the tab is marked as the current one');
     ok(await p.getByTestId('ticket-submit').isDisabled(), 'sending is not possible before the receipt is there');
     if (locale === 'en') {
+      // a whole receipt photographed roughly (turned, soft, in shadow, with glare): the QR code on it is found, and the buyer is told
+      const photoFile = path.join(tmp, `receipt-photo-${++n}.jpg`);
+      // RECEIPT_PHOTO=/path/to/photo.jpg tries a real receipt photo instead of the made-up one
+      fs.writeFileSync(photoFile, process.env.RECEIPT_PHOTO ? fs.readFileSync(process.env.RECEIPT_PHOTO) : (await require('./helpers/receipt-photo.js').make()).jpeg);
+      await p.locator('input[type=file]').nth(0).setInputFiles(photoFile);
+      await p.getByTestId('receipt-qr-status').filter({ hasText: /was found/ }).waitFor({ timeout: 45000 });
+      ok(true, 'en: the QR code on a whole receipt photo is found, and the buyer is told so');
       await p.locator('input[type=file]').nth(0).setInputFiles(pngFile());
+      await p.getByTestId('receipt-qr-status').filter({ hasText: /could not read/ }).waitFor({ timeout: 30000 });
+      ok(true, 'en: a picture with no QR code says so, and can still be sent');
       await sleep(500);
       ok(await p.getByTestId('ticket-submit').isEnabled(), 'the receipt alone is enough to send');
       await p.locator('input[type=file]').nth(1).setInputFiles(pdfFile());

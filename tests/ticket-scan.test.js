@@ -110,6 +110,7 @@ const launchWith = (video) => chromium.launch({
     await sleep(3500);
     ok((await p.getByTestId('ticket-card').count()) === 0 && (await p.getByTestId('qr-camera').count()) === 1, 'a QR code that is not a ticket changes nothing and the camera stays open');
     ok(/1920/.test(await p.evaluate(() => window.__constraints)) && /environment/.test(await p.evaluate(() => window.__constraints)), 'the back camera is asked for a big picture (a phone gives only 640 x 480 otherwise)');
+    ok(/not an e-ticket of this site/.test(await p.getByTestId('scan-problem').innerText()), 'it says that the code it saw is not one of our e-tickets (a train receipt, say)');
     ok((await p.getByTestId('qr-slow-hint').count()) === 0, 'no hint in the first seconds');
     await p.getByTestId('qr-slow-hint').waitFor({ timeout: 8000 });
     ok(/Hold the phone/.test(await p.getByTestId('qr-slow-hint').innerText()), 'after a while without a code it explains how to hold the phone');
@@ -159,6 +160,10 @@ const launchWith = (video) => chromium.launch({
       await p.goto(`${BASE}/${locale}/admin/ticket-check`, { waitUntil: 'networkidle' });
       ok((await p.getByTestId('ticket-photo').count()) === 1, `${locale}: there is a take-a-photo button`);
       if (locale === 'en') {
+        // a photo of a train receipt: its QR code is read, and the page says it is not an e-ticket of ours
+        await p.setInputFiles('#ticket-photo', { name: 'receipt.jpg', mimeType: 'image/jpeg', buffer: (await require('./helpers/receipt-photo.js').make()).jpeg });
+        await p.getByTestId('scan-problem').waitFor({ timeout: 30000 });
+        ok(/not an e-ticket of this site/.test(await p.getByTestId('scan-problem').innerText()), 'en: a photo of a train receipt says its QR code is not one of our e-tickets');
         await p.setInputFiles('#ticket-photo', { name: 'blank.jpg', mimeType: 'image/jpeg', buffer: blank });
         await p.getByTestId('scan-problem').waitFor();
         ok(/No ticket QR code could be read/.test(await p.getByTestId('scan-problem').innerText()), 'en: a photo with no QR code says so');

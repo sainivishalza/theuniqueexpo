@@ -9,7 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "check:messages": "node scripts/check-messages.mjs",
-    "test:e2e": "node tests/run.js"
+    "test:e2e": "node tests/run.js",
+    "check:wasm": "node scripts/check-zxing-wasm.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -28,7 +29,8 @@
     "sharp": "^0.35.4",
     "tesseract.js": "^7.0.0",
     "yauzl": "^3.4.0",
-    "yazl": "^3.3.1"
+    "yazl": "^3.3.1",
+    "zxing-wasm": "3.1.6"
   },
   "overrides": {
     "uuid": "^11.1.1"

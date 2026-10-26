@@ -6088,7 +6088,8 @@
     "scanUnsupported": "This browser cannot open the camera here. Type the ticket code below, or scan the QR code with the phone's own camera app.",
     "slowHint": "Nothing read yet. Hold the phone 15–25 cm from the QR code so it fills about half of the picture, keep it steady and avoid glare. Or use “Take a photo of the QR code” below.",
     "photo": "Take a photo of the QR code",
-    "photoHint": "If the live camera does not read it, a photo taken with the phone's camera usually does."
+    "photoHint": "If the live camera does not read it, a photo taken with the phone's camera usually does.",
+    "doorCount": "At the door: {attended} of {expected} confirmed buyers of this exhibition are checked in."
   },
   "adminInsights": {
     "title": "Reports",

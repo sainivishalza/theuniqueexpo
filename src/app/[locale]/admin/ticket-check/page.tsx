@@ -24,6 +24,8 @@ interface Ticket {
   status: string;
   checkedInAt: string | null;
   canCheckIn: boolean;
+  doorAttended: number;
+  doorExpected: number;
 }
 
 // The page an e-ticket's QR code opens for venue staff: who the ticket belongs to, and a button to let them in.
@@ -166,6 +168,7 @@ function TicketCheck() {
                 {ticket.exhibitionTitle} · {formatDateOnly(ticket.exhibitionStart, locale)}
                 {ticket.exhibitionEnd && ticket.exhibitionEnd !== ticket.exhibitionStart ? ` – ${formatDateOnly(ticket.exhibitionEnd, locale)}` : ""}
               </p>
+              <p className="mt-2 text-sm text-gray-700" data-testid="door-count">{t("doorCount", { attended: ticket.doorAttended, expected: ticket.doorExpected })}</p>
               {ticket.checkedInAt && <p className="mt-2 text-sm font-semibold text-emerald-900">{t("checkedInAt", { time: formatDateTime(ticket.checkedInAt, locale) })}</p>}
               {message && <p role="status" className={`mt-3 text-sm font-semibold ${message === "checked_in" ? "text-emerald-900" : "text-amber-800"}`}>{t(`messages.${message}`)}</p>}
               {ticket.canCheckIn && (

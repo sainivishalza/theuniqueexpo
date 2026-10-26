@@ -280,9 +280,13 @@ const pdfText = (buf) => {
   await p.goto(BASE + `/en/admin/ticket-check?code=${encodeURIComponent(ticketCode(rid))}`, { waitUntil: 'networkidle' });
   await p.getByTestId('ticket-card').waitFor();
   ok((await p.getByTestId('ticket-card').innerText()).includes('PETROV IVAN'), 'the page opened from the QR code shows the visitor');
+  const doorBefore = /At the door: (\d+) of (\d+) confirmed/.exec(await p.getByTestId('door-count').innerText());
+  ok(doorBefore && Number(doorBefore[2]) >= 1 && Number(doorBefore[1]) < Number(doorBefore[2]), 'the card says how many confirmed buyers of that exhibition are already in', doorBefore && doorBefore[0]);
   ok((await axeViolations(p)).length === 0, 'ticket page axe 0');
   await p.getByRole('button', { name: /Let them in/ }).click();
   await p.getByText('Checked in. Welcome!').waitFor();
+  const doorAfter = /At the door: (\d+) of (\d+) confirmed/.exec(await p.getByTestId('door-count').innerText());
+  ok(doorAfter && Number(doorAfter[1]) === Number(doorBefore[1]) + 1 && doorAfter[2] === doorBefore[2], 'after letting them in the count goes up by one', doorAfter && doorAfter[0]);
   ok(sql(`SELECT status FROM expo_registrations WHERE id=${rid}`) === 'attended', 'letting them in marks the registration attended');
   r = await fetch(BASE + '/api/admin/tickets/check', { method: 'POST', headers: H(u.aT), body: JSON.stringify({ code: ticketCode(rid) }) }); jj = await r.json();
   ok(r.status === 409 && jj.code === 'already_checked_in', 'scanning again says it was already used', jj);

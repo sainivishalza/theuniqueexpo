@@ -1,6 +1,6 @@
 // Reading QR codes out of pictures in the browser: a live camera frame or a photo (of a train receipt, an e-ticket...).
 //
-// The reader is ZXing (the C++ library, as WebAssembly), served from this site (public/vendor/zxing_reader.wasm). It reads dense,
+// The reader is ZXing (the C++ library, as WebAssembly), served from this site. It reads dense,
 // tilted, shadowed codes that the small JavaScript readers (jsQR) cannot -- a photo of a 12306 receipt, for example. Where
 // WebAssembly cannot start (an old browser, a blocked file), jsQR is used instead, so scanning never depends on it.
 // Both are loaded only when a picture is about to be read.
@@ -8,7 +8,8 @@
 type Zx = typeof import("zxing-wasm/reader");
 type JsQr = (data: Uint8ClampedArray, width: number, height: number, options?: { inversionAttempts?: "dontInvert" | "onlyInvert" | "attemptBoth" | "invertFirst" }) => { data: string } | null;
 
-export const ZXING_WASM_URL = "/vendor/zxing_reader.wasm";
+// Served by src/app/api/zxing-wasm/route.ts (the file itself is public/vendor/zxing_reader.wasm).
+export const ZXING_WASM_URL = "/api/zxing-wasm";
 
 export type QrSource = HTMLVideoElement | HTMLImageElement | ImageBitmap;
 

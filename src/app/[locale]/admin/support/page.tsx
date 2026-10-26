@@ -11,12 +11,14 @@ import { SUPPORT_BODY_MAX, type SupportStatus, type SupportTopic, type SupportWa
 import Badge, { type BadgeTone } from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import { formatNumber } from "@/lib/format";
 
 interface Thread {
   id: number; topic: SupportTopic; subject: string; status: SupportStatus; waitingOn: SupportWaitingOn; lastMessageAt: string;
   userId: number; buyerName: string; buyerNumber: string; buyerEmail: string; messageCount: number;
 }
 interface Message { id: number; fromStaff: boolean; body: string; createdAt: string }
+interface Snapshot { balance: number; registrations: { id: number; title: string; status: string; startDate: string }[]; claimsWaiting: number; withdrawalsWaiting: number }
 
 const FILTERS = ["waiting", "answered", "closed", "all"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -28,6 +30,7 @@ export default function AdminSupportPage() {
   const t = useTranslations("adminSupport");
   const tw = useTranslations("adminWallet");
   const ta = useTranslations("adminCommon");
+  const tr = useTranslations("adminRegistrationsCommon");
   const locale = useLocale();
   const { user, loading } = useAuth();
   const ids = { search: useId(), reply: useId() };
@@ -38,7 +41,7 @@ export default function AdminSupportPage() {
   const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(1);
   const [openId, setOpenId] = useState<number | null>(null);
-  const [detail, setDetail] = useState<{ thread: Thread; messages: Message[] } | null>(null);
+  const [detail, setDetail] = useState<{ thread: Thread; messages: Message[]; snapshot: Snapshot } | null>(null);
   const [reply, setReply] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -73,7 +76,7 @@ export default function AdminSupportPage() {
     setOpenId(id);
     setDetail(null);
     setReply("");
-    const res = await walletApi<{ thread: Thread; messages: Message[] }>(`/api/admin/support/${id}`);
+    const res = await walletApi<{ thread: Thread; messages: Message[]; snapshot: Snapshot }>(`/api/admin/support/${id}`);
     if (!res.ok) {
       setError(tw(`errors.${errorKey(res.data.code)}`));
       return;
@@ -136,6 +139,26 @@ export default function AdminSupportPage() {
                     <h2 className="text-xl font-bold text-heading [overflow-wrap:anywhere]">{detail.thread.subject}</h2>
                     <p className="text-sm text-gray-700 [overflow-wrap:anywhere]">{detail.thread.buyerName} {detail.thread.buyerNumber} · {detail.thread.buyerEmail}</p>
                     <p className="text-xs text-gray-600">{t(`topics.${detail.thread.topic}`)} · {t(`status.${stateOf(detail.thread)}`)}</p>
+                  </div>
+                  <div className="rounded-xl bg-cream-50 p-3 text-sm text-gray-800 space-y-1.5" data-testid="admin-support-snapshot">
+                    <p className="font-semibold text-heading">{t("snapshot.title")}</p>
+                    <p>{t("snapshot.points", { points: formatNumber(detail.snapshot.balance) })}</p>
+                    {(detail.snapshot.claimsWaiting > 0 || detail.snapshot.withdrawalsWaiting > 0) && (
+                      <p className="font-semibold text-amber-900">{t("snapshot.waiting", { claims: detail.snapshot.claimsWaiting, withdrawals: detail.snapshot.withdrawalsWaiting })}</p>
+                    )}
+                    {detail.snapshot.registrations.length === 0 ? (
+                      <p>{t("snapshot.noRegistrations")}</p>
+                    ) : (
+                      <ul className="space-y-0.5">
+                        {detail.snapshot.registrations.map((r) => (
+                          <li key={r.id} className="[overflow-wrap:anywhere]">{t("snapshot.registration", { title: r.title, status: tr(`statuses.${r.status}`) })}</li>
+                        ))}
+                      </ul>
+                    )}
+                    <p className="flex flex-wrap gap-x-4">
+                      <Link href={`/admin/buyer-profiles?q=${encodeURIComponent(detail.thread.buyerNumber || detail.thread.buyerEmail)}`} className="inline-flex min-h-[1.75rem] items-center font-semibold text-emerald-800 underline underline-offset-2">{t("snapshot.profile")}</Link>
+                      <Link href="/admin/wallet?tab=wallets" className="inline-flex min-h-[1.75rem] items-center font-semibold text-emerald-800 underline underline-offset-2">{t("snapshot.wallet")}</Link>
+                    </p>
                   </div>
                   <ol className="space-y-3">
                     {detail.messages.map((m) => (

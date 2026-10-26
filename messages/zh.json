@@ -7022,6 +7022,15 @@
     "fromBuyer": "买家",
     "yourReply": "给买家的回复",
     "send": "发送回复",
-    "sending": "发送中…"
+    "sending": "发送中…",
+    "snapshot": {
+      "title": "关于此买家",
+      "points": "积分：{points}",
+      "waiting": "等待处理：{claims} 个差旅报销申请，{withdrawals} 个提现申请",
+      "noRegistrations": "尚未报名任何展会。",
+      "registration": "{title}：{status}",
+      "profile": "打开买家资料",
+      "wallet": "打开钱包"
+    }
   }
 }

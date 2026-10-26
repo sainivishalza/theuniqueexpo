@@ -7022,6 +7022,15 @@
     "fromBuyer": "Buyer",
     "yourReply": "Your answer to the buyer",
     "send": "Send answer",
-    "sending": "Sending…"
+    "sending": "Sending…",
+    "snapshot": {
+      "title": "About this buyer",
+      "points": "Points: {points}",
+      "waiting": "Waiting for you: {claims} travel expense claims, {withdrawals} withdrawals",
+      "noRegistrations": "Not registered for any exhibition yet.",
+      "registration": "{title}: {status}",
+      "profile": "Open the buyer's profile",
+      "wallet": "Open the wallets"
+    }
   }
 }

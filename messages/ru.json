@@ -7022,6 +7022,15 @@
     "fromBuyer": "Покупатель",
     "yourReply": "Ваш ответ покупателю",
     "send": "Отправить ответ",
-    "sending": "Отправка…"
+    "sending": "Отправка…",
+    "snapshot": {
+      "title": "О покупателе",
+      "points": "Баллы: {points}",
+      "waiting": "Ждут вас: заявок на возмещение расходов — {claims}, выводов — {withdrawals}",
+      "noRegistrations": "Пока не зарегистрирован ни на одну выставку.",
+      "registration": "{title}: {status}",
+      "profile": "Открыть профиль покупателя",
+      "wallet": "Открыть кошельки"
+    }
   }
 }

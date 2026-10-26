@@ -4243,7 +4243,12 @@
         "not_available": "此登记暂时无法获取该文件。",
         "rate_limited": "下载次数过多，请稍后再试。",
         "failed": "无法生成文件，请重试。"
-      }
+      },
+      "showButton": "在屏幕上显示我的门票",
+      "showTitle": "您的电子门票",
+      "showAlt": "您的电子门票二维码",
+      "showHint": "请在入口处出示此屏幕。调高屏幕亮度，并保持手机稳定。",
+      "showClose": "关闭"
     },
     "travel": {
       "heading": "规划行程",

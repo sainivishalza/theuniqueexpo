@@ -4243,7 +4243,12 @@
         "not_available": "This document is not available for this registration yet.",
         "rate_limited": "Too many downloads. Please try again later.",
         "failed": "The document could not be created. Please try again."
-      }
+      },
+      "showButton": "Show my ticket on screen",
+      "showTitle": "Your e-ticket",
+      "showAlt": "QR code of your e-ticket",
+      "showHint": "Show this screen at the entrance. Turn the screen brightness up and hold the phone still.",
+      "showClose": "Close"
     },
     "travel": {
       "heading": "Plan your trip",

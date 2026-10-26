@@ -243,6 +243,26 @@ const pdfText = (buf) => {
   await sleep(700);
   const docAxe = await axeViolations(p);
   ok(docAxe.length === 0, 'the documents block: axe 0', docAxe);
+  // the ticket shown big on the phone screen
+  {
+    const qrRes = await get(`/api/expo-registrations/${rid}/ticket/qr`, pd.t);
+    const png = Buffer.from(await qrRes.arrayBuffer());
+    ok(qrRes.status === 200 && qrRes.headers.get('content-type') === 'image/png' && png.length > 500, 'the ticket QR code is served as a picture to its owner');
+    const raw = await require('sharp')(png).raw().ensureAlpha().toBuffer({ resolveWithObject: true });
+    const decoded = require('jsqr')(new Uint8ClampedArray(raw.data), raw.info.width, raw.info.height);
+    ok(decoded && decoded.data === `https://theuniqueexpo.com/en/admin/ticket-check?code=${encodeURIComponent(ticketCode(rid))}`, 'and it holds the ticket link', decoded && decoded.data);
+    ok((await get(`/api/expo-registrations/${rid}/ticket/qr`, u.aT)).status === 404 && (await fetch(BASE + `/api/expo-registrations/${rid}/ticket/qr`)).status === 401, 'nobody else can get it (another account: not found; signed out: sign in)');
+    await p.getByTestId('show-ticket').click();
+    await p.getByTestId('ticket-screen').waitFor();
+    await p.waitForFunction(() => { const i = document.querySelector('[data-testid=ticket-qr]'); return i && i.complete && i.naturalWidth > 0; });
+    ok((await p.getByTestId('ticket-screen').innerText()).includes(show.title), 'the button shows the ticket big, with the exhibition name');
+    ok(await p.getByTestId('ticket-screen-close').evaluate((el) => el === document.activeElement), 'the cursor is on its Close button');
+    await sleep(700);
+    const ticketAxe = await axeViolations(p);
+    ok(ticketAxe.length === 0, 'the ticket screen: axe 0', ticketAxe);
+    await p.keyboard.press('Escape');
+    ok((await p.getByTestId('ticket-screen').count()) === 0 && (await p.getByTestId('show-ticket').evaluate((el) => el === document.activeElement)), 'Escape closes it and the cursor goes back to the button');
+  }
   sql(`UPDATE buyer_profiles SET passport_number='' WHERE user_id=${pd.id}`);
   await p.getByRole('button', { name: 'Download invitation letter' }).click();
   await p.getByText(/add your passport name and passport number/i).waitFor();

@@ -178,6 +178,33 @@ const COLUMN = { passportFront: 'doc_passport_front', visaPage: 'doc_visa_page',
   await sleep(500);
   ok((await doc(caraId, 'passportFront')) === SIZES.passportFront.join('x'), 'after ticking replace, Cara\'s passport picture is the new one');
 
+  console.log('\n== progress while the text reader starts, and when it cannot');
+  const probe = async (block) => {
+    const c = await browser.newContext({ viewport: { width: 375, height: 800 } });
+    await c.addCookies([{ name: 'token', value: u.aT, url: BASE }]);
+    const pg = await c.newPage();
+    if (block) await pg.route('**/vendor/ocr/tesseract-core-simd-lstm.wasm.js', (r) => r.abort());
+    else await pg.route('**/vendor/ocr/eng.traineddata.gz', async (r) => { await sleep(2500); r.continue(); });
+    await pg.goto(`${BASE}/en/admin/users/import-buyers`, { waitUntil: 'domcontentloaded' });
+    await pg.locator('#import-excel').setInputFiles(xlsxPath);
+    await pg.locator('#import-zip').waitFor();
+    await pg.locator('#import-zip').setInputFiles(zipPath);
+    return [c, pg];
+  };
+  const [slowCtx, slowPage] = await probe(false);
+  await slowPage.getByTestId('pictures-progress').waitFor();
+  await slowPage.getByText(/Starting the text reader|Downloading the text reader|reading picture/).first().waitFor({ timeout: 60000 });
+  ok(await slowPage.getByRole('button', { name: 'Stop' }).count() === 1, 'while reading, the page says what it is doing and offers Stop');
+  await slowPage.getByTestId('pictures-summary').waitFor({ timeout: 240000 });
+  ok(!(await slowPage.getByTestId('pictures-summary').innerText()).includes('did not work'), 'a slow start still ends well');
+  await slowCtx.close();
+  const [badCtx, badPage] = await probe(true);
+  await badPage.getByTestId('pictures-summary').waitFor({ timeout: 240000 });
+  const badText = await badPage.getByTestId('pictures-summary').innerText();
+  ok(/did not work/.test(badText) && /5 pictures sorted by the computer/.test(badText), 'if the text reader cannot start, the pictures are still placed and the problem is said', badText);
+  ok(/1 people need a look/.test(badText), 'and the person is marked to be checked', badText);
+  await badCtx.close();
+
   await browser.close();
   for (const f of [zipPath, xlsxPath]) fs.rmSync(f, { force: true });
   done();

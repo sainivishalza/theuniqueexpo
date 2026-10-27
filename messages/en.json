@@ -4249,7 +4249,14 @@
         "businessLicense": "Business licence",
         "invoiceOrderList": "Invoice or order list",
         "latestEntryStamp": "Latest entry stamp"
-      }
+      },
+      "opening": "Opening the ZIP...",
+      "readingPicture": "Person {done} of {total}: reading picture {picture} of {pictures}...",
+      "readerStart": "Starting the text reader. The first time it downloads about 15 MB, then your browser keeps it...",
+      "readerDownload": "Downloading the text reader: {percent}%",
+      "readerReady": "The text reader is ready.",
+      "readerFailed": "The text reader did not work ({reason}). The pictures were placed without reading them, so please check each one.",
+      "stop": "Stop"
     }
   },
   "expoRegistrationStatus": {

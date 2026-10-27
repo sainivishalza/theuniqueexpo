@@ -1,5 +1,6 @@
 import { listZipEntries, readZipEntry, type ZipEntry } from "./zip-reader";
 import { lookAtPicture, pictureForUpload, PictureError } from "./picture-reader";
+import { OcrError, startOcr, type OcrStartStatus } from "./ocr-reader";
 import { assignPictures, CLASSIFIED_SLOTS, type PictureFacts } from "../import-classify";
 import { IMAGE_NAME_RE, indexImages, makeZipImage, matchPersonPictures, type PictureRef } from "../import-pictures";
 
@@ -37,14 +38,24 @@ export interface PicturePlan {
   people: PersonPlan[];
   entries: Map<number, ZipEntry>;
   stats: { placed: number; sorted: number; flagged: number; withoutPictures: number; unused: number; unreadable: number };
+  // Set when the text reader could not start or stopped: the pictures were then placed without reading them.
+  readerProblem: string;
 }
+
+// What the page shows while this runs.
+export type PlanStatus =
+  | { step: "opening" }
+  | { step: "person"; done: number; total: number }
+  | { step: "reader"; reader: OcrStartStatus }
+  | { step: "picture"; done: number; total: number; picture: number; pictures: number };
 
 export async function planPictures(
   zip: File,
   buyers: PictureBuyer[],
-  progress: (done: number, total: number) => void,
+  progress: (status: PlanStatus) => void,
   cancelled: () => boolean
 ): Promise<PicturePlan> {
+  progress({ step: "opening" });
   const all = (await listZipEntries(zip)).filter((e) => e.size > 0 && IMAGE_NAME_RE.test(e.name) && !/(^|\/)(__MACOSX|\.)/.test(e.name));
   const entries = new Map<number, ZipEntry>();
   const images = all.map((entry, id) => {
@@ -59,10 +70,12 @@ export async function planPictures(
   const stats = { placed: 0, sorted: 0, flagged: 0, withoutPictures: 0, unused: 0, unreadable: 0 };
   const withPictures = buyers.filter((b) => b.pictures.length > 0);
   let done = 0;
+  let readerProblem = "";
+  let readerReady = false;
 
   for (const buyer of withPictures) {
     if (cancelled()) break;
-    progress(done++, withPictures.length);
+    progress({ step: "person", done: ++done, total: withPictures.length });
     const match = matchPersonPictures(buyer.pictures, index);
     const plan: PersonPlan = { row: buyer.row, name: buyer.name, images: [], slots: {}, missing: [], flagged: false };
 
@@ -77,11 +90,29 @@ export async function planPictures(
       // The Excel file cannot say which picture is which: read what is written on them.
       const facts: PictureFacts[] = [];
       const unreadable = new Set<number>();
+      // The text reader starts the first time it is needed (and downloads its data then).
+      if (!readerReady && !readerProblem) {
+        try {
+          await startOcr((reader) => progress({ step: "reader", reader }));
+          readerReady = true;
+        } catch (err) {
+          readerProblem = err instanceof Error ? err.message : "The text reader could not start";
+        }
+      }
+      let n = 0;
       for (const id of match.candidates) {
         if (cancelled()) break;
+        progress({ step: "picture", done, total: withPictures.length, picture: ++n, pictures: match.candidates.length });
         try {
           const blob = await readZipEntry(zip, entries.get(id)!);
-          const look = await lookAtPicture(blob, true);
+          const look = await lookAtPicture(blob, readerReady && !readerProblem).catch((err) => {
+            // A picture the reader cannot finish in time is looked at without its writing; the reader is not trusted again.
+            if (err instanceof OcrError) {
+              readerProblem = err.message;
+              return lookAtPicture(blob, false);
+            }
+            throw err;
+          });
           facts.push({ id, text: look.text, hasQr: look.hasQr, width: look.width, height: look.height });
         } catch (err) {
           if (!(err instanceof PictureError)) throw err;
@@ -117,9 +148,8 @@ export async function planPictures(
     if (plan.flagged) stats.flagged++;
     if (plan.images.length > 0) people.push(plan);
   }
-  progress(withPictures.length, withPictures.length);
   stats.unused = images.filter((i) => !claimed.has(i.id)).length;
-  return { people, entries, stats };
+  return { people, entries, stats, readerProblem };
 }
 
 export interface UploadJob {

@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import Button from "@/components/ui/Button";
-import { planPictures, previewOf, type PictureBuyer, type PicturePlan, type PersonPlan } from "@/lib/client/picture-import";
+import { planPictures, previewOf, type PictureBuyer, type PicturePlan, type PersonPlan, type PlanStatus } from "@/lib/client/picture-import";
 import type { ZipEntry } from "@/lib/client/zip-reader";
 
 // The documents a buyer's profile holds, in the order they are listed.
@@ -28,7 +28,7 @@ interface Props {
 
 export default function PicturesPanel({ buyers, zip, onZip, plan, onPlan, saved, replace, onReplace, disabled }: Props) {
   const t = useTranslations("adminImportBuyers");
-  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
+  const [progress, setProgress] = useState<PlanStatus | null>(null);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -38,8 +38,8 @@ export default function PicturesPanel({ buyers, zip, onZip, plan, onPlan, saved,
     setError("");
     if (!zip || !buyers) return;
     let stop = false;
-    setProgress({ done: 0, total: buyers.length });
-    planPictures(zip, buyers, (done, total) => !stop && setProgress({ done, total }), () => stop)
+    setProgress({ step: "opening" });
+    planPictures(zip, buyers, (status) => !stop && setProgress(status), () => stop)
       .then((result) => { if (!stop) onPlan(result); })
       .catch((err) => { if (!stop) setError(err instanceof Error && err.message ? `${t("pictures.readFailed")}: ${err.message}` : t("pictures.readFailed")); })
       .finally(() => { if (!stop) setProgress(null); });
@@ -60,11 +60,24 @@ export default function PicturesPanel({ buyers, zip, onZip, plan, onPlan, saved,
         onChange={(e) => onZip(e.target.files?.[0] ?? null)}
         className="text-sm"
       />
-      {progress && <p role="status" className="mt-1.5 text-xs text-gray-700">{t("pictures.reading", progress)}</p>}
+      {progress && (
+        <div role="status" className="mt-1.5 flex flex-wrap items-center gap-3 text-xs text-gray-700" data-testid="pictures-progress">
+          <span>
+            {progress.step === "opening" && t("pictures.opening")}
+            {progress.step === "person" && t("pictures.reading", { done: progress.done, total: progress.total })}
+            {progress.step === "picture" && t("pictures.readingPicture", { done: progress.done, total: progress.total, picture: progress.picture, pictures: progress.pictures })}
+            {progress.step === "reader" && progress.reader.step === "start" && t("pictures.readerStart")}
+            {progress.step === "reader" && progress.reader.step === "download" && t("pictures.readerDownload", { percent: progress.reader.percent })}
+            {progress.step === "reader" && progress.reader.step === "ready" && t("pictures.readerReady")}
+          </span>
+          <button type="button" onClick={() => onZip(null)} className="min-h-[2.75rem] rounded-lg border border-gray-300 px-3 text-xs font-semibold text-gray-800 hover:bg-gray-100">{t("pictures.stop")}</button>
+        </div>
+      )}
       {error && <p role="alert" className="mt-1.5 text-xs text-red-700">{error}</p>}
       {plan && stats && (
         <div className="mt-3 rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 space-y-2 text-sm" data-testid="pictures-summary">
           <p className="font-semibold text-emerald-900">{t("pictures.summaryTitle")}</p>
+          {plan.readerProblem && <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-red-700">{t("pictures.readerFailed", { reason: plan.readerProblem })}</p>}
           <ul className="space-y-1 text-gray-700">
             <li>{t("pictures.placedCount", { count: stats.placed })}</li>
             <li>{t("pictures.sortedCount", { count: stats.sorted })}</li>

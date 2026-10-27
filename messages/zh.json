@@ -4249,7 +4249,14 @@
         "businessLicense": "营业执照",
         "invoiceOrderList": "发票或订单清单",
         "latestEntryStamp": "最近入境章"
-      }
+      },
+      "opening": "正在打开 ZIP...",
+      "readingPicture": "第 {done} / {total} 人：正在读取第 {picture} / {pictures} 张图片...",
+      "readerStart": "正在启动文字识别。第一次会下载约 15 MB，之后浏览器会保存...",
+      "readerDownload": "正在下载文字识别：{percent}%",
+      "readerReady": "文字识别已就绪。",
+      "readerFailed": "文字识别未能工作（{reason}）。图片未经阅读就被放置，请逐一检查。",
+      "stop": "停止"
     }
   },
   "expoRegistrationStatus": {

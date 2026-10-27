@@ -136,7 +136,8 @@ const num = (q) => Number(sql(q));
   await br.close();
   await srv.close();
   sql('DELETE FROM mail_settings');
-  sql("UPDATE health_settings SET enabled=1, last_sent_on=NULL WHERE id=1");
+  // Leave it as "already sent today", so a test that runs after this one in the same database is not sent the daily health e-mail.
+  sql("UPDATE health_settings SET enabled=1, last_sent_on=UTC_DATE() WHERE id=1");
   sql('DELETE FROM backup_log');
   done();
 })().catch((e) => { console.error(e); process.exit(1); });

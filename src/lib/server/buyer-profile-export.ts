@@ -3,6 +3,7 @@ import { ZipFile } from "yazl";
 import { TEXT_COLUMN_ORDER } from "../buyer-profile-columns";
 import type { FormItem } from "../buyer-form";
 import type { BuyerExportProfile, DocumentField } from "./buyer-profile-repo";
+import { SITE_URL } from "../seo";
 
 // English-only labels for the exported file itself (not the live admin
 // UI, which is already translated via next-intl) -- an Excel/ZIP an admin
@@ -84,7 +85,12 @@ const EXCEL_IMAGE_TYPES = new Set(["jpeg", "png", "gif"]);
 // embedded in its cell rather than just a filename or a checkmark -- a
 // PDF document can't be embedded as an image, so it's left as a text note
 // in that cell instead.
-export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: string[], items: FormItem[]): Promise<Buffer> {
+//
+// The photo is a drawing laid over the cell, which Excel and WPS on a computer show but
+// most phone viewers do not (they draw only the cells). So every document cell also holds a
+// link, in its lower part below the photo, that opens the picture in the browser: the same
+// sheet then works on a phone, where the admin is signed in.
+export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: string[], items: FormItem[], siteUrl = SITE_URL): Promise<Buffer> {
   // Number, name and account email first, then the same order as the table on screen -- whatever
   // order the browser sent the fields in.
   const LEAD = ["buyerNumber", "name", "email"];
@@ -121,7 +127,8 @@ export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: st
     }
     for (const field of customFields) values[field.key] = row.custom[field.key] ?? "";
     const excelRow = sheet.addRow(values);
-    if (docKeys.length > 0) excelRow.height = 72;
+    // Room for the 90 px photo and, under it, the line with the link.
+    if (docKeys.length > 0) excelRow.height = 90;
 
     docKeys.forEach((docKey, docIndex) => {
       const dataUrl = row.documentData[docKey];
@@ -129,10 +136,16 @@ export async function buildBuyersExcel(rows: BuyerExportProfile[], fieldKeys: st
       if (!dataUrl) return;
       const parsed = parseDataUrl(dataUrl);
       if (!parsed) return;
+      const cell = sheet.getRow(excelRow.number).getCell(colIndex + 1);
+      const link = `${siteUrl}/api/admin/buyer-profiles/${row.userId}/documents/${encodeURIComponent(docKey)}`;
+      cell.font = { color: { argb: "FF1D4ED8" }, underline: true, size: 10 };
+      cell.alignment = { vertical: "bottom", horizontal: "left" };
       if (!EXCEL_IMAGE_TYPES.has(parsed.extension)) {
-        sheet.getRow(excelRow.number).getCell(colIndex + 1).value = "PDF file (see ZIP export)";
+        cell.value = { text: "Open PDF file", hyperlink: link };
+        cell.alignment = { vertical: "middle", horizontal: "left" };
         return;
       }
+      cell.value = { text: "Open picture", hyperlink: link };
       // exceljs's bundled Buffer type doesn't structurally match the
       // Node Buffer generic this project's @types/node produces --
       // functionally identical at runtime, just a type-declaration

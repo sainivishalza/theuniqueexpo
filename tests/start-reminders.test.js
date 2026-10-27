@@ -1,6 +1,6 @@
 // "Your exhibition starts soon": one reminder per confirmed registration in the week before the exhibition opens.
 const bcrypt = require('bcryptjs');
-const { BASE, sql, ok, done, mkUsers } = require('./helpers/common.js');
+const { BASE, sql, ok, done, mkUsers, healthQuiet } = require('./helpers/common.js');
 const smtp = require('./helpers/fake-smtp.js');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const ipn = () => '198.19.' + Math.floor(Math.random() * 256) + '.' + (Math.floor(Math.random() * 250) + 2);
@@ -11,6 +11,7 @@ const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'tok
   sql("UPDATE expo_registrations SET start_reminder_sent_at = NOW() WHERE start_reminder_sent_at IS NULL");  // other tests' registrations are not part of this
   sql("UPDATE expo_registrations SET reminder_sent_at = NOW() WHERE reminder_sent_at IS NULL");
   const u = await mkUsers('sr');
+  healthQuiet();
   const srv = await smtp.start(2532);
   const settings = { enabled: true, host: '127.0.0.1', port: 2532, secure: false, username: 'm', password: 'x', fromName: 'The Unique Expo', fromEmail: 'noreply@theuniqueexpo.test' };
   const put = (b) => fetch(BASE + '/api/admin/email', { method: 'PUT', headers: H(u.aT), body: JSON.stringify(b) });

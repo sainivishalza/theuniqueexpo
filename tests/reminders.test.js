@@ -1,6 +1,6 @@
 const crypto = require('node:crypto');
 const bcrypt = require('bcryptjs');
-const { BASE, sql, ok, done, mkUsers } = require('./helpers/common.js');
+const { BASE, sql, ok, done, mkUsers, healthQuiet } = require('./helpers/common.js');
 const smtp = require('./helpers/fake-smtp.js');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const ipn = () => '198.18.' + Math.floor(Math.random() * 256) + '.' + (Math.floor(Math.random() * 250) + 2);
@@ -9,6 +9,7 @@ const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'tok
 (async () => {
   sql('DELETE FROM mail_settings');
   const u = await mkUsers('rm');
+  healthQuiet();
   const srv = await smtp.start(2527);
   const settings = { enabled: true, host: '127.0.0.1', port: 2527, secure: false, username: 'm', password: 'x', fromName: 'The Unique Expo', fromEmail: 'noreply@theuniqueexpo.test' };
   const put = (b) => fetch(BASE + '/api/admin/email', { method: 'PUT', headers: H(u.aT), body: JSON.stringify(b) });

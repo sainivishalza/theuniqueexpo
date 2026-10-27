@@ -45,6 +45,10 @@ exports.connect = () => require('mysql2/promise').createConnection({
   ...(process.env.TEST_DB_SOCKET ? { socketPath: process.env.TEST_DB_SOCKET } : { host: DB.host || '127.0.0.1' }),
 });
 
+// The daily health e-mail is sent to the admins by the first reminder run of the day once e-mail is on. A test that counts the
+// e-mails it receives calls this first, so that e-mail does not arrive in the middle of its count.
+exports.healthQuiet = () => { try { exports.sql('UPDATE health_settings SET last_sent_on=UTC_DATE() WHERE id=1'); } catch { /* no table yet */ } };
+
 // Only these admin accounts are "active" until the returned function is called. The daily jobs that e-mail "every admin" are
 // limited to the first 20 admins, and a long test run has made far more than that, so a test that checks such an e-mail first
 // sets the others aside.

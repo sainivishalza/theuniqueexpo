@@ -1,6 +1,6 @@
 // Announcing to a group (an exhibition, a registration status, a country) without ticking rows.
 const bcrypt = require('bcryptjs');
-const { BASE, sql, ok, done, mkUsers, connect } = require('./helpers/common.js');
+const { BASE, sql, ok, done, mkUsers, connect, healthQuiet } = require('./helpers/common.js');
 const smtp = require('./helpers/fake-smtp.js');
 const { launch, axeViolations } = require('./helpers/browser.js');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -11,6 +11,7 @@ const H = (t, extra = {}) => ({ 'Content-Type': 'application/json', cookie: 'tok
   sql('DELETE FROM mail_settings');
   const db = await connect();
   const u = await mkUsers('sg');
+  healthQuiet();
   const srv = await smtp.start(2536);
   const settings = { enabled: true, host: '127.0.0.1', port: 2536, secure: false, username: 'm', password: 'x', fromName: 'The Unique Expo', fromEmail: 'noreply@theuniqueexpo.test' };
   await fetch(BASE + '/api/admin/email', { method: 'PUT', headers: H(u.aT), body: JSON.stringify(settings) }); await sleep(200);

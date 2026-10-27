@@ -4,28 +4,28 @@ import type { RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { requireAdmin, createUserAccount } from "@/lib/auth-server";
 import { getBuyerNumber } from "@/lib/server/buyer-numbers";
-import { upsertBuyerProfileFields, type BuyerProfileFields } from "@/lib/server/buyer-profile-repo";
+import { getBuyerProfile, upsertBuyerProfileFields, type BuyerProfileFields } from "@/lib/server/buyer-profile-repo";
 import { addBuyerExpoIds, findOrCreateExpoIds } from "@/lib/server/buyer-expos-repo";
 import { normalizeLoginPhone, normalizePassportNumber, placeholderEmail } from "@/lib/login-id";
+import {
+  buyerNumberOf, compareProfile, emailTaken, findExistingBuyer, incomingProfile, COMPARE_FIELDS,
+  type CompareField, type FieldChange, type MatchedBy,
+} from "@/lib/server/buyer-import-plan";
 
-// Imports buyers from a prepared file (built from expo spreadsheets). Someone
-// who is already registered -- same email, or same passport number -- is never
-// created again and none of their details are changed: only the expos in the
-// row are added to them. People with no email sign in with their phone or
-// passport number (see verifyUserPassword) and get a placeholder email.
+// Imports buyers from a prepared file (built from expo spreadsheets). The same
+// person is found by buyer number, passport number, phone number, WeChat ID, then
+// email (see buyer-import-plan.ts) and is never created twice. For someone who is
+// already registered the file only fills in what is still empty and adds the
+// expos; a detail that is filled in and says something else is reported as a
+// conflict and left alone unless the admin picked the new value for it.
+// People with no email sign in with their phone or passport number (see
+// verifyUserPassword) and get a placeholder email.
 //
-// Send at most 40 buyers per request: every new account costs a bcrypt hash.
+// mode "check" changes nothing and reports what apply would do. Send at most 40
+// buyers per request: every new account costs a bcrypt hash.
 
 const MAX_PER_REQUEST = 40;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-// Profile fields a file row may carry (everything except expos, which are
-// names, and the registration code, which stays admin-typed).
-const PROFILE_KEYS = [
-  "companyName", "nationality", "annualTurnover", "purchaseIntention", "otherPurchaseIntention",
-  "contactPerson", "departureCity", "attendanceDay", "meetingOrVisiting", "passportName", "gender",
-  "overseasCompanyAddress", "companyField", "jobTitle", "dateOfBirth", "visaType", "visaExpireDate", "passportExpireDate",
-] as const;
 
 interface ImportRow {
   name?: unknown;
@@ -36,10 +36,14 @@ interface ImportRow {
   country?: unknown;
   password?: unknown;
   expos?: unknown;
+  buyerNumber?: unknown;
+  dateOfBirthApproximate?: unknown;
+  // Fields where the admin chose the file's value over the one already saved.
+  useNew?: unknown;
   [key: string]: unknown;
 }
 
-type ImportStatus = "created" | "expo_added" | "already_registered" | "failed";
+type ImportStatus = "created" | "expo_added" | "updated" | "already_registered" | "failed";
 
 interface ImportResult {
   row: number;
@@ -50,26 +54,17 @@ interface ImportResult {
   password: string | null;
   status: ImportStatus;
   reason?: string;
+  matchedBy?: MatchedBy;
+  // Details that were empty and are (or, in a check, would be) filled in.
+  fills?: FieldChange[];
+  // Details already saved that the file disagrees with.
+  conflicts?: FieldChange[];
+  // The conflicts the admin chose to overwrite.
+  used?: string[];
 }
 
 const str = (v: unknown) => (typeof v === "string" ? v.trim() : typeof v === "number" ? String(v) : "");
-
-async function findUserIdByEmail(email: string): Promise<{ id: number; role: string } | null> {
-  if (!email) return null;
-  const [rows] = await pool.query<RowDataPacket[]>("SELECT id, role FROM users WHERE email = ? LIMIT 1", [email]);
-  return rows[0] ? { id: rows[0].id, role: rows[0].role } : null;
-}
-
-async function findUserIdByPassport(passport: string): Promise<{ id: number; role: string } | null> {
-  if (!passport) return null;
-  const [rows] = await pool.query<RowDataPacket[]>(
-    `SELECT u.id, u.role FROM buyer_profiles p JOIN users u ON u.id = p.user_id
-     WHERE UPPER(REPLACE(REPLACE(REPLACE(p.passport_number, ' ', ''), '-', ''), '.', '')) = ?
-     ORDER BY u.id LIMIT 1`,
-    [passport]
-  );
-  return rows[0] ? { id: rows[0].id, role: rows[0].role } : null;
-}
+const isField = (v: string): v is CompareField => (COMPARE_FIELDS as readonly string[]).includes(v);
 
 export async function POST(request: Request) {
   const admin = await requireAdmin(request);
@@ -77,6 +72,7 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null);
   const buyers = Array.isArray(body?.buyers) ? (body.buyers as ImportRow[]) : null;
+  const check = body?.mode === "check";
   if (!buyers || buyers.length === 0) return NextResponse.json({ error: "No buyers provided" }, { status: 400 });
   if (buyers.length > MAX_PER_REQUEST) {
     return NextResponse.json({ error: `Send at most ${MAX_PER_REQUEST} buyers per request` }, { status: 400 });
@@ -98,59 +94,73 @@ export async function POST(request: Request) {
 
     try {
       if (!name) { fail("Missing name"); continue; }
-      if (!email && !phone && !passport) { fail("No email, phone or passport number to sign in with"); continue; }
 
       const expoNames = Array.isArray(input.expos) ? input.expos.map(str).filter(Boolean) : [];
-      const expoIds = await findOrCreateExpoIds(expoNames);
+      const identity = { email, phone, passport, wechat: str(input.wechatId), buyerNumber: buyerNumberOf(input.buyerNumber) };
+      const incoming = incomingProfile(input, identity);
+      const approximate = str(input.dateOfBirthApproximate) === "yes";
+      const phonePlaceholder = phone ? placeholderEmail("phone", phone) : "";
+      const passportPlaceholder = passport ? placeholderEmail("passport", passport) : "";
 
-      // Already registered? Same email or same passport number.
-      const placeholder = !email ? (phone ? placeholderEmail("phone", phone) : placeholderEmail("passport", passport)) : "";
-      const byEmail = await findUserIdByEmail(email || placeholder);
-      const byPassport = await findUserIdByPassport(passport);
-      if (byEmail && byPassport && byEmail.id !== byPassport.id) {
-        fail(`Email and passport belong to two different accounts (#${byEmail.id} and #${byPassport.id}) -- check by hand`);
-        continue;
-      }
-      // Same email but a different passport usually means two people sharing
-      // one inbox -- never merge those automatically.
-      if (byEmail && !byPassport && passport) {
-        const [pp] = await pool.query<RowDataPacket[]>("SELECT passport_number FROM buyer_profiles WHERE user_id = ? LIMIT 1", [byEmail.id]);
-        const existingPassport = normalizePassportNumber(str(pp[0]?.passport_number));
-        if (existingPassport && existingPassport !== passport) {
-          fail(`This email already belongs to account #${byEmail.id} with a different passport number -- check by hand`);
-          continue;
+      const match = await findExistingBuyer(identity, { phone: phonePlaceholder, passport: passportPlaceholder });
+      if (match.kind === "blocked") { fail(match.reason); continue; }
+
+      if (match.kind === "found") {
+        const existing = match.user;
+        const [accounts] = await pool.query<RowDataPacket[]>("SELECT email FROM users WHERE id = ? LIMIT 1", [existing.id]);
+        const current = await getBuyerProfile(existing.id);
+        const { fills, conflicts } = compareProfile(current, incoming, approximate, str(accounts[0]?.email));
+        const chosen = (Array.isArray(input.useNew) ? input.useNew.map(str) : []).filter(isField);
+        const used = conflicts.filter((c) => chosen.includes(c.field as CompareField)).map((c) => c.field);
+
+        let added = 0;
+        if (!check) {
+          const patch: Partial<BuyerProfileFields> = {};
+          for (const change of [...fills, ...conflicts.filter((c) => used.includes(c.field))]) {
+            (patch as Record<string, string>)[change.field] = change.incoming;
+          }
+          if (Object.keys(patch).length > 0) await upsertBuyerProfileFields(existing.id, patch);
+          added = await addBuyerExpoIds(existing.id, await findOrCreateExpoIds(expoNames));
+        } else {
+          const known = new Set((current?.expoIds ?? []));
+          const ids = expoNames.length ? await findOrCreateExpoIdsReadOnly(expoNames) : [];
+          added = ids.filter((id) => !known.has(id)).length + (expoNames.length > ids.length ? 1 : 0);
         }
-      }
-      const existing = byEmail || byPassport;
-      if (existing) {
-        if (existing.role !== "buyer") { fail(`Already registered as a ${existing.role} account (#${existing.id}), not a buyer`); continue; }
-        const added = await addBuyerExpoIds(existing.id, expoIds);
         const buyerNumber = await getBuyerNumber(existing.id);
+        const changed = fills.length > 0 || used.length > 0;
         results.push({
           row, name, buyerNumber, loginId, password: null,
-          status: added > 0 ? "expo_added" : "already_registered",
+          status: changed ? "updated" : added > 0 ? "expo_added" : "already_registered",
           reason: `Existing account ${buyerNumber || `#${existing.id}`}`,
+          matchedBy: match.by, fills, conflicts, used,
         });
         continue;
       }
 
+      if (!email && !phone && !passport) { fail("No email, phone or passport number to sign in with"); continue; }
       if (password.length < 6) { fail("Password missing or shorter than 6 characters"); continue; }
 
-      const { user: created } = await createUserAccount(name, email || placeholder, password, "buyer", str(input.country));
-      const profile: Partial<BuyerProfileFields> = {};
-      for (const key of PROFILE_KEYS) {
-        const value = str(input[key]);
-        if (value) profile[key] = value;
+      // Sign in with the email when it is free; an inbox another person already uses (a couple, a secretary) is kept as a contact
+      // email only. A phone number another person already has is not a way to sign in either: the passport number is.
+      const phoneShared = match.rejected.some((r) => r.startsWith("phone:"));
+      let accountEmail = "";
+      for (const candidate of [email, phoneShared ? "" : phonePlaceholder, passportPlaceholder]) {
+        if (candidate && !(await emailTaken(candidate))) { accountEmail = candidate; break; }
       }
-      if (email) profile.contactEmail = email;
-      if (phone) profile.phoneNumber = phone;
-      if (passport) profile.passportNumber = passport;
-      const wechat = str(input.wechatId);
-      if (wechat) profile.wechatId = wechat;
-      await upsertBuyerProfileFields(created.id, profile);
+      if (!accountEmail) { fail("Every way to sign in for this person is already used by another account -- check by hand"); continue; }
+      const signInWith = accountEmail === email ? email : accountEmail === phonePlaceholder ? phone : passport;
+
+      if (check) {
+        results.push({ row, name, loginId: signInWith, password: null, status: "created", fills: [], conflicts: [] });
+        continue;
+      }
+
+      const expoIds = await findOrCreateExpoIds(expoNames);
+      const { user: created } = await createUserAccount(name, accountEmail, password, "buyer", str(input.country));
+      await upsertBuyerProfileFields(created.id, incoming);
       await addBuyerExpoIds(created.id, expoIds);
 
-      results.push({ row, name, buyerNumber: await getBuyerNumber(created.id), loginId, password, status: "created" });
+      results.push({ row, name, buyerNumber: await getBuyerNumber(created.id), loginId: signInWith, password, status: "created" });
     } catch (err) {
       console.error(`Buyer import failed for row ${row}:`, err);
       fail("Could not create account");
@@ -158,12 +168,28 @@ export async function POST(request: Request) {
   }
 
   const count = (s: ImportStatus) => results.filter((r) => r.status === s).length;
-  logAdminAction(request, admin, "buyers_imported", { targetType: "user", details: `${count("created")} created, ${count("expo_added")} expo added, ${count("failed")} failed` });
+  if (!check) {
+    logAdminAction(request, admin, "buyers_imported", {
+      targetType: "user",
+      details: `${count("created")} created, ${count("updated")} updated, ${count("expo_added")} expo added, ${count("failed")} failed`,
+    });
+  }
   return NextResponse.json({
     results,
+    check,
     created: count("created"),
+    updated: count("updated"),
     expoAdded: count("expo_added"),
     alreadyRegistered: count("already_registered"),
     failed: count("failed"),
   });
+}
+
+// A check must not create expos. Looks the names up and leaves the ones that do not exist yet out.
+async function findOrCreateExpoIdsReadOnly(names: string[]): Promise<number[]> {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    `SELECT id FROM buyer_expos WHERE name IN (${names.map(() => "?").join(",")})`,
+    names
+  );
+  return rows.map((r) => Number(r.id));
 }

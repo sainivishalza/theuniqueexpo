@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "check:messages": "node scripts/check-messages.mjs",
     "test:e2e": "node tests/run.js",
-    "check:wasm": "node scripts/check-zxing-wasm.mjs"
+    "check:wasm": "node scripts/check-zxing-wasm.mjs && node scripts/check-ocr-assets.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

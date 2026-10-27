@@ -44,6 +44,8 @@ export interface ImportBuyer {
   // ISO date. When the sheet had only the year and month the day is 1 and dateOfBirthApproximate is "yes".
   dateOfBirth?: string;
   dateOfBirthApproximate?: string;
+  // The picture file names the sheet lists for this person, by the document each column is for (the form's own upload slots).
+  pictures?: { slot: string; file: string }[];
   expos: string[];
 }
 
@@ -121,6 +123,7 @@ interface Rec {
   ph: string; // normalised phone
   wcph: string; // WeChat value, when it is really a phone number
   e: string; // normalised email
+  pics: { slot: string; file: string }[];
 }
 
 // ---------- sheet name -> expo name ----------
@@ -240,6 +243,13 @@ function passEq(a: string, b: string): boolean {
   return na === nb && /^\d+$/.test(a) && /^\d+$/.test(b);
 }
 
+// One file per document, from the first row that lists it.
+function mergePictures(rs: { pics: { slot: string; file: string }[] }[]): { slot: string; file: string }[] {
+  const bySlot = new Map<string, string>();
+  for (const r of rs) for (const p of r.pics) if (!bySlot.has(p.slot)) bySlot.set(p.slot, p.file);
+  return [...bySlot].map(([slot, file]) => ({ slot, file }));
+}
+
 function cleanText(s: string): string {
   return s.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
 }
@@ -268,7 +278,7 @@ const HEADER_NAME_RE = /^(.*full name|name|buyer.?s? name|full name|contact name
 class Collector {
   recs: Rec[] = [];
   repaired: RepairedRow[] = [];
-  add(sheet: string, expo: string, name: string, fields: Partial<Record<Field, string>>) {
+  add(sheet: string, expo: string, name: string, fields: Partial<Record<Field, string>>, pics: { slot: string; file: string }[] = []) {
     const f: Partial<Record<Field, string>> = {};
     for (const [k, v] of Object.entries(fields)) if (v !== undefined) f[k as Field] = cleanText(v);
     const nm = cleanText(name);
@@ -283,6 +293,7 @@ class Collector {
       ph: normPhone(f.phone),
       wcph: /^[\d\s()+\-]+$/.test(wc || "x") ? normPhone(wc) : "",
       e: normEmail(f.email),
+      pics,
     };
     // A repeated header row ("Buyer Name", "Passport" ...) has no real number or email in it; a person
     // who really typed "Passport" as their name does, so is kept.
@@ -435,6 +446,24 @@ const GENERIC_RULES: [GenericField, RegExp][] = [
   ["meeting", /meeting|visiting/],
   ["attendday", /attendance|attend/],
 ];
+// Which document a picture column of the collection form is for, from its header ("Passport picture", "Canton Badge", ...).
+const PICTURE_RULES: [string, RegExp][] = [
+  ["latestEntryStamp", /entry stamp|入境章/],
+  ["businessLicense", /licen[cs]e|营业执照/],
+  ["invoiceOrderList", /invoice|order list|发票/],
+  ["visaPage", /visa|签证/],
+  ["passportFront", /passport|护照/],
+  ["businessCard", /business card|名片/],
+  ["cantonFairCard", /canton|badge|buyer card|展会证|参展证/],
+  ["buyerPhoto", /personal|portrait|photo|selfie|image|个人|照片/],
+];
+const PICTURE_HEADER_RE = /picture|image|photo|licen[cs]e|badge|business card|\bcard\b|stamp|invoice|照片|图片|名片|营业执照/i;
+const IMAGE_FILE_RE = /\.(png|jpe?g|webp|gif|heic|heif|bmp|tiff?)$/i;
+function pictureSlot(label: string): string | null {
+  if (!PICTURE_HEADER_RE.test(label)) return null;
+  const hit = PICTURE_RULES.find(([, re]) => re.test(label));
+  return hit ? hit[0] : null;
+}
 function headerLabel(v: string): string {
   return v.replace(/[（(][^）)]*[）)]/g, " ").replace(/[*:：]/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
 }
@@ -471,11 +500,18 @@ function extractGeneric(sheet: RawSheet, c: Collector): { count: number; layout:
   }
   const nameCol = columns.get("passportName");
   if (nameCol === undefined) return { count: 0, layout: "no name column found", passportName: false };
+  const pictureCols = new Map<number, string>();
+  for (const [col, v] of sheet.rows.get(headerRow)!) {
+    const slot = pictureSlot(headerLabel(String(v)));
+    if (slot) pictureCols.set(col, slot);
+  }
 
   const expo = prettyExpoName(sheet.name);
   const before = c.recs.length;
   const passportCol = columns.get("passport");
   const lastCol = Math.max(...columns.values());
+  // The picture columns stay where the header says even in a row whose other cells are shifted.
+  const rowPictures = (d: Row) => [...pictureCols].map(([col, slot]) => ({ slot, file: g(d, col) })).filter((p) => IMAGE_FILE_RE.test(p.file));
   for (const { n, d } of sheetRows(sheet, headerRow)) {
     // A row in a different column order than the header says (our own buyer number first, everything else pushed one place
     // right) is read by the look of its values; every such row is listed so it can be checked.
@@ -487,7 +523,7 @@ function extractGeneric(sheet: RawSheet, c: Collector): { count: number; layout:
         c.add(sheet.name, expo, fixed.name, {
           passport: fixed.passport, phone: fixed.phone, wechat: fixed.wechat, email: fixed.email, gender: fixed.gender, birth: fixed.birth,
           nationality: fixed.nationality, visa: fixed.visa, company: fixed.company, job: fixed.job, buyerno: fixed.buyerNumber,
-        });
+        }, rowPictures(d));
         continue;
       }
     }
@@ -496,7 +532,7 @@ function extractGeneric(sheet: RawSheet, c: Collector): { count: number; layout:
       if (field === "passportName") continue;
       fields[field as Field] = g(d, col);
     }
-    c.add(sheet.name, expo, g(d, nameCol), fields);
+    c.add(sheet.name, expo, g(d, nameCol), fields, rowPictures(d));
   }
   const used = [...columns.keys()].map((k) => (k === "passportName" ? "name" : k)).join(", ");
   return { count: c.recs.length - before, layout: `columns: ${used}`, passportName: strongPassportName.has(nameCol) };
@@ -788,6 +824,7 @@ export async function parseBuyerWorkbooks(files: { name: string; data: Buffer }[
       buyerNumber: best(rs.map((r) => (r.f.buyerno ?? "").toUpperCase())),
       dateOfBirth: birth?.iso ?? "",
       dateOfBirthApproximate: birth?.approximate ? "yes" : "",
+      pictures: mergePictures(rs),
       expos,
     };
     buyer.country = buyer.nationality;

@@ -5,6 +5,8 @@ import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Button from "@/components/ui/Button";
 import ExpoSearchSelect from "@/app/[locale]/admin/wallet/_components/ExpoSearchSelect";
+import PicturesPanel, { type SavedDocuments } from "./PicturesPanel";
+import { uploadPictures, type PicturePlan, type UploadJob } from "@/lib/client/picture-import";
 
 type Status = "created" | "expo_added" | "updated" | "already_registered" | "failed";
 
@@ -22,6 +24,8 @@ interface ImportResult {
   fills?: FieldChange[];
   conflicts?: FieldChange[];
   used?: string[];
+  userId?: number;
+  documents?: Record<string, { status: string }>;
 }
 
 interface RepairedRow { sheet: string; row: number; buyerNumber: string; name: string; passport: string; phone: string; email: string }
@@ -103,6 +107,12 @@ export default function ImportBuyersPage() {
   const [decisions, setDecisions] = useState<Record<number, string[]>>({});
   const [reviewOpen, setReviewOpen] = useState(false);
   const [showRepaired, setShowRepaired] = useState(false);
+  const [zip, setZip] = useState<File | null>(null);
+  const [picturePlan, setPicturePlan] = useState<PicturePlan | null>(null);
+  // Per spreadsheet row: the saved documents the admin chose to replace with the ZIP's picture.
+  const [replaceDocs, setReplaceDocs] = useState<Record<number, string[]>>({});
+  const [uploading, setUploading] = useState<{ done: number; total: number } | null>(null);
+  const [uploadReport, setUploadReport] = useState<{ saved: number; kept: number; failed: { name: string; slot: string; reason: string }[] } | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/buyer-expos")
@@ -113,6 +123,22 @@ export default function ImportBuyersPage() {
 
   // Any change to the file or the expo makes the earlier check out of date.
   useEffect(() => { setChecked(null); }, [buyers, expoMode, expoName]);
+  useEffect(() => { setReplaceDocs({}); setUploadReport(null); }, [buyers]);
+
+  const pictureBuyers = useMemo(
+    () => (workbook && buyers ? buyers.map((b) => ({
+      row: Number(b.row),
+      name: String(b.name ?? ""),
+      passportNumber: String(b.passportNumber ?? ""),
+      pictures: Array.isArray(b.pictures) ? (b.pictures as { slot: string; file: string }[]) : [],
+    })) : null),
+    [workbook, buyers]
+  );
+  const savedDocs = useMemo(() => {
+    const out: SavedDocuments = {};
+    for (const r of checked ?? []) if (r.documents) out[r.row] = r.documents;
+    return out;
+  }, [checked]);
 
   const attention = useMemo(() => (checked ?? []).filter((r) => (r.conflicts?.length ?? 0) > 0), [checked]);
 
@@ -192,7 +218,7 @@ export default function ImportBuyersPage() {
 
   // What goes to the server: the expo chosen for everyone (if any) and, per person, the conflicts where the admin picked the file's value.
   function rowsToSend() {
-    return (buyers ?? []).map((b) => ({
+    return (buyers ?? []).map(({ pictures: _pictures, ...b }) => ({
       ...b,
       ...(expoMode === "one" && expoName ? { expos: [expoName] } : {}),
       useNew: [...(decisions[Number(b.row)] ?? [])],
@@ -232,12 +258,36 @@ export default function ImportBuyersPage() {
     }
   }
 
+  // The chosen pictures go to the profiles of the people just imported. A saved document is replaced only where the admin ticked it.
+  async function savePictures(file: File, plan: PicturePlan, imported: ImportResult[]) {
+    const jobs: (UploadJob & { name: string })[] = [];
+    let kept = 0;
+    for (const person of plan.people) {
+      const result = imported.find((r) => r.row === person.row);
+      if (!result?.userId || result.status === "failed") continue;
+      for (const [id, slot] of Object.entries(person.slots)) {
+        if (!slot) continue;
+        if (result.documents?.[slot] && !(replaceDocs[person.row] ?? []).includes(slot)) { kept++; continue; }
+        jobs.push({ row: person.row, userId: result.userId, slot, imageId: Number(id), name: person.name });
+      }
+    }
+    setUploading({ done: 0, total: jobs.length });
+    const failed = await uploadPictures(file, plan.entries, jobs, (n) => setUploading({ done: n, total: jobs.length }));
+    setUploading(null);
+    setUploadReport({
+      saved: jobs.length - failed.length,
+      kept,
+      failed: failed.map((f) => ({ name: (f.job as UploadJob & { name: string }).name, slot: f.job.slot, reason: f.reason })),
+    });
+  }
+
   async function handleImport() {
     if (!buyers) return;
     setRunning(true);
     setError("");
     setResults([]);
     setDone(0);
+    setUploadReport(null);
     const all: ImportResult[] = [];
     try {
       const rows = rowsToSend();
@@ -253,6 +303,7 @@ export default function ImportBuyersPage() {
         setResults([...all]);
         setDone(Math.min(i + CHUNK, rows.length));
       }
+      if (zip && picturePlan) await savePictures(zip, picturePlan, all);
     } catch (err) {
       // Everything already imported stays; running the same file again skips those people.
       setError(`${err instanceof Error ? err.message : t("importFailed")} — ${t("safeToRetry")}`);
@@ -342,6 +393,20 @@ export default function ImportBuyersPage() {
               </div>
             )}
 
+            {workbook && (
+              <PicturesPanel
+                buyers={pictureBuyers}
+                zip={zip}
+                onZip={setZip}
+                plan={picturePlan}
+                onPlan={setPicturePlan}
+                saved={savedDocs}
+                replace={replaceDocs}
+                onReplace={setReplaceDocs}
+                disabled={running || checking || reading}
+              />
+            )}
+
             <div className="border-t border-gray-100 pt-4">
               <label htmlFor="import-file" className="block text-sm font-medium text-gray-700 mb-1">{t("fileLabel")}</label>
               <input id="import-file" type="file" disabled={running} onChange={(e) => handleFile(e.target.files?.[0] || null)} className="text-sm" />
@@ -417,6 +482,19 @@ export default function ImportBuyersPage() {
                   <ul className="max-h-48 overflow-y-auto text-xs text-red-700 [overflow-wrap:anywhere]" tabIndex={0} aria-label={t("failedLabel")}>
                     {checked.filter((r) => r.status === "failed").map((r) => <li key={r.row}>{r.name || `#${r.row}`}: {r.reason}</li>)}
                   </ul>
+                )}
+              </div>
+            )}
+            {uploading && <p role="status" className="text-xs text-gray-700">{t("pictures.uploading", uploading)}</p>}
+            {uploadReport && (
+              <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 text-sm space-y-1" data-testid="pictures-report">
+                <p className="font-semibold text-emerald-900">{t("pictures.uploadedCount", { count: uploadReport.saved })}</p>
+                {uploadReport.kept > 0 && <p className="text-gray-700">{t("pictures.keptSavedCount", { count: uploadReport.kept })}</p>}
+                {uploadReport.failed.length > 0 && (
+                  <div role="alert" className="text-red-700">
+                    <p className="font-semibold">{t("pictures.uploadFailed", { count: uploadReport.failed.length })}</p>
+                    <ul className="text-xs [overflow-wrap:anywhere]">{uploadReport.failed.map((f, i) => <li key={i}>{f.name} — {t(`pictures.slot.${f.slot}`)}: {f.reason}</li>)}</ul>
+                  </div>
                 )}
               </div>
             )}

@@ -1,4 +1,6 @@
 import { readXlsxRaw, type RawSheet } from "./xlsx-raw";
+import { BUYER_NUMBER_RE, parseBirth, repairShiftedRow } from "./buyer-row-doctor";
+import { NATIONALITIES } from "@/lib/expo-registrations";
 
 // Turns expo spreadsheets (many sheets, many layouts, the same person repeated
 // across sheets) into one clean list of buyers to import.
@@ -37,6 +39,11 @@ export interface ImportBuyer {
   meetingOrVisiting?: string;
   visaType?: string;
   purchaseIntention?: string;
+  // Our own buyer number (TUE0166) when the sheet carries it: the surest way to find the account.
+  buyerNumber?: string;
+  // ISO date. When the sheet had only the year and month the day is 1 and dateOfBirthApproximate is "yes".
+  dateOfBirth?: string;
+  dateOfBirthApproximate?: string;
   expos: string[];
 }
 
@@ -78,8 +85,20 @@ export interface NameOnlyMatch {
   passport: string;
 }
 
+// A row that sat in a different column order than the header says and was read by the look of its values instead.
+export interface RepairedRow {
+  sheet: string;
+  row: number;
+  buyerNumber: string;
+  name: string;
+  passport: string;
+  phone: string;
+  email: string;
+}
+
 export interface ParseResult {
   buyers: ImportBuyer[];
+  repaired: RepairedRow[];
   held: HeldRow[];
   heldPeople: number;
   skipped: SkippedPerson[];
@@ -91,7 +110,7 @@ export interface ParseResult {
 
 type Field =
   | "gender" | "passport" | "country" | "city" | "job" | "company" | "email" | "nationality" | "visa" | "attendday"
-  | "phone" | "wechat" | "birth" | "products" | "field" | "address" | "meeting";
+  | "phone" | "wechat" | "birth" | "products" | "field" | "address" | "meeting" | "buyerno";
 
 interface Rec {
   sheet: string;
@@ -248,6 +267,7 @@ const HEADER_NAME_RE = /^(.*full name|name|buyer.?s? name|full name|contact name
 
 class Collector {
   recs: Rec[] = [];
+  repaired: RepairedRow[] = [];
   add(sheet: string, expo: string, name: string, fields: Partial<Record<Field, string>>) {
     const f: Partial<Record<Field, string>> = {};
     for (const [k, v] of Object.entries(fields)) if (v !== undefined) f[k as Field] = cleanText(v);
@@ -454,7 +474,23 @@ function extractGeneric(sheet: RawSheet, c: Collector): { count: number; layout:
 
   const expo = prettyExpoName(sheet.name);
   const before = c.recs.length;
-  for (const { d } of sheetRows(sheet, headerRow)) {
+  const passportCol = columns.get("passport");
+  const lastCol = Math.max(...columns.values());
+  for (const { n, d } of sheetRows(sheet, headerRow)) {
+    // A row in a different column order than the header says (our own buyer number first, everything else pushed one place
+    // right) is read by the look of its values; every such row is listed so it can be checked.
+    if (BUYER_NUMBER_RE.test(g(d, nameCol)) || (passportCol !== undefined && BUYER_NUMBER_RE.test(g(d, passportCol)))) {
+      const cells = [...d.entries()].filter(([col, v]) => col >= nameCol && col <= lastCol && !/\.(png|jpe?g|webp|gif|heic)$/i.test(v)).sort((a, b) => a[0] - b[0]).map(([, v]) => v);
+      const fixed = repairShiftedRow(cells, isKnownNationality);
+      if (fixed && fixed.name) {
+        c.repaired.push({ sheet: sheet.name, row: n, buyerNumber: fixed.buyerNumber, name: fixed.name, passport: fixed.passport, phone: fixed.phone, email: fixed.email });
+        c.add(sheet.name, expo, fixed.name, {
+          passport: fixed.passport, phone: fixed.phone, wechat: fixed.wechat, email: fixed.email, gender: fixed.gender, birth: fixed.birth,
+          nationality: fixed.nationality, visa: fixed.visa, company: fixed.company, job: fixed.job, buyerno: fixed.buyerNumber,
+        });
+        continue;
+      }
+    }
     const fields: Partial<Record<Field, string>> = {};
     for (const [field, col] of columns) {
       if (field === "passportName") continue;
@@ -505,6 +541,8 @@ function nationality(v: string): string {
   if (NATIONALITY_FIX[low]) return NATIONALITY_FIX[low];
   return isUpper(s) ? s.replace(/\p{L}+/gu, (w) => capitalize(w)) : s;
 }
+const KNOWN_NATIONALITIES = new Set([...NATIONALITIES.map((n) => n.toLowerCase()), ...Object.keys(NATIONALITY_FIX), ...Object.values(NATIONALITY_FIX).map((n) => n.toLowerCase())]);
+const isKnownNationality = (v: string) => KNOWN_NATIONALITIES.has(v.replace(/\s+/g, " ").trim().toLowerCase());
 function normCity(v: string | undefined): string {
   return CITY_OK[(v ?? "").trim().toLowerCase()] ?? "";
 }
@@ -727,6 +765,7 @@ export async function parseBuyerWorkbooks(files: { name: string; data: Buffer }[
     }
 
     const visa = best(rs.map((r) => r.f.visa));
+    const birth = rs.map((r) => parseBirth(r.f.birth ?? "")).find((b) => b !== null) ?? null;
     const buyer: ImportBuyer = {
       name: nm,
       email,
@@ -746,6 +785,9 @@ export async function parseBuyerWorkbooks(files: { name: string; data: Buffer }[
       meetingOrVisiting: best(rs.map((r) => r.f.meeting)).toLowerCase(),
       visaType: VISA_FIX[visa] ?? visa,
       purchaseIntention: [...new Set(rs.map((r) => r.f.products).filter((x): x is string => !!x))].join("; ").slice(0, 1000),
+      buyerNumber: best(rs.map((r) => (r.f.buyerno ?? "").toUpperCase())),
+      dateOfBirth: birth?.iso ?? "",
+      dateOfBirthApproximate: birth?.approximate ? "yes" : "",
       expos,
     };
     buyer.country = buyer.nationality;
@@ -793,6 +835,7 @@ export async function parseBuyerWorkbooks(files: { name: string; data: Buffer }[
     nameOnlyMatches,
     sheets: summaries,
     totalRows: n,
+    repaired: collector.repaired,
     loginBy: {
       email: buyers.filter((b) => b.email).length,
       phone: buyers.filter((b) => !b.email && b.phone).length,

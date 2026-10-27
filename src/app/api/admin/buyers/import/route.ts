@@ -61,6 +61,10 @@ interface ImportResult {
   conflicts?: FieldChange[];
   // The conflicts the admin chose to overwrite.
   used?: string[];
+  // The account, when there is one (an existing buyer, or one just created).
+  userId?: number;
+  // For an existing buyer: which documents already have a picture, and whether it is verified.
+  documents?: Record<string, { status: string }>;
 }
 
 const str = (v: unknown) => (typeof v === "string" ? v.trim() : typeof v === "number" ? String(v) : "");
@@ -128,8 +132,12 @@ export async function POST(request: Request) {
         }
         const buyerNumber = await getBuyerNumber(existing.id);
         const changed = fills.length > 0 || used.length > 0;
+        const documents: Record<string, { status: string }> = {};
+        for (const [slot, has] of Object.entries(current?.hasDocument ?? {})) {
+          if (has) documents[slot] = { status: current?.documentReview[slot]?.status ?? "pending" };
+        }
         results.push({
-          row, name, buyerNumber, loginId, password: null,
+          row, name, buyerNumber, loginId, password: null, userId: existing.id, documents,
           status: changed ? "updated" : added > 0 ? "expo_added" : "already_registered",
           reason: `Existing account ${buyerNumber || `#${existing.id}`}`,
           matchedBy: match.by, fills, conflicts, used,
@@ -160,7 +168,7 @@ export async function POST(request: Request) {
       await upsertBuyerProfileFields(created.id, incoming);
       await addBuyerExpoIds(created.id, expoIds);
 
-      results.push({ row, name, buyerNumber: await getBuyerNumber(created.id), loginId: signInWith, password, status: "created" });
+      results.push({ row, name, buyerNumber: await getBuyerNumber(created.id), loginId: signInWith, password, status: "created", userId: created.id });
     } catch (err) {
       console.error(`Buyer import failed for row ${row}:`, err);
       fail("Could not create account");

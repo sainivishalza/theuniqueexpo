@@ -47,9 +47,15 @@ export async function lookAtPicture(blob: Blob, withText: boolean): Promise<Pict
   try {
     const thumb = draw(bitmap, THUMB_WIDTH, THUMB_WIDTH * 1.5).toDataURL("image/jpeg", 0.7);
     if (!withText) return { width: bitmap.width, height: bitmap.height, thumb, hasQr: false, text: "" };
-    qr ??= createQrReader("camera");
-    const reader = await qr;
-    const hasQr = !!(await reader(bitmap, bitmap.width, bitmap.height).catch(() => null));
+    // The QR reader is only a hint: it gets 20 seconds, then the picture is read without it.
+    const hasQr = await Promise.race([
+      (async () => {
+        qr ??= createQrReader("camera");
+        const reader = await qr;
+        return !!(await reader(bitmap, bitmap.width, bitmap.height));
+      })(),
+      new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 20_000)),
+    ]).catch(() => false);
     const text = await readText(draw(bitmap, READ_WIDTH, READ_WIDTH * 1.6));
     return { width: bitmap.width, height: bitmap.height, thumb, hasQr, text };
   } finally {
